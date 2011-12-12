@@ -1,0 +1,24 @@
+function [ SimplifiedContour ] = ContourSimplification( Contour)
+%CONTOURSIMPLIFICATION Summary of this function goes here
+%   Detailed explanation goes here
+
+
+
+MinX = min(Contour(:,1));
+MaxX = max(Contour(:,1));
+MinY = min(Contour(:,2));
+MaxY = max(Contour(:,2));
+
+Dx = MaxX - MinX;
+Dy = MaxY - MinY;
+
+minD = min(Dx,Dy)
+
+epsilon = minD/100;
+
+[ps,ix] = dpsimplify(a,epsilon);
+
+SimplifiedContour = ps;
+
+end
+

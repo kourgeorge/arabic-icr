@@ -1,0 +1,18 @@
+function [ LetterSequence ] = GetLetSeq( Letter, Pos, Class )
+%GETLETSEQ Summary of this function goes here
+%   This functiona get a letter as an input parameter and looks in the
+%   filesystem for the sequence description of the letter, convert it to a
+%   2 dimentaional array and return it
+
+SamplesFolder = 'C:\Users\kour\Second Degree\Hand Writing recognision\Online OCR\Letters Samples';
+
+FontFile=[SamplesFolder,'\',Letter,'\',Pos,'\',Class,'.m'];
+
+FID = fopen(FontFile);
+LetterSequence = fscanf(FID, '%g,%g', [2,inf]);
+LetterSequence = 
+fclose(FID);
+
+
+end
+

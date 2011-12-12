@@ -1,0 +1,14 @@
+function LabelingArray = CreateLabelingOfCellArray( CellArray )
+%CREATELABELINGOFCELLARRAY Summary of this function goes here
+%   Detailed explanation goes here
+
+len = length(CellArray);
+UniqueCellArray = unique(CellArray);
+LabelingArray=zeros(len,1);
+for i=1:len
+    is
+    ind = find(UniqueCellArray, CellArray(i));
+    LabelingArray(i)=ind;
+end
+
+

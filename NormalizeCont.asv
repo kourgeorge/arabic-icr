@@ -1,0 +1,14 @@
+function [Simcontours] = NormalizeCont(Simcontours)
+
+
+%     MeanXY = mean(Simcontours);
+%     Simcontours = Simcontours - repmat(MeanXY,size(Simcontours,1),1);
+    MaxX = max(Simcontours(:,1));
+    MaxY = max(Simcontours(:,2));
+    MinX = min(Simcontours(:,1));
+    MinY = min(Simcontours(:,2));
+
+    Simcontours(:,1) = Simcontours(:,1)/(MaxX-MinX);
+    Simcontours(:,2) = Simcontours(:,2)/(MaxY-MinY);
+
+end

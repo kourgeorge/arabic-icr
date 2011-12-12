@@ -1,0 +1,2 @@
+1. Should Add UI support for resricted DTW - it is alraeady implemented in the RecognizeWP file.
+2. EmdContXY(X1,X2) is used also (wrongly) to calculate the EMD distance between feature vectours and not ony contours.

@@ -1,0 +1,26 @@
+function [ResAngsOfCont]   = MultiResMSC( cont)%,NumOfRes )
+%UNTITLED Summary of this function goes here
+%   Detailed explanation goes here
+
+
+%DTW Case
+[AngsOfContDTW] = MSC_Circular2(cont); %Good for DTW and less for EMD
+ResAngsOfCont = AngsOfContEMD;
+
+%cont = NormalizeCont(cont);
+%AngsOfCont = MSC_Circular2(cont);
+%AngsOfContEMD = [AngsOfContDTW; AngsOfCont]; 
+%ResAngsOfCont = AngsOfContEMD;
+
+%Emd Case 
+%cont = AverageCont(cont);  %Good for EMD but not for DTW
+%[AngsOfCont] = MSC_Circular(cont); %Good for DTW and less for EMD
+%[AngsOfCont] =  MSCRing(cont); %Good for DTW and less for EMD
+%AngsOfContEMD = [AngsOfContDTW; AngsOfCont]; 
+%ResAngsOfCont = AngsOfContEMD;
+
+
+
+
+end
+
