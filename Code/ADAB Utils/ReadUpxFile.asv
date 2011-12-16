@@ -1,0 +1,23 @@
+function [ SimplifiedWord ] = ReadUpxFile( UpxFilePath )
+%READUPXFILE Summary of this function goes here
+%   [ SimplifiedWord ] =
+%   ReadUpxFile('C:\OCRData\adab_database_v1.0\Data\set_1\upx\1232278024170.upx') 
+%   [ SimplifiedWord ] = ReadUpxFile('C:\OCRData\adab_database_v1.0\Data\set_1\upx\1232015419464.upx')
+
+theStruct = ReadXML(UpxFilePath);
+alternateCild = theStruct.Children(6).Children(2).Children(2).Children(2);
+word = dec2hex(0+alternateCild.Attributes.Value);
+k = SplitWords (word)
+[ num_removed_letters , SimplifiedWord ] = SimplifyWord2( word );
+end
+
+function k = SplitWords (Word)
+cellArray = cell(size(Word,2),1);
+for i=1:size(Word,2)
+    cel = Word(i,:);
+    cellArray = [cellArray;{cel}];
+end
+
+k = find(ismember(Word,'020')==1);
+
+end

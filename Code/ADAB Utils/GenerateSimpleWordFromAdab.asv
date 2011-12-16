@@ -1,0 +1,13 @@
+function [ output_args ] = GenerateSimpleWordFromAdab( input_args )
+%GENERATESIMPLEWORDFROMADAB Summary of this function goes here
+%   Detailed explanation goes here
+
+%read inkml
+%read corresponding upx
+%Generate .m file with the word as its filename
+%if there is more than 1 word generate more than one file
+
+
+
+end
+

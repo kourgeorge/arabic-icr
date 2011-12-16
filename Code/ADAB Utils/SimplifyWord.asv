@@ -1,0 +1,90 @@
+function [ output_word ] = SimplifyWord( input_word )
+%UNTITLED Summary of this function goes here
+%   Detailed explanation goes here
+
+
+parts = regexp(input_word,';','split');
+output_word = simplifyletter (parts(1));
+for i=2:size(parts,2)-1
+    simplifiedLetter = simplifyletter (parts(i));
+    output_word = [output_word,';',simplifiedLetter];
+end
+output_word = [output_word,';'];
+end
+
+function output_letter = simplifyletter (input_letter)
+input_letter = input_letter{1};
+switch input_letter
+    %A
+    case '&#x622'
+        output_letter = '&#x627';
+    case '&#x623'
+        output_letter = '&#x627';
+    case '&#x625'
+        output_letter = '&#x627';
+    case '&#x627'
+        output_letter = '&#x627';
+    case '&#x671'
+        output_letter = '&#x627';
+        return
+    %B
+    case '&#x628'
+        output_letter = '&#x628';
+    case '&#x62a'
+        output_letter = '&#x628';
+    case '&#x62b'
+        output_letter = '&#x628';
+        return
+    %7
+    case '&#x62d'
+        output_letter = '&#x62d';
+    case '&#x62c'
+        output_letter = '&#x62d';
+    case '&#x62e'
+        output_letter = '&#x62d';
+        return
+    %D
+    case '&#x62f'
+        output_letter = '&#x62f';
+    case '&#x630'
+        output_letter = '&#x62f';
+        return
+    %R
+    case '&#x631'
+        output_letter = '&#x631';
+    case '&#x632'
+        output_letter = '&#x631';
+        return
+    %S     
+    case '&#x633'
+        output_letter = '&#x633';
+    case '&#x634'
+        output_letter = '&#x633';
+        return
+    %8     
+    case '&#x635'
+        output_letter = '&#x635';
+    case '&#x636'
+        output_letter = '&#x635';
+        return
+    %6
+    case '&#x637'
+        output_letter = '&#x637';
+    case '&#x638'
+        output_letter = '&#x638';
+        return   
+    %3
+    case '&#x639'
+        output_letter = '&#x639';
+    case '&#x63a'
+        output_letter = '&#x639';
+        return  
+          %3
+    case '&#x639'
+        output_letter = '&#x639';
+    case '&#x63a'
+        output_letter = '&#x639';
+        return  
+        
+end
+end
