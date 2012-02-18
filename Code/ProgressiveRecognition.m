@@ -4,7 +4,7 @@ function [Stat,LastIndexes,Candidates] = ProgressiveRecognition( Alg, Stat, S, L
 %will not create a tree, however we will ty to recognize each letter
 %saperately.
 %   Detailed explanation goes here
-SimplTol = 0.05;
+ST = 0.05;
 [len,m]=size(S);
 if (IsMouseUp==false)    
     if (Stat == 1)
@@ -31,7 +31,7 @@ if (IsMouseUp==false)
 else
     if (Stat>1) % validate that there are prevoius states.    
         sub_S = S(LastIndexes(Stat-1):len,:);
-        simplified = dpsimplify(sub_S,SimplTol)
+        simplified = dpsimplify(sub_S,ST);
         if (length(simplified)>2)%(S is a separate Stat%)
             %New state
             sub_S = S(LastIndexes(Stat-1):len,:);

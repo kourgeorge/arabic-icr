@@ -22,7 +22,7 @@ function varargout = IWR(varargin)
 
 % Edit the above text to modify the response to help IWR
 
-% Last Modified by GUIDE v2.5 09-Sep-2011 19:55:15
+% Last Modified by GUIDE v2.5 05-Nov-2011 09:47:47
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -72,70 +72,6 @@ function varargout = IWR_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-
-% --- Executes on button press in CalcDist2WP.
-function CalcDist2WP_Callback(hObject, eventdata, handles)
-% hObject    handle to CalcDist2WP (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-global WP1Contour;
-global WP2Contour;
-
-if (get(handles.AngularRB,'Value') == get(handles.AngularRB,'Max') && get(handles.DTWRB,'Value') == get(handles.DTWRB,'Max'))
-    Diff = AngularDTWCalcDist( WP1Contour, WP2Contour ) ; 
-end
-
-if (get(handles.ShapeContextRB,'Value') == get(handles.ShapeContextRB,'Max') && get(handles.DTWRB,'Value') == get(handles.DTWRB,'Max'))
-    Diff = ShapeContextDTWCalcDist( WP1Contour, WP2Contour ) ; 
-end
-
-if (get(handles.AngularRB,'Value') == get(handles.AngularRB,'Max') & get(handles.EMDRB,'Value') == get(handles.EMDRB,'Max'))
-    Diff = AngularEMDCalcDist( WP1Contour, WP2Contour ) ; 
-end
-
-if (get(handles.ShapeContextRB,'Value') == get(handles.ShapeContextRB,'Max') & get(handles.EMDRB,'Value') == get(handles.EMDRB,'Max'))
-    Diff = ShapeContextEMDCalcDist( WP1Contour, WP2Contour ) ; 
-end
-
-if (get(handles.ContourRB,'Value') == get(handles.ContourRB,'Max') & get(handles.DTWRB,'Value') == get(handles.DTWRB,'Max'))
-    [p,q,D,Diff,WarpingPath] = DTWContXY(WP1Contour,WP2Contour);
-end
-
-if (get(handles.ContourRB,'Value') == get(handles.ContourRB,'Max') & get(handles.EMDRB,'Value') == get(handles.EMDRB,'Max'))
-    [f,Diff] = EmdContXY(WP1Contour,WP2Contour);
-end
-
-set (handles.Compare2WordPartsRes, 'String', num2str(Diff));
-
-% --- Executes on button press in DrawSample2.
-function DrawSample2_Callback(hObject, eventdata, handles)
-% hObject    handle to DrawSample2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-global points;
-global WP2Contour;
-TestinMouse();
-uiwait;
-
-plot(handles.Word2Axes,points(:,1),points(:,2),'LineWidth',3);
-WP2Contour = points;
-
-return;
-
-% --- Executes on button press in DrawSample1.
-function DrawSample1_Callback(hObject, eventdata, handles)
-% hObject    handle to DrawSample1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-global points;
-global WP1Contour;
-TestinMouse();
-uiwait;
-
-plot(handles.Word1Axes,points(:,1),points(:,2),'LineWidth',3);
-WP1Contour = points;
-
-return;
 
 
 function ClosestEdit_Callback(hObject, eventdata, handles)
@@ -242,17 +178,14 @@ function DrawWordPart_Callback(hObject, eventdata, handles)
 % hObject    handle to DrawWordPart (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global points;
 global InputContour;
 
-TestinMouse();
-uiwait;
+InputContour = TestingMouse();
 
-plot(handles.InputWPAxes,points(:,1),points(:,2),'LineWidth',3);
-InputContour = points;
-.
 %Simplify the contour.
-SimplifiedInputContour = SimplifyContour(InputContour);
+InputContour = SimplifyContour(InputContour);
+
+plot(handles.InputWPAxes,InputContour(:,1),InputContour(:,2),'LineWidth',3);
 
 return;
 
@@ -336,3 +269,14 @@ end
 set(handles.ClosestWPListBox,'String',ClosestWPs);
 set(handles.Status,'String', 'Ready');
 set(handles.Status,'ForegroundColor','green');
+
+
+% --- Executes on button press in ProgressRecognitionButton.
+function ProgressRecognitionButton_Callback(hObject, eventdata, handles)
+% hObject    handle to ProgressRecognitionButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+DataFolder = get(handles.DataFolderEdit,'String');
+Closest = str2num(get(handles.ClosestEdit,'String'));
+clc
+ProgressiveRecognizerPen (DataFolder,Closest);

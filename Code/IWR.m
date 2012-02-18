@@ -278,4 +278,5 @@ function ProgressRecognitionButton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 DataFolder = get(handles.DataFolderEdit,'String');
 Closest = str2num(get(handles.ClosestEdit,'String'));
+clc;
 ProgressiveRecognizerPen (DataFolder,Closest);

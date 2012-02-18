@@ -24,7 +24,7 @@ for i = 1:length(dirlist)
     current_object = dirlist(i);
     Name = current_object.name;
     if (current_object.isdir && ~strcmp(Name,'.')  &&  ~strcmp(Name,'..'))
-        ClosestWPInFolder = RecognizeWPFromFolder( WPContour, [LexiconFolder,'\',Name], FeatureType, MetricType ,NumOfClosest )
+        ClosestWPInFolder = RecognizeWPFromFolder( WPContour, [LexiconFolder,'\',Name], FeatureType, MetricType ,NumOfClosest );
         CandidateWPs=[CandidateWPs ; ClosestWPInFolder];
     end
 end

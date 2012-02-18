@@ -174,10 +174,15 @@ Sequence(:,2) = y_pen;
 
 [len,m] = size(Sequence);
 Alg = {'EMD' 'MSC' 'kdTree'};
-theta=0.1; %0.144
-K = 30;
-SimplTol = 0.05;
-MinLen = 0.4;
+
+% Algorithm parameters
+theta=0.144; %0.144
+K = 20;
+ST = 0.05; %Simplification algorithm tolerance
+MinLen = 0.6;
+MaxSlope = 0.1;
+EnvLength=5;
+
 old_state = Stat;
 if(IsMouseUp==true)
     [Stat ,LastIndexes,Candidates] = ProgressiveRecognition( Alg, Stat, Sequence, LastIndexes, Candidates, theta, IsMouseUp );
@@ -185,23 +190,51 @@ else
     if (rem(len,K)==0)
         if(Stat==1)
             seqLen = SequenceLength(Sequence);
-            simplified  = dpsimplify(Sequence,SimplTol)
+            simplified  = dpsimplify(Sequence,ST);
         else
             sub_s= Sequence(LastIndexes(Stat-1):len,:);
             seqLen = SequenceLength(sub_s);
-            simplified  = dpsimplify(sub_s,SimplTol)
+            simplified  = dpsimplify(sub_s,ST);
         end
+        %Mark every K points
+        plot(findobj('Tag','AXES'),Sequence(len-1:len,1),Sequence(len-1:len,2),'c.-','Tag','SHAPE','LineWidth',3);
         
-        %Try to recognize a letter only if the current stroke is longer than 0.4
-        if (seqLen> MinLen && length(simplified)>2)
+        %Slope calculation
+        start_env= Sequence(len-EnvLength,:);
+        end_env= Sequence(len,:);
+        slope = abs((end_env(2)-start_env(2))/(end_env(1)-start_env(1)));
+        
+        %Try to recognize a letter only if all the following holds: 
+        %1. The current Sub sequence is longer than MinLen
+        %2. The current Sub sequence contains enough information
+        %3. The point environmnt is horizontal
+        if ((slope<MaxSlope && (length(simplified)-1)*seqLen>MinLen) && ~(seqLen> MinLen && length(simplified)>3 && slope<MaxSlope))  %need to make sure this condition is good enough
+            len_simp_str=num2str(length(simplified));
+            seqLen_str=num2str(seqLen);
+            MinLen_str = num2str(MinLen);
+            disp(['WARNING: length(simplified)= ',len_simp_str,'   seqLen = ',seqLen_str,'  >  ',MinLen_str]);            
+        end
+        if ((seqLen> MinLen && length(simplified)>3 && slope<MaxSlope) || (slope<MaxSlope && length(simplified)*seqLen>MinLen))
             [Stat ,LastIndexes,Candidates] = ProgressiveRecognition( Alg, Stat, Sequence, LastIndexes, Candidates, theta, IsMouseUp );
-            %Mark every K steps
-            old_state
-            Stat
-            plot(findobj('Tag','AXES'),Sequence(len-2:len,1),Sequence(len-2:len,2),'g.-','Tag','SHAPE','LineWidth',7);
+            %Mark the points where the ProgressiveRecognition algorithm was performed.
+            plot(findobj('Tag','AXES'),Sequence(len-1:len,1),Sequence(len-1:len,2),'g.-','Tag','SHAPE','LineWidth',7);
             if (old_state < Stat)
-                plot(findobj('Tag','AXES'),Sequence(len-2:len,1),Sequence(len-2:len,2),'r.-','Tag','SHAPE','LineWidth',7);
+                %Mark the points where there were a state transition.
+                plot(findobj('Tag','AXES'),Sequence(len-1:len,1),Sequence(len-1:len,2),'r.-','Tag','SHAPE','LineWidth',7);
             end
+        else
+            %Notify which condition didn't hold.
+            if (seqLen <= MinLen)
+                display('Sub-Sequence length too Short')
+            end
+            if (length(simplified)<=2)
+                display ('Sub-Sequence is too Simple') 
+            end
+            if (slope>=MaxSlope)
+                display ('The point environment is not Horizontal Enough')
+            end
+            display(' ') 
+            display(' ')
         end
     end
 end
@@ -233,16 +266,23 @@ if (old_state < Stat || IsMouseUp==true)
     end
 end
 
+%Output all the candidates.
 if (IsMouseUp==true)
     for i=1:Stat-1
+        if (i==1)
+            startIndex = num2str(0);
+        else
+            startIndex = num2str(LastIndexes(i-1));
+        end
+        endIndex = num2str(LastIndexes(i));
         i_str = num2str(i);
-        disp (['State ',i_str,' candidates:'])
+        disp (['State : ',i_str,',  ',startIndex,' - ',endIndex])
         CurrCan = Candidates{i};
         str = '';
         for j=1:length(CurrCan)
             str = [str,' ',CurrCan{j}];
         end
-        disp(str)
+        disp(['Candidates:  ',str])
     end
 end
 
