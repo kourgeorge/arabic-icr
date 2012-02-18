@@ -174,7 +174,7 @@ Sequence(:,2) = y_pen;
 
 [len,m] = size(Sequence);
 Alg = {'EMD' 'MSC' 'kdTree'};
-theta=0.1; %0.144
+theta=0.144;
 K = 30;
 SimplTol = 0.05;
 MinLen = 0.4;
@@ -196,8 +196,6 @@ else
         if (seqLen> MinLen && length(simplified)>2)
             [Stat ,LastIndexes,Candidates] = ProgressiveRecognition( Alg, Stat, Sequence, LastIndexes, Candidates, theta, IsMouseUp );
             %Mark every K steps
-            old_state
-            Stat
             plot(findobj('Tag','AXES'),Sequence(len-2:len,1),Sequence(len-2:len,2),'g.-','Tag','SHAPE','LineWidth',7);
             if (old_state < Stat)
                 plot(findobj('Tag','AXES'),Sequence(len-2:len,1),Sequence(len-2:len,2),'r.-','Tag','SHAPE','LineWidth',7);
@@ -208,6 +206,7 @@ end
 
 %Handle the Title
 if (old_state < Stat || IsMouseUp==true)
+    
     stat_str= num2str(Stat);
     str = '';
     if (Stat>1)
@@ -223,26 +222,15 @@ if (old_state < Stat || IsMouseUp==true)
             endIndex = num2str(LastIndexes(Stat-1));
             set(findobj('Tag','TEXT'),'String',['[Current State: ' stat_str, ']  ','   Previous State:- ',' Interval: ' , startIndex, ' - ',  endIndex, '   Candidates: ' str]);
         end
-    else
-        CurrCan = Candidates{Stat};
-        for i=1:length(CurrCan)
-            str = [str,'  ',CurrCan{i}];
-        end
-        endIndex = num2str(LastIndexes(Stat));
-        set(findobj('Tag','TEXT'),'String',['[Current State: ', stat_str,']  ',' Interval: 0 - ',  endIndex, ' Candidates: ' str]);
     end
 end
 
 if (IsMouseUp==true)
-    for i=1:Stat-1
-        i_str = num2str(i);
-        disp (['State ',i_str,' candidates:'])
-        CurrCan = Candidates{i};
-        str = '';
-        for j=1:length(CurrCan)
-            str = [str,' ',CurrCan{j}];
+    for i=1:Stat
+        disp (['State',])
+        for j=1:3
+            disp(['The Word:' , WPmap(i)])
         end
-        disp(str)
     end
 end
 

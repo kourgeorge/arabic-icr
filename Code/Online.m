@@ -447,11 +447,11 @@ set(handles.Status,'ForegroundColor','red');
 drawnow();
 
 if (AngularFeature==1)
-    CreateFVFromFolder(WPSeqFolder, WPFeaturesFolder,1);
+    CreateFVFromSanplesFolder(WPSeqFolder, WPFeaturesFolder,1);
 end
 
 if (MSC==1)
-     CreateFVFromFolder(WPSeqFolder, WPFeaturesFolder,2);
+     CreateFVFromSanplesFolder(WPSeqFolder, WPFeaturesFolder,2);
 end
 
 set(handles.Status,'String', 'Ready');

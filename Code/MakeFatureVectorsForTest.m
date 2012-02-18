@@ -10,7 +10,7 @@ myfilter = fspecial('gaussian',[5 5], 0.5);
 if (TypeOfFature == 1)
      for i=1:min(NumOfWPTS,TestSize)
          NextCont = WPTContours{i,1};
-         FaturesValues = NewMultiResMSC(NextCont,2);
+         FaturesValues = MultiResMSC(NextCont);%,2);
          WPTFeaureVectors {i,1} = FaturesValues;
       %   WPTFeaureVectors {i,2} = WPTContours {i,2} ;
      end

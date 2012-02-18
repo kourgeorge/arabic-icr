@@ -10,17 +10,8 @@ res = exist(OutputFVFolder,'dir');
 if (res==0)
     mkdir(OutputFVFolder)
 end
-if (FeatureType==1)
-    TargetFolder = [OutputFVFolder,'\','Angular'];
-    h = waitbar(0,('Generating Angular Feature Vector. Please Wait...'));
-else
-    TargetFolder = [OutputFVFolder,'\','ShapeContext'];
-    h = waitbar(0,('Generating Angular Feature Vector. Please Wait...'));
-end
-res = exist(TargetFolder,'dir');
-if (res==0)
-    mkdir(TargetFolder)
-end
+
+h = waitbar(0,('Generating  Feature Vector. Please Wait...'));
 
 dirlist = dir(WPSeqFolder);
 Num=0;
@@ -34,7 +25,7 @@ for i = 1:DirListLength
     if (IsFile==1 & FileName(LastCharacter)=='m')
         WPSequence = dlmread([WPSeqFolder,'\',FileName]);
         WPTFeaureVector = CreateFeatureVectorFromContour(WPSequence,FeatureType);
-        dlmwrite([TargetFolder,'\',FileName], WPTFeaureVector);
+        dlmwrite([OutputFVFolder,'\',FileName], WPTFeaureVector);
         Num=Num+1;
     end    
     prog = i/DirListLength;

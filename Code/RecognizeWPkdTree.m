@@ -21,7 +21,7 @@ WPWavelet_Projection = COEFF * WPWavelet;
 [index_vals,vector_vals,final_nodes] = kd_knn(kdTree,WPWavelet_Projection',closest,0);
 
 ClosestWPs= [];
-for i=1:closest
+for i=1:length(index_vals)
     ClosestWPs = [ClosestWPs ; WPmap(index_vals(i))];
 end
 
