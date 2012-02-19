@@ -1,4 +1,4 @@
-function [Stat,LastIndexes,Candidates] = ProgressiveRecognition( Alg, root , S, LastIndexes,Candidates ,theta , IsMouseUp )
+function [Stat,LastIndexes,Candidates] = ProgressiveRecognition( Alg, Stat, S, LastIndexes,Candidates ,theta , IsMouseUp )
 %PROGRESSIVERECOGNITION given the current state, the sequence, till now and
 %an array of the LastIndexes indexes in each phase. In the first phase we
 %will not create a tree, however we will ty to recognize each letter

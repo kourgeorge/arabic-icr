@@ -1,10 +1,10 @@
-function [Stat,LastIndexes,Candidates] = ProgressiveRecognition( Alg, root , S, LastIndexes,Candidates ,theta , IsMouseUp )
+function [Stat,LastIndexes,Candidates] = ProgressiveRecognition( Alg, Stat, S, LastIndexes,Candidates ,theta , IsMouseUp )
 %PROGRESSIVERECOGNITION given the current state, the sequence, till now and
 %an array of the LastIndexes indexes in each phase. In the first phase we
 %will not create a tree, however we will ty to recognize each letter
 %saperately.
 %   Detailed explanation goes here
-ST = 0.05;
+SimplTol = 0.05;
 [len,m]=size(S);
 if (IsMouseUp==false)    
     if (Stat == 1)
@@ -31,8 +31,8 @@ if (IsMouseUp==false)
 else
     if (Stat>1) % validate that there are prevoius states.    
         sub_S = S(LastIndexes(Stat-1):len,:);
-        simplified = dpsimplify(sub_S,ST);
-        if (length(simplified)>2)%(S is a separate Stat%)
+        simplified = dpsimplify(sub_S,SimplTol)
+        if (length(simplified)>2 || Stat<3)%(S is a separate Stat%)
             %New state
             sub_S = S(LastIndexes(Stat-1):len,:);
             [C,SumDist,C_Dist]=Calculate_Closest_letters (sub_S,Alg,'MedFin');
@@ -41,24 +41,15 @@ else
             Stat=Stat+1;
         else
             %Refine the last state
-            if (Stat < 3 )
-                sub_S = S;
-                [C,SumDist,C_Dist]=Calculate_Closest_letters (sub_S,Alg,'Ini');
-            else
-                sub_S = S(LastIndexes(Stat-2):len,:);
-                [C,SumDist,C_Dist]=Calculate_Closest_letters (sub_S,Alg,'MedFin');
-            end
-            
+            if (Stat==0)
+            sub_S = S(LastIndexes(Stat-2):len,:);
+            [C,SumDist,C_Dist]=Calculate_Closest_letters (sub_S,Alg,'MedFin');
             Candidates{Stat-1}=C;
             LastIndexes(Stat-1)=len;
-            % Stat=Stat;
+            Stat=Stat;
         end
-    else
-        [C,SumDist,C_Dist]=Calculate_Closest_letters (S,Alg,'Ini');
-        Candidates{Stat}=C;
-        LastIndexes(Stat)=len;
     end
-    
+    %Candidate = [Candidates;CreateCombinations(Candidates)];
 end
 end
 

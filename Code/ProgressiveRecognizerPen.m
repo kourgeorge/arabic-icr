@@ -172,118 +172,201 @@ global LastIndexes Candidates Stat;
 Sequence(:,1) = x_pen;
 Sequence(:,2) = y_pen;
 
-[len,m] = size(Sequence);
+
 Alg = {'EMD' 'MSC' 'kdTree'};
 
 % Algorithm parameters
-theta=0.144; %0.144
-K = 20;
-ST = 0.05; %Simplification algorithm tolerance
-MinLen = 0.6;
-MaxSlope = 0.1;
-EnvLength=5;
+RParams.theta=0.144;
+RParams.K = 20;
+RParams.ST = 0.05; %Simplification algorithm tolerance
+RParams.MinLen = 0.6;
+RParams.MaxSlope = 0.1;
+RParams.PointEnvLength=5;
 
-old_state = Stat;
-if(IsMouseUp==true)
-    [Stat ,LastIndexes,Candidates] = ProgressiveRecognition( Alg, Stat, Sequence, LastIndexes, Candidates, theta, IsMouseUp );
-else
-    if (rem(len,K)==0)
-        if(Stat==1)
-            seqLen = SequenceLength(Sequence);
-            simplified  = dpsimplify(Sequence,ST);
-        else
-            sub_s= Sequence(LastIndexes(Stat-1):len,:);
-            seqLen = SequenceLength(sub_s);
-            simplified  = dpsimplify(sub_s,ST);
-        end
-        %Mark every K points
-        plot(findobj('Tag','AXES'),Sequence(len-1:len,1),Sequence(len-1:len,2),'c.-','Tag','SHAPE','LineWidth',3);
-        
-        %Slope calculation
-        start_env= Sequence(len-EnvLength,:);
-        end_env= Sequence(len,:);
-        slope = abs((end_env(2)-start_env(2))/(end_env(1)-start_env(1)));
-        
-        %Try to recognize a letter only if all the following holds: 
-        %1. The current Sub sequence is longer than MinLen
-        %2. The current Sub sequence contains enough information
-        %3. The point environmnt is horizontal
-        if ((slope<MaxSlope && (length(simplified)-1)*seqLen>MinLen) && ~(seqLen> MinLen && length(simplified)>3 && slope<MaxSlope))  %need to make sure this condition is good enough
-            len_simp_str=num2str(length(simplified));
-            seqLen_str=num2str(seqLen);
-            MinLen_str = num2str(MinLen);
-            disp(['WARNING: length(simplified)= ',len_simp_str,'   seqLen = ',seqLen_str,'  >  ',MinLen_str]);            
-        end
-        if ((seqLen> MinLen && length(simplified)>3 && slope<MaxSlope) || (slope<MaxSlope && length(simplified)*seqLen>MinLen))
-            [Stat ,LastIndexes,Candidates] = ProgressiveRecognition( Alg, Stat, Sequence, LastIndexes, Candidates, theta, IsMouseUp );
-            %Mark the points where the ProgressiveRecognition algorithm was performed.
-            plot(findobj('Tag','AXES'),Sequence(len-1:len,1),Sequence(len-1:len,2),'g.-','Tag','SHAPE','LineWidth',7);
-            if (old_state < Stat)
-                %Mark the points where there were a state transition.
-                plot(findobj('Tag','AXES'),Sequence(len-1:len,1),Sequence(len-1:len,2),'r.-','Tag','SHAPE','LineWidth',7);
-            end
-        else
-            %Notify which condition didn't hold.
-            if (seqLen <= MinLen)
-                display('Sub-Sequence length too Short')
-            end
-            if (length(simplified)<=2)
-                display ('Sub-Sequence is too Simple') 
-            end
-            if (slope>=MaxSlope)
-                display ('The point environment is not Horizontal Enough')
-            end
-            display(' ') 
-            display(' ')
-        end
-    end
-end
+old_state=Stat;
 
-%Handle the Title
+[Stat,LastIndexes,Candidates] = ProcessNewPoint(Alg,RParams,Stat,Sequence,LastIndexes,Candidates,IsMouseUp);
+
+%Update the heading in the Pen Window
 if (old_state < Stat || IsMouseUp==true)
-    stat_str= num2str(Stat);
-    str = '';
-    if (Stat>1)
-        CurrCan = Candidates{Stat-1};
-        for i=1:length(CurrCan)
-            str = [str,'  ',CurrCan{i}];
-        end
-        if (Stat==2)
-            endIndex = num2str(LastIndexes(Stat-1));
-            set(findobj('Tag','TEXT'),'String',['[Current State: ', stat_str,']  ','   Previous State:- ',' Interval: 0 - ',  endIndex, ' Candidates: ' str]);
-        else
-            startIndex = num2str(LastIndexes(Stat-2));
-            endIndex = num2str(LastIndexes(Stat-1));
-            set(findobj('Tag','TEXT'),'String',['[Current State: ' stat_str, ']  ','   Previous State:- ',' Interval: ' , startIndex, ' - ',  endIndex, '   Candidates: ' str]);
-        end
-    else
-        CurrCan = Candidates{Stat};
-        for i=1:length(CurrCan)
-            str = [str,'  ',CurrCan{i}];
-        end
-        endIndex = num2str(LastIndexes(Stat));
-        set(findobj('Tag','TEXT'),'String',['[Current State: ', stat_str,']  ',' Interval: 0 - ',  endIndex, ' Candidates: ' str]);
-    end
+    UpdateHeading(Stat,Candidates,LastIndexes);
 end
 
 %Output all the candidates.
 if (IsMouseUp==true)
-    for i=1:Stat-1
-        if (i==1)
-            startIndex = num2str(0);
+    DisplayCandidates(Candidates,Stat,LastIndexes)
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%     CORE FUNCTIONS    %%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [Stat,LastIndexes,Candidates]=ProcessNewPoint(Alg,RParams,Stat,Sequence,LastIndexes,Candidates,IsMouseUp)
+old_state = Stat;
+[len,m] = size(Sequence);
+if(IsMouseUp==true)
+    [Stat ,LastIndexes,Candidates] = ProgressiveRecognition( Alg, Stat, Sequence, LastIndexes, Candidates, RParams, IsMouseUp );
+else
+    if (rem(len,RParams.K)==0) %Sequence(len) is a candidate point
+        MarkOnSequence('CandidatePoint',Sequence,len);
+        
+        %Calculate Decision Parameters
+        simplified = CalculateSimplifiedSequence (Stat,Sequence,len,LastIndexes,RParams.ST);
+        seqLen = CalculateSequenceLength (Stat,Sequence,len,LastIndexes);
+        slope = CalculateSlope(Sequence,len,RParams.PointEnvLength);
+        
+        CheckAlternativeCondition(seqLen,simplified,slope,RParams.MinLen,RParams.MaxSlope);
+        
+        if (IsCheckPoint(seqLen,simplified,slope,RParams.MinLen,RParams.MaxSlope))
+            MarkOnSequence('CheckPoint',Sequence,len);
+            [Stat ,LastIndexes,Candidates] = ProgressiveRecognition( Alg, Stat, Sequence, LastIndexes, Candidates, RParams, IsMouseUp );
+            if (old_state < Stat)
+                MarkOnSequence('CriticalCP',Sequence,len);
+            end
         else
-            startIndex = num2str(LastIndexes(i-1));
+            %Notify which condition didn't hold.
+            DisplayUnsutisfiedConditions(seqLen,simplified,slope,RParams.MinLen,RParams.MaxSlope);
         end
-        endIndex = num2str(LastIndexes(i));
-        i_str = num2str(i);
-        disp (['State : ',i_str,',  ',startIndex,' - ',endIndex])
-        CurrCan = Candidates{i};
-        str = '';
-        for j=1:length(CurrCan)
-            str = [str,' ',CurrCan{j}];
-        end
-        disp(['Candidates:  ',str])
     end
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%    HELPER FUNCTIONS   %%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function Res = IsCheckPoint(SequenceLength,SimplifiedSequence,Slope,MinLen,MaxSlope)
+%A candidate point is a Checkpoint only if all the below are valid:
+%1. The current Sub sequence is longer than MinLen
+%2. The current Sub sequence contains enough information
+%3. The point environmnt is horizontal
+Res = (SequenceLength> MinLen && length(SimplifiedSequence)>3 && Slope<MaxSlope) || (Slope<MaxSlope && length(SimplifiedSequence)*SequenceLength>MinLen);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [Slope] = CalculateSlope(Sequence,Point,PointEnvLength)
+start_env= Sequence(Point-PointEnvLength,:);
+end_env= Sequence(Point,:);
+Slope = abs((end_env(2)-start_env(2))/(end_env(1)-start_env(1)));
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [SeqLen] = CalculateSequenceLength (Stat,Sequence,Point,LastIndexes)
+if(Stat==1)
+    SeqLen = SequenceLength(Sequence);
+else
+    sub_s= Sequence(LastIndexes(Stat-1):Point,:);
+    SeqLen = SequenceLength(sub_s);
+end
+       
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [Simplified] = CalculateSimplifiedSequence (Stat,Sequence,Point,LastIndexes,ST)
+if(Stat==1)
+    Simplified  = dpsimplify(Sequence,ST);
+else
+    sub_s= Sequence(LastIndexes(Stat-1):Point,:);
+    Simplified  = dpsimplify(sub_s,ST);
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%    PRINTING/TEST FUNCTIONS   %%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+function CheckAlternativeCondition(SequenceLength,SimplifiedSequence,Slope,MinLen,MaxSlope)       
+%for testing only - check when the second condition holds alone
+if ((Slope<MaxSlope && (length(SimplifiedSequence)-1)*SequenceLength>MinLen) && ~(SequenceLength> MinLen && length(SimplifiedSequence)>3 && Slope<MaxSlope)) 
+    len_simp_str=num2str(length(SimplifiedSequence));
+    seqLen_str=num2str(SequenceLength);
+    MinLen_str = num2str(MinLen);
+    disp(['WARNING: length(simplified)= ',len_simp_str,'   seqLen = ',seqLen_str,'  >  ',MinLen_str]);
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function DisplayUnsutisfiedConditions(seqLen,simplified,slope,MinLen,MaxSlope)
+if (seqLen <= MinLen)
+    display('Sub-Sequence length too Short')
+end
+if (length(simplified)<=2)
+    display ('Sub-Sequence is too Simple')
+end
+if (slope>=MaxSlope)
+    display ('The point environment is not Horizontal Enough')
+end
+display(' ')
+display(' ')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+function MarkOnSequence(Type,Sequence,Point)
+switch Type
+    case 'CandidatePoint',
+        plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'c.-','Tag','SHAPE','LineWidth',3);
+        return;
+    case 'CheckPoint'
+        plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'g.-','Tag','SHAPE','LineWidth',7);
+        return;
+    case 'CriticalCP'
+        plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'r.-','Tag','SHAPE','LineWidth',7);
+        return;
+    otherwise
+        return;
+end   
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function UpdateHeading (Stat,Candidates,LastIndexes)
+stat_str= num2str(Stat);
+str = '';
+if (Stat>1)
+    CurrCan = Candidates{Stat-1};
+    for i=1:length(CurrCan)
+        str = [str,'  ',CurrCan{i}];
+    end
+    if (Stat==2)
+        endIndex = num2str(LastIndexes(Stat-1));
+        set(findobj('Tag','TEXT'),'String',['[Current State: ', stat_str,']  ','   Previous State:- ',' Interval: 0 - ',  endIndex, ' Candidates: ' str]);
+    else
+        startIndex = num2str(LastIndexes(Stat-2));
+        endIndex = num2str(LastIndexes(Stat-1));
+        set(findobj('Tag','TEXT'),'String',['[Current State: ' stat_str, ']  ','   Previous State:- ',' Interval: ' , startIndex, ' - ',  endIndex, '   Candidates: ' str]);
+    end
+else
+    CurrCan = Candidates{Stat};
+    for i=1:length(CurrCan)
+        str = [str,'  ',CurrCan{i}];
+    end
+    endIndex = num2str(LastIndexes(Stat));
+    set(findobj('Tag','TEXT'),'String',['[Current State: ', stat_str,']  ',' Interval: 0 - ',  endIndex, ' Candidates: ' str]);
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function DisplayCandidates (Candidates,FinalState,LastIndexes)
+for i=1:FinalState-1
+    if (i==1)
+        startIndex = num2str(0);
+    else
+        startIndex = num2str(LastIndexes(i-1));
+    end
+    endIndex = num2str(LastIndexes(i));
+    i_str = num2str(i);
+    disp (['State : ',i_str,',  ',startIndex,' - ',endIndex])
+    CurrCan = Candidates{i};
+    str = '';
+    for j=1:length(CurrCan)
+        str = [str,' ',CurrCan{j}];
+    end
+    disp(['Candidates:  ',str])
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%     EOF      %%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

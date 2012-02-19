@@ -1,10 +1,10 @@
-function [Stat,LastIndexes,Candidates] = ProgressiveRecognition( Alg, Stat, S, LastIndexes,Candidates ,theta , IsMouseUp )
+function [Stat,LastIndexes,Candidates] = ProgressiveRecognition( Alg, Stat, S, LastIndexes,Candidates ,RParams , IsMouseUp )
 %PROGRESSIVERECOGNITION given the current state, the sequence, till now and
 %an array of the LastIndexes indexes in each phase. In the first phase we
 %will not create a tree, however we will ty to recognize each letter
 %saperately.
 %   Detailed explanation goes here
-ST = 0.05;
+RParams.ST = 0.05;
 [len,m]=size(S);
 if (IsMouseUp==false)    
     if (Stat == 1)
@@ -17,8 +17,8 @@ if (IsMouseUp==false)
         [C,SumDist,C_Dist]=Calculate_Closest_letters (sub_S,Alg,'MedFin');
     end
     C_Dist
-    thetasumdist = theta*SumDist
-    if (C_Dist<(theta*SumDist))    %Move to the next
+    thetasumdist = RParams.theta*SumDist
+    if (C_Dist<(RParams.theta*SumDist))    %Move to the next
         Candidates{Stat}=C;
         LastIndexes(Stat)=len;
         Stat=Stat+1;
@@ -31,7 +31,7 @@ if (IsMouseUp==false)
 else
     if (Stat>1) % validate that there are prevoius states.    
         sub_S = S(LastIndexes(Stat-1):len,:);
-        simplified = dpsimplify(sub_S,ST);
+        simplified = dpsimplify(sub_S,RParams.ST);
         if (length(simplified)>2)%(S is a separate Stat%)
             %New state
             sub_S = S(LastIndexes(Stat-1):len,:);
@@ -57,6 +57,7 @@ else
         [C,SumDist,C_Dist]=Calculate_Closest_letters (S,Alg,'Ini');
         Candidates{Stat}=C;
         LastIndexes(Stat)=len;
+        Stat=Stat+1;
     end
     
 end
