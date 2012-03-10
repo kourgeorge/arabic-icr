@@ -1,4 +1,4 @@
-function RecognitionResults = RecognizeSequence(Sequence , Alg, IsIni)
+function RecognitionResults = RecognizeSequence(Sequence , Alg, Position)
 %RECOGNIZESEQUENCE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -17,14 +17,8 @@ else
     FeatureName = 'ShapeContext';
 end
 
-if (IsIni==true)
-    Letters = 'Ini';
-else
-    Letters = 'MedFin';
-end
-
 if (strcmp(Alg(3),'kdTree'))
-    kdTreeFilePath = ['C:\OCRData\kdTree',Letters,'\',FeatureName];
+    kdTreeFilePath = ['C:\OCRData\kdTree',Position,'\',FeatureName];
     SumDist=CalculateSumDistanceFromCenters_kdTree( Sequence, kdTreeFilePath, FeatureType );
     C = RecognizeWPkdTree( Sequence, kdTreeFilePath, FeatureType, 3 );
     %C_Dist =  CalculateSumDistanceCandidatesFromCenters_kdTree( Sequence, kdTreeFilePath, FeatureType ,C);
