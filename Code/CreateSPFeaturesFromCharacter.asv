@@ -1,0 +1,8 @@
+function [ Slope ] = CreateSPFeaturesFromCharacter( CharacterSequence, PointEnvLength ,)
+%CREATESPFROMLETTER Summary of this function goes here
+%   LetterSequence = dlmread(['C:\OCRData\GeneratedWordsMed\sample2\_3_.m']);
+
+len = length(CharacterSequence);
+for i=1:lenn
+Slope = CalculateSlope(CharacterSequence,len,PointEnvLength);
+

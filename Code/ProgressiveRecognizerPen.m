@@ -73,9 +73,7 @@ y_pen = [];
 himage = findobj('tag','PEN');
 
 %Initialize parameters for the progressive recognition algorithm
-RecState.LCCPI=0; % LastCriticalCheckPointIndex, the corrent root
-RecState.CriticalCPs=[]; %Each cell contains the Candidates of the interval from the last CP and the last Point
-RecState.CandidateCP=[]; %Holds the first candidate to be a Critical CP after the LCCP
+RecState = InitializeRecState(RecState);
 
 % #########################################################################
 % #########################################################################
@@ -180,15 +178,15 @@ Sequence(:,1) = x_pen;
 Sequence(:,2) = y_pen;
 
 
-Alg = {'EMD' 'MSC' 'kdTree'};
+Alg = {'EMD' 'ShapeContext' 'kdTree'};
 
 % Algorithm parameters
 RecParams.theta=0.144;
-RecParams.K = 20;
-RecParams.ST = 0.05; %Simplification algorithm tolerance
+RecParams.K = 10;
+RecParams.ST = 0.03; %Simplification algorithm tolerance
 RecParams.MinLen = 0.4;
-RecParams.MaxSlope = 0.3;
-RecParams.PointEnvLength=5;
+RecParams.MaxSlope = 0.5;
+RecParams.PointEnvLength=3;
 
 Old_LCCPI = RecState.LCCPI;
 
@@ -208,36 +206,31 @@ end
 %%%%%%%%%%%%%%%%%%%   CORE FUNCTIONS   %%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function RecState=ProcessNewPoint(Alg,RecParams,RecState,Sequence,IsMouseUp)
-CurrPoint = size(Sequence,1);
+CurrPoint = length(Sequence);
 if(IsMouseUp==true)
     if (RecState.LCCPI == 0)
         if (~isempty(RecState.CandidateCP))
             [IsMerged,MergedPoint] = TryToMerge(Alg,Sequence,1,RecState.CandidateCP,CurrPoint);
             if (IsMerged)
                 %[7] - CP(merged - old CP and the remainder)
-                RecState = AddCriticalPoint(RecState,MergedPoint);
+                RecState = AddCriticalPoint(RecState,Sequence,MergedPoint);
             else
-                %[5]
+                %[5]- CP ->CP (of MU) => Ini, Fin || Iso
                 Option1 = CreateOptionDouble(Alg,Sequence,1,RecState.CandidateCP.Point,'Ini',RecState.CandidateCP.Point,CurrPoint,'Fin');
                 Option2 = CreateOptionSingle(Alg,Sequence,1,CurrPoint,'Iso');
                 BO = BetterOption(Option1, Option2);
                 if (BO==1)
                     %Add 2 Critical Points 'Ini','Fin'
-                    RecState = AddCriticalPoint(RecState,Option1.FirstPoint);
-                    MarkOnSequence('CriticalCP',Sequence,Option1.FirstPoint.Point);
-                    RecState = AddCriticalPoint(RecState,Option1.SecondPoint);
-                    MarkOnSequence('CriticalCP',Sequence,Option1.SecondPoint.Point);
+                    RecState = AddCriticalPoint(RecState,Sequence,Option1.FirstPoint);
+                    RecState = AddCriticalPoint(RecState,Sequence,Option1.SecondPoint);
                 else
                     %Add 1 Critical Point 'Iso'
-                    RecState = AddCriticalPoint(RecState,Option2.FirstPoint);
-                    MarkOnSequence('CriticalCP',Sequence,Option2.FirstPoint.Point);
+                    RecState = AddCriticalPoint(RecState,Sequence,Option2.FirstPoint);
                 end
             end
         else
-            %[6]
-            SubSeq = Sequence;
-            LetterPos = 'Iso';
-            RecState = RecognizeAndAddCriticalPoint(Alg,RecState,SubSeq,CurrPoint,LetterPos);
+            %[6]- CP(MU) => Iso
+            RecState = RecognizeAndAddCriticalPoint(Alg,Sequence,RecState,1,CurrPoint,'Iso');
         end
     else %not the first letter
         if (~isempty(RecState.CandidateCP))
@@ -245,29 +238,30 @@ if(IsMouseUp==true)
             [IsMerged,MergedPoint] = TryToMerge(Alg,Sequence,LCCP.Point,RecState.CandidateCP,CurrPoint);
             if (IsMerged)
                 %[3]Critical CP -> CP(merged - old CP and the remainder)                
-                RecState = AddCriticalPoint(RecState,MergedPoint);
-                MarkOnSequence('CriticalCP',Sequence,MergedPoint.Point);
+                RecState = AddCriticalPoint(RecState,Sequence,MergedPoint);
                 %Reset the Candidate
                 RecState.CandidateCP = [];
             else
-                %[1]Critical CP -> CP -> CP (of MU)
+                %[1] - Critical CP -> CP -> CP (of MU)
                 LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
                 Option1 = CreateOptionDouble(Alg,Sequence,LCCPP,RecState.CandidateCP.Point,'Med',RecState.CandidateCP.Point,CurrPoint,'Fin');
                 Option2 = CreateOptionSingle(Alg,Sequence,LCCPP,CurrPoint,'Fin');
                 BO = BetterOption(Option1, Option2);
                 if (BO==1)
                     %Add 2 Critical Points 'Med','Fin'
-                    RecState = AddCriticalPoint(RecState,Option1.FirstPoint);
-                    MarkOnSequence('CriticalCP',Sequence,Option1.FirstPoint.Point);
-                    RecState = AddCriticalPoint(RecState,Option1.SecondPoint);
-                    MarkOnSequence('CriticalCP',Sequence,Option1.SecondPoint.Point);
+                    RecState = AddCriticalPoint(RecState,Sequence,Option1.FirstPoint);
+                    RecState = AddCriticalPoint(RecState,Sequence,Option1.SecondPoint);
+
                 else
-                    RecState = AddCriticalPoint(RecState,Option2.FirstPoint);
-                    MarkOnSequence('CriticalCP',Sequence,Option2.FirstPoint.Point);
+                    RecState = AddCriticalPoint(RecState,Sequence,Option2.FirstPoint);
                 end
             end
         else
-            BLCCP = RecState.CriticalCPs(RecState.LCCPI-1);
+            if (RecState.LCCPI==1)
+                BLCCP.Point = 1;
+            else
+                BLCCP = RecState.CriticalCPs(RecState.LCCPI-1);
+            end
             LCCP = RecState.CriticalCPs(RecState.LCCPI);
             [IsMerged,MergedPoint] = TryToMerge(Alg,Sequence,BLCCP.Point,LCCP,CurrPoint);
             if (IsMerged)
@@ -277,14 +271,10 @@ if(IsMouseUp==true)
                 RecState.LCCPI = RecState.LCCPI-1;
                 RecState.CriticalCPs = RecState.CriticalCPs(1:RecState.LCCPI);
                 %Add the new merged critical CheckPoint
-                RecState = AddCriticalPoint(RecState,MergedPoint);
-                MarkOnSequence('CriticalCP',Sequence,MergedPoint.Point);
+                RecState = AddCriticalPoint(RecState,Sequence,MergedPoint);
             else
                 %[2] - Critical CP -> CP(MU)
-                SubSeq = Sequence(LCCP.Point:CurrPoint,:);
-                LetterPos = 'Fin';
-                RecState = RecognizeAndAddCriticalPoint(Alg,RecState,SubSeq,CurrPoint,LetterPos);
-                MarkOnSequence('CriticalCP',Sequence,CurrPoint);
+                RecState = RecognizeAndAddCriticalPoint(Alg,Sequence,RecState,LCCP.Point,CurrPoint,'Fin');
             end
         end
     end
@@ -301,13 +291,10 @@ else    %Mouse not up
         
         % set LCCPP,SubSeq
         if ( RecState.LCCPI == 0)
-            LCCPP = 0;
-            SubSeq = Sequence;
+            LCCPP = 1;
             LetterPosition = 'Ini';
         else
-            LCCP = RecState.CriticalCPs(RecState.LCCPI);
-            LCCPP = LCCP.Point;
-            SubSeq= Sequence(LCCPP:CurrPoint,:);
+            LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
             LetterPosition = 'Med';
         end
         
@@ -317,36 +304,34 @@ else    %Mouse not up
             if (size(Simplified,1)>2)
                 MoreInfo = true;
             else
+                %Change the Candidate to be the last one in the same line -
+                %Code under test - if OK should be moved under IsCheckPoint test
+                if (rem(CurrPoint-RecState.CandidateCP.Point,RecParams.K)==0 && slope<RecParams.MaxSlope)
+                    MarkOnSequence('CandidatePoint',Sequence,RecState.CandidateCP.Point);
+                    NewCandidatePoint = CreateCheckPoint (Alg,Sequence,LCCPP,CurrPoint,LetterPosition);
+                    RecState.CandidateCP = NewCandidatePoint;
+                    MarkOnSequence('CheckPoint',Sequence,NewCandidatePoint.Point);
+                end
                 MoreInfo = false;
             end
         else
             MoreInfo = true;
         end
-        
-        
-        if (IsCheckPoint(seqLen,simplified,slope,RecParams) && Sequence(CurrPoint,1)<Sequence(CurrPoint-1,1) && MoreInfo)
+        %The following should hold
+        % 1. IsCheckPoint should return true
+        % 2. Contains more information from the candidate (if exist)
+        if (IsCheckPoint(Sequence,CurrPoint,simplified,slope,RecParams) && MoreInfo)
             MarkOnSequence('CheckPoint',Sequence,CurrPoint);
             
-            RecognitionResults = RecognizeSequence(SubSeq , Alg, LetterPosition);
+            NewCheckPoint = CreateCheckPoint (Alg,Sequence,LCCPP,CurrPoint,LetterPosition);
             if (isempty(RecState.CandidateCP))
-                RecState.CandidateCP.Candidates = RecognitionResults;
-                RecState.CandidateCP.Point = CurrPoint;
+                RecState.CandidateCP = NewCheckPoint;
             else
-                currCP.Candidates=RecognitionResults;
-                currCP.Point = CurrPoint;
-                SCP = BetterCP (RecState.CandidateCP,currCP); %SCP - Selected CheckPoint
-                RecState.CriticalCPs = [RecState.CriticalCPs;SCP];
-                RecState.LCCPI = RecState.LCCPI + 1;
-                MarkOnSequence('CriticalCP',Sequence,SCP.Point);
+                SCP = BetterCP (RecState.CandidateCP,NewCheckPoint); %SCP - Selected CheckPoint
+                RecState = AddCriticalPoint(RecState,Sequence,SCP);
                 if (SCP.Point<CurrPoint)
-                    %If the Old Candidate have been selected New candidate is from the new critical CP.
-                    LCCP = RecState.CriticalCPs(RecState.LCCPI);
-                    LCCPP = LCCP.Point;
-                    SubSeq= Sequence(LCCPP:CurrPoint,:);
-                    LetterPosition = 'Med';
-                    currCP.Candidates = RecognizeSequence(SubSeq , Alg, LetterPosition);
-                    currCP.Point = CurrPoint;
-                    RecState.CandidateCP = currCP;
+                    LCCPP = RecState.CandidateCP.Point;
+                    RecState.CandidateCP =  CreateCheckPoint (Alg,Sequence,LCCPP,CurrPoint,'Med');
                 else
                     RecState.CandidateCP = [];
                 end
@@ -362,10 +347,19 @@ end
 %%%%%%%%%%%%%%%%%    HELPER FUNCTIONS   %%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+function RecState = InitializeRecState(RecState);
+
+RecState.LCCPI=0; % LastCriticalCheckPointIndex, the corrent root
+RecState.CriticalCPs=[]; %Each cell contains the Candidates of the interval from the last CP and the last Point
+RecState.CandidateCP=[]; %Holds the first candidate to be a Critical CP after the LCCP
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function [IsMerged,MergedPoint] = TryToMerge(Alg,Sequence,LastCriticalPoint,Candidate,LastPoint)
 MergedPoint.Point = LastPoint;
 SubSeq =Sequence(LastCriticalPoint:LastPoint,:);
-if (LastCriticalPoint==0)
+if (LastCriticalPoint==1)
     RecognitionResults = RecognizeSequence(SubSeq , Alg, 'Iso');
 else
     RecognitionResults = RecognizeSequence(SubSeq , Alg, 'Fin');
@@ -427,17 +421,16 @@ CheckPoint.Candidates = RecognitionResults;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function RecState = RecognizeAndAddCriticalPoint(Alg,RecState,SubSeq,CurrPoint,LetterPos)
-RecognitionResults = RecognizeSequence(SubSeq, Alg, LetterPos);
-WarpedPoint.Candidates=RecognitionResults;
-WarpedPoint.Point = CurrPoint;
-RecState = AddCriticalPoint(RecState,WarpedPoint);
+function RecState = RecognizeAndAddCriticalPoint(Alg,Sequence,RecState,StartPoint,EndPoint,LetterPos)
+WarpedPoint= CreateCheckPoint (Alg,Sequence,StartPoint,EndPoint,LetterPos);
+RecState = AddCriticalPoint(RecState,Sequence,WarpedPoint);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function RecState = AddCriticalPoint(RecState,WrappedPoint)
+function RecState = AddCriticalPoint(RecState,Sequence,WrappedPoint)
 RecState.CriticalCPs = [RecState.CriticalCPs;WrappedPoint];
 RecState.LCCPI = RecState.LCCPI + 1;
+MarkOnSequence('CriticalCP',Sequence,WrappedPoint.Point);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -461,25 +454,17 @@ Avg = sum/NumCandidates;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function Res = IsCheckPoint(SequenceLength,SimplifiedSequence,Slope,RecParams)
+function Res = IsCheckPoint(Sequence,CurrPoint,SimplifiedSequence,Slope,RecParams)
 %A candidate point is a Checkpoint only if all the below are valid:
-%1. The current Sub sequence is longer than MinLen
-%2. The current Sub sequence contains enough information
+%1. The current Sub sequence contains enough information
+%2. Directional - > going "forward" in x axes
 %3. The point environmnt is horizontal
-MinLen=RecParams.MinLen;
 MaxSlope=RecParams.MaxSlope;
-Res = (SequenceLength> MinLen && length(SimplifiedSequence)>3 && Slope<MaxSlope) || (Slope<MaxSlope && length(SimplifiedSequence)*SequenceLength>MinLen);
-
+Res = (length(SimplifiedSequence)>2 && Slope<MaxSlope && Sequence(CurrPoint,1)<Sequence(CurrPoint-1,1));
+Res = Res && SPQuerySVM('C:\OCRData\Segmentation\SVM\SVMStruct',Slope);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [Slope] = CalculateSlope(Sequence,CurrPoint,PointEnvLength)
-start_env= Sequence(CurrPoint-PointEnvLength,:);
-end_env= Sequence(CurrPoint,:);
-Slope = abs((end_env(2)-start_env(2))/-(end_env(1)-start_env(1))); %Arabic is written right to left
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [SeqLen] = CalculateSequenceLength (Sequence,CurrPoint,RecState)
 LCCPI=RecState.LCCPI;
@@ -540,7 +525,7 @@ display(' ')
 function MarkOnSequence(Type,Sequence,Point)
 switch Type
     case 'CandidatePoint',
-        plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'c.-','Tag','SHAPE','LineWidth',7);
+        plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'c.-','Tag','SHAPE','LineWidth',10);
         return;
     case 'CheckPoint'
         plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'g.-','Tag','SHAPE','LineWidth',10);

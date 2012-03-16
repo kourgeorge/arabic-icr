@@ -8,9 +8,9 @@ clc;
 close all;
 
 FeatureName = 'Angular';
-FeatureName = 'ShapeContext';
+%FeatureName = 'ShapeContext';
 
-ActualWaveletFolder = ['C:\OCRData\Wavelet\',FeatureName];
+ActualWaveletFolder = ['C:\OCRData\WaveletMed\',FeatureName];
 WaveletMatrix=[];
 WPmap={};
 sampledirlist = dir(ActualWaveletFolder);

@@ -1,0 +1,7 @@
+function [ Slope ] = CreateSPFromLetter( LetterSequence, PointEnvLength )
+%CREATESPFROMLETTER Summary of this function goes here
+%   LetterSequence = dlmread(['C:\OCRData\GeneratedWordsMed\sample2\_3_.m']);
+
+len = lebgth(LetterSequence);
+Slope = CalculateSlope(Sequence,len,PointEnvLength);
+

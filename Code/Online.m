@@ -22,7 +22,7 @@ function varargout = Online(varargin)
 
 % Edit the above text to modify the response to help Online
 
-% Last Modified by GUIDE v2.5 05-Nov-2011 16:47:38
+% Last Modified by GUIDE v2.5 16-Mar-2012 15:42:47
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -725,3 +725,37 @@ directory_name = uigetdir(start_path);
 if ~(directory_name==0)
     set(handles.LSHFileEdit,'String',directory_name);
 end
+
+
+
+function SVMStructFileEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to SVMStructFileEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of SVMStructFileEdit as text
+%        str2double(get(hObject,'String')) returns contents of SVMStructFileEdit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function SVMStructFileEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to SVMStructFileEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in GenerateSVMStruct.
+function GenerateSVMStruct_Callback(hObject, eventdata, handles)
+% hObject    handle to GenerateSVMStruct (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+SVMPath = get(handles.SVMStructFileEdit, 'String');
+CharacterFolder = get(handles.WPSeqFolderEdit, 'String');
+GenerateSP_SVMStructFromFolder( CharacterFolder,SVMPath );
