@@ -144,19 +144,19 @@ if (get(handles.ShapeContextRB2,'Value') == get(handles.ShapeContextRB2,'Max') &
     Candidates = RecognizeWP(InputContour, WPFeaturesFolder, 'ShapeContext', 'DTW' ,Closest );
 end
 
-if (get(handles.AngularRB2,'Value') == get(handles.AngularRB2,'Max') & get(handles.EMDRB2,'Value') == get(handles.EMDRB2,'Max'))
+if (get(handles.AngularRB2,'Value') == get(handles.AngularRB2,'Max') && get(handles.EMDRB2,'Value') == get(handles.EMDRB2,'Max'))
     Candidates = RecognizeWP(InputContour, WPFeaturesFolder, 'Angular', 'App_EMD' ,Closest );
 end
 
-if (get(handles.ShapeContextRB2,'Value') == get(handles.ShapeContextRB2,'Max') & get(handles.EMDRB2,'Value') == get(handles.EMDRB2,'Max'))
+if (get(handles.ShapeContextRB2,'Value') == get(handles.ShapeContextRB2,'Max') && get(handles.EMDRB2,'Value') == get(handles.EMDRB2,'Max'))
     Candidates = RecognizeWP(InputContour, WPFeaturesFolder, 'ShapeContext', 'App_EMD' ,Closest );
 end
 
-if (get(handles.ContourRB2,'Value') == get(handles.ContourRB2,'Max') & get(handles.DTWRB2,'Value') == get(handles.DTWRB2,'Max'))
+if (get(handles.ContourRB2,'Value') == get(handles.ContourRB2,'Max') && get(handles.DTWRB2,'Value') == get(handles.DTWRB2,'Max'))
     Candidates = RecognizeWP(InputContour, WPSeqFolder , 'Contour', 'DTW' ,Closest );
 end
 
-if (get(handles.ContourRB2,'Value') == get(handles.ContourRB2,'Max') & get(handles.EMDRB2,'Value') == get(handles.EMDRB2,'Max'))
+if (get(handles.ContourRB2,'Value') == get(handles.ContourRB2,'Max') && get(handles.EMDRB2,'Value') == get(handles.EMDRB2,'Max'))
     Candidates = RecognizeWP(InputContour, WPSeqFolder , 'Contour', 'App_EMD' ,Closest );
 end
 

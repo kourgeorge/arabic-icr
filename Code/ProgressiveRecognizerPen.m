@@ -178,15 +178,15 @@ Sequence(:,1) = x_pen;
 Sequence(:,2) = y_pen;
 
 
-Alg = {'EMD' 'ShapeContext' 'kdTree'};
+Alg = {'EMD' 'MSC' 'kdTree'};
 
 % Algorithm parameters
-RecParams.theta=0.144;
+RecParams.theta=0.2;
 RecParams.K = 10;
 RecParams.ST = 0.03; %Simplification algorithm tolerance
 RecParams.MinLen = 0.4;
 RecParams.MaxSlope = 0.5;
-RecParams.PointEnvLength=3;
+RecParams.PointEnvLength=2;
 
 Old_LCCPI = RecState.LCCPI;
 
@@ -264,10 +264,11 @@ if(IsMouseUp==true)
             end
             LCCP = RecState.CriticalCPs(RecState.LCCPI);
             [IsMerged,MergedPoint] = TryToMerge(Alg,Sequence,BLCCP.Point,LCCP,CurrPoint);
+            
             if (IsMerged)
                 %[4]Critical CP -> New Critical CP(merged with remainder)
                 %Remove the previous critical CP
-                MarkOnSequence('CandidateCP',Sequence,LCCP.Point);                
+                MarkOnSequence('CandidatePoint',Sequence,LCCP.Point);                 
                 RecState.LCCPI = RecState.LCCPI-1;
                 RecState.CriticalCPs = RecState.CriticalCPs(1:RecState.LCCPI);
                 %Add the new merged critical CheckPoint
@@ -284,8 +285,8 @@ else    %Mouse not up
         
         %Calculate Decision Parameters
         simplified = CalculateSimplifiedSequence (Sequence,CurrPoint,RecState,RecParams.ST);
-        seqLen = CalculateSequenceLength (Sequence,CurrPoint,RecState);
-        slope = CalculateSlope(Sequence,CurrPoint,RecParams.PointEnvLength);
+        %seqLen = CalculateSequenceLength (Sequence,CurrPoint,RecState);
+        slope = CalculateSlope(Sequence,CurrPoint-RecParams.PointEnvLength,CurrPoint);
         
         %CheckAlternativeCondition(seqLen,simplified,slope,RecParams.MinLen,RecParams.MaxSlope);
         
@@ -301,29 +302,34 @@ else    %Mouse not up
         if (~isempty(RecState.CandidateCP))
             sub_s= Sequence(RecState.CandidateCP.Point:CurrPoint,:);
             Simplified  = dpsimplify(sub_s,RecParams.ST);
-            if (size(Simplified,1)>2)
-                MoreInfo = true;
-            else
+            size(Simplified,1)
+            if (size(Simplified,1)<=2 && IsCheckPoint(Sequence,CurrPoint,simplified,slope,RecParams) && CalculateSlope(Simplified,1,2)<RecParams.MaxSlope) %&& RecState.CandidateCP.Data==1)
                 %Change the Candidate to be the last one in the same line -
-                %Code under test - if OK should be moved under IsCheckPoint test
-                if (rem(CurrPoint-RecState.CandidateCP.Point,RecParams.K)==0 && slope<RecParams.MaxSlope)
-                    MarkOnSequence('CandidatePoint',Sequence,RecState.CandidateCP.Point);
-                    NewCandidatePoint = CreateCheckPoint (Alg,Sequence,LCCPP,CurrPoint,LetterPosition);
-                    RecState.CandidateCP = NewCandidatePoint;
-                    MarkOnSequence('CheckPoint',Sequence,NewCandidatePoint.Point);
-                end
-                MoreInfo = false;
+                %Code under test - if OK should be moved under IsCheckPoint
+                %test
+                MarkOnSequence('CandidatePoint',Sequence,RecState.CandidateCP.Point);
+                NewCandidatePoint = CreateCheckPoint (Alg,Sequence,LCCPP,CurrPoint,LetterPosition);
+                RecState.CandidateCP = NewCandidatePoint;
+                RecState.CandidateCP.Data = 2; %Means its the second point in the segmentation interval
+                MarkOnSequence('CheckPoint',Sequence,NewCandidatePoint.Point);
+                return;
             end
-        else
-            MoreInfo = true;
         end
         %The following should hold
         % 1. IsCheckPoint should return true
         % 2. Contains more information from the candidate (if exist)
-        if (IsCheckPoint(Sequence,CurrPoint,simplified,slope,RecParams) && MoreInfo)
+
+        if (IsCheckPoint(Sequence,CurrPoint,simplified,slope,RecParams))
+            NewCheckPoint = CreateCheckPoint(Alg,Sequence,LCCPP,CurrPoint,LetterPosition);
+%             [NewCheckPoint,SumDist,CDist] = CreateCheckPoint2(Alg,Sequence,LCCPP,CurrPoint,LetterPosition);
+%             SumDist*RecParams.theta
+%             if (SumDist*RecParams.theta<CDist)
+%                 return;
+%             end
+%             
             MarkOnSequence('CheckPoint',Sequence,CurrPoint);
             
-            NewCheckPoint = CreateCheckPoint (Alg,Sequence,LCCPP,CurrPoint,LetterPosition);
+            %NewCheckPoint = CreateCheckPoint (Alg,Sequence,LCCPP,CurrPoint,LetterPosition);
             if (isempty(RecState.CandidateCP))
                 RecState.CandidateCP = NewCheckPoint;
             else
@@ -347,7 +353,7 @@ end
 %%%%%%%%%%%%%%%%%    HELPER FUNCTIONS   %%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function RecState = InitializeRecState(RecState);
+function RecState = InitializeRecState(RecState)
 
 RecState.LCCPI=0; % LastCriticalCheckPointIndex, the corrent root
 RecState.CriticalCPs=[]; %Each cell contains the Candidates of the interval from the last CP and the last Point
@@ -365,6 +371,7 @@ else
     RecognitionResults = RecognizeSequence(SubSeq , Alg, 'Fin');
 end
 MergedPoint.Candidates = RecognitionResults;
+MergedPoint.Data = 1;
 BCP = BetterCP (Candidate,MergedPoint);
 if (BCP.Point==MergedPoint.Point)
     IsMerged = true;
@@ -418,6 +425,20 @@ SubSeq = Sequence(StartPoint:EndPoint,:);
 RecognitionResults = RecognizeSequence(SubSeq , Alg, Position);
 CheckPoint.Point = EndPoint;
 CheckPoint.Candidates = RecognitionResults;
+%Additional information
+CheckPoint.Data = 1;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [CheckPoint,SumDist,CDist] = CreateCheckPoint2 (Alg,Sequence,StartPoint,EndPoint,Position)
+SubSeq = Sequence(StartPoint:EndPoint,:);
+[RecognitionResults,SumDist] = RecognizeSequence(SubSeq , Alg, Position);
+CheckPoint.Point = EndPoint;
+CheckPoint.Candidates = RecognitionResults;
+CDist = 0;
+for i=1:3
+    CDist=CDist+RecognitionResults{i,2};
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -445,12 +466,12 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function Avg = CalculateAvgCandidatesDistane (CandidateCP)
-sum=0;
 NumCandidates = size(CandidateCP.Candidates,1);
+arr = [];
 for k=1:NumCandidates
-    sum = sum + CandidateCP.Candidates{k,2};
+    arr = [arr;CandidateCP.Candidates{k,2}];
 end
-Avg = sum/NumCandidates;
+Avg = min (arr);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,4 +1,4 @@
-function RecognitionResults = RecognizeSequence(Sequence , Alg, Position)
+function [RecognitionResults,SumDist] = RecognizeSequence(Sequence , Alg, Position)
 %RECOGNIZESEQUENCE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -19,7 +19,7 @@ end
 
 if (strcmp(Alg(3),'kdTree'))
     kdTreeFilePath = ['C:\OCRData\kdTree',Position,'\',FeatureName];
-    SumDist=CalculateSumDistanceFromCenters_kdTree( Sequence, kdTreeFilePath, FeatureType );
+   
     C = RecognizeWPkdTree( Sequence, kdTreeFilePath, FeatureType, 3 );
     %C_Dist =  CalculateSumDistanceCandidatesFromCenters_kdTree( Sequence, kdTreeFilePath, FeatureType ,C);
     RecognitionResults = [];
@@ -32,4 +32,6 @@ else
     C = RecognizeWPLSH( Sequence, kdTreeFilePath, FeatureType, 3 );
     C_Dist =  CalculateSumDistanceCandidatesFromCenters_LSH( Sequence, LSHFilePath, FeatureType ,C);
 end
-
+if (nargout==2)
+    SumDist=CalculateSumDistanceFromCenters_kdTree( Sequence, kdTreeFilePath, FeatureType );
+end
