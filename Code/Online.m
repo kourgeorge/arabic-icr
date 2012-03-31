@@ -755,7 +755,13 @@ function GenerateSVMStruct_Callback(hObject, eventdata, handles)
 % hObject    handle to GenerateSVMStruct (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+set(handles.Status,'String', 'Busy');
+set(handles.Status,'ForegroundColor','red');
+drawnow();
 
 SVMPath = get(handles.SVMStructFileEdit, 'String');
 CharacterFolder = get(handles.WPSeqFolderEdit, 'String');
 GenerateSP_SVMStructFromFolder( CharacterFolder,SVMPath );
+
+set(handles.Status,'String', 'Ready');
+set(handles.Status,'ForegroundColor','green');

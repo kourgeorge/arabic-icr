@@ -6,7 +6,10 @@ function GenerateSP_SVMStructFromFolder( FolderPath,SVMtargetPath )
 if(~exist(SVMtargetPath,'dir'))
     mkdir(SVMtargetPath);
 end
-[ FeaturesMatrix,Grouping ] = CreateSPFeaturesFromFolder( FolderPath );
+[ FeaturesMatrixIni,GroupingIni ] = CreateSPFeaturesFromFolder( [FolderPath,'Ini'] );
+[ FeaturesMatrixMed,GroupingMed ] = CreateSPFeaturesFromFolder( [FolderPath,'Med'] );
+FeaturesMatrix = [FeaturesMatrixIni;FeaturesMatrixMed];
+Grouping = [GroupingIni;GroupingMed]
 SVMStruct = svmtrain(FeaturesMatrix,Grouping);
 save([SVMtargetPath,'\SVMStruct'], 'SVMStruct');
 end
