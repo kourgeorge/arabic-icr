@@ -286,9 +286,8 @@ else    %Mouse not up
         %Calculate Decision Parameters
         simplified = CalculateSimplifiedSequence (Sequence,CurrPoint,RecState,RecParams.ST);
         %seqLen = CalculateSequenceLength (Sequence,CurrPoint,RecState);
-        slope = CalculateSlope(Sequence,CurrPoint-RecParams.PointEnvLength,CurrPoint)
+        slope = CalculateSlope(Sequence,CurrPoint-RecParams.PointEnvLength,CurrPoint);
         
-        %CheckAlternativeCondition(seqLen,simplified,slope,RecParams.MinLen,RecParams.MaxSlope);
         
         % set LCCPP,SubSeq
         if ( RecState.LCCPI == 0)
@@ -302,7 +301,6 @@ else    %Mouse not up
         if (~isempty(RecState.CandidateCP))
             sub_s= Sequence(RecState.CandidateCP.Point:CurrPoint,:);
             Simplified  = dpsimplify(sub_s,RecParams.ST);
-            size(Simplified,1)
             if (size(Simplified,1)<=2 && IsCheckPoint(Sequence,CurrPoint,simplified,slope,RecParams) && CalculateSlope(Simplified,1,2)<RecParams.MaxSlope) %&& RecState.CandidateCP.Data==1)
                 %Change the Candidate to be the last one in the same line -
                 %Code under test - if OK should be moved under IsCheckPoint
@@ -495,8 +493,6 @@ function Res = IsCheckPoint(Sequence,CurrPoint,SimplifiedSequence,Slope,RecParam
 %2. Directional - > going "forward" in x axes
 %3. The point environmnt is horizontal
 %%%MaxSlope=RecParams.MaxSlope;
-Slope
-group = CheckSlope(Slope)
 Res = (length(SimplifiedSequence)>2 && CheckSlope(Slope)&& Sequence(CurrPoint,1)<Sequence(CurrPoint-1,1));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
