@@ -182,10 +182,10 @@ Alg = {'EMD' 'MSC' 'kdTree'};
 
 % Algorithm parameters
 RecParams.theta=0.2;
-RecParams.K = 10;
+RecParams.K = 5;
 RecParams.ST = 0.03; %Simplification algorithm tolerance
 RecParams.MinLen = 0.4;
-RecParams.MaxSlope = 0.5;
+RecParams.MaxSlope = 0.4;
 RecParams.PointEnvLength=2;
 
 Old_LCCPI = RecState.LCCPI;
@@ -281,100 +281,86 @@ if(IsMouseUp==true)
     end
 else    %Mouse not up
     if (rem(CurrPoint,RecParams.K)==0)
-        MarkOnSequence('CandidatePoint',Sequence,CurrPoint);
+        %MarkOnSequence('CandidatePoint',Sequence,CurrPoint);
         
-        %Calculate Decision Parameters
-        simplified = CalculateSimplifiedSequence (Sequence,CurrPoint,RecState,RecParams.ST);
-        %seqLen = CalculateSequenceLength (Sequence,CurrPoint,RecState);
         slope = CalculateSlope(Sequence,CurrPoint-RecParams.PointEnvLength,CurrPoint);
-        
-        %CheckAlternativeCondition(seqLen,simplified,slope,RecParams.MinLen,RecParams.MaxSlope);
-        
-        % set LCCPP,SubSeq
-        if ( RecState.LCCPI == 0)
-            LCCPP = 1;
-            LetterPosition = 'Ini';
+        SlopeRes = CheckSlope(slope);
+        if(IsFirstPointInHS(Sequence,CurrPoint,SlopeRes,RecState))
+            RecState = StartNewHS(CurrPoint,RecState);
+            MarkOnSequence('CandidatePoint',Sequence,CurrPoint);
+            return;        
+        elseif (SlopeRes)
+            RecState.LastSeenHorizontalPoint = CurrPoint;
+            return;
+        elseif (IsClosingHS(Sequence,CurrPoint,RecParams,RecState))
+            MarkOnSequence('IntervalPoint',Sequence,RecState.LastSeenHorizontalPoint);
+            [HS,RecState] = EndHS(RecState);
+            midPoint=CalcuateHSMidPoint(HS);
         else
-            LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
-            LetterPosition = 'Med';
-        end
-        %Improve position of the last checkpoint
-        if (~isempty(RecState.CandidateCP))
-            sub_s= Sequence(RecState.CandidateCP.Point:CurrPoint,:);
-            Simplified  = dpsimplify(sub_s,RecParams.ST);
-            if (size(Simplified,1)<=2 && IsCheckPoint(Sequence,CurrPoint,simplified,slope,RecParams) && CalculateSlope(Simplified,1,2)<RecParams.MaxSlope) %&& RecState.CandidateCP.Data==1)
-                %Change the Candidate to be the last one in the same line -
-                %Code under test - if OK should be moved under IsCheckPoint
-                %test
-                MarkOnSequence('CandidatePoint',Sequence,RecState.CandidateCP.Point);
-                midPoint = GetMidPoint(Sequence,RecState.LastHorizontalIntervalStart,CurrPoint);
-                NewCandidatePoint = CreateCheckPoint (Alg,Sequence,LCCPP,midPoint,LetterPosition);
-                RecState.CandidateCP = NewCandidatePoint;
-                RecState.CandidateCP.Data = 2; %Means its the second point in the segmentation interval
-                MarkOnSequence('CheckPoint',Sequence,NewCandidatePoint.Point);
-                return;
-            end
-        else
-            if (RecState.LCCPI>1 && size(simplified,1)<=2 && CalculateSlope(simplified,1,2)<RecParams.MaxSlope)
-                %Change the critical point
-                LCCP = RecState.CriticalCPs(RecState.LCCPI);
-                MarkOnSequence('CandidatePoint',Sequence,LCCP.Point);
-                RecState.LCCPI = RecState.LCCPI-1;
-                RecState.CriticalCPs = RecState.CriticalCPs(1:RecState.LCCPI);
-                midPoint = GetMidPoint(Sequence,RecState.LastHorizontalIntervalStart,CurrPoint);
-                NewCriticalPoint = CreateCheckPoint (Alg,Sequence,LCCPP,midPoint,LetterPosition);
-                RecState = AddCriticalPoint(RecState,Sequence,NewCriticalPoint);
-                return;
-            end
+            return;
         end
         
-        
-        %The following should hold
-        % 1. IsCheckPoint should return true
-        % 2. Contains more information from the last critical point
-        if (IsCheckPoint(Sequence,CurrPoint,simplified,slope,RecParams))
-            NewCheckPoint = CreateCheckPoint(Alg,Sequence,LCCPP,CurrPoint,LetterPosition);
-%             [NewCheckPoint,SumDist,CDist] = CreateCheckPoint2(Alg,Sequence,LCCPP,CurrPoint,LetterPosition);
-%             SumDist*RecParams.theta
-%             if (SumDist*RecParams.theta<CDist)
-%                 return;
-%             end
-%             
-            MarkOnSequence('CheckPoint',Sequence,CurrPoint);
-            RecState.LastHorizontalIntervalStart = CurrPoint; 
-            
-            if (isempty(RecState.CandidateCP))
-                RecState.CandidateCP = NewCheckPoint;
+        [LCCPP,LetterPosition] = CalculateLCCP(RecState);     
+        NewCheckPoint = CreateCheckPoint(Alg,Sequence,LCCPP,midPoint,LetterPosition);
+        MarkOnSequence('CheckPoint',Sequence,midPoint); 
+        if (isempty(RecState.CandidateCP))
+            RecState.CandidateCP = NewCheckPoint;
+        else
+            SCP = BetterCP (RecState.CandidateCP,NewCheckPoint); %SCP - Selected CheckPoint
+            RecState = AddCriticalPoint(RecState,Sequence,SCP);
+            if (SCP.Point<CurrPoint)
+                LCCPP = RecState.CandidateCP.Point;
+                RecState.CandidateCP =  CreateCheckPoint (Alg,Sequence,LCCPP,midPoint,'Med');
             else
-                SCP = BetterCP (RecState.CandidateCP,NewCheckPoint); %SCP - Selected CheckPoint
-                RecState = AddCriticalPoint(RecState,Sequence,SCP);                                       
-                if (SCP.Point<CurrPoint)
-                    LCCPP = RecState.CandidateCP.Point;
-                    RecState.CandidateCP =  CreateCheckPoint (Alg,Sequence,LCCPP,CurrPoint,'Med');
-                else
-                    RecState.CandidateCP = [];
-                end
+                RecState.CandidateCP = [];
             end
-        else
-            %Notify which condition didn't hold.
-            %DisplayUnsutisfiedConditions(seqLen,simplified,slope,RecParams.MinLen,RecParams.MaxSlope);
         end
     end
 end
-
+        
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%    HELPER FUNCTIONS   %%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 function RecState = InitializeRecState(RecState)
-
 RecState.LCCPI=0; % LastCriticalCheckPointIndex, the corrent root
 RecState.CriticalCPs=[]; %Each cell contains the Candidates of the interval from the last CP and the last Point
 RecState.CandidateCP=[]; %Holds the first candidate to be a Critical CP after the LCCP
-
+RecState.HSStart = -1;
+RecState.LastSeenHorizontalPoint = -1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+function Res = IsFirstPointInHS(Sequence,CurrPoint,SlopeRes,RecState)
+Res = SlopeRes && Sequence(CurrPoint,1)<Sequence(CurrPoint-1,1) && RecState.HSStart == -1;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function RecState = StartNewHS(CurrPoint,RecState)
+RecState.HSStart = CurrPoint;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function Res = IsClosingHS(Sequence,CurrPoint,RecParams,RecState)
+slope = CalculateSlope(Sequence,CurrPoint-RecParams.PointEnvLength,CurrPoint);
+Res = (~CheckSlope(slope) || ~Sequence(CurrPoint,1)<Sequence(CurrPoint-1,1)) && RecState.HSStart~=-1;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [HS,RecState] = EndHS(RecState)
+HS = [RecState.HSStart,RecState.LastSeenHorizontalPoint];
+RecState.HSStart=-1;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function MidPoint = CalcuateHSMidPoint(HS)
+MidPoint = floor((HS(1)+HS(2))/2);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [LCCPP,LetterPosition]  = CalculateLCCP(RecState)
+if ( RecState.LCCPI == 0)
+    LCCPP = 1;
+    LetterPosition = 'Ini';
+else
+    LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
+    LetterPosition = 'Med';
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [IsMerged,MergedPoint] = TryToMerge(Alg,Sequence,LastCriticalPoint,Candidate,LastPoint)
 MergedPoint.Point = LastPoint;
 SubSeq =Sequence(LastCriticalPoint:LastPoint,:);
@@ -433,6 +419,14 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function CheckPoint = CreateEmptyCheckPoint (Alg,Sequence,StartPoint,EndPoint,Position)
+SubSeq = Sequence(StartPoint:EndPoint,:);
+CheckPoint.Point = EndPoint;
+CheckPoint.Candidates = [];
+%Additional information
+CheckPoint.Data = 1;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function CheckPoint = CreateCheckPoint (Alg,Sequence,StartPoint,EndPoint,Position)
 SubSeq = Sequence(StartPoint:EndPoint,:);
 RecognitionResults = RecognizeSequence(SubSeq , Alg, Position);
@@ -488,7 +482,7 @@ Avg = min (arr);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function Res = IsCheckPoint(Sequence,CurrPoint,SimplifiedSequence,Slope,RecParams)
+function Res = IsCheckPoint(Sequence,CurrPoint,SimplifiedSequence,Slope)
 %A candidate point is a Checkpoint only if all the below are valid:
 %1. The current Sub sequence contains enough information
 %2. Directional - > going "forward" in x axes
@@ -499,7 +493,7 @@ Res = (length(SimplifiedSequence)>2 && CheckSlope(Slope)&& Sequence(CurrPoint,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function res = CheckSlope(Slope)
-res = SPQuerySVM('C:\OCRData\Segmentation\SVM\SVMStruct',Slope);
+res = SPQuerySVM('C:\OCRData\Segmentation\SVM\SVMStruct',Slope)&& Slope<0.5;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -577,6 +571,9 @@ switch Type
         return;
     case 'CriticalCP'
         plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'r.-','Tag','SHAPE','LineWidth',10);
+        return;
+    case 'IntervalPoint'
+        plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'k.-','Tag','SHAPE','LineWidth',10);
         return;
     otherwise
         return;
