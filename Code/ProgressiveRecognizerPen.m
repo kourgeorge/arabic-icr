@@ -181,7 +181,7 @@ Sequence(:,2) = y_pen;
 Alg = {'EMD' 'MSC' 'kdTree'};
 
 % Algorithm parameters
-RecParams.theta=0.2;
+RecParams.theta=0.06;
 RecParams.K = 5;
 RecParams.ST = 0.03; %Simplification algorithm tolerance
 RecParams.MinLen = 0.4;
@@ -281,19 +281,20 @@ if(IsMouseUp==true)
     end
 else    %Mouse not up
     if (rem(CurrPoint,RecParams.K)==0)
-        %MarkOnSequence('CandidatePoint',Sequence,CurrPoint);
         
         slope = CalculateSlope(Sequence,CurrPoint-RecParams.PointEnvLength,CurrPoint);
         SlopeRes = CheckSlope(slope);
+        
+        %Handle horizontal Segments
         if(IsFirstPointInHS(Sequence,CurrPoint,SlopeRes,RecState))
             RecState = StartNewHS(CurrPoint,RecState);
-            MarkOnSequence('CandidatePoint',Sequence,CurrPoint);
+            MarkOnSequence('StartHorizontalIntervalPoint',Sequence,CurrPoint);
             return;        
         elseif (SlopeRes)
             RecState.LastSeenHorizontalPoint = CurrPoint;
             return;
         elseif (IsClosingHS(Sequence,CurrPoint,RecParams,RecState))
-            MarkOnSequence('IntervalPoint',Sequence,RecState.LastSeenHorizontalPoint);
+            MarkOnSequence('EndHorizontalIntervalPoint',Sequence,RecState.LastSeenHorizontalPoint);
             [HS,RecState] = EndHS(RecState);
             midPoint=CalcuateHSMidPoint(HS);
         else
@@ -301,19 +302,30 @@ else    %Mouse not up
         end
         
         [LCCPP,LetterPosition] = CalculateLCCP(RecState);     
-        NewCheckPoint = CreateCheckPoint(Alg,Sequence,LCCPP,midPoint,LetterPosition);
-        MarkOnSequence('CheckPoint',Sequence,midPoint); 
+        [NewCheckPoint,SumDist,CDist,minDist] = CreateCheckPointAndDistanceInfo(Alg,Sequence,LCCPP,midPoint,LetterPosition)
+        
+        %if this contour is not close to anything
+        if (minDist>RecParams.theta*SumDist)
+            return;
+        end
+        
         if (isempty(RecState.CandidateCP))
             RecState.CandidateCP = NewCheckPoint;
+            MarkOnSequence('CandidatePoint',Sequence,midPoint); 
         else
             SCP = BetterCP (RecState.CandidateCP,NewCheckPoint); %SCP - Selected CheckPoint
-            RecState = AddCriticalPoint(RecState,Sequence,SCP);
-            if (SCP.Point<CurrPoint)
+            
+            %update the Candidate point in RecState
+            if (SCP.Point==RecState.CandidateCP.Point) %Candidate point was selected.
                 LCCPP = RecState.CandidateCP.Point;
                 RecState.CandidateCP =  CreateCheckPoint (Alg,Sequence,LCCPP,midPoint,'Med');
+                MarkOnSequence('CandidatePoint',Sequence,midPoint);
             else
                 RecState.CandidateCP = [];
             end
+            % Add a new Critical Point
+            RecState = AddCriticalPoint(RecState,Sequence,SCP);
+            
         end
     end
 end
@@ -329,12 +341,14 @@ RecState.HSStart = -1;
 RecState.LastSeenHorizontalPoint = -1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%HS means Horiontal Sections.
 function Res = IsFirstPointInHS(Sequence,CurrPoint,SlopeRes,RecState)
 Res = SlopeRes && Sequence(CurrPoint,1)<Sequence(CurrPoint-1,1) && RecState.HSStart == -1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function RecState = StartNewHS(CurrPoint,RecState)
 RecState.HSStart = CurrPoint;
+RecState.LastSeenHorizontalPoint = CurrPoint;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function Res = IsClosingHS(Sequence,CurrPoint,RecParams,RecState)
@@ -344,7 +358,7 @@ Res = (~CheckSlope(slope) || ~Sequence(CurrPoint,1)<Sequence(CurrPoint-1,1)) && 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [HS,RecState] = EndHS(RecState)
 HS = [RecState.HSStart,RecState.LastSeenHorizontalPoint];
-RecState.HSStart=-1;
+RecState.HSStart = -1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function MidPoint = CalcuateHSMidPoint(HS)
@@ -370,7 +384,6 @@ else
     RecognitionResults = RecognizeSequence(SubSeq , Alg, 'Fin');
 end
 MergedPoint.Candidates = RecognitionResults;
-MergedPoint.Data = 1;
 BCP = BetterCP (Candidate,MergedPoint);
 if (BCP.Point==MergedPoint.Point)
     IsMerged = true;
@@ -423,8 +436,6 @@ function CheckPoint = CreateEmptyCheckPoint (Alg,Sequence,StartPoint,EndPoint,Po
 SubSeq = Sequence(StartPoint:EndPoint,:);
 CheckPoint.Point = EndPoint;
 CheckPoint.Candidates = [];
-%Additional information
-CheckPoint.Data = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function CheckPoint = CreateCheckPoint (Alg,Sequence,StartPoint,EndPoint,Position)
@@ -432,20 +443,17 @@ SubSeq = Sequence(StartPoint:EndPoint,:);
 RecognitionResults = RecognizeSequence(SubSeq , Alg, Position);
 CheckPoint.Point = EndPoint;
 CheckPoint.Candidates = RecognitionResults;
-%Additional information
-CheckPoint.Data = 1;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [CheckPoint,SumDist,CDist] = CreateCheckPoint2 (Alg,Sequence,StartPoint,EndPoint,Position)
+function [CheckPoint,SumDist,CDist,minDist] = CreateCheckPointAndDistanceInfo (Alg,Sequence,StartPoint,EndPoint,Position)
 SubSeq = Sequence(StartPoint:EndPoint,:);
 [RecognitionResults,SumDist] = RecognizeSequence(SubSeq , Alg, Position);
 CheckPoint.Point = EndPoint;
 CheckPoint.Candidates = RecognitionResults;
-CDist = 0;
-for i=1:3
-    CDist=CDist+RecognitionResults{i,2};
-end
+distances = [RecognitionResults{:,2}];
+CDist = sum (distances);
+minDist = min (distances);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -479,6 +487,7 @@ for k=1:NumCandidates
     arr = [arr;CandidateCP.Candidates{k,2}];
 end
 Avg = min (arr);
+%Avg = mean (arr);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -566,13 +575,13 @@ switch Type
     case 'CandidatePoint',
         plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'c.-','Tag','SHAPE','LineWidth',10);
         return;
-    case 'CheckPoint'
-        plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'g.-','Tag','SHAPE','LineWidth',10);
-        return;
     case 'CriticalCP'
         plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'r.-','Tag','SHAPE','LineWidth',10);
         return;
-    case 'IntervalPoint'
+    case 'StartHorizontalIntervalPoint'
+        plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'g.-','Tag','SHAPE','LineWidth',10);
+        return;
+    case 'EndHorizontalIntervalPoint'
         plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'k.-','Tag','SHAPE','LineWidth',10);
         return;
     otherwise
