@@ -1,5 +1,6 @@
 function [ WPTFeaureVectors] = MakeFatureVectorsForTest(WPTContours,TypeOfFature,TestSize)
 %Features:
+% 0 - Contour/Sequence
 % 1 - Angular
 % 2 - Shape Context
 
@@ -7,6 +8,15 @@ NumOfWPTS=size(WPTContours,1);
 WPTFeaureVectors = cell(NumOfWPTS,2);
 myfilter = fspecial('gaussian',[5 5], 0.5);
 
+
+if (TypeOfFature == 0)
+         for i=1:min(NumOfWPTS,TestSize)
+         NextCont = WPTContours{i,1};
+         FaturesValues = NextCont;
+         WPTFeaureVectors {i,1} = FaturesValues;
+      %   WPTFeaureVectors {i,2} = WPTContours {i,2} ;
+end
+end
 if (TypeOfFature == 1)
      for i=1:min(NumOfWPTS,TestSize)
          NextCont = WPTContours{i,1};

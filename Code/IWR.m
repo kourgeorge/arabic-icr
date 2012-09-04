@@ -22,7 +22,7 @@ function varargout = IWR(varargin)
 
 % Edit the above text to modify the response to help IWR
 
-% Last Modified by GUIDE v2.5 05-Nov-2011 09:47:47
+% Last Modified by GUIDE v2.5 03-Sep-2012 18:35:26
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -280,3 +280,26 @@ DataFolder = get(handles.DataFolderEdit,'String');
 Closest = str2num(get(handles.ClosestEdit,'String'));
 clc;
 ProgressiveRecognizerPen (DataFolder,Closest);
+
+
+
+function LettersDSEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to LettersDSEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of LettersDSEdit as text
+%        str2double(get(hObject,'String')) returns contents of LettersDSEdit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function LettersDSEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to LettersDSEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

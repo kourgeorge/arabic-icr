@@ -22,7 +22,7 @@ function varargout = Online(varargin)
 
 % Edit the above text to modify the response to help Online
 
-% Last Modified by GUIDE v2.5 05-Nov-2011 16:47:38
+% Last Modified by GUIDE v2.5 27-Aug-2012 22:14:19
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -112,6 +112,19 @@ end
 dlmwrite([letterPosFolder,'\',FontClass,'.m'], points)
 
 %Save .jpg file
+
+% A workaround to save the axes of the letter and not all the online figure
+% create a new figure
+tempfig = figure('visible','off');
+% copy axes into the new figure
+newax = copyobj(handles.LetterAxes,tempfig);
+% change the figure size
+set(newax, 'units', 'normalized', 'position', [0.13 0.11 0.775 0.815]);
+
+PrevDir = pwd;
+cd(letterPosFolder);
+saveas(tempfig,FontClass,'jpg');
+cd (PrevDir);
 
 
 % [FileName,PathName] = uiputfile('*.*');
@@ -305,9 +318,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
-
-
 function WPSeqFolderEdit_Callback(hObject, eventdata, handles)
 % hObject    handle to WPSeqFolderEdit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -343,6 +353,7 @@ FontClass = get(handles.FontClassEdit,'String');
 
 set(handles.Status,'String', 'Busy');
 set(handles.Status,'ForegroundColor','red');
+drawnow();
 
 if (get(handles.ImagesCB,'Value') == get(handles.ImagesCB,'Max'))
     NumOfWds = GenerateWordsFromFile( WPSeqFolder, WPFile,SampleLettersFolder, FontClass,'Yes');
@@ -352,6 +363,7 @@ end
 
 set(handles.Status,'String', 'Ready');
 set(handles.Status,'ForegroundColor','green');
+drawnow();
 
 % --- Executes on button press in WordPartsButton.
 function WordPartsButton_Callback(hObject, eventdata, handles)
@@ -435,11 +447,11 @@ set(handles.Status,'ForegroundColor','red');
 drawnow();
 
 if (AngularFeature==1)
-    CreateFVFromFolder(WPSeqFolder, WPFeaturesFolder,1);
+    CreateFVFromSamplesFolder(WPSeqFolder, WPFeaturesFolder,1);
 end
 
 if (MSC==1)
-     CreateFVFromFolder(WPSeqFolder, WPFeaturesFolder,2);
+     CreateFVFromSamplesFolder(WPSeqFolder, WPFeaturesFolder,2);
 end
 
 set(handles.Status,'String', 'Ready');
@@ -712,4 +724,172 @@ start_path = get(handles.LSHFileEdit, 'String');
 directory_name = uigetdir(start_path);
 if ~(directory_name==0)
     set(handles.LSHFileEdit,'String',directory_name);
+end
+
+
+
+function SVMStructFileEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to SVMStructFileEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of SVMStructFileEdit as text
+%        str2double(get(hObject,'String')) returns contents of SVMStructFileEdit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function SVMStructFileEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to SVMStructFileEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in GenerateSVMStruct.
+function GenerateSVMStruct_Callback(hObject, eventdata, handles)
+% hObject    handle to GenerateSVMStruct (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.Status,'String', 'Busy');
+set(handles.Status,'ForegroundColor','red');
+drawnow();
+
+SVMPath = get(handles.SVMStructFileEdit, 'String');
+CharacterFolder = get(handles.WPSeqFolderEdit, 'String');
+GenerateSP_SVMStructFromFolder( CharacterFolder,SVMPath );
+
+set(handles.Status,'String', 'Ready');
+set(handles.Status,'ForegroundColor','green');
+
+
+
+function LettersFeatureEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to LettersFeatureEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of LettersFeatureEdit as text
+%        str2double(get(hObject,'String')) returns contents of LettersFeatureEdit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function LettersFeatureEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to LettersFeatureEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in checkbox10.
+function checkbox10_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox10 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox10
+
+
+% --- Executes on button press in checkbox11.
+function checkbox11_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox11 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox11
+
+
+% --- Executes on button press in GenerateLettersFeatures.
+function GenerateLettersFeatures_Callback(hObject, eventdata, handles)
+% hObject    handle to GenerateLettersFeatures (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+WaveletFolder = get(handles.WaveletFolderEdit,'String');
+TargetLSHFolder = get(handles.LSHFileEdit,'String');
+
+ShapeContext= (get(handles.W_ShapeContextFeature,'Value') == get(handles.W_ShapeContextFeature,'Max')); 
+AngularFeature = (get(handles.W_AngularFeature,'Value') == get(handles.W_AngularFeature,'Max'));
+ResampleSize = str2num(get(handles.VectorSize,'String'));
+
+
+set(handles.Status,'String', 'Busy');
+set(handles.Status,'ForegroundColor','red');
+drawnow();
+
+
+
+if (AngularFeature==1)
+    BuildLSHFromFolder( WaveletFolder, TargetLSHFolder, 1, ResampleSize);
+end
+
+if (ShapeContext==1)
+    BuildLSHFromFolder( WaveletFolder, TargetLSHFolder, 2, ResampleSize);
+end
+
+set(handles.Status,'String', 'Ready');
+set(handles.Status,'ForegroundColor','green');
+
+% --- Executes on key press with focus on GenerateLettersFeatures and none of its controls.
+function GenerateLettersFeatures_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to GenerateLettersFeatures (see GCBO)
+% eventdata  structure with the following fields (see UICONTROL)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+
+
+
+function edit17_Callback(hObject, eventdata, handles)
+% hObject    handle to edit17 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit17 as text
+%        str2double(get(hObject,'String')) returns contents of edit17 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit17_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit17 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function LettersSamplesEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to LettersSamplesEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of LettersSamplesEdit as text
+%        str2double(get(hObject,'String')) returns contents of LettersSamplesEdit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function LettersSamplesEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to LettersSamplesEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end

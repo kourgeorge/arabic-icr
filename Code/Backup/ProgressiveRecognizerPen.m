@@ -244,11 +244,11 @@ if(IsMouseUp==true)
             else
                 %[1] - Critical CP -> CP -> CP (of MU)
                 LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
-                Option1 = CreateOptionDouble(Alg,Sequence,LCCPP,RecState.CandidateCP.Point,'Med',RecState.CandidateCP.Point,CurrPoint,'Fin');
+                Option1 = CreateOptionDouble(Alg,Sequence,LCCPP,RecState.CandidateCP.Point,'Mid',RecState.CandidateCP.Point,CurrPoint,'Fin');
                 Option2 = CreateOptionSingle(Alg,Sequence,LCCPP,CurrPoint,'Fin');
                 BO = BetterOption(Option1, Option2);
                 if (BO==1)
-                    %Add 2 Critical Points 'Med','Fin'
+                    %Add 2 Critical Points 'Mid','Fin'
                     RecState = AddCriticalPoint(RecState,Sequence,Option1.FirstPoint);
                     RecState = AddCriticalPoint(RecState,Sequence,Option1.SecondPoint);
 
@@ -296,7 +296,7 @@ else    %Mouse not up
             LetterPosition = 'Ini';
         else
             LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
-            LetterPosition = 'Med';
+            LetterPosition = 'Mid';
         end
         %Improve position of the last checkpoint
         if (~isempty(RecState.CandidateCP))
@@ -350,7 +350,7 @@ else    %Mouse not up
                 RecState = AddCriticalPoint(RecState,Sequence,SCP);                                       
                 if (SCP.Point<CurrPoint)
                     LCCPP = RecState.CandidateCP.Point;
-                    RecState.CandidateCP =  CreateCheckPoint (Alg,Sequence,LCCPP,CurrPoint,'Med');
+                    RecState.CandidateCP =  CreateCheckPoint (Alg,Sequence,LCCPP,CurrPoint,'Mid');
                 else
                     RecState.CandidateCP = [];
                 end
