@@ -1,0 +1,24 @@
+function [ FeaturesArray, LettersArray ] = ExpandLettersStructForSVM( PositionLettersDS )
+%TESTSVM Summary of this function goes here
+%   Detailed explanation goes here
+res = [];
+LettersCandidates = [];
+Letters = [];
+for i = 1:size(PositionLettersDS,1)
+    Letter = PositionLettersDS{i,1};
+    %Letter = i;
+    LetterCandidates = PositionLettersDS{i,2};
+    LetterSamples = [];
+    for j=1: size(LetterCandidates,2)
+        a = LetterCandidates(j);
+        a = a{:};
+        a = a(:);
+        LetterSamples =[LetterSamples; a']
+    end
+    LettersCandidates = [LettersCandidates; LetterSamples];
+    %Letters = [Letters; repmat({Letter},5,1)];
+    Letters = [Letters; repmat(Letter,5,1)];
+end
+
+
+

@@ -1,0 +1,6 @@
+function  LetterDS = ReadLetterData( LetterFolder)
+LetterDS.Ini = ReadLetterPositionSamples([LetterFolder,'\','Ini']);
+LetterDS.Med = ReadLetterPositionSamples([LetterFolder,'\','Med']);
+LetterDS.Fin = ReadLetterPositionSamples([LetterFolder,'\','Fin']);
+LetterDS.Iso = ReadLetterPositionSamples([LetterFolder,'\','Iso']);
+end

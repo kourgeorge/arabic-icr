@@ -1,5 +1,6 @@
 function [Contour] = NormalizeCont(Contour)
-
+% The The dimentions of the Contour should be [Dx2]. Means the sequence
+% should be a column vector, where each row 2 a point on the contour
 MeanXY = mean(Contour);
 Contour = Contour - repmat(MeanXY,size(Contour,1),1);
 MaxX = max(Contour(:,1));

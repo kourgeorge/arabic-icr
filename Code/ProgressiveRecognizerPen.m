@@ -181,7 +181,7 @@ Sequence(:,1) = x_pen;
 Sequence(:,2) = y_pen;
 
 
-Alg = {'DTW' 'MSC' 'kdTree'};
+Alg = {'ERP' 'MSC' 'kdTree'};
 
 % Algorithm parameters
 RecParams.theta=0.04/5;

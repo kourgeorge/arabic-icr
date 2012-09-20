@@ -25,7 +25,7 @@ data_preserving_vector = cumsum(LATENT)./sum(LATENT);
 % determine PCADataPreservingRate 
 %-------------------
 if PCADataPreservingRate==0
-    PCADataPreservingRate=0.999; % The default 
+    PCADataPreservingRate=0.95; % The default 
 end
 
 

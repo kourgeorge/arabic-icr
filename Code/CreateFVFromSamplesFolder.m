@@ -1,19 +1,19 @@
-function [ output_args ] = CreateFVFromSanplesFolder (SamplesFolder, WaveletTargetFolder, ContourResampleSize, FeatureType)
-%CREATEFVFROMSANPLESFOLDER Summary of this function goes here
+function [ Num ] = CreateFVFromSamplesFolder (SamplesFolder, FVTargetFolder, FeatureType)
+%CREATEFVFROMSAMPLESFOLDER Summary of this function goes here
 %   Detailed explanation goes here
 
 %Make sure the target folders exist or create them
-res = exist(WaveletTargetFolder,'dir');
+res = exist(FVTargetFolder,'dir');
 if (res==0)
-    mkdir(WaveletTargetFolder);
+    mkdir(FVTargetFolder);
 end
 
 if (FeatureType==1)
-    TargetFolder=[WaveletTargetFolder,'\','Angular'];
+    TargetFolder=[FVTargetFolder,'\','Angular'];
 end
 
 if (FeatureType==2)
-    TargetFolder=[WaveletTargetFolder,'\','ShapeContext'];
+    TargetFolder=[FVTargetFolder,'\','ShapeContext'];
 end
 
 res = exist(TargetFolder,'dir');
@@ -28,7 +28,7 @@ for i = 1:DirListLength
     current_object = dirlist(i);
     Name = current_object.name;
     if (current_object.isdir && ~strcmp(Name,'.')  &&  ~strcmp(Name,'..'))
-        temp = CreateWaveletFromFolder([SamplesFolder,'\',Name], [TargetFolder,'\',Name], ContourResampleSize, FeatureType);
+        temp = CreateFVFromFolder([SamplesFolder,'\',Name], [TargetFolder,'\',Name], FeatureType);
         Num = Num + temp;
     end
 end
