@@ -40,14 +40,13 @@ tempReducedFeaturesMatrix = (PCACOEFF' * FeaturesMatrix')';
 %-------------------
 
 if NumOfPCs==0 || NumOfPCs>=PCA_NumOfPCs  %if the user did not sprcify target number of dimension or he has specified #dimensions>=#PCA_output_dimensions 
-    NumOfPCs = PCA_NumOfPCs %-1; %why -1?
+    NumOfPCs = PCA_NumOfPCs; 
 end
-
-NumOfPCs
 
 %LDA Phase
 %----------
 [ReducedFeaturesMatrix,mapping] = LDA(tempReducedFeaturesMatrix,Labeling,NumOfPCs);
+NumOfPCs = size (ReducedFeaturesMatrix,2);
 
 % build the COEFF matrix (M)
 M = mapping.M;

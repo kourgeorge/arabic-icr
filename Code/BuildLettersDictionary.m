@@ -78,27 +78,46 @@ for i = 3:length(LettersSamplesFolderList)
     end
     
 end
-[IniLettersSamples,IniLettersGroups] = ExpandLettersStructForSVM( IniStruct );
-IniSVMStruct = MultiSVMTrain(IniLettersSamples,IniLettersGroups);
-LettersDS.Ini = IniSVMStruct;
+[LettersSamples,LettersGroups, NumericGroups] = ExpandLettersStructForSVM( IniStruct );
+%IniSVMStruct = MultiSVMTrain(IniLettersSamples,IniLettersGroups);
+[ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction( LettersSamples, LettersGroups, 0.98);
+SVMStruct = svmtrain1 ([], NumericGroups, ReducedFeaturesMatrix);
+LettersDS.Ini.COEFF = COEFF;
+LettersDS.Ini.SVMStruct = SVMStruct;
+LettersDS.Ini.KdTree = kd_buildtree(ReducedFeaturesMatrix,0);
+LettersDS.Ini.LettersMap = LettersGroups;
+LettersDS.Ini.Struct = IniStruct;
 
-[MidLettersSamples,MidLettersGroups] = ExpandLettersStructForSVM( MidStruct );
-MidSVMStruct = MultiSVMTrain(MidLettersSamples,MidLettersGroups);
-LettersDS.Mid = MidSVMStruct;
+[LettersSamples,LettersGroups, NumericGroups] = ExpandLettersStructForSVM( MidStruct );
+%MidSVMStruct = MultiSVMTrain(MidLettersSamples,MidLettersGroups);
+[ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction( LettersSamples, LettersGroups, 0.98);
+SVMStruct = svmtrain1 ([], NumericGroups, ReducedFeaturesMatrix);
+LettersDS.Mid.COEFF = COEFF;
+LettersDS.Mid.SVMStruct = SVMStruct;
+LettersDS.Mid.KdTree = kd_buildtree(ReducedFeaturesMatrix,0);
+LettersDS.Mid.LettersMap = LettersGroups;
+LettersDS.Mid.Struct = MidStruct;
 
-[FinLettersSamples,FinLettersGroups] = ExpandLettersStructForSVM( FinStruct );
-FinSVMStruct = MultiSVMTrain(FinLettersSamples,FinLettersGroups);
-LettersDS.Fin = FinSVMStruct;
+[LettersSamples,LettersGroups, NumericGroups]  = ExpandLettersStructForSVM( FinStruct );
+%FinSVMStruct = MultiSVMTrain(FinLettersSamples,FinLettersGroups);
+[ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction( LettersSamples, LettersGroups, 0.98);
+SVMStruct = svmtrain1 ([], NumericGroups, ReducedFeaturesMatrix);
+LettersDS.Fin.COEFF = COEFF;
+LettersDS.Fin.SVMStruct = SVMStruct;
+LettersDS.Fin.KdTree = kd_buildtree(ReducedFeaturesMatrix,0);
+LettersDS.Fin.LettersMap = LettersGroups;
+LettersDS.Fin.Struct = FinStruct;
 
 
-[IsoLettersSamples,IsoLettersGroups, IsoNumericGroups] = ExpandLettersStructForSVM( IsoStruct );
-IsoSVMStruct = MultiSVMTrain(IsoLettersSamples,IsoLettersGroups);
-%model = svmtrain1 ([], IsoNumericGroups, IsoLettersSamples)
-%[ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction( IsoLettersSamples, IsoLettersGroups, 0.98);
-%%model2 =  svmtrain(ReducedFeaturesMatrix(1:10,:),IsoLettersGroups(1:10,:),'Kernel_Function','rbf', 'boxconstraint',Inf,'showplot',true);
-%model2 = svmtrain1 ([], IsoNumericGroups, ReducedFeaturesMatrix,'-t 2 -v 5')
-
-LettersDS.Iso = IsoSVMStruct;
+[LettersSamples,LettersGroups, NumericGroups] = ExpandLettersStructForSVM( IsoStruct );
+%IsoSVMStruct = MultiSVMTrain(IsoLettersSamples,IsoLettersGroups);
+[ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction( LettersSamples, LettersGroups, 0.98);
+SVMStruct = svmtrain1 ([], NumericGroups, ReducedFeaturesMatrix);
+LettersDS.Iso.COEFF = COEFF;
+LettersDS.Iso.SVMStruct = SVMStruct;
+LettersDS.Iso.KdTree = kd_buildtree(ReducedFeaturesMatrix,0);
+LettersDS.Iso.LettersMap = LettersGroups;
+LettersDS.Iso.Struct = IsoStruct;
 
 TargetFilePath = [TargetFolder,'\', 'LettersDS'];
 save(TargetFilePath, 'LettersDS', 'FeatureType','ResampleSize');

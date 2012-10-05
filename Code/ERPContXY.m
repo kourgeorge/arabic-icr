@@ -5,9 +5,8 @@ function Dist = ERPContXY( s1 , s2 )
 %           b = dlmread(['C:\OCRData\GeneratedWordsMed\sample3\_8_.m']);
 %           Dst = ERP( a , b )
 
-
-s2 = Norm(s2);
 s1 = Norm(s1);
+s2 = Norm(s2);
 
 g = [0,0];
 l1 = size(s1,1);
