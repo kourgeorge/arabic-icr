@@ -43,7 +43,8 @@ LettersSamplesFolderList = dir(LettersSamplesFolder);
 for i = 3:length(LettersSamplesFolderList)
     current_object = LettersSamplesFolderList(i);
     FolderName = current_object.name;
-    if (FolderName~='_')
+    IsDir = current_object.isdir;
+    if (IsDir==1 && FolderName~='_')
         LetterFolder = [LettersSamplesFolder,'\',FolderName];
         LetterInAllPositions= ReadLetterData(LetterFolder,ResampleSize);
         %Not all letters has Ini and Mid Forms

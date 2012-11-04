@@ -37,8 +37,11 @@ end
 %Normalize
 NormalizedLetterSequence = NormalizeCont(LetterSequence);
 
+%Simplify
+SimplifiedLetterSequence = SimplifyContour( NormalizedLetterSequence);
+
 %Resample
-ResampledLetterSequence = ResampleContour(NormalizedLetterSequence,ResampleSize);
+ResampledLetterSequence = ResampleContour(SimplifiedLetterSequence,ResampleSize);
 
 %Extract Feature Vector
 FeatureVector = CreateFeatureVectorFromContour(ResampledLetterSequence, FeatureType);

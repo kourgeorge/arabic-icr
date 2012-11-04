@@ -12,37 +12,39 @@ if (strcmp(Position,'Ini'))
     COEFF = LettersDS.Ini.COEFF;
     PositionDS =  LettersDS.Ini.Struct;
     KdTreee = LettersDS.Ini.KdTree;
+    LettersMap = LettersDS.Ini.LettersMap;
 elseif (strcmp(Position,'Mid'))
     SVMStruct = LettersDS.Mid.SVMStruct;
     COEFF = LettersDS.Mid.COEFF;
     PositionDS =  LettersDS.Mid.Struct;
     KdTreee = LettersDS.Mid.KdTree;
+    LettersMap = LettersDS.Mid.LettersMap;
 elseif (strcmp(Position,'Fin'))
     SVMStruct = LettersDS.Fin.SVMStruct;
     COEFF = LettersDS.Fin.COEFF;
     PositionDS =  LettersDS.Fin.Struct;
     KdTreee = LettersDS.Fin.KdTree;
+    LettersMap = LettersDS.Fin.LettersMap;
 elseif (strcmp(Position,'Iso'))
     SVMStruct = LettersDS.Iso.SVMStruct;
     COEFF = LettersDS.Iso.COEFF;
     PositionDS =  LettersDS.Iso.Struct;
     KdTreee = LettersDS.Iso.KdTree;
+    LettersMap = LettersDS.Iso.LettersMap;
 else return;
 end
 
 %Normalize
 NormalizedLetterSequence = NormalizeCont(LetterSequence);
 
+%Simplify
+
+
 %Resample
 ResampledLetterSequence = ResampleContour(NormalizedLetterSequence,ResampleSize);
 
 %Extract Feature Vector
 FeatureVector = CreateFeatureVectorFromContour(ResampledLetterSequence, FeatureType);
-
-
-%Reduce Dimensionality
-%FeatureVector = FeatureVector(:);
-%ReducedFeatureVector=COEFF*FeatureVector;
 
 %Classify using NN
 [NNCandidates,AllDictionarySorted] = GetClosestLetterCandidates( FeatureVector, PositionDS, Metric ,3);
@@ -55,12 +57,16 @@ Candidates = NNCandidates;
 % [predicted_label, accuracy, decision_values] = svmpredict([1], ReducedFeatureVector', SVMStruct);
 % Candidates = char(predicted_label);
 
+%Reduce Dimensionality
+FeatureVector = FeatureVector(:);
+ReducedFeatureVector = COEFF*FeatureVector;
+
 %Classify Using Kdtree
 [index_vals,vector_vals,final_nodes] = kd_knn(KdTreee,ReducedFeatureVector',3,0);
 
 ClosestWPs= [];
 for i=1:length(index_vals)
-    ClosestWPs = [ClosestWPs ; WPmap(index_vals(i))];
+    ClosestWPs = [ClosestWPs ; LettersMap(index_vals(i))];
 end
 
 
