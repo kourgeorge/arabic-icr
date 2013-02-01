@@ -1,5 +1,8 @@
 function [ResCont] = ResampleContour(cont,NumofPoints)
+
+% Perform resampling using splines.
 cont = ResampleSequence( cont, NumofPoints*3 );
+
 FirstCont = cont;
 [l,c] = size(FirstCont);
 step = l/NumofPoints;

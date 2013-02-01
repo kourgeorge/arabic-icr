@@ -16,9 +16,14 @@ for i = 3:length(LetterPositionFolderList)
         j=j+1;
         FileName = current_object.name;
         sequence = dlmread([LetterPositionFolder,'\',FileName]);
-        simplifiedSequence = SimplifyContour(sequence);
-        res = ResampleContour(simplifiedSequence,ResampleSize);
-        Samples(j) = {res};
+        
+        %Do Sequence Pre-Processing
+        SimplifiedSequence = SimplifyContour(sequence);
+        ResampledSequence = ResampleContour(SimplifiedSequence,ResampleSize);
+        NormalizedSequence = NormalizeCont(ResampledSequence);
+        %%%
+        
+        Samples(j) = {NormalizedSequence};
     end
 end
 end

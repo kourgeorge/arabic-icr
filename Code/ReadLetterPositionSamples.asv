@@ -1,14 +1,25 @@
-function  Samples = ReadLetterPositionSamples( LetterPositionFolder)
+function  Samples = ReadLetterPositionSamples( LetterPositionFolder, ResampleSize)
 
+
+if (~exist(LetterPositionFolder,'dir'))
+    Samples = [];
+    return;
+end
 LetterPositionFolderList = dir(LetterPositionFolder);
 j=0;
 for i = 3:length(LetterPositionFolderList)
     current_object = LetterPositionFolderList(i);
-    if (~strcmp(current_object.name,'.svn') && isdir = 0 && )
+    FileName = current_object.name;
+    FileNameSize = size(FileName);
+    LastCharacter = FileNameSize(2);
+    if (current_object.isdir ==0 &&  FileName(LastCharacter)=='m')
         j=j+1;
         FileName = current_object.name;
-        res = dlmread([LetterPositionFolder,'\',FileName]);
-        Samples(j) = {res};
+        sequence = dlmread([LetterPositionFolder,'\',FileName]);
+        simplifiedSequence = SimplifyContour(sequence);
+        ResampledSequence = ResampleContour(simplifiedSequence,ResampleSize);
+        NormalizedSequence = NormalizeCont(ResampledSequence);
+        Samples(j) = {NormalizedSequence};
     end
 end
 end

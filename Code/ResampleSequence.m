@@ -2,7 +2,7 @@ function ResampledSequence = ResampleSequence( Sequence, Nt )
 %RESAMPLESEQUENCE Summary of this function goes here
 %   CharacterSequence = dlmread(['C:\OCRData\GeneratedWordsIso\sample1\B.m']);
 %   SimplifiedContour = SimplifyContour( CharacterSequence)
-%   resampleSequence( SimplifiedContour )
+%   resampleSequence( SimplifiedContour ,10)
 
 % here is a simple polygon, a triangle. Note that
 % I've wrapped the ends, so that the last point is
@@ -33,12 +33,6 @@ qx = ppval(splx,tint);
 qy = ppval(sply,tint);
 
 ResampledSequence = [qx;qy]';
-
-% plot the polygon itself, as well as the generated points.
-%
-% scatter(Sequence(:,1),Sequence(:,2));
-% hold on;
-% scatter(ResampledSequence(:,1),ResampledSequence(:,2));
 
 end
 
