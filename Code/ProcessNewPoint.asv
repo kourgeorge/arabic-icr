@@ -1,22 +1,22 @@
-function RecState = ProcessNewPoint(RecParams,RecState,Sequence,NewPoint,IsMouseUp )
+function RecState = ProcessNewPoint(RecParams,RecState,Sequence,IsMouseUp,UI )
 %PROCESSNEWPOINT Summary of this function goes here
 %   Detailed explanation goes here
+global gUI=UI;
 
 Alg = RecParams.Alg;
-
 CurrPoint = length(Sequence);
 
 if(IsMouseUp==true)
     if (RecState.LCCPI == 0)
         if (~isempty(RecState.CandidateCP))
-            [IsMerged,MergedPoint] = TryToMerge(RecParams.Alg,Sequence,1,RecState.CandidateCP,CurrPoint);
+            [IsMerged,MergedPoint] = TryToMerge(Alg,Sequence,1,RecState.CandidateCP,CurrPoint);
             if (IsMerged)
                 %[7] - CP(merged - old CP and the remainder)
                 RecState = AddCriticalPoint(RecState,Sequence,MergedPoint);
             else
                 %[5]- CP ->CP (of MU) => Ini, Fin || Iso
-                Option1 = CreateOptionDouble(RecParams.Alg,Sequence,1,RecState.CandidateCP.Point,'Ini',RecState.CandidateCP.Point,CurrPoint,'Fin');
-                Option2 = CreateOptionSingle(RecParams.Alg,Sequence,1,CurrPoint,'Iso');
+                Option1 = CreateOptionDouble(Alg,Sequence,1,RecState.CandidateCP.Point,'Ini',RecState.CandidateCP.Point,CurrPoint,'Fin');
+                Option2 = CreateOptionSingle(Alg,Sequence,1,CurrPoint,'Iso');
                 BO = BetterOption(Option1, Option2);
                 if (BO==1)
                     %Add 2 Critical Points 'Ini','Fin'
@@ -29,12 +29,12 @@ if(IsMouseUp==true)
             end
         else
             %[6]- CP(MU) => Iso
-            RecState = RecognizeAndAddCriticalPoint(RecParams.Alg,Sequence,RecState,1,CurrPoint,'Iso');
+            RecState = RecognizeAndAddCriticalPoint(Alg,Sequence,RecState,1,CurrPoint,'Iso');
         end
     else %not the first letter
         if (~isempty(RecState.CandidateCP))
             LCCP = RecState.CriticalCPs(RecState.LCCPI);
-            [IsMerged,MergedPoint] = TryToMerge(RecParams.Alg,Sequence,LCCP.Point,RecState.CandidateCP,CurrPoint);
+            [IsMerged,MergedPoint] = TryToMerge(Alg,Sequence,LCCP.Point,RecState.CandidateCP,CurrPoint);
             if (IsMerged)
                 %[3]Critical CP -> CP(merged - old CP and the remainder)                
                 RecState = AddCriticalPoint(RecState,Sequence,MergedPoint);
@@ -43,8 +43,8 @@ if(IsMouseUp==true)
             else
                 %[1] - Critical CP -> CP -> CP (of MU)
                 LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
-                Option1 = CreateOptionDouble(RecParams.Alg,Sequence,LCCPP,RecState.CandidateCP.Point,'Mid',RecState.CandidateCP.Point,CurrPoint,'Fin');
-                Option2 = CreateOptionSingle(RecParams.Alg,Sequence,LCCPP,CurrPoint,'Fin');
+                Option1 = CreateOptionDouble(Alg,Sequence,LCCPP,RecState.CandidateCP.Point,'Mid',RecState.CandidateCP.Point,CurrPoint,'Fin');
+                Option2 = CreateOptionSingle(Alg,Sequence,LCCPP,CurrPoint,'Fin');
                 BO = BetterOption(Option1, Option2);
                 if (BO==1)
                     %Add 2 Critical Points 'Mid','Fin'
@@ -62,7 +62,7 @@ if(IsMouseUp==true)
                 BLCCP = RecState.CriticalCPs(RecState.LCCPI-1);
             end
             LCCP = RecState.CriticalCPs(RecState.LCCPI);
-            [IsMerged,MergedPoint] = TryToMerge(RecParams.Alg,Sequence,BLCCP.Point,LCCP,CurrPoint);
+            [IsMerged,MergedPoint] = TryToMerge(Alg,Sequence,BLCCP.Point,LCCP,CurrPoint);
             
             if (IsMerged)
                 %[4]Critical CP -> New Critical CP(merged with remainder)
@@ -74,7 +74,7 @@ if(IsMouseUp==true)
                 RecState = AddCriticalPoint(RecState,Sequence,MergedPoint);
             else
                 %[2] - Critical CP -> CP(MU)
-                RecState = RecognizeAndAddCriticalPoint(RecParams.Alg,Sequence,RecState,LCCP.Point,CurrPoint,'Fin');
+                RecState = RecognizeAndAddCriticalPoint(Alg,Sequence,RecState,LCCP.Point,CurrPoint,'Fin');
             end
         end
     end
@@ -103,7 +103,7 @@ else    %Mouse not up
         end
         
         [LCCPP,LetterPosition] = CalculateLCCP(RecState);     
-        [NewCheckPoint,SumDist,CDist,minDist] = CreateCheckPointAndDistanceInfo(RecParams.Alg,Sequence,LCCPP,midPoint,LetterPosition);
+        [NewCheckPoint,SumDist,CDist,minDist] = CreateCheckPointAndDistanceInfo(Alg,Sequence,LCCPP,midPoint,LetterPosition);
         
         %if this contour is not close to anything
 %          if (minDist>RecParams.theta*SumDist)
@@ -120,7 +120,7 @@ else    %Mouse not up
             %update the Candidate point in RecState
             if (SCP.Point==RecState.CandidateCP.Point) %Candidate point was selected.
                 LCCPP = RecState.CandidateCP.Point;
-                RecState.CandidateCP =  CreateCheckPoint (RecParams.Alg,Sequence,LCCPP,midPoint,'Mid');
+                RecState.CandidateCP =  CreateCheckPoint (Alg,Sequence,LCCPP,midPoint,'Mid');
                 MarkOnSequence('CandidatePoint',Sequence,midPoint);
             else
                 RecState.CandidateCP = [];
@@ -169,7 +169,7 @@ else
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [IsMerged,MergedPoint] = TryToMerge(RecParams.Alg,Sequence,LastCriticalPoint,Candidate,LastPoint)
+function [IsMerged,MergedPoint] = TryToMerge(Alg,Sequence,LastCriticalPoint,Candidate,LastPoint)
 global LettersDataStructure;
 MergedPoint.Point = LastPoint;
 SubSeq =Sequence(LastCriticalPoint:LastPoint,:);
@@ -368,21 +368,23 @@ display(' ')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function MarkOnSequence(Type,Sequence,Point)
-switch Type
-    case 'CandidatePoint',
-        plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'c.-','Tag','SHAPE','LineWidth',10);
-        return;
-    case 'CriticalCP'
-        plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'r.-','Tag','SHAPE','LineWidth',10);
-        return;
-    case 'StartHorizontalIntervalPoint'
-        plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'g.-','Tag','SHAPE','LineWidth',10);
-        return;
-    case 'EndHorizontalIntervalPoint'
-        plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'k.-','Tag','SHAPE','LineWidth',10);
-        return;
-    otherwise
-        return;
+if (UI==true)
+    switch Type
+        case 'CandidatePoint',
+            plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'c.-','Tag','SHAPE','LineWidth',10);
+            return;
+        case 'CriticalCP'
+            %plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'r.-','Tag','SHAPE','LineWidth',10);
+            return;
+        case 'StartHorizontalIntervalPoint'
+            %plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'g.-','Tag','SHAPE','LineWidth',10);
+            return;
+        case 'EndHorizontalIntervalPoint'
+            %plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'k.-','Tag','SHAPE','LineWidth',10);
+            return;
+        otherwise
+            return;
+    end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

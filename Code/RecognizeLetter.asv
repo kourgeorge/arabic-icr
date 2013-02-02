@@ -34,14 +34,13 @@ elseif (strcmp(Position,'Iso'))
 else return;
 end
 
-%Normalize
+%Sequence Pre-Processing = Normalization->Simplification->Resampling
 NormalizedLetterSequence = NormalizeCont(LetterSequence);
+SimplifiedLetterSequence = SimplifyContour( NormalizedLetterSequence);
+ResampledLetterSequence = ResampleContour(SimplifiedLetterSequence,ResampleSize);
 
-%Simplify
-
-
-%Resample
-ResampledLetterSequence = ResampleContour(NormalizedLetterSequence,ResampleSize);
+%Activate to see the subsequences that are given from ProcessNewPoint
+%scatter(ResampledLetterSequence(:,1),ResampledLetterSequence(:,2))
 
 %Extract Feature Vector
 FeatureVector = CreateFeatureVectorFromContour(ResampledLetterSequence, FeatureType);
@@ -51,15 +50,15 @@ FeatureVector = CreateFeatureVectorFromContour(ResampledLetterSequence, FeatureT
 Candidates = NNCandidates;
 
 %Clasiffy Vector using SVM 1
-%Candidates = MultiSVMClassify( PositionDS, SequenceFV' );
-
-%Clasiffy Vector using SVM 2
-% [predicted_label, accuracy, decision_values] = svmpredict([1], ReducedFeatureVector', SVMStruct);
-% Candidates = char(predicted_label);
+%CandidatesSVM1 = MultiSVMClassify( PositionDS, FeatureVector' );
 
 %Reduce Dimensionality
 FeatureVector = FeatureVector(:);
 ReducedFeatureVector = COEFF*FeatureVector;
+
+%Clasiffy Vector using SVM 2
+%[predicted_label, accuracy, decision_values] = svmpredict([1], ReducedFeatureVector', SVMStruct);
+%CandidatesSVM2 = char(predicted_label);
 
 %Classify Using Kdtree
 [index_vals,vector_vals,final_nodes] = kd_knn(KdTreee,ReducedFeatureVector',3,0);

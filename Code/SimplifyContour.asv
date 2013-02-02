@@ -12,7 +12,7 @@ Dy = MaxY - MinY;
 
 minD = min(Dx,Dy);
 
-epsilon = minD/100;
+epsilon = minD/75;
 
 [ps,ix] = dpsimplify(Contour,epsilon);
 

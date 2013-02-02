@@ -1,18 +1,25 @@
-function [ output_args ] = SimulateOnlineRecognizer( sequence )
-%SIMULATEONLINERECOGNIZER Summary of this function goes here
-%   Detailed explanation goes here
+function RecState = SimulateOnlineRecognizer( sequence )
+%SIMULATEONLINERECOGNIZER This funtion simulate the Online pen recognizer.
+% a = dlmread(['C:\OCRData\GeneratedWords\sample.m']);
+% Res = SimulateOnlineRecognizer( a )
 
 RecParams = InitializeRecParams();
 RecState = InitializeRecState();
 
+%Sequence Pre-Processing = Normalization->Simplification->Resampling
+NormalizedLetterSequence = NormalizeCont(sequence);
+SimplifiedLetterSequence = SimplifyContour( NormalizedLetterSequence);
+sequence = ResampleContour(SimplifiedLetterSequence,500);
+
 len = size(sequence,1);
+%figure;
 Sequence = [];
 for k=1:len-1
     Sequence=[Sequence;sequence(k,:)];
-    RecState = ProcessNewPoint(RecParams,RecState,Sequence,false);
+    RecState = ProcessNewPoint(RecParams,RecState,Sequence,false,false);
 end
-RecState = ProcessNewPoint(RecParams,RecState,Sequence,true);
-DisplayCandidates (RecState);
+RecState = ProcessNewPoint(RecParams,RecState,Sequence,true,false);
+GetCandidatesFromRecState( RecState );
 
 %%%%%%%%%%%%%%%%    Initialization Functions   %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -36,25 +43,4 @@ RecParams.ST = 0.03; %Simplification algorithm tolerance
 RecParams.MinLen = 0.4;
 RecParams.MaxSlope = 0.4;
 RecParams.PointEnvLength=2;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function DisplayCandidates (RecState)
-for i=1:RecState.LCCPI
-    if (i==1)
-        startIndex = num2str(0);
-    else
-        BLCCPP = RecState.CriticalCPs(i-1).Point;
-        startIndex = num2str(BLCCPP);
-    end
-    LCCP =  RecState.CriticalCPs(i);
-    LCCPP = LCCP.Point;
-    endIndex = num2str(LCCPP);
-    i_str = num2str(i);
-    disp (['State : ',i_str,',  ',startIndex,' - ',endIndex])
-    CurrCan = LCCP.Candidates(:,1);
-    str = '';
-    for j=1:size(CurrCan,1)
-        str = [str,' ',CurrCan{j}{1}];
-    end
-    disp(['Candidates:  ',str])
-end
+

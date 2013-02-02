@@ -17,13 +17,13 @@ for i = 3:length(LetterPositionFolderList)
         FileName = current_object.name;
         sequence = dlmread([LetterPositionFolder,'\',FileName]);
         
-        %Do Sequence Pre-Processing
-        SimplifiedSequence = SimplifyContour(sequence);
+        %Sequence Pre-Processing = Normalization->Simplification->Resampling
+        NormalizedSequence = NormalizeCont(sequence);
+        SimplifiedSequence = SimplifyContour(NormalizedSequence);
         ResampledSequence = ResampleContour(SimplifiedSequence,ResampleSize);
-        NormalizedSequence = NormalizeCont(ResampledSequence);
         %%%
         
-        Samples(j) = {NormalizedSequence};
+        Samples(j) = {ResampledSequence};
     end
 end
 end

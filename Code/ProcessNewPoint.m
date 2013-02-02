@@ -1,6 +1,8 @@
-function RecState = ProcessNewPoint(RecParams,RecState,Sequence,IsMouseUp )
+function RecState = ProcessNewPoint(RecParams,RecState,Sequence,IsMouseUp,UI )
 %PROCESSNEWPOINT Summary of this function goes here
 %   Detailed explanation goes here
+global gUI;
+gUI = UI;
 
 Alg = RecParams.Alg;
 CurrPoint = length(Sequence);
@@ -170,6 +172,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [IsMerged,MergedPoint] = TryToMerge(Alg,Sequence,LastCriticalPoint,Candidate,LastPoint)
 global LettersDataStructure;
+
 MergedPoint.Point = LastPoint;
 SubSeq =Sequence(LastCriticalPoint:LastPoint,:);
 if (LastCriticalPoint==1)
@@ -367,21 +370,24 @@ display(' ')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function MarkOnSequence(Type,Sequence,Point)
-switch Type
-    case 'CandidatePoint',
-        %plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'c.-','Tag','SHAPE','LineWidth',10);
-        return;
-    case 'CriticalCP'
-        %plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'r.-','Tag','SHAPE','LineWidth',10);
-        return;
-    case 'StartHorizontalIntervalPoint'
-        %plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'g.-','Tag','SHAPE','LineWidth',10);
-        return;
-    case 'EndHorizontalIntervalPoint'
-        %plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'k.-','Tag','SHAPE','LineWidth',10);
-        return;
-    otherwise
-        return;
+global gUI;
+if (gUI==true)
+    switch Type
+        case 'CandidatePoint',
+            plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'c.-','Tag','SHAPE','LineWidth',10);
+            return;
+        case 'CriticalCP'
+            plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'r.-','Tag','SHAPE','LineWidth',10);
+            return;
+        case 'StartHorizontalIntervalPoint'
+            plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'g.-','Tag','SHAPE','LineWidth',10);
+            return;
+        case 'EndHorizontalIntervalPoint'
+            plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'k.-','Tag','SHAPE','LineWidth',10);
+            return;
+        otherwise
+            return;
+    end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

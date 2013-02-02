@@ -1,4 +1,4 @@
-function [ output_args ] = GenerateRandomizedWPFile ( inputFilepath,outputFilePath,numWords )
+function  GenerateRandomizedWPFile ( inputFilepath,outputFilePath,numWords )
 %GENERATERANDOMIZEDWPFILE Summary of this function goes here
 %   GenerateRandomizedWPFile('C:\OCRData\TestLegs.txt','C:\OCRData\TestLegs1000rand.txt',1000 )
 

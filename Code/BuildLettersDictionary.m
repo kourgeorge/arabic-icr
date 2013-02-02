@@ -46,36 +46,29 @@ for i = 3:length(LettersSamplesFolderList)
     IsDir = current_object.isdir;
     if (IsDir==1 && FolderName~='_')
         LetterFolder = [LettersSamplesFolder,'\',FolderName];
-        
-        
         LetterInAllPositions= ReadLetterData(LetterFolder,ResampleSize);
-        %Not all letters has Ini and Mid Forms
         
-        %Ini
+        %Ini - Not all letters has Ini Form
         if (~isempty(LetterInAllPositions.Ini))
             Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Ini,2));
-            %NormalizedLetters = cellfun(@NormalizeCont,LetterInAllPositions.Ini,'UniformOutput', false);
             LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Ini,Feature,'UniformOutput', false);
             IniStruct = [IniStruct;FolderName , {LetterFeatures}];
         end
         
-        %Mid
+        %Mid - Not all letters has Mid Form
         if (~isempty(LetterInAllPositions.Mid))
             Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Mid,2));
-            %NormalizedLetters = cellfun(@NormalizeCont,LetterInAllPositions.Mid,'UniformOutput', false);
             LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Mid,Feature,'UniformOutput', false);
             MidStruct = [MidStruct;FolderName , {LetterFeatures}];
         end
         
         %Fin
         Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Fin,2));
-        %NormalizedLetters = cellfun(@NormalizeCont,LetterInAllPositions.Fin,'UniformOutput', false);
         LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Fin,Feature,'UniformOutput', false);
         FinStruct = [FinStruct;FolderName , {LetterFeatures}];
         
         %Iso
         Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Iso,2));
-        %NormalizedLetters = cellfun(@NormalizeCont,LetterInAllPositions.Iso,'UniformOutput', false);
         LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Iso,Feature,'UniformOutput', false);
         IsoStruct = [IsoStruct;FolderName , {LetterFeatures}];
     end

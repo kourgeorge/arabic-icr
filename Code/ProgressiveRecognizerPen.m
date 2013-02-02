@@ -172,7 +172,7 @@ RecParams = InitializeRecParams();
 
 Old_LCCPI = RecState.LCCPI;
 
-RecState = ProcessNewPoint(RecParams,RecState,Sequence,IsMouseUp);
+RecState = ProcessNewPoint(RecParams,RecState,Sequence,IsMouseUp,true);
 
 %Update the heading in the Pen Window
 if (Old_LCCPI < RecState.LCCPI || IsMouseUp==true)
@@ -181,7 +181,7 @@ end
 
 %Output all the candidates.
 if (IsMouseUp==true)
-    DisplayCandidates(RecState)
+    GetCandidatesFromRecState( RecState );
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
