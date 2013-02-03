@@ -52,25 +52,29 @@ for i = 3:length(LettersSamplesFolderList)
         if (~isempty(LetterInAllPositions.Ini))
             Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Ini,2));
             LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Ini,Feature,'UniformOutput', false);
-            IniStruct = [IniStruct;FolderName , {LetterFeatures}];
+            LetterWavelets = cellfun(@CreateWaveletFromFV, LetterFeatures ,'UniformOutput', false);
+            IniStruct = [IniStruct;FolderName , {LetterFeatures}, {LetterWavelets}];
         end
         
         %Mid - Not all letters has Mid Form
         if (~isempty(LetterInAllPositions.Mid))
             Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Mid,2));
             LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Mid,Feature,'UniformOutput', false);
-            MidStruct = [MidStruct;FolderName , {LetterFeatures}];
+            LetterWavelets = cellfun(@CreateWaveletFromFV, LetterFeatures ,'UniformOutput', false);
+            MidStruct = [MidStruct;FolderName , {LetterFeatures}, {LetterWavelets}];
         end
         
         %Fin
         Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Fin,2));
         LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Fin,Feature,'UniformOutput', false);
-        FinStruct = [FinStruct;FolderName , {LetterFeatures}];
+        LetterWavelets = cellfun(@CreateWaveletFromFV, LetterFeatures ,'UniformOutput', false);
+        FinStruct = [FinStruct;FolderName , {LetterFeatures}, {LetterWavelets}];
         
         %Iso
         Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Iso,2));
         LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Iso,Feature,'UniformOutput', false);
-        IsoStruct = [IsoStruct;FolderName , {LetterFeatures}];
+        LetterWavelets = cellfun(@CreateWaveletFromFV, LetterFeatures ,'UniformOutput', false);
+        IsoStruct = [IsoStruct;FolderName , {LetterFeatures}, {LetterWavelets}];
     end
     
 end

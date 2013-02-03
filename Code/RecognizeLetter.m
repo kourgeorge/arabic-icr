@@ -47,28 +47,24 @@ ResampledLetterSequence = ResampleContour(SimplifiedLetterSequence,ResampleSize)
 FeatureVector = CreateFeatureVectorFromContour(ResampledLetterSequence, FeatureType);
 
 %Classify using NN
-[NNCandidates,AllDictionarySorted] = GetClosestLetterCandidates( FeatureVector, PositionDS, Metric ,3);
-Candidates = NNCandidates;
+%%[NNCandidates,AllDictionarySorted] = GetClosestLetterCandidates( FeatureVector, PositionDS, Metric ,3);
+%%Candidates = NNCandidates;
+
+%Clasify using Embedding and KdTree
+WaveletVector = CreateWaveletFromFV(FeatureVector);
+ReducedWaveletVector = COEFF*WaveletVector;
+Candidates = GetCandidateskdTree(KdTreee,ReducedWaveletVector,LettersMap);
 
 %Clasiffy Vector using SVM 1
 %CandidatesSVM1 = MultiSVMClassify( PositionDS, FeatureVector' );
 
 %Reduce Dimensionality
 FeatureVector = FeatureVector(:);
-ReducedFeatureVector = COEFF*FeatureVector;
+%ReducedFeatureVector = COEFF*FeatureVector;
 
 %Clasiffy Vector using SVM 2
 %[predicted_label, accuracy, decision_values] = svmpredict([1], ReducedFeatureVector', SVMStruct);
 %CandidatesSVM2 = char(predicted_label);
-
-%Classify Using Kdtree
-[index_vals,vector_vals,final_nodes] = kd_knn(KdTreee,ReducedFeatureVector',3,0);
-
-ClosestWPs= [];
-for i=1:length(index_vals)
-    ClosestWPs = [ClosestWPs ; LettersMap(index_vals(i))];
-end
-
 
 if (nargout==2)
     SumDist = sum(cat(1,AllDictionarySorted{:,2}));
@@ -76,3 +72,14 @@ end
 
 end
 
+
+function Candidates = GetCandidateskdTree(KdTreee,vector,LettersMap)
+
+[index_vals,vector_vals,final_nodes] = kd_knn(KdTreee,vector',3,0);
+Candidates= [];
+for i=1:length(index_vals)
+    Diff = dist2(vector_vals(i,:), vector');
+    WPcell={LettersMap(index_vals(i)),Diff};
+    Candidates=[Candidates ; WPcell];
+end
+end

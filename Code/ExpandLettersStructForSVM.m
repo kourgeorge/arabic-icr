@@ -8,8 +8,9 @@ NumericLabeling = [];
 
 for i = 1:size(PositionLettersDS,1)
     Letter = PositionLettersDS{i,1};
-    %Letter = i;
-    LetterCandidates = PositionLettersDS{i,2};
+    %PositionLettersDS{i,2}; for feature vectores and
+    %PositionLettersDS{i,3}; for wavelets
+    LetterCandidates = PositionLettersDS{i,3};
     LetterSamples = [];
     for j=1: size(LetterCandidates,2)
         a = LetterCandidates(j);

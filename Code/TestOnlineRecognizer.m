@@ -19,6 +19,7 @@ for i = 3:length(TestSetWordsFolderList)
     LastCharacter = FileNameSize(2);
     if (IsFile==1 && FileName(LastCharacter)=='m')
         sequence = dlmread([TestSetFolder,'\',FileName]);
+        disp(' ')
         disp(['Word:  ',FileName])
         RecState = SimulateOnlineRecognizer( sequence );
         [CorrectNumLetters, CorrectRecognition] = correctRecognition(RecState,strrep(FileName, '.m', ''));
@@ -33,9 +34,9 @@ for i = 3:length(TestSetWordsFolderList)
         end
     end
 end
-count
-correctSeg
-correctRec
+
+RecognitionRate = correctSeg/count*100
+SegmentationRate = correctRec/count*100
 end
 
 

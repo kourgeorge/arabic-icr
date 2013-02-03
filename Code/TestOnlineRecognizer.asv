@@ -2,10 +2,14 @@ function [ output_args ] = TestOnlineRecognizer(  )
 %TESTONLINERECOGNIZER Summary of this function goes here
 %   Detailed explanation goes here
 
+global LettersDataStructure; 
 TestSetFolder = 'C:\OCRData\GeneratedWords';
+LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
+
 clc;
 correctRec = 0;
 correctSeg = 0;
+count = 0;
 TestSetWordsFolderList = dir(TestSetFolder);
 for i = 3:length(TestSetWordsFolderList)
     current_object = TestSetWordsFolderList(i);
@@ -15,21 +19,24 @@ for i = 3:length(TestSetWordsFolderList)
     LastCharacter = FileNameSize(2);
     if (IsFile==1 && FileName(LastCharacter)=='m')
         sequence = dlmread([TestSetFolder,'\',FileName]);
+        disp(' ')
         disp(['Word:  ',FileName])
         RecState = SimulateOnlineRecognizer( sequence );
         [CorrectNumLetters, CorrectRecognition] = correctRecognition(RecState,strrep(FileName, '.m', ''));
         
         %Statistics
+        count=count+1;
         if (CorrectRecognition==true)
             correctRec = correctRec+1;
         end
         if (CorrectNumLetters==true)
             correctSeg = correctSeg+1;
         end
-        
     end
 end
 
+SegmentationRate = correctSeg/count*100
+RecognitionRate = correctRec/count*100
 end
 
 
