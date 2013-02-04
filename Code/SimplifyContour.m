@@ -1,4 +1,4 @@
-function [ SimplifiedContour ] = SimplifyContour( Contour)
+function [ SimplifiedContourMIN, SimplifiedContourMAX] = SimplifyContour( Contour)
 %CONTOURSIMPLIFICATION returns a simplified contour of the givem one using Recursive Douglas-Peucker Polyline Simplification.
 %   Detailed explanation goes here
 
@@ -12,11 +12,16 @@ Dy = MaxY - MinY;
 
 minD = min(Dx,Dy);
 
-epsilon = minD/100;
+epsilon = minD/50;
 
 [ps,ix] = dpsimplify(Contour,epsilon);
 
-SimplifiedContour = ps;
+SimplifiedContourMIN = ps;
 
+if (nargout==2)
+    maxD = max (Dx,Dy);
+    epsilon = 1/50; %epsilon is absolute
+    [ps,ix] = dpsimplify(Contour,epsilon);
+    SimplifiedContourMAX = ps;
 end
 

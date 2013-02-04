@@ -2,10 +2,20 @@ function [ output_args ] = TestOnlineRecognizer(  )
 %TESTONLINERECOGNIZER Summary of this function goes here
 %   Detailed explanation goes here
 
-global LettersDataStructure; 
+global LettersDataStructure;
 TestSetFolder = 'C:\OCRData\GeneratedWords';
 LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
 
+OutputImages = false;
+if (OutputImages==true)
+    fig = figure();
+    cl = clock;
+    ax = axes();
+    OutputFolder = ['C:\OCRData\TestOutput',num2str(cl(5)),'\'];
+    if(~exist(OutputFolder,'dir'))
+        mkdir(OutputFolder);
+    end
+end
 clc;
 correctRec = 0;
 correctSeg = 0;
@@ -24,13 +34,39 @@ for i = 3:length(TestSetWordsFolderList)
         RecState = SimulateOnlineRecognizer( sequence );
         [CorrectNumLetters, CorrectRecognition] = correctRecognition(RecState,strrep(FileName, '.m', ''));
         
-        %Statistics
+        %Collect Statistics
         count=count+1;
         if (CorrectRecognition==true)
             correctRec = correctRec+1;
+        else
+            disp ('===>error Recognition')
+            GetCandidatesFromRecState( RecState );
         end
         if (CorrectNumLetters==true)
             correctSeg = correctSeg+1;
+        else
+            disp ('===>error Segmentation')
+        end
+        
+        %Output letters images to folder
+        if (CorrectRecognition == false && OutputImages==true)
+            WordFolder =[OutputFolder,'\',FileName];
+            mkdir(WordFolder);
+            for k=1:RecState.LCCPI
+                if (k==1)
+                    startIndex = 1;
+                else
+                    BLCCPP = RecState.CriticalCPs(k-1).Point;
+                    startIndex = BLCCPP;
+                end
+                LCCP =  RecState.CriticalCPs(k);
+                endIndex = LCCP.Point;
+                plot (ax, RecState.Sequence(startIndex:endIndex,1),RecState.Sequence(startIndex:endIndex,2),'LineWidth',3);
+                PrevDir = pwd;
+                cd(WordFolder);
+                saveas(ax,num2str(k),'jpg');
+                cd (PrevDir);
+            end
         end
     end
 end

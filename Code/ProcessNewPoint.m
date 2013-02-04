@@ -34,14 +34,6 @@ if(IsMouseUp==true)
         end
     else %not the first letter
         if (~isempty(RecState.CandidateCP))
-            LCCP = RecState.CriticalCPs(RecState.LCCPI);
-            [IsMerged,MergedPoint] = TryToMerge(Alg,Sequence,LCCP.Point,RecState.CandidateCP,CurrPoint);
-            if (IsMerged)
-                %[3]Critical CP -> CP(merged - old CP and the remainder)                
-                RecState = AddCriticalPoint(RecState,Sequence,MergedPoint);
-                %Reset the Candidate
-                RecState.CandidateCP = [];
-            else
                 %[1] - Critical CP -> CP -> CP (of MU)
                 LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
                 Option1 = CreateOptionDouble(Alg,Sequence,LCCPP,RecState.CandidateCP.Point,'Mid',RecState.CandidateCP.Point,CurrPoint,'Fin');
@@ -55,7 +47,6 @@ if(IsMouseUp==true)
                 else
                     RecState = AddCriticalPoint(RecState,Sequence,Option2.FirstPoint);
                 end
-            end
         else
             if (RecState.LCCPI==1)
                 BLCCP.Point = 1;
@@ -71,7 +62,6 @@ if(IsMouseUp==true)
                 MarkOnSequence('CandidatePoint',Sequence,LCCP.Point);                 
                 RecState.LCCPI = RecState.LCCPI-1;
                 RecState.CriticalCPs = RecState.CriticalCPs(1:RecState.LCCPI);
-                %Add the new merged critical CheckPoint
                 RecState = AddCriticalPoint(RecState,Sequence,MergedPoint);
             else
                 %[2] - Critical CP -> CP(MU)
@@ -95,7 +85,7 @@ else    %Mouse not up
         elseif (SlopeRes)
             RecState.LastSeenHorizontalPoint = CurrPoint;
             return;
-        elseif (IsClosingHS(Sequence,CurrPoint,RecParams,RecState))
+        elseif (IsClosingHS(Sequence,CurrPoint,SlopeRes,RecState))
             MarkOnSequence('EndHorizontalIntervalPoint',Sequence,RecState.LastSeenHorizontalPoint);
             [HS,RecState] = EndHS(RecState);
             midPoint=CalcuateHSMidPoint(HS);
@@ -103,6 +93,7 @@ else    %Mouse not up
             return;
         end
         
+        %The execution will reach this point, only if IsClosingHS is true
         [LCCPP,LetterPosition] = CalculateLCCP(RecState);     
         [NewCheckPoint,SumDist,CDist,minDist] = CreateCheckPointAndDistanceInfo(Alg,Sequence,LCCPP,midPoint,LetterPosition);
         
@@ -137,8 +128,9 @@ end
 %%%%%%%%%%%%%%%%%    HELPER FUNCTIONS   %%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %HS means Horiontal Sections.
-function Res = IsFirstPointInHS(Sequence,CurrPoint,SlopeRes,RecState)
-Res = SlopeRes && Sequence(CurrPoint,1)<Sequence(CurrPoint-1,1) && RecState.HSStart == -1;
+function Res = IsFirstPointInHS(Sequence,CurrPoint,Slope,RecState)
+[min,max] = SimplifyContour(Sequence(1:CurrPoint,:));  
+Res = Slope && Sequence(CurrPoint,1)<Sequence(CurrPoint-1,1) && ~(size(max,1)==2) && RecState.HSStart == -1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function RecState = StartNewHS(CurrPoint,RecState)
@@ -146,9 +138,14 @@ RecState.HSStart = CurrPoint;
 RecState.LastSeenHorizontalPoint = CurrPoint;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function Res = IsClosingHS(Sequence,CurrPoint,RecParams,RecState)
-slope = CalculateSlope(Sequence,CurrPoint-RecParams.PointEnvLength,CurrPoint);
-Res = (~CheckSlope(slope) || ~Sequence(CurrPoint,1)<Sequence(CurrPoint-1,1)) && RecState.HSStart~=-1;
+function Res = IsClosingHS(Sequence,CurrPoint,SlopeRes,RecState)
+% if (RecState.HSStart~=-1)
+%     [min,max] = SimplifyContour(Sequence(RecState.HSStart:CurrPoint,:));  
+%     Res = ~SlopeRes && ~(size(max,1)==2) ;
+% else
+%     Res = false;
+% end
+Res = ~SlopeRes && (RecState.HSStart~=-1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [HS,RecState] = EndHS(RecState)
@@ -339,34 +336,6 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%    PRINTING/TEST FUNCTIONS   %%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function CheckAlternativeCondition(SequenceLength,SimplifiedSequence,Slope,MinLen,MaxSlope)
-%for testing only - check when the second condition holds alone
-if ((Slope<MaxSlope && (length(SimplifiedSequence)-1)*SequenceLength>MinLen) && ~(SequenceLength> MinLen && length(SimplifiedSequence)>3 && Slope<MaxSlope))
-    len_simp_str=num2str(length(SimplifiedSequence));
-    seqLen_str=num2str(SequenceLength);
-    MinLen_str = num2str(MinLen);
-    disp(['WARNING: length(simplified)= ',len_simp_str,'   seqLen = ',seqLen_str,'  >  ',MinLen_str]);
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function DisplayUnsutisfiedConditions(seqLen,simplified,slope,MinLen,MaxSlope)
-if (seqLen <= MinLen)
-    display('Sub-Sequence length too Short')
-end
-if (length(simplified)<=2)
-    display ('Sub-Sequence is too Simple')
-end
-if (slope>=MaxSlope)
-    display ('The point environment is not Horizontal Enough')
-end
-display(' ')
-display(' ')
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function MarkOnSequence(Type,Sequence,Point)

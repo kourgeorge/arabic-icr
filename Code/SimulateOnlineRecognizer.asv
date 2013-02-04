@@ -9,8 +9,8 @@ RecState = InitializeRecState();
 %Sequence Pre-Processing = Normalization->Simplification->Resampling
 NormalizedLetterSequence = NormalizeCont(sequence);
 SimplifiedLetterSequence = SimplifyContour( NormalizedLetterSequence);
-sequence = ResampleContour(SimplifiedLetterSequence,500);
-
+sequence = ResampleContour(SimplifiedLetterSequence,300);
+RecState.Sequence = sequence;
 len = size(sequence,1);
 %figure;
 Sequence = [];
@@ -19,7 +19,9 @@ for k=1:len-1
     RecState = ProcessNewPoint(RecParams,RecState,Sequence,false,false);
 end
 RecState = ProcessNewPoint(RecParams,RecState,Sequence,true,false);
-GetCandidatesFromRecState( RecState );
+
+%Comment out when TestOnlineRecognizer is running 
+%GetCandidatesFromRecState( RecState );
 
 %%%%%%%%%%%%%%%%    Initialization Functions   %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -36,7 +38,7 @@ RecState.LastSeenHorizontalPoint = -1;
 
 function RecParams = InitializeRecParams()
 % Algorithm parameters
-RecParams.Alg = {'DTW' 'MSC' 'kdTree'};
+RecParams.Alg = {'DTW_Res' 'MSC'};
 RecParams.theta=0.04/5;
 RecParams.K = 5;
 RecParams.ST = 0.03; %Simplification algorithm tolerance

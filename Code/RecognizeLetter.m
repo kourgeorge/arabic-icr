@@ -1,4 +1,4 @@
-function [Candidates,SumDist] = RecognizeLetter( LetterSequence, LettersDataStructure, Position, Metric )
+function [Candidates,SumDist] = RecognizeLetter( LetterSequence, LettersDataStructure, Position, Alg )
 %RECOGNIZELETTER Load the letters data structure and tries recognizes a
 %letter in a given position.
 %   Usage: k = dlmread(['C:\OCRData\GeneratedWordsMed\sample2\_8_.m']);
@@ -46,15 +46,17 @@ ResampledLetterSequence = ResampleContour(SimplifiedLetterSequence,ResampleSize)
 %Extract Feature Vector
 FeatureVector = CreateFeatureVectorFromContour(ResampledLetterSequence, FeatureType);
 
-%Classify using NN
-%%[NNCandidates,AllDictionarySorted] = GetClosestLetterCandidates( FeatureVector, PositionDS, Metric ,3);
-%%Candidates = NNCandidates;
 
-%Clasify using Embedding and KdTree
-WaveletVector = CreateWaveletFromFV(FeatureVector);
-ReducedWaveletVector = COEFF*WaveletVector;
-Candidates = GetCandidateskdTree(KdTreee,ReducedWaveletVector,LettersMap);
 
+if (strcmp(Alg(1),'EMD')==true)
+    WaveletVector = CreateWaveletFromFV(FeatureVector);
+    ReducedWaveletVector = COEFF*WaveletVector;
+    Candidates = GetCandidateskdTree(KdTreee,ReducedWaveletVector,LettersMap);
+else
+    %Classify using NN
+    [NNCandidates,AllDictionarySorted] = GetClosestLetterCandidates( FeatureVector, PositionDS, Alg{1} ,3);
+    Candidates = NNCandidates;
+end
 %Clasiffy Vector using SVM 1
 %CandidatesSVM1 = MultiSVMClassify( PositionDS, FeatureVector' );
 
@@ -74,12 +76,28 @@ end
 
 
 function Candidates = GetCandidateskdTree(KdTreee,vector,LettersMap)
-
-[index_vals,vector_vals,final_nodes] = kd_knn(KdTreee,vector',3,0);
+[index_vals,vector_vals,final_nodes] = kd_knn(KdTreee,vector',9,0);
 Candidates= [];
 for i=1:length(index_vals)
+    if (size (Candidates,1)==3)
+        return;
+    end
     Diff = dist2(vector_vals(i,:), vector');
-    WPcell={LettersMap(index_vals(i)),Diff};
-    Candidates=[Candidates ; WPcell];
+    if (UniqueCandidate(LettersMap(index_vals(i)),Candidates))
+        WPcell={LettersMap(index_vals(i)),Diff};
+        Candidates=[Candidates ; WPcell];
+    end
+end
+end
+
+function res =  UniqueCandidate(Letter,Candidates)
+res = true;
+if (size (Candidates,1) == 0 )
+    return;
+end
+for i=1:size (Candidates,1)
+    if (strcmp(Candidates(i,1),Letter))
+        res = false;
+    end
 end
 end
