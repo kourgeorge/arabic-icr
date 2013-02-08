@@ -232,31 +232,6 @@ else
     endIndex = num2str(LCCP.Point);
     set(findobj('Tag','TEXT'),'String',['[Current State: ' stat_str, ']  ','   Previous State:- ',' Interval: ' , startIndex, ' - ',  endIndex, '   Candidates: ' str]);
 end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function DisplayCandidates (RecState)
-for i=1:RecState.LCCPI
-    if (i==1)
-        startIndex = num2str(0);
-    else
-        BLCCPP = RecState.CriticalCPs(i-1).Point;
-        startIndex = num2str(BLCCPP);
-    end
-    LCCP =  RecState.CriticalCPs(i);
-    LCCPP = LCCP.Point;
-    endIndex = num2str(LCCPP);
-    i_str = num2str(i);
-    disp (['State : ',i_str,',  ',startIndex,' - ',endIndex])
-    CurrCan = LCCP.Candidates(:,1);
-    str = '';
-    for j=1:size(CurrCan,1)
-        str = [str,' ',CurrCan{j}{1}];
-    end
-    disp(['Candidates:  ',str])
-end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%     EOF      %%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
