@@ -249,19 +249,19 @@ drawnow();
 Results = [];
 
 
-if (Angular==1 & KDTree==1)
+if (Angular==1 && KDTree==1)
 ClosestWPs = RecognizeWPkdTree( InputContour, [DataFolder,'\kdtree\Angular.mat'], 1, Closest );
 end
 
-if (ShapeContext==1 & KDTree==1)
+if (ShapeContext==1 && KDTree==1)
 ClosestWPs = RecognizeWPkdTree( InputContour, [DataFolder,'\kdtree\ShapeContext.mat'], 2, Closest );
 end
 
-if (Angular==1 & LSH==1)
+if (Angular==1 && LSH==1)
 ClosestWPs = RecognizeWPLSH( InputContour, [DataFolder,'\LSH\Angular.mat'], 1, Closest );
 end
 
-if (ShapeContext==1 & LSH==1)
+if (ShapeContext==1 && LSH==1)
 ClosestWPs = RecognizeWPLSH( InputContour, [DataFolder,'\LSH\ShapeContext.mat'], 2, Closest );
 end
 
