@@ -6,6 +6,7 @@ gUI = UI;
 
 Alg = RecParams.Alg;
 CurrPoint = length(Sequence);
+RecState.Sequence=Sequence;
 
 if(IsMouseUp==true)
     if (RecState.LCCPI == 0)
@@ -34,19 +35,19 @@ if(IsMouseUp==true)
         end
     else %not the first letter
         if (~isempty(RecState.CandidateCP))
-                %[1] - Critical CP -> CP -> CP (of MU)
-                LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
-                Option1 = CreateOptionDouble(Alg,Sequence,LCCPP,RecState.CandidateCP.Point,'Mid',RecState.CandidateCP.Point,CurrPoint,'Fin');
-                Option2 = CreateOptionSingle(Alg,Sequence,LCCPP,CurrPoint,'Fin');
-                BO = BetterOption(Option1, Option2);
-                if (BO==1)
-                    %Add 2 Critical Points 'Mid','Fin'
-                    RecState = AddCriticalPoint(RecState,Sequence,Option1.FirstPoint);
-                    RecState = AddCriticalPoint(RecState,Sequence,Option1.SecondPoint);
-
-                else
-                    RecState = AddCriticalPoint(RecState,Sequence,Option2.FirstPoint);
-                end
+            %[1] - Critical CP -> CP -> CP (of MU)
+            LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
+            Option1 = CreateOptionDouble(Alg,Sequence,LCCPP,RecState.CandidateCP.Point,'Mid',RecState.CandidateCP.Point,CurrPoint,'Fin');
+            Option2 = CreateOptionSingle(Alg,Sequence,LCCPP,CurrPoint,'Fin');
+            BO = BetterOption(Option1, Option2);
+            if (BO==1)
+                %Add 2 Critical Points 'Mid','Fin'
+                RecState = AddCriticalPoint(RecState,Sequence,Option1.FirstPoint);
+                RecState = AddCriticalPoint(RecState,Sequence,Option1.SecondPoint);
+                
+            else
+                RecState = AddCriticalPoint(RecState,Sequence,Option2.FirstPoint);
+            end
         else
             if (RecState.LCCPI==1)
                 BLCCP.Point = 1;
@@ -59,7 +60,7 @@ if(IsMouseUp==true)
             if (IsMerged)
                 %[4]Critical CP -> New Critical CP(merged with remainder)
                 %Remove the previous critical CP
-                MarkOnSequence('CandidatePoint',Sequence,LCCP.Point);                 
+                MarkOnSequence('CandidatePoint',Sequence,LCCP.Point);
                 RecState.LCCPI = RecState.LCCPI-1;
                 RecState.CriticalCPs = RecState.CriticalCPs(1:RecState.LCCPI);
                 RecState = AddCriticalPoint(RecState,Sequence,MergedPoint);
@@ -72,20 +73,22 @@ if(IsMouseUp==true)
 else    %Mouse not up
     if (rem(CurrPoint,RecParams.K)==0)
         
-        slope = CalculateSlope(Sequence,CurrPoint-RecParams.PointEnvLength,CurrPoint);
-        SlopeRes = CheckSlope(slope);
-        
-        %Perform line simplification from the last Segmentation Point
+        [proportionalSiplifiedContour,absoluteSiplifiedContour] = SimplifyContour(Sequence(1:CurrPoint,:));
+        resampledSequence = ResampleContour(proportionalSiplifiedContour,size(absoluteSiplifiedContour,1)*5);
+        resSeqLastPoint = size(resampledSequence,1);
+        Slope = CalculateSlope(resampledSequence,resSeqLastPoint-1,resSeqLastPoint);
+        SlopeRes = CheckSlope(Slope);
+        %scatter(resampledSequence(:,1),resampledSequence(:,2));  
         
         %Handle horizontal Segments
-        if(IsFirstPointInHS(Sequence,CurrPoint,SlopeRes,RecState))
+        if(IsFirstPointInHS(resampledSequence,SlopeRes,RecState))
             RecState = StartNewHS(CurrPoint,RecState);
             MarkOnSequence('StartHorizontalIntervalPoint',Sequence,CurrPoint);
-            return;        
+            return;
         elseif (SlopeRes)
             RecState.LastSeenHorizontalPoint = CurrPoint;
             return;
-        elseif (IsClosingHS(Sequence,CurrPoint,SlopeRes,RecState))
+        elseif (IsClosingHS(resampledSequence,resSeqLastPoint,SlopeRes,RecState))
             MarkOnSequence('EndHorizontalIntervalPoint',Sequence,RecState.LastSeenHorizontalPoint);
             [HS,RecState] = EndHS(RecState);
             midPoint=CalcuateHSMidPoint(HS);
@@ -94,18 +97,12 @@ else    %Mouse not up
         end
         
         %The execution will reach this point, only if IsClosingHS is true
-        [LCCPP,LetterPosition] = CalculateLCCP(RecState);     
+        [LCCPP,LetterPosition] = CalculateLCCP(RecState);
         [NewCheckPoint,SumDist,CDist,minDist] = CreateCheckPointAndDistanceInfo(Alg,Sequence,LCCPP,midPoint,LetterPosition);
         
-        %if this contour is not close to anything
-%          if (minDist>RecParams.theta*SumDist)
-%              display ('was rejected')
-%              return;
-%         end
-%         
         if (isempty(RecState.CandidateCP))
             RecState.CandidateCP = NewCheckPoint;
-            MarkOnSequence('CandidatePoint',Sequence,midPoint); 
+            MarkOnSequence('CandidatePoint',Sequence,midPoint);
         else
             SCP = BetterCP (RecState.CandidateCP,NewCheckPoint); %SCP - Selected CheckPoint
             
@@ -123,14 +120,69 @@ else    %Mouse not up
         end
     end
 end
-        
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%    HELPER FUNCTIONS   %%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %HS means Horiontal Sections.
-function Res = IsFirstPointInHS(Sequence,CurrPoint,Slope,RecState)
-[min,max] = SimplifyContour(Sequence(1:CurrPoint,:));  % this one is to avoid gettinf critical point on letters that start with a straight line like K and 3
-Res = Slope && Sequence(CurrPoint,1)<Sequence(CurrPoint-1,1) && ~(size(max,1)==2) && RecState.HSStart == -1;
+function Res = IsFirstPointInHS(ProcessedSequence,Slope,RecState)
+processedCurrPont = size(ProcessedSequence,1);
+[~,absoluteSiplifiedContour] = SimplifyContour(ProcessedSequence(1:processedCurrPont,:));  % this one is to avoid gettinf critical point on letters that start with a straight line like K and 3
+Res = RecState.HSStart == -1 && Slope && ProcessedSequence(processedCurrPont,1)<ProcessedSequence(processedCurrPont-1,1) && ~(size(absoluteSiplifiedContour,1)==2);
+%Check that the horizontal segment is close to the baseline of the word,
+%which is calulated by extrapolating the previous check points.
+%We need to handle the valeys of the F_Fin, Y_Fin and N_Fin using linear regression to calculate the baseline using previous Critical points.
+%if the Horizontal segments is far away from the regression line, avoid it.
+if (Res==true)
+    Res = Res && IsOnBaseline(RecState);
+end
+    
+
+%Check That the slope of the CurrPoint in the simplified version of the
+%sequence is small (horizontal). This should fix the problem that very
+%small horizontal segments are taken into acount. (Bad condition because we would like to know about smal HS like in KLM*H)
+% if (Res==true)
+%     resampled = ResampleContour(proportionalSiplifiedContour,size(absoluteSiplifiedContour,1)*5);
+%     plot(resampled(:,1),resampled(:,2))
+%     lastPoint = size(resampled,1);
+%     slope = CalculateSlope(resampled,max(lastPoint-1,1),lastPoint);
+%     SlopeRes = CheckSlope(slope);
+%     Res = Res && SlopeRes;
+% end
+
+%Check that there is enough information between the (last critical checkpoint) and the (the last candidate) 
+%to the current HS start. Theoritacally this condition should
+%always be true, however viberation in the digitizer can cause too much
+%small HS that should be a single HS.
+OrigSequence = RecState.Sequence;
+OrigCurrPoint = size(OrigSequence,1);
+
+if (RecState.LCCPI~=0)
+    LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
+    [~,abs] = SimplifyContour(OrigSequence(LCCPP:OrigCurrPoint,:));
+    Res = Res && (size(abs,1)>2);
+end
+
+if (~isempty(RecState.CandidateCP))
+    LCCPP = RecState.CandidateCP.Point;
+    [~,abs] = SimplifyContour(OrigSequence(LCCPP:OrigCurrPoint,:));
+    Res = Res && (size(abs,1)>2);
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function Res = IsClosingHS(Sequence,CurrPoint,SlopeRes,RecState)
+%This is a closing HS point if the slope is too large, or of the is too much
+%information between the HSStart and the HSEnd (CurrPoint).
+
+% if (RecState.HSStart~=-1 && Slope==0)
+%     slope = CalculateSlope(Sequence,lastPoint-2,lastPoint-1);
+%     SlopeRes = CheckSlope(slope);
+%     Res = SlopeRes && (size(abs,1)==2);
+% else
+%    Res = false;
+% end
+
+Res = ~SlopeRes && (RecState.HSStart~=-1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function RecState = StartNewHS(CurrPoint,RecState)
@@ -138,19 +190,50 @@ RecState.HSStart = CurrPoint;
 RecState.LastSeenHorizontalPoint = CurrPoint;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function Res = IsClosingHS(Sequence,CurrPoint,SlopeRes,RecState)
-% if (RecState.HSStart~=-1)
-%     [min,max] = SimplifyContour(Sequence(RecState.HSStart:CurrPoint,:));  
-%     Res = ~SlopeRes && ~(size(max,1)==2) ;
-% else
-%     Res = false;
-% end
-Res = ~SlopeRes && (RecState.HSStart~=-1);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [HS,RecState] = EndHS(RecState)
 HS = [RecState.HSStart,RecState.LastSeenHorizontalPoint];
 RecState.HSStart = -1;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function Res = IsOnBaseline(RecState)
+Sequence = RecState.Sequence;
+CurrPoint = size(RecState.Sequence,1);
+
+Res = true;
+if (RecState.LCCPI<2)
+    return;
+else
+    if (RecState.LCCPI==1 && isempty(RecState.CandidateCP ))
+        return;
+    end
+    CCParr =[];
+    for i=1:RecState.LCCPI
+        CCPI = RecState.CriticalCPs(i).Point;
+        CCParr = [CCParr;Sequence(CCPI,:)];
+    end
+    if (~isempty(RecState.CandidateCP) && RecState.LCCPI>1)
+        CCParr = [CCParr;Sequence(RecState.CandidateCP.Point,:)];
+    end
+    p = polyfit(CCParr(:,1),CCParr(:,2),1);
+    yfit = polyval(p,Sequence(CurrPoint,1));
+    %%%% Activate to see the baseline %%%%%%%
+%     figure
+%     scatter(Sequence(:,1),Sequence(:,2))
+%     t = (Sequence(1,1):-0.001:Sequence(CurrPoint,1));
+%     y = p(1)*t+p(2);
+%     hold on;
+%     plot(t,y)
+%     hold off;
+%     abs(yfit-Sequence(CurrPoint,2))
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    if (abs(yfit-Sequence(CurrPoint,2))>0.15)
+        Res = false;
+    end
+end
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function MidPoint = CalcuateHSMidPoint(HS)

@@ -30,7 +30,7 @@ for i = 3:length(TestSetWordsFolderList)
     if (IsFile==1 && FileName(LastCharacter)=='m')
         sequence = dlmread([TestSetFolder,'\',FileName]);
         disp(' ')
-        disp(['Word:  ',FileName])
+        disp(['Word  ',num2str(count),': ',FileName])
         RecState = SimulateOnlineRecognizer( sequence );
         [CorrectNumLetters, CorrectRecognition] = correctRecognition(RecState,strrep(FileName, '.m', ''));
         
@@ -62,6 +62,9 @@ for i = 3:length(TestSetWordsFolderList)
                 LCCP =  RecState.CriticalCPs(k);
                 endIndex = LCCP.Point;
                 plot (ax, RecState.Sequence(startIndex:endIndex,1),RecState.Sequence(startIndex:endIndex,2),'LineWidth',3);
+                hold on;
+                scatter (ax, RecState.Sequence(startIndex:endIndex,1),RecState.Sequence(startIndex:endIndex,2),'LineWidth',3);
+                hold off;
                 PrevDir = pwd;
                 cd(WordFolder);
                 saveas(ax,num2str(k),'jpg');

@@ -3,6 +3,12 @@ function RecState = SimulateOnlineRecognizer( sequence )
 % a = dlmread(['C:\OCRData\GeneratedWords\sample.m']);
 % Res = SimulateOnlineRecognizer( a )
 
+
+%%%%%%%%%%%%%% Activate at first run  id not running from TestOnlineRecognizer %%%%%%%%%%%%%%%%%%%%%%%%
+% global LettersDataStructure;
+% LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 RecParams = InitializeRecParams();
 RecState = InitializeRecState();
 
@@ -10,9 +16,12 @@ RecState = InitializeRecState();
 NormalizedLetterSequence = NormalizeCont(sequence);
 SimplifiedLetterSequence = SimplifyContour( NormalizedLetterSequence);
 sequence = ResampleContour(SimplifiedLetterSequence,300);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Needed for TestOnlineRecognizer 
 RecState.Sequence = sequence;
+
 len = size(sequence,1);
-%figure;
 Sequence = [];
 for k=1:len-1
     Sequence=[Sequence;sequence(k,:)];
@@ -38,7 +47,7 @@ RecState.LastSeenHorizontalPoint = -1;
 
 function RecParams = InitializeRecParams()
 % Algorithm parameters
-RecParams.Alg = {'EMD' 'MSC'};
+RecParams.Alg = {'EMD' 'MSC'}; %Res_DTW
 RecParams.theta=0.04/5;
 RecParams.K = 5;
 RecParams.ST = 0.03; %Simplification algorithm tolerance

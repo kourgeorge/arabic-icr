@@ -27,9 +27,6 @@ end
 while (Wd ~= -1)
     WPContour = GenerateWord( LetterSamplesFolder, Wd , FontClass);
     
-    %Simplify the contour using Recursive Douglas-Peucker Polyline
-    %Simplification.
-    WPContour=SimplifyContour(WPContour);
     
     %get the minimum and maximum value to ajust the image
     MinX = min(WPContour(:,1));
