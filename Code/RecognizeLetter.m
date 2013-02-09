@@ -46,8 +46,6 @@ ResampledLetterSequence = ResampleContour(SimplifiedLetterSequence,ResampleSize)
 %Extract Feature Vector
 FeatureVector = CreateFeatureVectorFromContour(ResampledLetterSequence, FeatureType);
 
-
-
 if (strcmp(Alg(1),'EMD')==true)
     WaveletVector = CreateWaveletFromFV(FeatureVector);
     ReducedWaveletVector = COEFF*WaveletVector;

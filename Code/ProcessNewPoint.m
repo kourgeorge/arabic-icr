@@ -78,7 +78,7 @@ else    %Mouse not up
         resSeqLastPoint = size(resampledSequence,1);
         Slope = CalculateSlope(resampledSequence,resSeqLastPoint-1,resSeqLastPoint);
         SlopeRes = CheckSlope(Slope);
-        %scatter(resampledSequence(:,1),resampledSequence(:,2));  
+        scatter(resampledSequence(:,1),resampledSequence(:,2));
         
         %Handle horizontal Segments
         if(IsFirstPointInHS(resampledSequence,SlopeRes,RecState))
@@ -96,9 +96,9 @@ else    %Mouse not up
             return;
         end
         
-        %The execution will reach this point, only if IsClosingHS is true
-        [LCCPP,LetterPosition] = CalculateLCCP(RecState);
-        [NewCheckPoint,SumDist,CDist,minDist] = CreateCheckPointAndDistanceInfo(Alg,Sequence,LCCPP,midPoint,LetterPosition);
+        
+        [LCCPP,LetterPosition] = CalculateLCCP(RecState);        %The execution will reach this point, only if IsClosingHS is true
+        NewCheckPoint = CreateCheckPoint(Alg,Sequence,LCCPP,midPoint,LetterPosition);
         
         if (isempty(RecState.CandidateCP))
             RecState.CandidateCP = NewCheckPoint;
@@ -136,7 +136,7 @@ Res = RecState.HSStart == -1 && Slope && ProcessedSequence(processedCurrPont,1)<
 if (Res==true)
     Res = Res && IsOnBaseline(RecState);
 end
-    
+
 
 %Check That the slope of the CurrPoint in the simplified version of the
 %sequence is small (horizontal). This should fix the problem that very
@@ -150,7 +150,7 @@ end
 %     Res = Res && SlopeRes;
 % end
 
-%Check that there is enough information between the (last critical checkpoint) and the (the last candidate) 
+%Check that there is enough information between the (last critical checkpoint) and the (the last candidate)
 %to the current HS start. Theoritacally this condition should
 %always be true, however viberation in the digitizer can cause too much
 %small HS that should be a single HS.
@@ -215,14 +215,14 @@ else
     p = polyfit(CCParr(:,1),CCParr(:,2),1);
     yfit = polyval(p,Sequence(CurrPoint,1));
     %%%% Activate to see the baseline %%%%%%%
-%     figure
-%     scatter(Sequence(:,1),Sequence(:,2))
-%     t = (Sequence(1,1):-0.001:Sequence(CurrPoint,1));
-%     y = p(1)*t+p(2);
-%     hold on;
-%     plot(t,y)
-%     hold off;
-%     abs(yfit-Sequence(CurrPoint,2))
+    %     figure
+    %     scatter(Sequence(:,1),Sequence(:,2))
+    %     t = (Sequence(1,1):-0.001:Sequence(CurrPoint,1));
+    %     y = p(1)*t+p(2);
+    %     hold on;
+    %     plot(t,y)
+    %     hold off;
+    %     abs(yfit-Sequence(CurrPoint,2))
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     if (abs(yfit-Sequence(CurrPoint,2))>0.15)
@@ -306,30 +306,12 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function CheckPoint = CreateEmptyCheckPoint (Alg,Sequence,StartPoint,EndPoint,Position)
-SubSeq = Sequence(StartPoint:EndPoint,:);
-CheckPoint.Point = EndPoint;
-CheckPoint.Candidates = [];
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function CheckPoint = CreateCheckPoint (Alg,Sequence,StartPoint,EndPoint,Position)
 global LettersDataStructure;
 SubSeq = Sequence(StartPoint:EndPoint,:);
 RecognitionResults = RecognizeSequence(SubSeq , Alg, Position, LettersDataStructure);
 CheckPoint.Point = EndPoint;
 CheckPoint.Candidates = RecognitionResults;
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [CheckPoint,SumDist,CDist,minDist] = CreateCheckPointAndDistanceInfo (Alg,Sequence,StartPoint,EndPoint,Position)
-global LettersDataStructure;
-SubSeq = Sequence(StartPoint:EndPoint,:);
-[RecognitionResults,SumDist] = RecognizeSequence(SubSeq , Alg, Position, LettersDataStructure);
-CheckPoint.Point = EndPoint;
-CheckPoint.Candidates = RecognitionResults;
-distances = [RecognitionResults{:,2}];
-CDist = sum (distances);
-minDist = min (distances);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -367,6 +349,33 @@ Avg = min (arr);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function res = CheckSlope(Slope)
+res = SPQuerySVM('C:\OCRData\Segmentation\SVM\SVMStruct',Slope)&& Slope<0.45;
+
+
+%%%%%%%%%%%%%%%%%%     UNUSED FUNCTIONS      %%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [CheckPoint,SumDist,CDist,minDist] = CreateCheckPointAndDistanceInfo (Alg,Sequence,StartPoint,EndPoint,Position)
+global LettersDataStructure;
+SubSeq = Sequence(StartPoint:EndPoint,:);
+[RecognitionResults,SumDist] = RecognizeSequence(SubSeq , Alg, Position, LettersDataStructure);
+CheckPoint.Point = EndPoint;
+CheckPoint.Candidates = RecognitionResults;
+distances = [RecognitionResults{:,2}];
+CDist = sum (distances);
+minDist = min (distances);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function CheckPoint = CreateEmptyCheckPoint (Alg,Sequence,StartPoint,EndPoint,Position)
+SubSeq = Sequence(StartPoint:EndPoint,:);
+CheckPoint.Point = EndPoint;
+CheckPoint.Candidates = [];
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function Res = IsCheckPoint(Sequence,CurrPoint,SimplifiedSequence,Slope)
 %A candidate point is a Checkpoint only if all the below are valid:
 %1. The current Sub sequence contains enough information
@@ -374,11 +383,6 @@ function Res = IsCheckPoint(Sequence,CurrPoint,SimplifiedSequence,Slope)
 %3. The point environmnt is horizontal
 %%%MaxSlope=RecParams.MaxSlope;
 Res = (length(SimplifiedSequence)>2 && CheckSlope(Slope)&& Sequence(CurrPoint,1)<Sequence(CurrPoint-1,1));
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function res = CheckSlope(Slope)
-res = SPQuerySVM('C:\OCRData\Segmentation\SVM\SVMStruct',Slope)&& Slope<0.5;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -394,25 +398,6 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function MidPoint = GetMidPoint(Sequence,Point1, Point2)
-% P1=Sequence(Point1,:);
-% P2=Sequence(Point2,:);
-% MidPoint = [(P1(1)+P2(1))/2,(P1(2)+P2(2))/2];
-MidPoint = (Point1+Point2)/2;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function [Simplified] = CalculateSimplifiedSequence (Sequence,CurrPoint,RecState,ST)
-LCCPI=RecState.LCCPI;
-
-if(LCCPI==0)
-    Simplified  = dpsimplify(Sequence,ST);
-else
-    LastCCP = RecState.CriticalCPs(LCCPI);
-    sub_s= Sequence(LastCCP.Point:CurrPoint,:);
-    Simplified  = dpsimplify(sub_s,ST);
-end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%    PRINTING/TEST FUNCTIONS   %%%%%%%%%%%%%%%%%%

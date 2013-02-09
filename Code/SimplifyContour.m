@@ -12,7 +12,6 @@ Dy = MaxY - MinY;
 
 minD = min(Dx,Dy);
 
-%epsilon = minD/50;
 epsilon = sqrt(Dx^2+Dy^2)/200;
 
 [ps,ix] = dpsimplify(Contour,epsilon);
@@ -20,9 +19,8 @@ epsilon = sqrt(Dx^2+Dy^2)/200;
 SimplifiedContourMIN = ps;
 
 if (nargout==2)
-    maxD = max (Dx,Dy);
     epsilon = 1/200; %epsilon is absolute
-    [ps,ix] = dpsimplify(Contour,epsilon);
+    [ps,~] = dpsimplify(Contour,epsilon);
     SimplifiedContourMAX = ps;
 end
 
