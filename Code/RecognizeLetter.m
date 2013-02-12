@@ -74,7 +74,7 @@ end
 
 
 function Candidates = GetCandidateskdTree(KdTreee,vector,LettersMap)
-[index_vals,vector_vals,final_nodes] = kd_knn(KdTreee,vector',9,0);
+[index_vals,vector_vals,~] = kd_knn(KdTreee,vector',6,0);
 Candidates= [];
 for i=1:length(index_vals)
     if (size (Candidates,1)==3)

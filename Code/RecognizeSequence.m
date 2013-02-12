@@ -4,7 +4,7 @@ function [RecognitionResults, SumDist] = RecognizeSequence (Sequence , Alg, Posi
 
 C = RecognizeLetter( Sequence, LettersDataStructure, Position, Alg);
 RecognitionResults = [];
-for i=1:length(C)
+for i=1:size(C,1)
     RecognitionResults = [RecognitionResults;{C(i,1),C{i,2}}];
 end 
 if (nargout==2)

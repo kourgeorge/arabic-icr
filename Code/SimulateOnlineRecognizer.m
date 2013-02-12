@@ -13,9 +13,9 @@ RecParams = InitializeRecParams();
 RecState = InitializeRecState();
 
 %Sequence Pre-Processing = Normalization->Simplification->Resampling
-NormalizedLetterSequence = NormalizeCont(sequence);
-SimplifiedLetterSequence = SimplifyContour( NormalizedLetterSequence);
-sequence = ResampleContour(SimplifiedLetterSequence,300);
+% NormalizedLetterSequence = NormalizeCont(sequence);
+% SimplifiedLetterSequence = SimplifyContour( NormalizedLetterSequence);
+% sequence = ResampleContour(SimplifiedLetterSequence,300);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Needed for TestOnlineRecognizer 
@@ -49,7 +49,7 @@ function RecParams = InitializeRecParams()
 % Algorithm parameters
 RecParams.Alg = {'EMD' 'MSC'}; %Res_DTW
 RecParams.theta=0.04/5;
-RecParams.K = 5;
+RecParams.K = 20;
 RecParams.ST = 0.03; %Simplification algorithm tolerance
 RecParams.PointEnvLength=2;
 

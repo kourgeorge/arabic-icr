@@ -46,12 +46,19 @@ ResampledLetterSequence = ResampleContour(SimplifiedLetterSequence,ResampleSize)
 %Extract Feature Vector
 FeatureVector = CreateFeatureVectorFromContour(ResampledLetterSequence, FeatureType);
 
-
-
 if (strcmp(Alg(1),'EMD')==true)
     WaveletVector = CreateWaveletFromFV(FeatureVector);
     ReducedWaveletVector = COEFF*WaveletVector;
     Candidates = GetCandidateskdTree(KdTreee,ReducedWaveletVector,LettersMap);
+    
+    CandidatesFinal = [];
+    
+    CandidateSequence = FeatureVector;
+    LetterCandidate = 
+    [m1,n1] = size(CandidateSequence);
+    [m2,n2] = size(LetterCandidate);
+    r=abs(m2-m1)+5;
+    Diff = Cons_DTW(CandidateSequence,LetterCandidate,r);
 else
     %Classify using NN
     [NNCandidates,AllDictionarySorted] = GetClosestLetterCandidates( FeatureVector, PositionDS, Alg{1} ,3);
@@ -79,9 +86,25 @@ function Candidates = GetCandidateskdTree(KdTreee,vector,LettersMap)
 [index_vals,vector_vals,final_nodes] = kd_knn(KdTreee,vector',9,0);
 Candidates= [];
 for i=1:length(index_vals)
+    if (size (Candidates,1)==3)
+        return;
+    end
     Diff = dist2(vector_vals(i,:), vector');
-    if (UniqueCandidate(LettersMap(index_vals(i)), ))
-    WPcell={LettersMap(index_vals(i)),Diff};
-    Candidates=[Candidates ; WPcell];
+    if (UniqueCandidate(LettersMap(index_vals(i)),Candidates))
+        WPcell={LettersMap(index_vals(i)),Diff , {vector_vals(i,:)}};
+        Candidates=[Candidates ; WPcell];
+    end
+end
+end
+
+function res =  UniqueCandidate(Letter,Candidates)
+res = true;
+if (size (Candidates,1) == 0 )
+    return;
+end
+for i=1:size (Candidates,1)
+    if (strcmp(Candidates(i,1),Letter))
+        res = false;
+    end
 end
 end

@@ -78,7 +78,7 @@ else    %Mouse not up
         resSeqLastPoint = size(resampledSequence,1);
         Slope = CalculateSlope(resampledSequence,resSeqLastPoint-1,resSeqLastPoint);
         SlopeRes = CheckSlope(Slope);
-        scatter(resampledSequence(:,1),resampledSequence(:,2));
+        %scatter(resampledSequence(:,1),resampledSequence(:,2));
         
         %Handle horizontal Segments
         if(IsFirstPointInHS(resampledSequence,SlopeRes,RecState))
@@ -350,7 +350,7 @@ Avg = min (arr);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function res = CheckSlope(Slope)
-res = SPQuerySVM('C:\OCRData\Segmentation\SVM\SVMStruct',Slope)&& Slope<0.45;
+res = SPQuerySVM('C:\OCRData\Segmentation\SVM\SVMStruct',Slope)&& Slope<0.5;
 
 
 %%%%%%%%%%%%%%%%%%     UNUSED FUNCTIONS      %%%%%%%%%%%%%%%%%
