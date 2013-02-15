@@ -198,11 +198,11 @@ RecState.LastSeenHorizontalPoint = -1;
 
 function RecParams = InitializeRecParams()
 % Algorithm parameters
-RecParams.Alg = {'EMD' 'kdTree'};  %DTW instead of EMD to use DTW(without kdtree)
-RecParams.theta=0.04/5;
+RecParams.Alg = {'EMD' 'MSC'}; %Res_DTW
 RecParams.K = 5;
-RecParams.ST = 0.03; %Simplification algorithm tolerance
-RecParams.PointEnvLength=2;
+RecParams.PointEnvLength = 1;
+RecParams.MaxSlopeRate = 0.5;
+RecParams.MaxDistFromBaseline = 0.15;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -76,19 +76,21 @@ else    %Mouse not up
         [proportionalSiplifiedContour,absoluteSiplifiedContour] = SimplifyContour(Sequence(1:CurrPoint,:));
         resampledSequence = ResampleContour(proportionalSiplifiedContour,size(absoluteSiplifiedContour,1)*5);
         resSeqLastPoint = size(resampledSequence,1);
-        Slope = CalculateSlope(resampledSequence,resSeqLastPoint-1,resSeqLastPoint);
-        SlopeRes = CheckSlope(Slope);
+        
+        Slope = CalculateSlope(resampledSequence,resSeqLastPoint-RecParams.PointEnvLength,resSeqLastPoint);
+        SlopeRes = CheckSlope(Slope,RecParams);
+        
         %scatter(resampledSequence(:,1),resampledSequence(:,2));
         
         %Handle horizontal Segments
-        if(IsFirstPointInHS(resampledSequence,SlopeRes,RecState))
+        if(IsFirstPointInHS(resampledSequence,SlopeRes,RecState,RecParams))
             RecState = StartNewHS(CurrPoint,RecState);
             MarkOnSequence('StartHorizontalIntervalPoint',Sequence,CurrPoint);
             return;
         elseif (SlopeRes)
             RecState.LastSeenHorizontalPoint = CurrPoint;
             return;
-        elseif (IsClosingHS(resampledSequence,resSeqLastPoint,SlopeRes,RecState))
+        elseif (IsClosingHS(SlopeRes,RecState,RecParams))
             MarkOnSequence('EndHorizontalIntervalPoint',Sequence,RecState.LastSeenHorizontalPoint);
             [HS,RecState] = EndHS(RecState);
             midPoint=CalcuateHSMidPoint(HS);
@@ -125,7 +127,7 @@ end
 %%%%%%%%%%%%%%%%%    HELPER FUNCTIONS   %%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %HS means Horiontal Sections.
-function Res = IsFirstPointInHS(ProcessedSequence,Slope,RecState)
+function Res = IsFirstPointInHS(ProcessedSequence,Slope,RecState,RecParams)
 processedCurrPont = size(ProcessedSequence,1);
 [~,absoluteSiplifiedContour] = SimplifyContour(ProcessedSequence(1:processedCurrPont,:));  % this one is to avoid gettinf critical point on letters that start with a straight line like K and 3
 Res = RecState.HSStart == -1 && Slope && ProcessedSequence(processedCurrPont,1)<ProcessedSequence(processedCurrPont-1,1) && ~(size(absoluteSiplifiedContour,1)==2);
@@ -134,7 +136,7 @@ Res = RecState.HSStart == -1 && Slope && ProcessedSequence(processedCurrPont,1)<
 %We need to handle the valeys of the F_Fin, Y_Fin and N_Fin using linear regression to calculate the baseline using previous Critical points.
 %if the Horizontal segments is far away from the regression line, avoid it.
 if (Res==true)
-    Res = Res && IsOnBaseline(RecState);
+    Res = Res && IsOnBaseline(RecState,RecParams);
 end
 
 
@@ -146,7 +148,7 @@ end
 %     plot(resampled(:,1),resampled(:,2))
 %     lastPoint = size(resampled,1);
 %     slope = CalculateSlope(resampled,max(lastPoint-1,1),lastPoint);
-%     SlopeRes = CheckSlope(slope);
+%     SlopeRes = CheckSlope(slope,CheckSlope);
 %     Res = Res && SlopeRes;
 % end
 
@@ -170,9 +172,7 @@ if (~isempty(RecState.CandidateCP))
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function Res = IsClosingHS(Sequence,CurrPoint,SlopeRes,RecState)
-%This is a closing HS point if the slope is too large, or of the is too much
-%information between the HSStart and the HSEnd (CurrPoint).
+function Res = IsClosingHS(SlopeRes,RecState,RecParams)
 
 % if (RecState.HSStart~=-1 && Slope==0)
 %     slope = CalculateSlope(Sequence,lastPoint-2,lastPoint-1);
@@ -182,7 +182,19 @@ function Res = IsClosingHS(Sequence,CurrPoint,SlopeRes,RecState)
 %    Res = false;
 % end
 
-Res = ~SlopeRes && (RecState.HSStart~=-1);
+Res = ~SlopeRes && RecState.HSStart~=-1;
+% OrigSequence = RecState.Sequence;
+% Res = false;
+% if (~SlopeRes && RecState.HSStart~=-1)
+%     [~,abs] = SimplifyContour(OrigSequence(RecState.HSStart:RecState.LastSeenHorizontalPoint,:));
+%     segmentSlope = CalculateSlope(abs,1,size(abs,1));
+%     segmentSlopeRes = CheckSlope(segmentSlope,RecParams);
+%     Res = segmentSlopeRes; %&& (size(abs,1)==2);
+%     if (Res==false)
+%         RecState.HSStart=-1;
+%     end
+% end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function RecState = StartNewHS(CurrPoint,RecState)
@@ -196,7 +208,7 @@ RecState.HSStart = -1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function Res = IsOnBaseline(RecState)
+function Res = IsOnBaseline(RecState,RecParams)
 Sequence = RecState.Sequence;
 CurrPoint = size(RecState.Sequence,1);
 
@@ -225,7 +237,7 @@ else
     %     abs(yfit-Sequence(CurrPoint,2))
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    if (abs(yfit-Sequence(CurrPoint,2))>0.15)
+    if (abs(yfit-Sequence(CurrPoint,2))>RecParams.MaxDistFromBaseline)
         Res = false;
     end
 end
@@ -349,8 +361,8 @@ Avg = min (arr);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function res = CheckSlope(Slope)
-res = SPQuerySVM('C:\OCRData\Segmentation\SVM\SVMStruct',Slope)&& Slope<0.5;
+function res = CheckSlope(Slope,RecParams)
+res = SPQuerySVM('C:\OCRData\Segmentation\SVM\SVMStruct',Slope) && Slope<RecParams.MaxSlopeRate;
 
 
 %%%%%%%%%%%%%%%%%%     UNUSED FUNCTIONS      %%%%%%%%%%%%%%%%%
