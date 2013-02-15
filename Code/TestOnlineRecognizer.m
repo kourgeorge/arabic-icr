@@ -20,6 +20,7 @@ clc;
 correctRec = 0;
 correctSeg = 0;
 count = 0;
+start_total = cputime;
 TestSetWordsFolderList = dir(TestSetFolder);
 for i = 3:length(TestSetWordsFolderList)
     current_object = TestSetWordsFolderList(i);
@@ -30,8 +31,11 @@ for i = 3:length(TestSetWordsFolderList)
     if (IsFile==1 && FileName(LastCharacter)=='m')
         sequence = dlmread([TestSetFolder,'\',FileName]);
         disp(' ')
-        disp(['Word  ',num2str(count),': ',FileName])
+        disp(['Word  ',num2str(count),': ',FileName,])
+        t = cputime; 
         RecState = SimulateOnlineRecognizer( sequence );
+        e = cputime-t;
+        disp(['Time Elapsed: ',num2str(e)])
         [CorrectNumLetters, CorrectRecognition] = correctRecognition(RecState,strrep(FileName, '.m', ''));
         
         %Collect Statistics
@@ -50,7 +54,13 @@ for i = 3:length(TestSetWordsFolderList)
         
         %Output letters images to folder
         if (CorrectRecognition == false && OutputImages==true)
-            WordFolder =[OutputFolder,'\',FileName];
+            if (CorrectNumLetters==false)
+                WordFolder =[OutputFolder,'\Segmentation\',FileName];
+            else
+                WordFolder =[OutputFolder,'\',FileName];
+            end
+            
+            % WordFolder =[OutputFolder,'\',FileName];
             mkdir(WordFolder);
             for k=1:RecState.LCCPI
                 if (k==1)
@@ -76,6 +86,7 @@ end
 
 SegmentationRate = correctSeg/count*100
 RecognitionRate = correctRec/count*100
+e_total=cputime-start_total
 end
 
 
