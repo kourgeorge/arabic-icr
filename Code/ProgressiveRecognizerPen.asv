@@ -44,6 +44,7 @@ line([0 1],[0.7 0.7],'Color','black','LineWidth',2);
 % ######  MENU  ######################################
 h_opt = uimenu('Label','&Options');
 uimenu(h_opt,'Label','Clear','Callback',@ClearAll);
+uimenu(h_opt,'Label','Save Sequence','Callback',@SaveSequence);
 uimenu(h_opt,'Label','Exit','Callback','closereq;','separator','on');
 
 
@@ -76,7 +77,30 @@ y_pen = [];
 himage = findobj('tag','PEN');
 
 %Initialize parameters for the progressive recognition algorithm
-RecState = InitializeRecState(RecState);
+RecState = InitializeRecState();
+
+% #########################################################################
+% #########################################################################
+function SaveSequence(hco,eventStruct)
+
+Sequence = RecState.Sequence;
+dlmwrite(['C:\OCRData\.m'], Sequence)
+
+clc;
+
+% erase previous drawing
+delete(findobj('Tag','SHAPE'));
+delete(findobj('Tag','BOX'));
+
+% delete previous data
+x_pen = [];
+y_pen = [];
+
+% if necessary
+himage = findobj('tag','PEN');
+
+%Initialize parameters for the progressive recognition algorithm
+RecState = InitializeRecState();
 
 % #########################################################################
 % #########################################################################
@@ -172,7 +196,7 @@ RecParams = InitializeRecParams();
 
 Old_LCCPI = RecState.LCCPI;
 
-RecState = ProcessNewPoint(RecParams,RecState,Sequence,IsMouseUp);
+RecState = ProcessNewPoint(RecParams,RecState,Sequence,IsMouseUp,true);
 
 %Update the heading in the Pen Window
 if (Old_LCCPI < RecState.LCCPI || IsMouseUp==true)
@@ -181,11 +205,11 @@ end
 
 %Output all the candidates.
 if (IsMouseUp==true)
-    DisplayCandidates(RecState)
+    GetCandidatesFromRecState( RecState );
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function RecState = InitializeRecState(RecState)
+function RecState = InitializeRecState()
 
 RecState.LCCPI=0; % LastCriticalCheckPointIndex, the corrent root
 RecState.CriticalCPs=[]; %Each cell contains the Candidates of the interval from the last CP and the last Point
@@ -198,13 +222,11 @@ RecState.LastSeenHorizontalPoint = -1;
 
 function RecParams = InitializeRecParams()
 % Algorithm parameters
-RecState.Alg = {'DTW' 'MSC' 'kdTree'};
-RecParams.theta=0.04/5;
+RecParams.Alg = {'EMD' 'MSC'}; %Res_DTW
 RecParams.K = 5;
-RecParams.ST = 0.03; %Simplification algorithm tolerance
-RecParams.MinLen = 0.4;
-RecParams.MaxSlope = 0.4;
-RecParams.PointEnvLength=2;
+RecParams.PointEnvLength = 1;
+RecParams.MaxSlopeRate = 0.5;
+RecParams.MaxDistFromBaseline = 0.15;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -226,7 +248,7 @@ elseif (LCCPI==1)
 else
     LCCP = RecState.CriticalCPs(LCCPI);
     CurrCan = LCCP.Candidates;
-    for i=1:length(CurrCan)
+    for i=1:size(CurrCan,1)
         str = [str,'  ',CurrCan{i,1}{1}];
     end
     BLCCP = RecState.CriticalCPs(LCCPI-1);
@@ -234,31 +256,6 @@ else
     endIndex = num2str(LCCP.Point);
     set(findobj('Tag','TEXT'),'String',['[Current State: ' stat_str, ']  ','   Previous State:- ',' Interval: ' , startIndex, ' - ',  endIndex, '   Candidates: ' str]);
 end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function DisplayCandidates (RecState)
-for i=1:RecState.LCCPI
-    if (i==1)
-        startIndex = num2str(0);
-    else
-        BLCCPP = RecState.CriticalCPs(i-1).Point;
-        startIndex = num2str(BLCCPP);
-    end
-    LCCP =  RecState.CriticalCPs(i);
-    LCCPP = LCCP.Point;
-    endIndex = num2str(LCCPP);
-    i_str = num2str(i);
-    disp (['State : ',i_str,',  ',startIndex,' - ',endIndex])
-    CurrCan = LCCP.Candidates(:,1);
-    str = '';
-    for j=1:size(CurrCan,1)
-        str = [str,' ',CurrCan{j}{1}];
-    end
-    disp(['Candidates:  ',str])
-end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%     EOF      %%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

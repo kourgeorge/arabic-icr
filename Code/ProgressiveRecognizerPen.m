@@ -44,6 +44,7 @@ line([0 1],[0.7 0.7],'Color','black','LineWidth',2);
 % ######  MENU  ######################################
 h_opt = uimenu('Label','&Options');
 uimenu(h_opt,'Label','Clear','Callback',@ClearAll);
+uimenu(h_opt,'Label','Save Sequence','Callback',@SaveSequence);
 uimenu(h_opt,'Label','Exit','Callback','closereq;','separator','on');
 
 
@@ -77,6 +78,13 @@ himage = findobj('tag','PEN');
 
 %Initialize parameters for the progressive recognition algorithm
 RecState = InitializeRecState();
+
+% #########################################################################
+% #########################################################################
+function SaveSequence(hco,eventStruct)
+global RecState;
+Sequence = RecState.Sequence;
+dlmwrite('C:\OCRData\WordPartFromUI.m', Sequence);
 
 % #########################################################################
 % #########################################################################
@@ -216,7 +224,7 @@ if (LCCPI==0)
 elseif (LCCPI==1)
     LCCP = RecState.CriticalCPs(LCCPI);
     CurrCan = LCCP.Candidates;
-    for i=1:length(CurrCan)
+    for i=1:size(CurrCan,1)
         str = [str,'  ',CurrCan{i,1}{1}];
     end
     endIndex = num2str(LCCP.Point);
@@ -224,7 +232,7 @@ elseif (LCCPI==1)
 else
     LCCP = RecState.CriticalCPs(LCCPI);
     CurrCan = LCCP.Candidates;
-    for i=1:length(CurrCan)
+    for i=1:size(CurrCan,1)
         str = [str,'  ',CurrCan{i,1}{1}];
     end
     BLCCP = RecState.CriticalCPs(LCCPI-1);
