@@ -50,6 +50,16 @@ if (strcmp(Alg(1),'EMD')==true)
     WaveletVector = CreateWaveletFromFV(FeatureVector);
     ReducedWaveletVector = COEFF*WaveletVector;
     Candidates = GetCandidateskdTree(KdTreee,ReducedWaveletVector,LettersMap);
+    
+%     InputSequence = ReducedWaveletVector;
+%     for i=1: size(Candidates,1)    
+%         LetterCandidate = Candidates{i,3}';
+%         [m1,~] = size(InputSequence);
+%         [m2,~] = size(LetterCandidate);
+%         r=abs(m2-m1)+5;
+%         Diff = Cons_DTW(InputSequence,LetterCandidate,r);
+%         Candidates{i,2} = Diff;
+%     end
 else
     %Classify using NN
     [NNCandidates,AllDictionarySorted] = GetClosestLetterCandidates( FeatureVector, PositionDS, Alg{1} ,3);
@@ -82,7 +92,7 @@ for i=1:length(index_vals)
     end
     Diff = dist2(vector_vals(i,:), vector');
     if (UniqueCandidate(LettersMap(index_vals(i)),Candidates))
-        WPcell={LettersMap(index_vals(i)),Diff};
+        WPcell={LettersMap(index_vals(i)),Diff , vector_vals(i,:)};
         Candidates=[Candidates ; WPcell];
     end
 end

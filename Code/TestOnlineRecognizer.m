@@ -86,7 +86,7 @@ end
 
 SegmentationRate = correctSeg/count*100
 RecognitionRate = correctRec/count*100
-e_total=cputime-start_total
+AvgTime=cputime-start_total/count
 end
 
 

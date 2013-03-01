@@ -5,8 +5,8 @@ function RecState = SimulateOnlineRecognizer( sequence )
 
 
 %%%%%%%%%%%%%% Activate at first run  id not running from TestOnlineRecognizer %%%%%%%%%%%%%%%%%%%%%%%%
-%  global LettersDataStructure;
-%  LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
+ %global LettersDataStructure;
+ %LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 RecParams = InitializeRecParams();
@@ -17,10 +17,8 @@ RecState = InitializeRecState();
 % SimplifiedLetterSequence = SimplifyContour( NormalizedLetterSequence);
 % sequence = ResampleContour(SimplifiedLetterSequence,300);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 % Needed for TestOnlineRecognizer 
 RecState.Sequence = sequence;
-
 len = size(sequence,1);
 Sequence = [];
 for k=1:len-1
@@ -30,7 +28,7 @@ end
 RecState = ProcessNewPoint(RecParams,RecState,Sequence,true,false);
 
 %Comment out when TestOnlineRecognizer is running 
-% GetCandidatesFromRecState( RecState );
+%GetCandidatesFromRecState( RecState );
 
 %%%%%%%%%%%%%%%%    Initialization Functions   %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -47,8 +45,8 @@ RecState.LastSeenHorizontalPoint = -1;
 
 function RecParams = InitializeRecParams()
 % Algorithm parameters
-RecParams.Alg = {'EMD' 'MSC'}; %Res_DTW
-RecParams.K = 20;
+RecParams.Alg = {'EMD'}; %Res_DTW
+RecParams.K = 10;
 RecParams.PointEnvLength = 1;
 RecParams.MaxSlopeRate = 0.5;
 RecParams.MaxDistFromBaseline = 0.15;
