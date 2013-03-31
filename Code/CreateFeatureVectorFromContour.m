@@ -7,7 +7,6 @@ if (isempty(WPContour))
     return;
 end
 WPSequenceCell = {WPContour};
-
 WPTFeaureVector = MakeFatureVectorsForTest(WPSequenceCell,FeatureType,inf);
 WPTFeaureVector = WPTFeaureVector{1,1};
 end

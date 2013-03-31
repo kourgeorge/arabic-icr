@@ -46,6 +46,8 @@ for i = 3:length(LettersSamplesFolderList)
     IsDir = current_object.isdir;
     if (IsDir==1 && FolderName~='_')
         LetterFolder = [LettersSamplesFolder,'\',FolderName];
+        
+        %Here the preprocessing is done
         LetterInAllPositions= ReadLetterData(LetterFolder,ResampleSize);
         
         %Ini - Not all letters has Ini Form
