@@ -8,10 +8,10 @@ function [ResAngsOfCont]   = MultiResMSC( cont)%,NumOfRes )
 ResAngsOfCont = AngsOfContDTW;
 
 %Emd Case 
-% convCont = AverageCont(cont);  %Good for EMD but not for DTW
-% [AngsOfCont] = MSC(convCont); %Good for DTW and less for EMD
-% AngsOfContEMD = [AngsOfContDTW; AngsOfCont]; 
-% ResAngsOfCont = AngsOfContEMD;
+convCont = AverageCont(cont);  %Good for EMD but not for DTW
+[AngsOfCont] = MSC(convCont); %Good for DTW and less for EMD
+AngsOfContEMD = [AngsOfContDTW; AngsOfCont]; 
+ResAngsOfCont = AngsOfContEMD;
 
 
 
