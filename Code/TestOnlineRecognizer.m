@@ -33,7 +33,7 @@ for i = 3:length(TestSetWordsFolderList)
         disp(' ')
         disp(['Word  ',num2str(count),': ',FileName,])
         t = cputime; 
-        RecState = SimulateOnlineRecognizer( sequence );
+        RecState = SimulateOnlineRecognizer( sequence ,false);
         e = cputime-t;
         disp(['Time Elapsed: ',num2str(e)])
         [CorrectNumLetters, CorrectRecognition] = correctRecognition(RecState,strrep(FileName, '.m', ''));

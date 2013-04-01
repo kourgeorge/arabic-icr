@@ -207,7 +207,7 @@ RecState.LastSeenHorizontalPoint = -1;
 function RecParams = InitializeRecParams()
 % Algorithm parameters
 RecParams.Alg = {'EMD' 'MSC'}; %Res_DTW
-RecParams.K = 5;
+RecParams.K = 10;
 RecParams.PointEnvLength = 1;
 RecParams.MaxSlopeRate = 0.5;
 RecParams.MaxDistFromBaseline = 0.15;

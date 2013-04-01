@@ -82,25 +82,9 @@ RecState = InitializeRecState();
 % #########################################################################
 % #########################################################################
 function SaveSequence(hco,eventStruct)
-
+global RecState;
 Sequence = RecState.Sequence;
-dlmwrite(['C:\OCRData\.m'], Sequence)
-
-clc;
-
-% erase previous drawing
-delete(findobj('Tag','SHAPE'));
-delete(findobj('Tag','BOX'));
-
-% delete previous data
-x_pen = [];
-y_pen = [];
-
-% if necessary
-himage = findobj('tag','PEN');
-
-%Initialize parameters for the progressive recognition algorithm
-RecState = InitializeRecState();
+dlmwrite('C:\OCRData\WordPartFromUI.m', Sequence);
 
 % #########################################################################
 % #########################################################################
@@ -223,7 +207,7 @@ RecState.LastSeenHorizontalPoint = -1;
 function RecParams = InitializeRecParams()
 % Algorithm parameters
 RecParams.Alg = {'EMD' 'MSC'}; %Res_DTW
-RecParams.K = 5;
+RecParams.K = 10;
 RecParams.PointEnvLength = 1;
 RecParams.MaxSlopeRate = 0.5;
 RecParams.MaxDistFromBaseline = 0.15;
@@ -240,7 +224,7 @@ if (LCCPI==0)
 elseif (LCCPI==1)
     LCCP = RecState.CriticalCPs(LCCPI);
     CurrCan = LCCP.Candidates;
-    for i=1:length(CurrCan)
+    for i=1:size(CurrCan,1)
         str = [str,'  ',CurrCan{i,1}{1}];
     end
     endIndex = num2str(LCCP.Point);
