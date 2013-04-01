@@ -74,13 +74,13 @@ else    %Mouse not up
     if (rem(CurrPoint,RecParams.K)==0)
         
         [proportionalSiplifiedContour,absoluteSiplifiedContour] = SimplifyContour(Sequence(1:CurrPoint,:));
-        resampledSequence = ResampleContour(proportionalSiplifiedContour,size(absoluteSiplifiedContour,1)*566);
+        resampledSequence = ResampleContour(proportionalSiplifiedContour,size(absoluteSiplifiedContour,1)*5);
         resSeqLastPoint = size(resampledSequence,1);
         
-        Slope = CreateSlopeVector(resampledSequence(resSeqLastPoint-5:resSeqLastPoint,:),);
+        Slope = CalculateSlope(resampledSequence,resSeqLastPoint-RecParams.PointEnvLength,resSeqLastPoint);
         SlopeRes = CheckSlope(Slope,RecParams);
-        
-        scatter(resampledSequence(:,1),resampledSequence(:,2));
+
+        %scatter(ax,Sequence(size(Sequence,1),1),Sequence(size(Sequence,1),2));
         
         %Update Horizontal Point
         if (RecState.HSStart ~= -1 && SlopeRes && resampledSequence(resSeqLastPoint,1)<resampledSequence(resSeqLastPoint-1,1))
@@ -187,6 +187,32 @@ function Res = IsClosingHS(ProcessedSequence, SlopeRes,RecState,RecParams)
 % end
 processedCurrPont = size(ProcessedSequence,1);
 Res = RecState.HSStart~=-1 && (~SlopeRes || ProcessedSequence(processedCurrPont,1)>ProcessedSequence(processedCurrPont-1,1));
+
+% %
+% LastHorizontalPoint = RecState.LastSeenHorizontalPoint;
+% if (Res == true)
+%     OrigSequence = RecState.Sequence;
+%     [~,abs] = SimplifyContour(OrigSequence(RecState.LastSeenHorizontalPoint:size(OrigSequence,1),:));
+%     OrigSequence = RecState.Sequence;
+%     for k=RecParams.PointEnvLength + 1: size(OrigSequence,1)
+%         Slope = CalculateSlope(OrigSequence,k-RecParams.PointEnvLength,k);
+%         if (CheckSlope(Slope,RecParams)==1)
+%             LastHorizontalPoint = k;
+%         else
+%             break;
+%         end
+%     end
+%     %if the horizontal segment is too short, consist of 2 points only,
+%     %return cancell this horizontal segment.
+%     if (LastHorizontalPoint == RecState.LastSeenHorizontalPoint)
+%         RecState.HSStart = -1;
+%         Res = false;
+%         return;
+%     else
+%         RecState.LastSeenHorizontalPoint = LastHorizontalPoint;
+%     end
+% end
+
 % OrigSequence = RecState.Sequence;
 % Res = false;
 % if (~SlopeRes && RecState.HSStart~=-1)
@@ -299,22 +325,17 @@ Option.FirstPoint =  FirstPoint;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function BO = BetterOption(Option1, Option2)
-switch Option1.OptionType
-    case 'Single',
-        Option1AvgDist = CalculateAvgCandidatesDistane (Option1.FirstPoint);
-    case 'Double',
-        Option1AvgDist = (CalculateAvgCandidatesDistane (Option1.FirstPoint)+CalculateAvgCandidatesDistane (Option1.SecondPoint))/2;
-end
+function BO = BetterOption(DoubleLetterOption, SingleLetterOption)
 
-switch Option2.OptionType
-    case 'Single',
-        Option2AvgDist = CalculateAvgCandidatesDistane (Option2.FirstPoint);
-    case 'Double',
-        Option2AvgDist = (CalculateAvgCandidatesDistane (Option2.FirstPoint)+CalculateAvgCandidatesDistane (Option2.SecondPoint))/2;
-end
+Double_FirstLetterMin = CalculateAvgCandidatesDistane (DoubleLetterOption.FirstPoint);
+Double_SecondLetterMin = CalculateAvgCandidatesDistane (DoubleLetterOption.SecondPoint);
 
-if (Option1AvgDist<Option2AvgDist)
+DoubleAvgDist = (Double_FirstLetterMin+Double_SecondLetterMin)/2;
+SingleAvgDist = CalculateAvgCandidatesDistane (SingleLetterOption.FirstPoint);
+
+Condition = Double_FirstLetterMin<=SingleAvgDist && Double_SecondLetterMin<=SingleAvgDist;
+
+if (DoubleAvgDist<SingleAvgDist && Condition)
     BO=1;
 else
     BO=2;
@@ -366,7 +387,7 @@ Avg = min (arr);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function res = CheckSlope(Slope,RecParams)
-res = SPQuerySVM('C:\OCRData\Segmentation\SVM2\SVMStruct',Slope) && Slope(4)<RecParams.MaxSlopeRate;
+res = Slope<RecParams.MaxSlopeRate;
 
 
 %%%%%%%%%%%%%%%%%%     UNUSED FUNCTIONS      %%%%%%%%%%%%%%%%%

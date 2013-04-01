@@ -79,8 +79,8 @@ else    %Mouse not up
         
         Slope = CalculateSlope(resampledSequence,resSeqLastPoint-RecParams.PointEnvLength,resSeqLastPoint);
         SlopeRes = CheckSlope(Slope,RecParams);
-        
-        %scatter(resampledSequence(:,1),resampledSequence(:,2));
+
+        %scatter(ax,Sequence(size(Sequence,1),1),Sequence(size(Sequence,1),2));
         
         %Update Horizontal Point
         if (RecState.HSStart ~= -1 && SlopeRes && resampledSequence(resSeqLastPoint,1)<resampledSequence(resSeqLastPoint-1,1))
@@ -178,12 +178,17 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function Res = IsClosingHS(ProcessedSequence, SlopeRes,RecState,RecParams)
 
-% if (RecState.HSStart~=-1 && Slope==0)
-%     slope = CalculateSlope(Sequence,lastPoint-2,lastPoint-1);
-%     SlopeRes = CheckSlope(slope);
-%     Res = SlopeRes && (size(abs,1)==2);
-% else
-%    Res = false;
+processedCurrPont = size(ProcessedSequence,1);
+Res = RecState.HSStart~=-1 && (~SlopeRes || ProcessedSequence(processedCurrPont,1)>ProcessedSequence(processedCurrPont-1,1));
+
+% if (Res)
+%     if (RecState.HSStart~=-1 && SlopeRes==0)
+%         slope = CalculateSlope(Sequence,lastPoint-2,lastPoint-1);
+%         SlopeRes = CheckSlope(slope);
+%         Res = SlopeRes && (size(abs,1)==2);
+%     else
+%         Res = false;
+%     end
 % end
 processedCurrPont = size(ProcessedSequence,1);
 Res = RecState.HSStart~=-1 && (~SlopeRes || ProcessedSequence(processedCurrPont,1)>ProcessedSequence(processedCurrPont-1,1));
@@ -299,22 +304,17 @@ Option.FirstPoint =  FirstPoint;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function BO = BetterOption(Option1, Option2)
-switch Option1.OptionType
-    case 'Single',
-        Option1AvgDist = CalculateAvgCandidatesDistane (Option1.FirstPoint);
-    case 'Double',
-        Option1AvgDist = (CalculateAvgCandidatesDistane (Option1.FirstPoint)+CalculateAvgCandidatesDistane (Option1.SecondPoint))/2;
-end
+function BO = BetterOption(DoubleLetterOption, SingleLetterOption)
 
-switch Option2.OptionType
-    case 'Single',
-        Option2AvgDist = CalculateAvgCandidatesDistane (Option2.FirstPoint);
-    case 'Double',
-        Option2AvgDist = (CalculateAvgCandidatesDistane (Option2.FirstPoint)+CalculateAvgCandidatesDistane (Option2.SecondPoint))/2;
-end
+Double_FirstLetterMin = CalculateAvgCandidatesDistane (DoubleLetterOption.FirstPoint);
+Double_SecondLetterMin = CalculateAvgCandidatesDistane (DoubleLetterOption.SecondPoint);
 
-if (Option1AvgDist<Option2AvgDist)
+DoubleAvgDist = (Double_FirstLetterMin+Double_SecondLetterMin)/2;
+SingleAvgDist = CalculateAvgCandidatesDistane (SingleLetterOption.FirstPoint);
+
+Condition = Double_FirstLetterMin<=SingleAvgDist && Double_SecondLetterMin<=SingleAvgDist;
+
+if (DoubleAvgDist<SingleAvgDist && Condition)
     BO=1;
 else
     BO=2;
