@@ -80,7 +80,7 @@ else    %Mouse not up
         Slope = CalculateSlope(resampledSequence,resSeqLastPoint-RecParams.PointEnvLength,resSeqLastPoint);
         SlopeRes = CheckSlope(Slope,RecParams);
 
-        %scatter(ax,Sequence(size(Sequence,1),1),Sequence(size(Sequence,1),2));
+        %scatter(Sequence(size(Sequence,1),1),Sequence(size(Sequence,1),2));
         
         %Update Horizontal Point
         if (RecState.HSStart ~= -1 && SlopeRes && resampledSequence(resSeqLastPoint,1)<resampledSequence(resSeqLastPoint-1,1))
@@ -190,8 +190,7 @@ Res = RecState.HSStart~=-1 && (~SlopeRes || ProcessedSequence(processedCurrPont,
 %         Res = false;
 %     end
 % end
-processedCurrPont = size(ProcessedSequence,1);
-Res = RecState.HSStart~=-1 && (~SlopeRes || ProcessedSequence(processedCurrPont,1)>ProcessedSequence(processedCurrPont-1,1));
+
 % OrigSequence = RecState.Sequence;
 % Res = false;
 % if (~SlopeRes && RecState.HSStart~=-1)
