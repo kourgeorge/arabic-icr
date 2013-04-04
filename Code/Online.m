@@ -22,7 +22,7 @@ function varargout = Online(varargin)
 
 % Edit the above text to modify the response to help Online
 
-% Last Modified by GUIDE v2.5 02-Sep-2012 21:05:10
+% Last Modified by GUIDE v2.5 02-Apr-2013 15:10:45
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -808,9 +808,9 @@ function L_ShapeContextFeature_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of L_ShapeContextFeature
 
 
-% --- Executes on button press in GenerateLettersFeatures.
-function GenerateLettersFeatures_Callback(hObject, eventdata, handles)
-% hObject    handle to GenerateLettersFeatures (see GCBO)
+% --- Executes on button press in GenerateLettersDatabase.
+function GenerateLettersDatabase_Callback(hObject, eventdata, handles)
+% hObject    handle to GenerateLettersDatabase (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -843,9 +843,9 @@ end
 set(handles.Status,'String', 'Ready');
 set(handles.Status,'ForegroundColor','green');
 
-% --- Executes on key press with focus on GenerateLettersFeatures and none of its controls.
-function GenerateLettersFeatures_KeyPressFcn(hObject, eventdata, handles)
-% hObject    handle to GenerateLettersFeatures (see GCBO)
+% --- Executes on key press with focus on GenerateLettersDatabase and none of its controls.
+function GenerateLettersDatabase_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to GenerateLettersDatabase (see GCBO)
 % eventdata  structure with the following fields (see UICONTROL)
 %	Key: name of the key that was pressed, in lower case
 %	Character: character interpretation of the key(s) that was pressed
