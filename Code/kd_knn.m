@@ -162,7 +162,9 @@ global tree_cell
 if(debug_val); global h; end
 
 dim =size(point,2);
-distance = sum((point-tree_cell(node_number).nodevector).^2);
+%distance = sum((point-tree_cell(node_number).nodevector).^2); %Changed by george: Original L2 Norm
+distance = sum(abs(point - tree_cell(node_number).nodevector)); % Aprox. EMD is L1 Norm
+
 
 if (number_of_points==k && best_points_mat(k,dim+3)>distance)
     best_points_mat(k,1:dim)=tree_cell(node_number).nodevector;

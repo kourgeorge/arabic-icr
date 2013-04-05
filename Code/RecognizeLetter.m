@@ -84,13 +84,14 @@ end
 
 
 function Candidates = GetCandidateskdTree(KdTreee,vector,LettersMap)
-[index_vals,vector_vals,~] = kd_knn(KdTreee,vector',6,0);
+[index_vals,vector_vals,~] = kd_knn(KdTreee,vector',30,0);
 Candidates= [];
 for i=1:length(index_vals)
     if (size (Candidates,1)==3)
         return;
     end
-    Diff = dist2(vector_vals(i,:), vector');
+    %Diff = dist2(vector_vals(i,:), vector');  %Approx. EMD is an L1 Metric, thus this is wrong. 
+    Diff = sum(abs(vector_vals(i,:)- vector'));
     if (UniqueCandidate(LettersMap(index_vals(i)),Candidates))
         WPcell={LettersMap(index_vals(i)),Diff , vector_vals(i,:)};
         Candidates=[Candidates ; WPcell];
