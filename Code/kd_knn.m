@@ -168,7 +168,7 @@ distance = sum(abs(point - tree_cell(node_number).nodevector)); % Aprox. EMD is 
 
 if (number_of_points==k && best_points_mat(k,dim+3)>distance)
     best_points_mat(k,1:dim)=tree_cell(node_number).nodevector;
-    best_points_mat(k,dim+1)=tree_cell(node_number).index;
+    best_points_mat(k,dim+1)=min(tree_cell(node_number).index);
     best_points_mat(k,dim+2)=node_number;
     best_points_mat(k,dim+3)=distance;
     best_points_mat=sortrows(best_points_mat,dim+3);
@@ -179,7 +179,7 @@ if (number_of_points==k && best_points_mat(k,dim+3)>distance)
 elseif(number_of_points<k)
     number_of_points=number_of_points+1;
     best_points_mat(number_of_points,1:dim)=tree_cell(node_number).nodevector;
-    best_points_mat(number_of_points,dim+1)=tree_cell(node_number).index;
+    best_points_mat(number_of_points,dim+1)=min(tree_cell(node_number).index);
     best_points_mat(number_of_points,dim+2)=node_number;
     best_points_mat(number_of_points,dim+3)=distance;
     % once the variable gets filled up then sort the rows 
