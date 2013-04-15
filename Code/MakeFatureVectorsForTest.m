@@ -27,7 +27,7 @@ if (TypeOfFature == 1)
 end
 
 r_inner=1/8;
-r_outer=2;
+r_outer=3;
 
 mean_dist_global=[]; % use [] to estimate scale from the data
 nbins_theta=12;

@@ -1,15 +1,15 @@
-function [Contour] = NormalizeCont(Contour)
+function [NormContour] = NormalizeCont(Contour)
 % The The dimentions of the Contour should be [Dx2]. Means the sequence
 % should be a column vector, where each row 2 a point on the contour
 MeanXY = mean(Contour);
-Contour = Contour - repmat(MeanXY,size(Contour,1),1);
-MaxX = max(Contour(:,1));
-MaxY = max(Contour(:,2));
-MinX = min(Contour(:,1));
-MinY = min(Contour(:,2));
+CenteredContour = Contour - repmat(MeanXY,size(Contour,1),1);
+MaxX = max(CenteredContour(:,1));
+MaxY = max(CenteredContour(:,2));
+MinX = min(CenteredContour(:,1));
+MinY = min(CenteredContour(:,2));
 
 norm = max((MaxX-MinX),(MaxY-MinY));
-Contour(:,1) = Contour(:,1)/norm;
-Contour(:,2) = Contour(:,2)/norm;
+NormContour(:,1) = CenteredContour(:,1)/norm;
+NormContour(:,2) = CenteredContour(:,2)/norm;
 
 end
