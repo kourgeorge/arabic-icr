@@ -90,7 +90,13 @@ dlmwrite('C:\OCRData\WordPartFromUI.m', Sequence);
 % #########################################################################
 
 function movement_down(hco,eventStruct)
-global in_writing x_pen y_pen;
+global in_writing x_pen y_pen RecState;
+
+%Clear Data from previous stroke
+x_pen = [];
+y_pen = [];
+RecState = InitializeRecState();
+
 
 % toggle
 in_writing = 1;
@@ -174,8 +180,6 @@ global RecState;
 Sequence(:,1) = x_pen;
 Sequence(:,2) = y_pen;
 
-
-
 RecParams = InitializeRecParams();
 
 Old_LCCPI = RecState.LCCPI;
@@ -200,7 +204,7 @@ RecState.CriticalCPs=[]; %Each cell contains the Candidates of the interval from
 RecState.CandidateCP=[]; %Holds the first candidate to be a Critical CP after the LCCP
 RecState.HSStart = -1;
 RecState.LastSeenHorizontalPoint = -1;
-
+RecState.Sequence = [];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -225,7 +229,7 @@ elseif (LCCPI==1)
     LCCP = RecState.CriticalCPs(LCCPI);
     CurrCan = LCCP.Candidates;
     for i=1:size(CurrCan,1)
-        str = [str,'  ',CurrCan{i,1}{1}];
+        str = [str,'  ',CurrCan{i,1}];
     end
     endIndex = num2str(LCCP.Point);
     set(findobj('Tag','TEXT'),'String',['[Current State: ', stat_str,']  ',' Interval: 0 - ',  endIndex, ' Candidates: ' str]);
@@ -233,7 +237,7 @@ else
     LCCP = RecState.CriticalCPs(LCCPI);
     CurrCan = LCCP.Candidates;
     for i=1:size(CurrCan,1)
-        str = [str,'  ',CurrCan{i,1}{1}];
+        str = [str,'  ',CurrCan{i,1}];
     end
     BLCCP = RecState.CriticalCPs(LCCPI-1);
     startIndex = num2str(BLCCP.Point);

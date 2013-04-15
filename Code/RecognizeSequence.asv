@@ -2,8 +2,29 @@ function [RecognitionResults, SumDist] = RecognizeSequence (Sequence , Alg, Posi
 %RECOGNIZESEQUENCE return a list of the most similar letters with the
 %distance from the given sequence.
 
-C = RecognizeLetter( Sequence, LettersDataStructure, Position, Alg{1});
-RecognitionResults = [];
-for i=1:length(C)
-    RecognitionResults = [RecognitionResults;{C(i,1),C{i,2}}];
-end 
+%C = RecognizeLetter( Sequence, LettersDataStructure, Position, Alg);
+
+C = [];
+C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Iso', Alg)];
+
+C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Ini', Alg)];
+C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Mid', Alg)];
+C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Fin', Alg)];
+
+RecognitionResults = C;
+
+if (nargout==2)
+    SumDist = NaN;
+end
+
+function res = AddPoisitionIndicator (Letter, Pos)
+switch Pos
+    case 'Ini' 
+        res = [Letter,'_'];
+    case 'Med' 
+        res = ['_', Letter, '_'];
+    case 'Fin'
+        res = [Letter,'_'];
+end
+        
+        

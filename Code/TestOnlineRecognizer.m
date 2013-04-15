@@ -2,6 +2,7 @@ function [ output_args ] = TestOnlineRecognizer(  )
 %TESTONLINERECOGNIZER Summary of this function goes here
 %   Detailed explanation goes here
 
+
 global LettersDataStructure;
 TestSetFolder = 'C:\OCRData\GeneratedWords';
 LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
@@ -17,6 +18,8 @@ if (OutputImages==true)
     end
 end
 clc;
+diary([OutputFolder,'Results.txt']);
+diary on;
 correctRec = 0;
 correctSeg = 0;
 count = 0;
@@ -44,7 +47,8 @@ for i = 3:length(TestSetWordsFolderList)
             correctRec = correctRec+1;
         else
             disp ('===>error Recognition')
-            GetCandidatesFromRecState( RecState );
+            error_str = GetCandidatesFromRecState( RecState );
+            disp (error_str)
         end
         if (CorrectNumLetters==true)
             correctSeg = correctSeg+1;
@@ -55,7 +59,7 @@ for i = 3:length(TestSetWordsFolderList)
         %Output letters images to folder
         if (CorrectRecognition == false && OutputImages==true)
             if (CorrectNumLetters==false)
-                WordFolder =[OutputFolder,'\Segmentation\',FileName];
+                WordFolder =[OutputFolder,'Segmentation\',FileName];  
             else
                 WordFolder =[OutputFolder,'\',FileName];
             end
@@ -80,6 +84,9 @@ for i = 3:length(TestSetWordsFolderList)
                 saveas(ax,num2str(k),'jpg');
                 cd (PrevDir);
             end
+            fid = fopen([WordFolder,'\result.txt'], 'wt');
+            fprintf(fid, '%s', error_str);
+            fclose(fid);
         end
     end
 end
@@ -88,7 +95,8 @@ SegmentationRate = correctSeg/count*100
 RecognitionRate = correctRec/count*100
 AvgTime=(cputime-start_total)/count
 
-diary([OutputFolder,'Results.txt']);
+diary off;
+
 end
 
 
@@ -106,7 +114,7 @@ for i=1:RecState.LCCPI
     CurrCan = LCCP.Candidates(:,1);
     wasRecognized = false;
     for j=1:size(CurrCan,1)
-        if (strcmp(CurrCan{j}{1},Word(i)))
+        if (ValidateRecognizedLetter(CurrCan{j},Word,i))
             wasRecognized = true;
         end
     end
@@ -116,4 +124,25 @@ for i=1:RecState.LCCPI
     end
 end
 end
+
+function res = ValidateRecognizedLetter(candidate,Word,i)
+
+if (strcmp(candidate, Word(i)))
+    res = true;
+    return;
+end    
+if (strcmp (candidate, ['_',Word(i)]))
+    res = true;
+    return;
+end
+if (strcmp (candidate, ['_',Word(i),'_']))
+    res = true;
+    return;
+end
+if (strcmp (candidate, [Word(i),'_']))
+    res = true;
+    return;
+end
+res = false;
+end   
 

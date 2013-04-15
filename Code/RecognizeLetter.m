@@ -2,6 +2,8 @@ function [Candidates,SumDist] = RecognizeLetter( LetterSequence, LettersDataStru
 %RECOGNIZELETTER Load the letters data structure and tries recognizes a
 %letter in a given position.
 %   Usage: k = dlmread(['C:\OCRData\GeneratedWordsMed\sample2\_8_.m']);
+global pos;
+pos = Position;
 
 LettersDS = LettersDataStructure.LettersDS;
 FeatureType = LettersDataStructure.FeatureType;
@@ -50,7 +52,7 @@ if (strcmp(Alg(1),'EMD')==true)
     WaveletVector = CreateWaveletFromFV(FeatureVector);
     ReducedWaveletVector = COEFF*WaveletVector;
     Candidates = GetCandidateskdTree(KdTreee,ReducedWaveletVector,LettersMap);
-    
+
 %     InputSequence = ReducedWaveletVector;
 %     for i=1: size(Candidates,1)    
 %         LetterCandidate = Candidates{i,3}';
@@ -60,6 +62,9 @@ if (strcmp(Alg(1),'EMD')==true)
 %         Diff = Cons_DTW(InputSequence,LetterCandidate,r);
 %         Candidates{i,2} = Diff;
 %     end
+
+    Candidates = Candidates(:,1:2);
+    
 else
     %Classify using NN
     [NNCandidates,AllDictionarySorted] = GetClosestLetterCandidates( FeatureVector, PositionDS, Alg{1} ,3);
@@ -84,6 +89,7 @@ end
 
 
 function Candidates = GetCandidateskdTree(KdTreee,vector,LettersMap)
+global pos;
 [index_vals,vector_vals,~] = kd_knn(KdTreee,vector',30,0);
 Candidates= [];
 for i=1:length(index_vals)
@@ -91,9 +97,9 @@ for i=1:length(index_vals)
         return;
     end
     %Diff = dist2(vector_vals(i,:), vector');  %Approx. EMD is an L1 Metric, thus this is wrong. 
-    Diff = sum(abs(vector_vals(i,:)- vector'));
-    if (UniqueCandidate(LettersMap(index_vals(i)),Candidates))
-        WPcell={LettersMap(index_vals(i)),Diff , vector_vals(i,:)};
+    Diff = sum(abs(vector_vals(i,:)-vector'));
+    if (UniqueCandidate(AddPoisitionIndicator(LettersMap(index_vals(i)),pos),Candidates))
+        WPcell={ AddPoisitionIndicator(LettersMap(index_vals(i)),pos),Diff , vector_vals(i,:)};
         Candidates=[Candidates ; WPcell];
     end
 end
@@ -108,5 +114,18 @@ for i=1:size (Candidates,1)
     if (strcmp(Candidates(i,1),Letter))
         res = false;
     end
+end
+end
+
+function res = AddPoisitionIndicator (Letter, Pos)
+switch Pos
+    case 'Ini' 
+        res = [Letter,'_'];
+    case 'Mid' 
+        res = ['_', Letter, '_'];
+    case 'Fin'
+        res = ['_',Letter];
+    otherwise
+        res = Letter;
 end
 end

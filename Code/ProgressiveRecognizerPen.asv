@@ -92,6 +92,10 @@ dlmwrite('C:\OCRData\WordPartFromUI.m', Sequence);
 function movement_down(hco,eventStruct)
 global in_writing x_pen y_pen;
 
+x_pen = [];
+y_pen = [];
+
+
 % toggle
 in_writing = 1;
 
@@ -225,7 +229,7 @@ elseif (LCCPI==1)
     LCCP = RecState.CriticalCPs(LCCPI);
     CurrCan = LCCP.Candidates;
     for i=1:size(CurrCan,1)
-        str = [str,'  ',CurrCan{i,1}{1}];
+        str = [str,'  ',CurrCan{i,1}];
     end
     endIndex = num2str(LCCP.Point);
     set(findobj('Tag','TEXT'),'String',['[Current State: ', stat_str,']  ',' Interval: 0 - ',  endIndex, ' Candidates: ' str]);
@@ -233,7 +237,7 @@ else
     LCCP = RecState.CriticalCPs(LCCPI);
     CurrCan = LCCP.Candidates;
     for i=1:size(CurrCan,1)
-        str = [str,'  ',CurrCan{i,1}{1}];
+        str = [str,'  ',CurrCan{i,1}];
     end
     BLCCP = RecState.CriticalCPs(LCCPI-1);
     startIndex = num2str(BLCCP.Point);
