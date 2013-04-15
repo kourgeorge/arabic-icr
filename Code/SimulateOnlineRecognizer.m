@@ -1,7 +1,7 @@
 function RecState = SimulateOnlineRecognizer( sequence, loadDataStructure, showUI )
 %SIMULATEONLINERECOGNIZER This funtion simulate the Online pen recognizer.
 % a = dlmread(['C:\OCRData\WordPartFromUI.m']);
-% Res = SimulateOnlineRecognizer(a,true)
+% Res = SimulateOnlineRecognizer(a,true,true)
 
 
 %%%%%%%%%%%%%% Activate at first run  id not running from TestOnlineRecognizer %%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,11 +49,9 @@ for k=1:len-1
 end
 RecState = ProcessNewPoint(RecParams,RecState,sequence,true,UI);
 if (UI == true)
+    GetCandidatesFromRecState( RecState );
     close (himage);
 end
-
-%Comment out when TestOnlineRecognizer is running 
-%GetCandidatesFromRecState( RecState );
 
 %%%%%%%%%%%%%%%%    Initialization Functions   %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,8 +69,8 @@ RecState.LastSeenHorizontalPoint = -1;
 function RecParams = InitializeRecParams()
 % Algorithm parameters
 RecParams.Alg = {'EMD'}; %Res_DTW
-RecParams.K = 10;
-RecParams.PointEnvLength = 2;
+RecParams.K = 5;
+RecParams.PointEnvLength = 1;
 RecParams.MaxSlopeRate = 0.5;
 RecParams.MaxDistFromBaseline = 0.15;
 

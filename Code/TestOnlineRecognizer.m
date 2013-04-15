@@ -86,7 +86,9 @@ end
 
 SegmentationRate = correctSeg/count*100
 RecognitionRate = correctRec/count*100
-AvgTime=cputime-start_total/count
+AvgTime=(cputime-start_total)/count
+
+diary([OutputFolder,'Results.txt']);
 end
 
 
