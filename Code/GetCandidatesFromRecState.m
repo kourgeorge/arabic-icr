@@ -1,6 +1,7 @@
-function GetCandidatesFromRecState( RecState )
+function res = GetCandidatesFromRecState( RecState )
 %GETCANDIDATESFROMRECSTATE Summary of this function goes here
 %   Detailed explanation goes here
+res = '';
 for i=1:RecState.LCCPI
     if (i==1)
         startIndex = num2str(0);
@@ -12,13 +13,13 @@ for i=1:RecState.LCCPI
     LCCPP = LCCP.Point;
     endIndex = num2str(LCCPP);
     i_str = num2str(i);
-    disp (['State : ',i_str,',  ',startIndex,' - ',endIndex])
+    res = [res, 'State : ',i_str,',  ',startIndex,' - ',endIndex, sprintf('\n')];
     CurrCan = LCCP.Candidates(:,1);
     str = '';
     for j=1:size(CurrCan,1)
-        str = [str,' ',CurrCan{j}{1}];
+        str = [str,' ',CurrCan{j}];
     end
-    disp(['Candidates:  ',str])
+    res = [res, 'Candidates:  ',str, sprintf('\n')];
 end
 
 
