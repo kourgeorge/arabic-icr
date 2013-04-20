@@ -13,7 +13,7 @@ if ~exist('isper', 'var') || isempty (isper),
   isper = false;
 end
 if isscalar(isper),
-  isper = repmat(isper, [1 ndims(H1)]);;
+  isper = repmat(isper, [1 ndims(H1)]);
 end
 hsize = size(H1)';
 hsize(~isper) = 0;
