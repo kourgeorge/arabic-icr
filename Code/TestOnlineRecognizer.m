@@ -1,4 +1,4 @@
-function [ output_args ] = TestOnlineRecognizer(  )
+function TestOnlineRecognizer()
 %TESTONLINERECOGNIZER Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -35,7 +35,7 @@ for i = 3:length(TestSetWordsFolderList)
         sequence = dlmread([TestSetFolder,'\',FileName]);
         disp(' ')
         disp(['Word  ',num2str(count),': ',FileName,])
-        t = cputime; 
+        t = cputime;
         RecState = SimulateOnlineRecognizer( sequence ,false);
         e = cputime-t;
         disp(['Time Elapsed: ',num2str(e)])
@@ -59,12 +59,11 @@ for i = 3:length(TestSetWordsFolderList)
         %Output letters images to folder
         if (CorrectRecognition == false && OutputImages==true)
             if (CorrectNumLetters==false)
-                WordFolder =[OutputFolder,'Segmentation\',FileName];  
+                WordFolder =[OutputFolder,'Segmentation\',FileName];
             else
                 WordFolder =[OutputFolder,'\',FileName];
             end
             
-            % WordFolder =[OutputFolder,'\',FileName];
             mkdir(WordFolder);
             for k=1:RecState.LCCPI
                 if (k==1)
@@ -130,7 +129,7 @@ function res = ValidateRecognizedLetter(candidate,Word,i)
 if (strcmp(candidate, Word(i)))
     res = true;
     return;
-end    
+end
 if (strcmp (candidate, ['_',Word(i)]))
     res = true;
     return;
@@ -144,5 +143,5 @@ if (strcmp (candidate, [Word(i),'_']))
     return;
 end
 res = false;
-end   
+end
 
