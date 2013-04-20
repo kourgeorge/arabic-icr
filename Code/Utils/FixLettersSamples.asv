@@ -1,0 +1,28 @@
+function FixedSamples = FixLettersSamples( LettersFolder )
+%FIXLETTERSSAMPLES Summary of this function goes here
+%   FixLettersSamples( 'C:\OCRData\LettersSamplesTest')
+
+LettersFolderList = dir(LettersFolder);
+for i = 3:length(LettersFolderList)
+    current_object = LettersFolderList(i);
+    IsFile=~[current_object.isdir];
+    FileName = current_object.name;
+    FileNameSize = size(FileName);
+    LastCharacter = FileNameSize(2);
+    if (IsFile==1 && FileName(LastCharacter)=='m')
+        seqFileName = [LettersFolder,'\',FileName];
+        sequence = dlmread(seqFileName);
+        [~,indx]=ismember(sequence,[Inf,-Inf],'rows');
+        count
+        InfIndexes = find(indx,1);
+        if (length(InfIndexes)==1 && InfIndexes<0.5*size(sequence,1))
+            newSequence = sequence(InfIndexes+1:end,:);
+            delete(seqFileName);
+            dlmwrite(seqFileName,sequence);
+        end
+    end
+    if (IsFile==0 && isempty(findstr('svn', FileName)))
+        FixLettersSamples( [LettersFolder,'\',FileName] );
+    end
+end
+
