@@ -49,7 +49,7 @@ for k=1:len-1
 end
 RecState = ProcessNewPoint(RecParams,RecState,sequence,true,UI);
 if (UI == true)
-    GetCandidatesFromRecState( RecState );
+    GetCandidatesFromRecState( RecState )
     close (himage);
 end
 
