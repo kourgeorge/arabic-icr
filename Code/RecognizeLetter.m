@@ -63,7 +63,7 @@ if (strcmp(Alg(1),'EMD')==true)
 %         Candidates{i,2} = Diff;
 %     end
 
-    Candidates = Candidates(:,1:2);
+    Candidates = Candidates(:,1:3);
     
 else
     %Classify using NN
