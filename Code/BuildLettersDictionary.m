@@ -67,16 +67,21 @@ for i = 3:length(LettersSamplesFolderList)
         end
         
         %Fin
-        Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Fin,2));
-        LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Fin,Feature,'UniformOutput', false);
-        LetterWavelets = cellfun(@CreateWaveletFromFV, LetterFeatures ,'UniformOutput', false);
-        FinStruct = [FinStruct;FolderName , {LetterFeatures}, {LetterWavelets}];
+        if (~isempty(LetterInAllPositions.Fin))
+            Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Fin,2));
+            LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Fin,Feature,'UniformOutput', false);
+            LetterWavelets = cellfun(@CreateWaveletFromFV, LetterFeatures ,'UniformOutput', false);
+            FinStruct = [FinStruct;FolderName , {LetterFeatures}, {LetterWavelets}];
+        end
+        
         
         %Iso
-        Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Iso,2));
-        LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Iso,Feature,'UniformOutput', false);
-        LetterWavelets = cellfun(@CreateWaveletFromFV, LetterFeatures ,'UniformOutput', false);
-        IsoStruct = [IsoStruct;FolderName , {LetterFeatures}, {LetterWavelets}];
+        if (~isempty(LetterInAllPositions.Iso))
+            Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Iso,2));
+            LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Iso,Feature,'UniformOutput', false);
+            LetterWavelets = cellfun(@CreateWaveletFromFV, LetterFeatures ,'UniformOutput', false);
+            IsoStruct = [IsoStruct;FolderName , {LetterFeatures}, {LetterWavelets}];
+        end
     end
     
 end
