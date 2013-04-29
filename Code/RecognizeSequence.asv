@@ -5,26 +5,21 @@ function [RecognitionResults, SumDist] = RecognizeSequence (Sequence , Alg, Posi
 %C = RecognizeLetter( Sequence, LettersDataStructure, Position, Alg);
 
 C = [];
+
+if (strcmp(Position,'Fin') || strcmp(Position,'Mid'))
+    C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Mid', Alg)];
+    C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Fin', Alg)];
+end
 C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Iso', Alg)];
-
 C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Ini', Alg)];
-C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Mid', Alg)];
-C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Fin', Alg)];
 
-RecognitionResults = C;
+
+RecognitionResults = sortrows(C,2);
+RecognitionResults = RecognitionResults(1:5,:);
 
 if (nargout==2)
     SumDist = NaN;
 end
 
-function res = AddPoisitionIndicator (Letter, Pos)
-switch Pos
-    case 'Ini' 
-        res = [Letter,'_'];
-    case 'Med' 
-        res = ['_', Letter, '_'];
-    case 'Fin'
-        res = [Letter,'_'];
-end
         
         

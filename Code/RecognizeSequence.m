@@ -5,13 +5,19 @@ function [RecognitionResults, SumDist] = RecognizeSequence (Sequence , Alg, Posi
 %C = RecognizeLetter( Sequence, LettersDataStructure, Position, Alg);
 
 C = [];
-C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Iso', Alg)];
-C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Ini', Alg)];
-C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Mid', Alg)];
-C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Fin', Alg)];
+
+% if (strcmp(Position,'Fin') || strcmp(Position,'Mid'))
+%     C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Mid', Alg)];
+%     C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Fin', Alg)];
+% else
+%     C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Iso', Alg)];
+%     C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Ini', Alg)];
+% end
+
+C = [C; RecognizeLetter( Sequence, LettersDataStructure, Position, Alg)];
 
 RecognitionResults = sortrows(C,2);
-RecognitionResults = RecognitionResults(1:5,:);
+RecognitionResults = RecognitionResults(1:min(5,end),:);
 
 if (nargout==2)
     SumDist = NaN;
