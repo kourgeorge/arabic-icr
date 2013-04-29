@@ -18,10 +18,13 @@ for i = 1:size(PositionLettersDS,1)
         a = a(:);
         LetterSamples =[LetterSamples; a'];
     end
+        
     FeaturesArray = [FeaturesArray; LetterSamples];
-    %Letters = [Letters; repmat({Letter},5,1)];
-    LettersArray = [LettersArray; repmat(Letter,size(LetterCandidates,2),1)];
-    NumericLabeling = [NumericLabeling; repmat(double(Letter),size(LetterCandidates,2),1)];
+    
+    LettersArray = [LettersArray; repmat(Letter,size(LetterSamples,1),1)];
+    
+    NumericLabeling = [NumericLabeling; repmat(double(Letter),size(LetterSamples,1),1)];
+
 end
 
 
