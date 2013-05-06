@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root ArabicWord="بريرم" EnglishWord="BRYRM">
+   <WordPart>
+      <Letter letter="B">495 66,495 65,496 65,487 78,485 77,484 77,483 76</Letter>
+      <Letter letter="R">483 76,482 75,481 74,480 73,480 72,479 72,479 73,479 74,478 76,478 77,477 79,476 81,474 83,472 86,470 88,467 89,465 91,462 92,460 93,458 94,456 94,454 94,453 93</Letter>
+   </WordPart>
+   <WordPart>
+      <Letter letter="Y">449 72,448 78,437 80,435 80,433 81,432 81,430 81</Letter>
+      <Letter letter="R">430 81,429 81,427 81</Letter>
+   </WordPart>
+   <WordPart>
+      <Letter letter="M">416 86,412 93,405 100,400 103,398 104,397 104,396 103,395 103, Inf Inf,  449 72,448 78,437 80,435 80,433 81,432 81,430 81, Inf Inf,  430 81,429 81,427 81</Letter>
+   </WordPart>
+</root>
