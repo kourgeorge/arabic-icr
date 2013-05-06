@@ -39,16 +39,26 @@ for i = 3:length(LettersFolderList)
         sequenceFileName = [sampleName,'.m'];
         imageFileName = [sampleName,'.jpg'];
         dlmwrite(sequenceFileName,newSequence);
+        maxX = max(newSequence(:,1)); minX = min(newSequence(:,1)); maxY = max(newSequence(:,2)); minY = min(newSequence(:,2)); 
+        windowSize = max(maxX-minX,maxY-minY); 
         plot (ax, newSequence(:,1),newSequence(:,2),'LineWidth',3);
+        ylim([ymin ymax])
+        xlim([ymin ymax])
         saveas(ax,imageFileName,'jpg');
     end
     if (IsFile==0 && isempty(findstr('svn', FileName)))
-        delete([LettersFolder,'\',FileName,'\*.jpg']);
+        folderName = [LettersFolder,'\',FileName];
+        delete([folderName,'\*.jpg']);
         % Retrieve the name of the files only
-        names = dir(d);
+        names = dir(folderName);
         names = {names(~[names.isdir]).name};
         
-        
+        % Rename in a LOOP
+        for n = 1:numel(names)
+            oldname = [folderName '\' names{n}];
+            newname = [folderName '\old' names{n}];
+            movefile(oldname,newname);
+        end
         
         InnerCount = FixLettersSamples( [LettersFolder,'\',FileName] );
         count=count + InnerCount;

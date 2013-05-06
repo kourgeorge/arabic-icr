@@ -7,7 +7,6 @@ function  FixedSamplesCount= FixLettersSamples( LettersFolder )
 % Print statistics of the sampleset
 
 count = 0;
-ax = axes();
 sampleNum = 0;
 LettersFolderList = dir(LettersFolder);
 for i = 3:length(LettersFolderList)
@@ -39,7 +38,11 @@ for i = 3:length(LettersFolderList)
         sequenceFileName = [sampleName,'.m'];
         imageFileName = [sampleName,'.jpg'];
         dlmwrite(sequenceFileName,newSequence);
-        plot (ax, newSequence(:,1),newSequence(:,2),'LineWidth',3);
+        maxX = max(newSequence(:,1)); minX = min(newSequence(:,1)); maxY = max(newSequence(:,2)); minY = min(newSequence(:,2)); 
+        windowSize = max(maxX-minX,maxY-minY); 
+        ax = plot (newSequence(:,1),newSequence(:,2),'LineWidth',3);
+        ylim([minY-0.1*windowSize minY+windowSize+0.1*windowSize]);
+        xlim([minX-0.1*windowSize minX+windowSize+0.1*windowSize]);
         saveas(ax,imageFileName,'jpg');
     end
     if (IsFile==0 && isempty(findstr('svn', FileName)))
