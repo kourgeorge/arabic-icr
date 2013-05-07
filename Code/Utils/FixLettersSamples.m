@@ -1,6 +1,6 @@
 function  FixedSamplesCount= FixLettersSamples( LettersFolder )
 %FIXLETTERSSAMPLES Summary of this function goes here
-%   FixLettersSamples( 'C:\Users\kour\Desktop\letters')
+%   FixLettersSamples('C:\OCRData\data\LettersSamples')
 % Rename the files.
 % delete all image file and create new one.
 % remove Inf points from the sample
@@ -8,6 +8,7 @@ function  FixedSamplesCount= FixLettersSamples( LettersFolder )
 
 count = 0;
 sampleNum = 0;
+Sequences = [];
 LettersFolderList = dir(LettersFolder);
 for i = 3:length(LettersFolderList)
     current_object = LettersFolderList(i);
@@ -34,16 +35,8 @@ for i = 3:length(LettersFolderList)
             newSequence = sequence;
         end
         sampleNum=sampleNum+1;
-        sampleName = [LettersFolder,'\sample',num2str(sampleNum)];
-        sequenceFileName = [sampleName,'.m'];
-        imageFileName = [sampleName,'.jpg'];
-        dlmwrite(sequenceFileName,newSequence);
-        maxX = max(newSequence(:,1)); minX = min(newSequence(:,1)); maxY = max(newSequence(:,2)); minY = min(newSequence(:,2)); 
-        windowSize = max(maxX-minX,maxY-minY); 
-        ax = plot (newSequence(:,1),newSequence(:,2),'LineWidth',3);
-        ylim([minY-0.1*windowSize minY+windowSize+0.1*windowSize]);
-        xlim([minX-0.1*windowSize minX+windowSize+0.1*windowSize]);
-        saveas(ax,imageFileName,'jpg');
+        Sequences = [Sequences ; {newSequence}];
+
     end
     if (IsFile==0 && isempty(findstr('svn', FileName)))
         folderName = [LettersFolder,'\',FileName];
@@ -59,8 +52,27 @@ for i = 3:length(LettersFolderList)
             movefile(oldname,newname);
         end
         
-        InnerCount = FixLettersSamples( [LettersFolder,'\',FileName] );
+        InnerCount = FixLettersSamples( folderName );
         count=count + InnerCount;
     end
+end
+if (sampleNum>0)
+    [UniqueSequences,~,~] = uniquecell(Sequences);
+    UniqueSampleNum = length(UniqueSequences);
+    disp([LettersFolder,': ',num2str(UniqueSampleNum)])
+    for j=1:UniqueSampleNum
+        newSequence = UniqueSequences{j};
+        sampleName = [LettersFolder,'\sample',num2str(j)];
+        sequenceFileName = [sampleName,'.m'];
+        imageFileName = [sampleName,'.jpg'];
+        dlmwrite(sequenceFileName,newSequence);
+        maxX = max(newSequence(:,1)); minX = min(newSequence(:,1)); maxY = max(newSequence(:,2)); minY = min(newSequence(:,2)); 
+        windowSize = max(maxX-minX,maxY-minY); 
+        ax = plot (newSequence(:,1),newSequence(:,2),'LineWidth',3);
+        ylim([minY-0.1*windowSize minY+windowSize+0.1*windowSize]);
+        xlim([minX-0.1*windowSize minX+windowSize+0.1*windowSize]);
+        saveas(ax,imageFileName,'jpg');
+    end
+    
 end
 FixedSamplesCount = count;
