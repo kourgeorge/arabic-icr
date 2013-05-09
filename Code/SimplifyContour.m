@@ -17,7 +17,7 @@ epsilon = sqrt(Dx^2+Dy^2)/200;
 ProportionalSimplification = ps;
 
 if (nargout==2)
-    epsilon = 1/200; %epsilon is absolute
+    epsilon = 1/75; %epsilon is absolute
     [ps,~] = dpsimplify(Contour,epsilon);
     AbsoluteSimplification = ps;
 end
