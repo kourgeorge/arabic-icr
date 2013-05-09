@@ -1,6 +1,7 @@
 function [RecognitionResults,SumDist] = RecognizeLetterSequence(Sequence , Alg, Position, LettersMatrix)
 %RECOGNIZESEQUENCE Summary of this function goes here
 %   Detailed explanation goes here
+%   To delete
 
 if (strcmp(Alg(2),'MSC'))
     FeatureType = 1;
