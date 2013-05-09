@@ -17,7 +17,7 @@ RandStream.setDefaultStream(RandStream('mt19937ar','seed',sum(100*clock)));
 SelectedIndexes = zeros(numAllWords,1,'int8');
 for i=1:numWords
     index = randi(numAllWords,1,1);
-    while (SelectedIndexes(index)==1)
+    while (SelectedIndexes(index)==1 || ~IsWPOk(UniqueCellArray(index)))
        index = randi(numAllWords);
     end
     SelectedIndexes(index)=1;
@@ -34,3 +34,11 @@ end
 fclose (fid);
 end
 
+
+function res = IsWPOk(WP)
+if (~isempty(findstr(WP{:}, 'E'))|| ~isempty(findstr(WP{:}, 'X')) || ~isempty(findstr(WP{:}, 'S')) || ~isempty(findstr(WP{:}, 'N')) || ~isempty(findstr(WP{:}, 'F')) ||  ~isempty(findstr(WP{:}, 'K'))||  ~isempty(findstr(WP{:}, '6')))
+    res = false;
+else 
+    res = true;
+end
+end

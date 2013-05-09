@@ -1,4 +1,4 @@
-function [ output_args ] = GenerateRandomizedWPFile ( inputFilepath,outputFilePath,numWords )
+function  GenerateRandomizedWPFile ( inputFilepath,outputFilePath,numWords )
 %GENERATERANDOMIZEDWPFILE Summary of this function goes here
 %   GenerateRandomizedWPFile('C:\OCRData\TestLegs.txt','C:\OCRData\TestLegs1000rand.txt',1000 )
 
@@ -17,7 +17,7 @@ RandStream.setDefaultStream(RandStream('mt19937ar','seed',sum(100*clock)));
 SelectedIndexes = zeros(numAllWords,1,'int8');
 for i=1:numWords
     index = randi(numAllWords,1,1);
-    while (SelectedIndexes(index)==1 || strfind(UniqueCellArray(index),'E'))
+    while (SelectedIndexes(index)==1 || IsWPOk(cell(index)))
        index = randi(numAllWords);
     end
     SelectedIndexes(index)=1;
@@ -34,3 +34,12 @@ end
 fclose (fid);
 end
 
+
+function res = IsWPOk(WP)
+
+if (~isempty(findstr(WP, 'S')))
+    res = false;
+    return;
+end
+if (~isempty(findstr(WP, 'N')) && WP(size(WP,2) )
+end
