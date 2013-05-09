@@ -1,6 +1,6 @@
 function RecState = SimulateOnlineRecognizer( sequence, loadDataStructure, showUI )
 %SIMULATEONLINERECOGNIZER This funtion simulate the Online pen recognizer.
-% a = dlmread(['C:\OCRData\WordPartFromUI.m']);
+% a = dlmread(['C:\OCRData\GeneratedWords\<>.m']);
 % Res = SimulateOnlineRecognizer(a,true,true)
 
 
