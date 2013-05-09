@@ -9,6 +9,19 @@ function  FixedSamplesCount= FixLettersSamples( LettersFolder )
 count = 0;
 sampleNum = 0;
 Sequences = [];
+% Clean directory from image files
+delete([LettersFolder,'\*.jpg']);
+% get all files names (only .m files exist at this point.)
+names = dir(LettersFolder);
+names = {names(~[names.isdir]).name};
+
+% Rename all files names
+for n = 1:numel(names)
+    oldname = [LettersFolder '\' names{n}];
+    newname = [LettersFolder '\old' names{n}];
+    movefile(oldname,newname);
+end
+
 LettersFolderList = dir(LettersFolder);
 for i = 3:length(LettersFolderList)
     current_object = LettersFolderList(i);
@@ -40,17 +53,7 @@ for i = 3:length(LettersFolderList)
     end
     if (IsFile==0 && isempty(findstr('svn', FileName)))
         folderName = [LettersFolder,'\',FileName];
-        delete([folderName,'\*.jpg']);
-        % Retrieve the name of the files only
-        names = dir(folderName);
-        names = {names(~[names.isdir]).name};
-        
-        % Rename in a LOOP
-        for n = 1:numel(names)
-            oldname = [folderName '\' names{n}];
-            newname = [folderName '\old' names{n}];
-            movefile(oldname,newname);
-        end
+       
         
         InnerCount = FixLettersSamples( folderName );
         count=count + InnerCount;
