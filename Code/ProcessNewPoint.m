@@ -163,17 +163,19 @@ end
 OrigSequence = RecState.Sequence;
 OrigCurrPoint = size(OrigSequence,1);
 
-if (RecState.LCCPI~=0)
-    LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
-    [~,abs] = SimplifyContour(OrigSequence(LCCPP:OrigCurrPoint,:));
-    Res = Res && (size(abs,1)>2);
-end
-
 if (Res==true && ~isempty(RecState.CandidateCP))
     LCCPP = RecState.CandidateCP.Point;
     [~,abs] = SimplifyContour(OrigSequence(LCCPP:OrigCurrPoint,:));
     Res = Res && (size(abs,1)>2);
+    return;
+else if (Res==true && RecState.LCCPI~=0)
+    LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
+    [~,abs] = SimplifyContour(OrigSequence(LCCPP:OrigCurrPoint,:));
+    Res = Res && (size(abs,1)>2);
+    end
 end
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function Res = IsClosingHS(ProcessedSequence, SlopeRes,RecState,RecParams)
@@ -365,7 +367,7 @@ Avg = min (arr);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function res = CheckSlope(Slope,RecParams)
-res = Slope<RecParams.MaxSlopeRate;
+res = Slope<RecParams.MaxSlopeRate && Slope>=0;
 
 
 %%%%%%%%%%%%%%%%%%     UNUSED FUNCTIONS      %%%%%%%%%%%%%%%%%
