@@ -6,14 +6,15 @@ function RecState = SimulateOnlineRecognizer( sequence, loadDataStructure, showU
 
 %%%%%%%%%%%%%% Activate at first run  id not running from TestOnlineRecognizer %%%%%%%%%%%%%%%%%%%%%%%%
 if (nargin<2 || loadDataStructure==true)
-  global LettersDataStructure;
-  LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
+    global LettersDataStructure;
+    LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
 end
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 RecParams = InitializeRecParams();
 RecState = InitializeRecState();
 
+sequence = NormalizeCont(sequence);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Sequence Pre-Processing %%%%%%%%%%%%%%%%%%
 % NormalizedLetterSequence = NormalizeCont(sequence);
@@ -32,7 +33,11 @@ if (UI == true)
     himage = figure;
     h_axes = axes();
     set(h_axes,'Tag','AXES');
-    axis(h_axes,[-1 1 -1 1]);
+    maxX = max(sequence(:,1)); minX = min(sequence(:,1)); maxY = max(sequence(:,2)); minY = min(sequence(:,2));
+    windowSize = max(maxX-minX,maxY-minY);
+    ylim([minY-0.1*windowSize minY+windowSize+0.1*windowSize]);
+    xlim([minX-0.1*windowSize minX+windowSize+0.1*windowSize]);
+    axis(h_axes,[minX-0.1*windowSize minX+windowSize+0.1*windowSize minY-0.1*windowSize minY+windowSize+0.1*windowSize]);
     hold(h_axes,'on');
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,6 +76,6 @@ function RecParams = InitializeRecParams()
 RecParams.Alg = {'EMD'}; %Res_DTW
 RecParams.K = 5;
 RecParams.PointEnvLength = 1;
-RecParams.MaxSlopeRate = 0.5;
+RecParams.MaxSlopeRate = 0.6;
 RecParams.MaxDistFromBaseline = 0.15;
 
