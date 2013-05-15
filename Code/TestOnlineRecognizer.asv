@@ -1,10 +1,12 @@
-function [ output_args ] = TestOnlineRecognizer(  )
+function TestOnlineRecognizer()
 %TESTONLINERECOGNIZER Summary of this function goes here
 %   Detailed explanation goes here
 
 
 global LettersDataStructure;
-TestSetFolder = 'C:\OCRData\GeneratedWords';
+TestSetFolder = 'C:\Users\kour\Desktop\WPsLabeled';
+%TestSetFolder = 'C:\OCRData\GeneratedWords';
+
 LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
 
 OutputImages = true;
@@ -35,11 +37,11 @@ for i = 3:length(TestSetWordsFolderList)
         sequence = dlmread([TestSetFolder,'\',FileName]);
         disp(' ')
         disp(['Word  ',num2str(count),': ',FileName,])
-        t = cputime; 
+        t = cputime;
         RecState = SimulateOnlineRecognizer( sequence ,false);
         e = cputime-t;
         disp(['Time Elapsed: ',num2str(e)])
-        [CorrectNumLetters, CorrectRecognition] = correctRecognition(RecState,strrep(FileName, '.m', ''));
+        [LetterNumDiff, CorrectRecognition] = correctRecognition(RecState,strtok(FileName, ' .('));
         
         %Collect Statistics
         count=count+1;
@@ -50,7 +52,7 @@ for i = 3:length(TestSetWordsFolderList)
             error_str = GetCandidatesFromRecState( RecState );
             disp (error_str)
         end
-        if (CorrectNumLetters==true) 
+        if (CorrectNumLetters==true)
             correctSeg = correctSeg+1;
         else
             disp ('===>error Segmentation')
@@ -58,13 +60,12 @@ for i = 3:length(TestSetWordsFolderList)
         
         %Output letters images to folder
         if (CorrectRecognition == false && OutputImages==true)
-            if (CorrectNumLetters==false)
-                WordFolder =[OutputFolder,'Segmentation\',FileName];  
+            if (LetterNumDiff~=0)
+                WordFolder =[OutputFolder,'Segmentation\',FileName];
             else
                 WordFolder =[OutputFolder,'\',FileName];
             end
             
-            % WordFolder =[OutputFolder,'\',FileName];
             mkdir(WordFolder);
             for k=1:RecState.LCCPI
                 if (k==1)
@@ -100,12 +101,12 @@ diary off;
 end
 
 
-function [CorrectNumLetters, CorrectRecognition] = correctRecognition(RecState,Word)
+function [LetterNumDiff, CorrectRecognition] = correctRecognition(RecState,Word)
 CorrectRecognition=true;
-CorrectNumLetters=true;
+LetterNumDiff=true;
 
-if (RecState.LCCPI~=size(Word))
-    CorrectNumLetters = false;
+if (RecState.LCCPI>size(Word))
+    LetterNumDiff = RecState.LCCPI - size(Word);
     CorrectRecognition = false;
     return;
 end
@@ -130,7 +131,7 @@ function res = ValidateRecognizedLetter(candidate,Word,i)
 if (strcmp(candidate, Word(i)))
     res = true;
     return;
-end    
+end
 if (strcmp (candidate, ['_',Word(i)]))
     res = true;
     return;
@@ -144,5 +145,5 @@ if (strcmp (candidate, [Word(i),'_']))
     return;
 end
 res = false;
-end   
+end
 

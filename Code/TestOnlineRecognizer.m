@@ -4,7 +4,9 @@ function TestOnlineRecognizer()
 
 
 global LettersDataStructure;
-TestSetFolder = 'C:\OCRData\GeneratedWords';
+TestSetFolder = 'C:\Users\kour\Desktop\WPsLabeled';
+%TestSetFolder = 'C:\OCRData\GeneratedWords';
+
 LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
 
 OutputImages = true;
@@ -23,6 +25,8 @@ diary on;
 correctRec = 0;
 correctSeg = 0;
 count = 0;
+overSeg = 0;
+underSeg = 0;
 start_total = cputime;
 TestSetWordsFolderList = dir(TestSetFolder);
 for i = 3:length(TestSetWordsFolderList)
@@ -39,7 +43,7 @@ for i = 3:length(TestSetWordsFolderList)
         RecState = SimulateOnlineRecognizer( sequence ,false);
         e = cputime-t;
         disp(['Time Elapsed: ',num2str(e)])
-        [CorrectNumLetters, CorrectRecognition] = correctRecognition(RecState,strrep(FileName, '.m', ''));
+        [LetterNumDiff, CorrectRecognition] = correctRecognition(RecState,strtok(FileName, ' .('));
         
         %Collect Statistics
         count=count+1;
@@ -50,15 +54,20 @@ for i = 3:length(TestSetWordsFolderList)
             error_str = GetCandidatesFromRecState( RecState );
             disp (error_str)
         end
-        if (CorrectNumLetters==true)
+        if (LetterNumDiff==0)
             correctSeg = correctSeg+1;
         else
             disp ('===>error Segmentation')
+            if (LetterNumDiff>0)
+                overSeg = overSeg+1;
+            else
+                underSeg = underSeg+1;
+            end
         end
         
         %Output letters images to folder
         if (CorrectRecognition == false && OutputImages==true)
-            if (CorrectNumLetters==false)
+            if (LetterNumDiff~=0)
                 WordFolder =[OutputFolder,'Segmentation\',FileName];
             else
                 WordFolder =[OutputFolder,'\',FileName];
@@ -90,8 +99,10 @@ for i = 3:length(TestSetWordsFolderList)
     end
 end
 
-SegmentationRate = correctSeg/count*100
-RecognitionRate = correctRec/count*100
+RecognitionRate = (correctRec/count)*100
+SegmentationRate = (correctSeg/count)*100
+OverSegmentationRate = (overSeg/(count-correctSeg))*100
+UnderSegmentationRate = (underSeg/(count-correctSeg))*100
 AvgTime=(cputime-start_total)/count
 
 diary off;
@@ -99,12 +110,12 @@ diary off;
 end
 
 
-function [CorrectNumLetters, CorrectRecognition] = correctRecognition(RecState,Word)
+function [LetterNumDiff, CorrectRecognition] = correctRecognition(RecState,Word)
 CorrectRecognition=true;
-CorrectNumLetters=true;
+LetterNumDiff=0;
 
-if (RecState.LCCPI~=size(Word))
-    CorrectNumLetters = false;
+if (RecState.LCCPI~=size(Word,2))
+    LetterNumDiff = RecState.LCCPI - size(Word,2);
     CorrectRecognition = false;
     return;
 end
