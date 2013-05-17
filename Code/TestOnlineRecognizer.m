@@ -4,7 +4,7 @@ function TestOnlineRecognizer()
 
 
 global LettersDataStructure;
-TestSetFolder = 'C:\Users\kour\Desktop\WPsLabeled';
+TestSetFolder = 'C:\OCRData\WPsLabeled';
 %TestSetFolder = 'C:\OCRData\GeneratedWords';
 
 LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
@@ -83,6 +83,7 @@ for i = 3:length(TestSetWordsFolderList)
                 end
                 LCCP =  RecState.CriticalCPs(k);
                 endIndex = LCCP.Point;
+                dlmwrite([WordFolder,'\',num2str(k),'.m'], RecState.Sequence(startIndex:endIndex,:));
                 plot (ax, RecState.Sequence(startIndex:endIndex,1),RecState.Sequence(startIndex:endIndex,2),'LineWidth',3);
                 hold on;
                 scatter (ax, RecState.Sequence(startIndex:endIndex,1),RecState.Sequence(startIndex:endIndex,2),'LineWidth',3);
@@ -104,7 +105,7 @@ SegmentationRate = (correctSeg/count)*100
 OverSegmentationRate = (overSeg/(count-correctSeg))*100
 UnderSegmentationRate = (underSeg/(count-correctSeg))*100
 AvgTime=(cputime-start_total)/count
-
+count
 diary off;
 
 end
