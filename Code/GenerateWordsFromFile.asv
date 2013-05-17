@@ -27,10 +27,6 @@ end
 while (Wd ~= -1)
     WPContour = GenerateWord( LetterSamplesFolder, Wd , FontClass);
     
-    %Simplify the contour using Recursive Douglas-Peucker Polyline
-    %Simplification.
-    WPContour=simplifycontour(WPContour);
-    
     %get the minimum and maximum value to ajust the image
     MinX = min(WPContour(:,1));
     MaxX = max(WPContour(:,1));
@@ -43,7 +39,6 @@ while (Wd ~= -1)
     % Need to do this because the saveas, always saves on the current
     % directory.
     if (strcmp(IncludeImages,'Yes'))
-        axes([0 1 0 1]
         plot (ax, WPContour(:,1),WPContour(:,2),'LineWidth',3);
         PrevDir = pwd;
         cd(TargetFolderPath);

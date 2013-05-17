@@ -27,7 +27,6 @@ end
 while (Wd ~= -1)
     WPContour = GenerateWord( LetterSamplesFolder, Wd , FontClass);
     
-    
     %get the minimum and maximum value to ajust the image
     MinX = min(WPContour(:,1));
     MaxX = max(WPContour(:,1));
