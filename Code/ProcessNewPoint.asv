@@ -19,7 +19,7 @@ if(IsMouseUp==true)
                 %[5]- CP ->CP (of MU) => Ini, Fin || Iso
                 Option1 = CreateOptionDouble(Alg,Sequence,1,RecState.CandidateCP.Point,'Ini',RecState.CandidateCP.Point,CurrPoint,'Fin');
                 Option2 = CreateOptionSingle(Alg,Sequence,1,CurrPoint,'Iso');
-                BO = BetterOption(Option1, Option2);
+                BO = BetterOption(1, Option1, Option2,RecState);
                 if (BO==1)
                     %Add 2 Critical Points 'Ini','Fin'
                     RecState = AddCriticalPoint(RecState,Sequence,Option1.FirstPoint);
@@ -39,7 +39,7 @@ if(IsMouseUp==true)
             LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
             Option1 = CreateOptionDouble(Alg,Sequence,LCCPP,RecState.CandidateCP.Point,'Mid',RecState.CandidateCP.Point,CurrPoint,'Fin');
             Option2 = CreateOptionSingle(Alg,Sequence,LCCPP,CurrPoint,'Fin');
-            BO = BetterOption(Option1, Option2);
+            BO = BetterOption(LCCPP, Option1, Option2, RecState);
             if (BO==1)
                 %Add 2 Critical Points 'Mid','Fin'
                 RecState = AddCriticalPoint(RecState,Sequence,Option1.FirstPoint);
@@ -80,7 +80,7 @@ else    %Mouse not up
         Slope = CalculateSlope(resampledSequence,resSeqLastPoint-RecParams.PointEnvLength,resSeqLastPoint);
         SlopeRes = CheckSlope(Slope,RecParams);
 
-        %scatter(ax,Sequence(size(Sequence,1),1),Sequence(size(Sequence,1),2));
+        %scatter(Sequence(size(Sequence,1),1),Sequence(size(Sequence,1),2));
         
         %Update Horizontal Point
         if (RecState.HSStart ~= -1 && SlopeRes && resampledSequence(resSeqLastPoint,1)<resampledSequence(resSeqLastPoint-1,1))
@@ -143,7 +143,6 @@ else
     return;
 end
 
-
 %Check That the slope of the CurrPoint in the simplified version of the
 %sequence is small (horizontal). This should fix the problem that very
 %small horizontal segments are taken into acount. (Bad condition because we would like to know about smal HS like in KLM*H)
@@ -163,53 +162,44 @@ end
 OrigSequence = RecState.Sequence;
 OrigCurrPoint = size(OrigSequence,1);
 
-if (RecState.LCCPI~=0)
-    LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
-    [~,abs] = SimplifyContour(OrigSequence(LCCPP:OrigCurrPoint,:));
-    Res = Res && (size(abs,1)>2);
-end
-
 if (Res==true && ~isempty(RecState.CandidateCP))
     LCCPP = RecState.CandidateCP.Point;
     [~,abs] = SimplifyContour(OrigSequence(LCCPP:OrigCurrPoint,:));
+    if (size(abs,1)==3)
+        v1 = abs(1,:)-abs(2,:);
+        v2 = abs(3,:)-abs(2,:);
+        theta = acos(dot(v1,v2)/(norm(v1)*norm(v2)));
+        Res = Res && (theta<(3*pi/4));
+    end
+    
+    Res = Res && (size(abs,1)>3);
+    
+    return;
+else if (Res==true && RecState.LCCPI~=0)
+    LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
+    [~,abs] = SimplifyContour(OrigSequence(LCCPP:OrigCurrPoint,:));
     Res = Res && (size(abs,1)>2);
+    end
 end
+
+LCCPP  = CalculateLCCP(RecState);
+if (min Sequence(LCCPP:))
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function Res = IsClosingHS(ProcessedSequence, SlopeRes,RecState,RecParams)
 
-% if (RecState.HSStart~=-1 && Slope==0)
-%     slope = CalculateSlope(Sequence,lastPoint-2,lastPoint-1);
-%     SlopeRes = CheckSlope(slope);
-%     Res = SlopeRes && (size(abs,1)==2);
-% else
-%    Res = false;
-% end
 processedCurrPont = size(ProcessedSequence,1);
 Res = RecState.HSStart~=-1 && (~SlopeRes || ProcessedSequence(processedCurrPont,1)>ProcessedSequence(processedCurrPont-1,1));
 
-% %
-% LastHorizontalPoint = RecState.LastSeenHorizontalPoint;
-% if (Res == true)
-%     OrigSequence = RecState.Sequence;
-%     [~,abs] = SimplifyContour(OrigSequence(RecState.LastSeenHorizontalPoint:size(OrigSequence,1),:));
-%     OrigSequence = RecState.Sequence;
-%     for k=RecParams.PointEnvLength + 1: size(OrigSequence,1)
-%         Slope = CalculateSlope(OrigSequence,k-RecParams.PointEnvLength,k);
-%         if (CheckSlope(Slope,RecParams)==1)
-%             LastHorizontalPoint = k;
-%         else
-%             break;
-%         end
-%     end
-%     %if the horizontal segment is too short, consist of 2 points only,
-%     %return cancell this horizontal segment.
-%     if (LastHorizontalPoint == RecState.LastSeenHorizontalPoint)
-%         RecState.HSStart = -1;
-%         Res = false;
-%         return;
+% if (Res)
+%     if (RecState.HSStart~=-1 && SlopeRes==0)
+%         slope = CalculateSlope(Sequence,lastPoint-2,lastPoint-1);
+%         SlopeRes = CheckSlope(slope);
+%         Res = SlopeRes && (size(abs,1)==2);
 %     else
-%         RecState.LastSeenHorizontalPoint = LastHorizontalPoint;
+%         Res = false;
 %     end
 % end
 
@@ -282,10 +272,14 @@ MidPoint = floor((HS(1)+HS(2))/2);
 function [LCCPP,LetterPosition]  = CalculateLCCP(RecState)
 if ( RecState.LCCPI == 0)
     LCCPP = 1;
-    LetterPosition = 'Ini';
+    if (nargout>1)
+        LetterPosition = 'Ini';
+    end
 else
     LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
-    LetterPosition = 'Mid';
+    if (nargout>1)
+        LetterPosition = 'Mid';
+    end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -325,7 +319,7 @@ Option.FirstPoint =  FirstPoint;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function BO = BetterOption(DoubleLetterOption, SingleLetterOption)
+function BO = BetterOption(startPoint, DoubleLetterOption, SingleLetterOption, RecState)
 
 Double_FirstLetterMin = CalculateAvgCandidatesDistane (DoubleLetterOption.FirstPoint);
 Double_SecondLetterMin = CalculateAvgCandidatesDistane (DoubleLetterOption.SecondPoint);
@@ -335,7 +329,19 @@ SingleAvgDist = CalculateAvgCandidatesDistane (SingleLetterOption.FirstPoint);
 
 Condition = Double_FirstLetterMin<=SingleAvgDist && Double_SecondLetterMin<=SingleAvgDist;
 
-if (DoubleAvgDist<SingleAvgDist && Condition)
+Sequence = RecState.Sequence;
+
+subsequence1 = Sequence(startPoint:DoubleLetterOption.FirstPoint.Point,:);
+subsequence2 = Sequence(DoubleLetterOption.FirstPoint.Point:size(Sequence,1),:);
+sequence = Sequence(startPoint:size(Sequence,1),:);
+
+sequenceLength  = SequenceLength ( sequence );
+subSequenceLength1  = SequenceLength( subsequence1 );
+subSequenceLength2  = SequenceLength( subsequence2 );
+
+Condition2 = sequenceLength>5*subSequenceLength1 || sequenceLength>5*subSequenceLength2;
+
+if (DoubleAvgDist<SingleAvgDist && Condition && ~Condition2)
     BO=1;
 else
     BO=2;
@@ -349,6 +355,7 @@ SubSeq = Sequence(StartPoint:EndPoint,:);
 RecognitionResults = RecognizeSequence(SubSeq , Alg, Position, LettersDataStructure);
 CheckPoint.Point = EndPoint;
 CheckPoint.Candidates = RecognitionResults;
+CheckPoint.Sequence = SubSeq;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -368,6 +375,8 @@ MarkOnSequence('CriticalCP',Sequence,WrappedPoint.Point);
 function BCP = BetterCP (CP1,CP2)
 AvgCP1 = CalculateAvgCandidatesDistane(CP1);
 AvgCP2 = CalculateAvgCandidatesDistane(CP2);
+CP1Length = SequenceLength ( CP1.Sequence );
+CP2Length =  SequenceLength ( CP2.Sequence );
 if (AvgCP1<AvgCP2)
     BCP = CP1;
 else
@@ -387,7 +396,7 @@ Avg = min (arr);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function res = CheckSlope(Slope,RecParams)
-res = Slope<RecParams.MaxSlopeRate;
+res = Slope<RecParams.MaxSlopeRate && Slope>=0;
 
 
 %%%%%%%%%%%%%%%%%%     UNUSED FUNCTIONS      %%%%%%%%%%%%%%%%%
