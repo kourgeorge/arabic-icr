@@ -92,13 +92,13 @@ else
     for i=1:dim
 
         if (point(i)<tree_cell(node_number).hyperrect(1,i))
-            sum_value = sum_value + (point(i)-tree_cell(node_number).hyperrect(1,i)).^2;
+            sum_value = sum_value + abs(point(i)-tree_cell(node_number).hyperrect(1,i));
             if (sum_value > dist_of_kthpoint)
                 search_otherside='false';
                 break;
             end
         elseif (point(i)>tree_cell(node_number).hyperrect(2,i))
-            sum_value = sum_value + (point(i)-tree_cell(node_number).hyperrect(2,i)).^2;
+            sum_value = sum_value + abs(point(i)-tree_cell(node_number).hyperrect(2,i));
             if (sum_value > dist_of_kthpoint)
                 search_otherside='false';
                 break;
