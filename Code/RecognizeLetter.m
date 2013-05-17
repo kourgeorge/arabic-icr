@@ -1,4 +1,4 @@
-function [Candidates,SumDist] = RecognizeLetter( LetterSequence, LettersDataStructure, Position, Alg )
+function [Candidates,SumDist] = RecognizeLetter( LetterSequence, LettersDataStructure, Position, RecParams )
 %RECOGNIZELETTER Load the letters data structure and tries recognizes a
 %letter in a given position.
 %   Usage: k = dlmread(['C:\OCRData\GeneratedWordsMed\sample2\_8_.m']);
@@ -38,7 +38,7 @@ end
 
 %Sequence Pre-Processing = Normalization->Simplification->Resampling
 NormalizedLetterSequence = NormalizeCont(LetterSequence);
-SimplifiedLetterSequence = SimplifyContour( NormalizedLetterSequence);
+SimplifiedLetterSequence = SimplifyContour( LetterSequence);
 ResampledLetterSequence = ResampleContour(SimplifiedLetterSequence,ResampleSize);
 
 %Activate to see the subsequences that are given from ProcessNewPoint
@@ -48,10 +48,10 @@ ResampledLetterSequence = ResampleContour(SimplifiedLetterSequence,ResampleSize)
 %Extract Feature Vector
 FeatureVector = CreateFeatureVectorFromContour(ResampledLetterSequence, FeatureType);
 
-if (strcmp(Alg(1),'EMD')==true)
+if (strcmp(RecParams.Alg(1),'EMD')==true)
     WaveletVector = CreateWaveletFromFV(FeatureVector);
     ReducedWaveletVector = COEFF*WaveletVector;
-    Candidates = GetCandidateskdTree(KdTreee,ReducedWaveletVector,LettersMap);
+    Candidates = GetCandidateskdTree(KdTreee,ReducedWaveletVector,LettersMap, RecParams.NumCandidates);
 
 %     InputSequence = ReducedWaveletVector;
 %     for i=1: size(Candidates,1)    
@@ -67,7 +67,7 @@ if (strcmp(Alg(1),'EMD')==true)
     
 else
     %Classify using NN
-    [NNCandidates,AllDictionarySorted] = GetClosestLetterCandidates( FeatureVector, PositionDS, Alg{1} ,3);
+    [NNCandidates,AllDictionarySorted] = GetClosestLetterCandidates( FeatureVector, PositionDS, RecParams.Alg{1} ,3);
     Candidates = NNCandidates;
 end
 %Clasiffy Vector using SVM 1
@@ -88,12 +88,12 @@ end
 end
 
 
-function Candidates = GetCandidateskdTree(KdTreee,vector,LettersMap)
+function Candidates = GetCandidateskdTree(KdTreee,vector,LettersMap, NumCandidates)
 global pos;
-[index_vals,vector_vals,~] = kd_knn(KdTreee,vector',30,0);
+[index_vals,vector_vals,~] = kd_knn(KdTreee,vector',90,0);
 Candidates= [];
 for i=1:length(index_vals)
-    if (size (Candidates,1)==3)
+    if (size (Candidates,1)==NumCandidates)
         return;
     end
     %Diff = dist2(vector_vals(i,:), vector');  %Approx. EMD is an L1 Metric, thus this is wrong. 
