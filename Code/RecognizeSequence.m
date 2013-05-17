@@ -1,4 +1,4 @@
-function [RecognitionResults, SumDist] = RecognizeSequence (Sequence , Alg, Position, LettersDataStructure)
+function [RecognitionResults, SumDist] = RecognizeSequence (Sequence , RecParams, Position, LettersDataStructure)
 %RECOGNIZESEQUENCE return a list of the most similar letters with the
 %distance from the given sequence.
 
@@ -14,10 +14,10 @@ C = [];
 %     C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Ini', Alg)];
 % end
 
-C = [C; RecognizeLetter( Sequence, LettersDataStructure, Position, Alg)];
+C = [C; RecognizeLetter( Sequence, LettersDataStructure, Position, RecParams)];
 
 RecognitionResults = sortrows(C,2);
-RecognitionResults = RecognitionResults(1:min(5,end),:);
+RecognitionResults = RecognitionResults(1:min(RecParams.NumCandidates,end),:);
 
 if (nargout==2)
     SumDist = NaN;
