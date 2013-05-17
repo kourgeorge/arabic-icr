@@ -53,8 +53,6 @@ for i = 3:length(LettersFolderList)
     end
     if (IsFile==0 && isempty(findstr('svn', FileName)))
         folderName = [LettersFolder,'\',FileName];
-       
-        
         InnerCount = FixLettersSamples( folderName );
         count=count + InnerCount;
     end
