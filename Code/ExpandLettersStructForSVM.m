@@ -11,18 +11,9 @@ for i = 1:size(PositionLettersDS,1)
     %PositionLettersDS{i,2}; for feature vectores and
     %PositionLettersDS{i,3}; for wavelets
     LetterCandidates = PositionLettersDS{i,3};
-    LetterSamples = [];
-    for j=1: size(LetterCandidates,2)
-        a = LetterCandidates(j);
-        a = a{:};
-        a = a(:);
-        LetterSamples =[LetterSamples; a'];
-    end
-        
+    LetterSamples = cell2mat(LetterCandidates)';
     FeaturesArray = [FeaturesArray; LetterSamples];
-    
-    LettersArray = [LettersArray; repmat(Letter,size(LetterSamples,1),1)];
-    
+    LettersArray = [LettersArray; repmat(Letter,size(LetterSamples,1),1)];  
     NumericLabeling = [NumericLabeling; repmat(double(Letter),size(LetterSamples,1),1)];
 
 end

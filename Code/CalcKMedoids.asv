@@ -1,11 +1,16 @@
 function  [LetterFeaturesMedoids, LetterWaveletsMedoids] = CalcKMedoids(LetterFeatures, LetterWavelets, k)
 
-LetterWaveletsMatrix = LetterWavelets;
+LetterWaveletsMatrix = cell2mat(LetterWavelets)';
 if (size(LetterWaveletsMatrix,1)>2*k)
-    [label, energy, index]= kmedoidsL1(LetterWaveletsMatrix',50);
+    [~, energy, index]= kmedoidsL1(LetterWaveletsMatrix',k);
     
-    for i=1:50
-        Medoids(i) = Samples(index(i));
+    LetterWaveletsMedoids = cell(1,k);
+    LetterFeaturesMedoids
+    for i=1:k
+        LetterWaveletsMedoids(i) = LetterWavelets(index(i));
+        LetterFeaturesMedoids(i) = LetterFeatures(index(i));
     end
-    Samples = Medoids;
+else
+    LetterFeaturesMedoids = LetterFeatures;
+    LetterWaveletsMedoids = LetterWavelets;
 end
