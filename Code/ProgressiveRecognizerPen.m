@@ -193,7 +193,7 @@ end
 
 %Output all the candidates.
 if (IsMouseUp==true)
-    GetCandidatesFromRecState( RecState );
+    GetCandidatesFromRecState( RecState )
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -210,11 +210,12 @@ RecState.Sequence = [];
 
 function RecParams = InitializeRecParams()
 % Algorithm parameters
-RecParams.Alg = {'EMD' 'MSC'}; %Res_DTW
-RecParams.K = 10;
-RecParams.PointEnvLength = 1;
-RecParams.MaxSlopeRate = 0.5;
+RecParams.Alg = {'EMD'}; %Res_DTW
+RecParams.K = 5;
+RecParams.PointEnvLength = 5;
+RecParams.MaxSlopeRate = 0.6;
 RecParams.MaxDistFromBaseline = 0.15;
+RecParams.NumCandidates = 3;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
