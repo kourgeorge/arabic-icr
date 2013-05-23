@@ -11,10 +11,11 @@ LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
 
 OutputImages = true;
 if (OutputImages==true)
+    Comments = input('Enter Experiment comments\n','s');
     fig = figure();
     cl = clock;
     ax = axes();
-    OutputFolder = ['C:\OCRData\TestOutput',num2str(cl(5)),'\'];
+    OutputFolder = ['C:\OCRData\TestOutput ',Comments,'\'];
     if(~exist(OutputFolder,'dir'))
         mkdir(OutputFolder);
     end
@@ -27,6 +28,7 @@ correctSeg = 0;
 count = 0;
 overSeg = 0;
 underSeg = 0;
+Comments
 start_total = cputime;
 TestSetWordsFolderList = dir(TestSetFolder);
 for i = 3:length(TestSetWordsFolderList)
