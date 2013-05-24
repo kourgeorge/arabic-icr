@@ -91,46 +91,50 @@ for i = 3:length(LettersSamplesFolderList)
     end
     
 end
-[LettersSamples,LettersGroups, NumericGroups] = ExpandLettersStructForSVM( IniStruct );
+DistanceType = 'cityblock';
+[FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, NumericGroups] = ExpandLettersStructForSVM( IniStruct );
 %IniSVMStruct = MultiSVMTrain(IniLettersSamples,IniLettersGroups);
-[ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction( LettersSamples, LettersGroups, 0.98);
-SVMStruct = svmtrain1 ([], NumericGroups, ReducedFeaturesMatrix);
+[ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction2( WaveletSpaceVectors, LettersGroups, 0.98);
+SVMStruct = svmtrain1 ([], NumericGroups, ReducedFeaturesMatrix,'-q');
 LettersDS.Ini.COEFF = COEFF;
 LettersDS.Ini.SVMStruct = SVMStruct;
-LettersDS.Ini.KdTree = kd_buildtree(ReducedFeaturesMatrix,0);
+LettersDS.Ini.KdTree = createns(ReducedFeaturesMatrix,'NSMethod','kdtree','Distance',DistanceType);
 LettersDS.Ini.LettersMap = LettersGroups;
 LettersDS.Ini.Struct = IniStruct;
+LettersDS.Ini.FeaturesSpaceVectors = FeaturesSpaceVectors;
 
-[LettersSamples,LettersGroups, NumericGroups] = ExpandLettersStructForSVM( MidStruct );
+[FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, NumericGroups] = ExpandLettersStructForSVM( MidStruct );
 %MidSVMStruct = MultiSVMTrain(MidLettersSamples,MidLettersGroups);
-[ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction( LettersSamples, LettersGroups, 0.98);
-SVMStruct = svmtrain1 ([], NumericGroups, ReducedFeaturesMatrix);
+[ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction2( WaveletSpaceVectors, LettersGroups, 0.98);
+SVMStruct = svmtrain1 ([], NumericGroups, ReducedFeaturesMatrix,'-q');
 LettersDS.Mid.COEFF = COEFF;
 LettersDS.Mid.SVMStruct = SVMStruct;
-LettersDS.Mid.KdTree = kd_buildtree(ReducedFeaturesMatrix,0);
+LettersDS.Mid.KdTree = createns(ReducedFeaturesMatrix,'NSMethod','kdtree','Distance',DistanceType);
 LettersDS.Mid.LettersMap = LettersGroups;
 LettersDS.Mid.Struct = MidStruct;
+LettersDS.Mid.FeaturesSpaceVectors = FeaturesSpaceVectors;
 
-[LettersSamples,LettersGroups, NumericGroups]  = ExpandLettersStructForSVM( FinStruct );
+[FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, NumericGroups]  = ExpandLettersStructForSVM( FinStruct );
 %FinSVMStruct = MultiSVMTrain(FinLettersSamples,FinLettersGroups);
-[ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction( LettersSamples, LettersGroups, 0.98);
-SVMStruct = svmtrain1 ([], NumericGroups, ReducedFeaturesMatrix);
+[ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction2( WaveletSpaceVectors, LettersGroups, 0.98);
+SVMStruct = svmtrain1 ([], NumericGroups, ReducedFeaturesMatrix,'-q');
 LettersDS.Fin.COEFF = COEFF;
 LettersDS.Fin.SVMStruct = SVMStruct;
-LettersDS.Fin.KdTree = kd_buildtree(ReducedFeaturesMatrix,0);
+LettersDS.Fin.KdTree = createns(ReducedFeaturesMatrix,'NSMethod','kdtree','Distance',DistanceType);
 LettersDS.Fin.LettersMap = LettersGroups;
 LettersDS.Fin.Struct = FinStruct;
+LettersDS.Fin.FeaturesSpaceVectors = FeaturesSpaceVectors;
 
-
-[LettersSamples,LettersGroups, NumericGroups] = ExpandLettersStructForSVM( IsoStruct );
-%IsoSVMStruct = MultiSVMTrain(IsoLettersSamples,IsoLettersGroups);
-[ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction( LettersSamples, LettersGroups, 0.98);
-SVMStruct = svmtrain1 ([], NumericGroups, ReducedFeaturesMatrix);
+[FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, NumericGroups] = ExpandLettersStructForSVM( IsoStruct );
+%IsoSVMStruct = MultiSVMTrain(Iso,IsoLettersSamples);
+[ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction2( WaveletSpaceVectors, LettersGroups, 0.98);
+SVMStruct = svmtrain1 ([], NumericGroups, ReducedFeaturesMatrix,'-q');
 LettersDS.Iso.COEFF = COEFF;
 LettersDS.Iso.SVMStruct = SVMStruct;
-LettersDS.Iso.KdTree = kd_buildtree(ReducedFeaturesMatrix,0);
+LettersDS.Iso.KdTree = createns(ReducedFeaturesMatrix,'NSMethod','kdtree','Distance',DistanceType);
 LettersDS.Iso.LettersMap = LettersGroups;
 LettersDS.Iso.Struct = IsoStruct;
+LettersDS.Iso.FeaturesSpaceVectors = FeaturesSpaceVectors;
 
 TargetFilePath = [TargetFolder,'\', 'LettersDS'];
 save(TargetFilePath, 'LettersDS', 'FeatureType','ResampleSize');
