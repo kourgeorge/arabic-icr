@@ -138,11 +138,14 @@ if (Res==true)
     Res = Res && IsOnBaseline(RecState,RecParams);
 end
 
+OrigSequence = RecState.Sequence;
+LCPP = CalculateLCP(RecState);
+
+Res = Res && OrigSequence(end,1)<= OrigSequence(LCPP,1);
+
 if (Res==true)
-    OrigSequence = RecState.Sequence;
-    OrigCurrPoint = size(OrigSequence,1);
-    LCPP = CalculateLCP(RecState);
-    [~,abs] = SimplifyContour(OrigSequence(LCPP:OrigCurrPoint,:));
+
+    [~,abs] = SimplifyContour(OrigSequence(LCPP:end,:));
     if (size(abs,1)<3)
         Res = false;
     end
