@@ -15,7 +15,7 @@ if (OutputImages==true)
     fig = figure();
     cl = clock;
     ax = axes();
-    OutputFolder = ['C:\OCRData\TestOutput ',Comments,'\'];
+    OutputFolder = ['C:\OCRData\TestOutput (',Comments,')\'];
     if(~exist(OutputFolder,'dir'))
         mkdir(OutputFolder);
     end
