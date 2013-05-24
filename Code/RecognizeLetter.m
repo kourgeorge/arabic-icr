@@ -15,30 +15,38 @@ if (strcmp(Position,'Ini'))
     PositionDS =  LettersDS.Ini.Struct;
     KdTreee = LettersDS.Ini.KdTree;
     LettersMap = LettersDS.Ini.LettersMap;
+    FeaturesSpaceVectors = LettersDS.Ini.FeaturesSpaceVectors;
+    
 elseif (strcmp(Position,'Mid'))
     SVMStruct = LettersDS.Mid.SVMStruct;
     COEFF = LettersDS.Mid.COEFF;
     PositionDS =  LettersDS.Mid.Struct;
     KdTreee = LettersDS.Mid.KdTree;
     LettersMap = LettersDS.Mid.LettersMap;
+    FeaturesSpaceVectors = LettersDS.Mid.FeaturesSpaceVectors;
+    
 elseif (strcmp(Position,'Fin'))
     SVMStruct = LettersDS.Fin.SVMStruct;
     COEFF = LettersDS.Fin.COEFF;
     PositionDS =  LettersDS.Fin.Struct;
     KdTreee = LettersDS.Fin.KdTree;
     LettersMap = LettersDS.Fin.LettersMap;
+    FeaturesSpaceVectors = LettersDS.Fin.FeaturesSpaceVectors;
+    
 elseif (strcmp(Position,'Iso'))
     SVMStruct = LettersDS.Iso.SVMStruct;
     COEFF = LettersDS.Iso.COEFF;
     PositionDS =  LettersDS.Iso.Struct;
     KdTreee = LettersDS.Iso.KdTree;
     LettersMap = LettersDS.Iso.LettersMap;
+    FeaturesSpaceVectors = LettersDS.Iso.FeaturesSpaceVectors;
+    
 else return;
 end
 
 %Sequence Pre-Processing = Normalization->Simplification->Resampling
 NormalizedLetterSequence = NormalizeCont(LetterSequence);
-SimplifiedLetterSequence = SimplifyContour( LetterSequence);
+SimplifiedLetterSequence = SimplifyContour( NormalizedLetterSequence);
 ResampledLetterSequence = ResampleContour(SimplifiedLetterSequence,ResampleSize);
 
 %Activate to see the subsequences that are given from ProcessNewPoint
@@ -50,18 +58,19 @@ FeatureVector = CreateFeatureVectorFromContour(ResampledLetterSequence, FeatureT
 
 if (strcmp(RecParams.Alg(1),'EMD')==true)
     WaveletVector = CreateWaveletFromFV(FeatureVector);
-    ReducedWaveletVector = COEFF*WaveletVector;
-    Candidates = GetCandidateskdTree(KdTreee,ReducedWaveletVector,LettersMap, RecParams.NumCandidates);
+    pcacoef = COEFF.PCACOEFF;
+    PCAWaveletVector = WaveletVector' * pcacoef;
+    ReducedWaveletVector = out_of_sample(PCAWaveletVector,COEFF);
+    Candidates = GetCandidateskdTree(KdTreee,ReducedWaveletVector',LettersMap, RecParams.NumCandidates,FeaturesSpaceVectors);
 
-%     InputSequence = ReducedWaveletVector;
-%     for i=1: size(Candidates,1)    
-%         LetterCandidate = Candidates{i,3}';
-%         [m1,~] = size(InputSequence);
-%         [m2,~] = size(LetterCandidate);
-%         r=abs(m2-m1)+5;
-%         Diff = Cons_DTW(InputSequence,LetterCandidate,r);
-%         Candidates{i,2} = Diff;
-%     end
+    InputSequence = FeatureVector;
+    for i=1: size(Candidates,1)    
+        LetterCandidate = Candidates{i,3}';
+        [m1,~] = size(InputSequence);
+        [m2,~] = size(LetterCandidate{1});
+        [p,q,D,Diff,WarpingPath] = DTWContXY(InputSequence,LetterCandidate{1});
+        Candidates{i,2} = Diff;
+    end
 
     Candidates = Candidates(:,1:3);
     
@@ -78,7 +87,7 @@ FeatureVector = FeatureVector(:);
 %ReducedFeatureVector = COEFF*FeatureVector;
 
 %Clasiffy Vector using SVM 2
-%[predicted_label, accuracy, decision_values] = svmpredict([1], ReducedFeatureVector', SVMStruct);
+%[predicted_label, accuracy, decision_values] = svmpredict([1], ReducedWaveletVector', SVMStruct);
 %CandidatesSVM2 = char(predicted_label);
 
 if (nargout==2)
@@ -88,18 +97,18 @@ end
 end
 
 
-function Candidates = GetCandidateskdTree(KdTreee,vector,LettersMap, NumCandidates)
+function Candidates = GetCandidateskdTree(KdTreee,vector,LettersMap, NumCandidates,FeaturesSpaceVectors)
 global pos;
-[index_vals,vector_vals,~] = kd_knn(KdTreee,vector',90,0);
+[IDX,D] = knnsearch(KdTreee,vector','k',90);
 Candidates= [];
-for i=1:length(index_vals)
+for i=1:length(IDX)
     if (size (Candidates,1)==NumCandidates)
         return;
     end
     %Diff = dist2(vector_vals(i,:), vector');  %Approx. EMD is an L1 Metric, thus this is wrong. 
-    Diff = sum(abs(vector_vals(i,:)-vector'));
-    if (UniqueCandidate(AddPoisitionIndicator(LettersMap(index_vals(i)),pos),Candidates))
-        WPcell={ AddPoisitionIndicator(LettersMap(index_vals(i)),pos),Diff , vector_vals(i,:)};
+    Diff = D(i);
+    if (UniqueCandidate(AddPoisitionIndicator(LettersMap(IDX(i)),pos),Candidates))
+        WPcell={ AddPoisitionIndicator(LettersMap(IDX(i)),pos),Diff , FeaturesSpaceVectors(IDX(i))};
         Candidates=[Candidates ; WPcell];
     end
 end
