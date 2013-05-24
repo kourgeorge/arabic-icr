@@ -133,55 +133,26 @@ function Res = IsFirstPointInHS(ProcessedSequence,Slope,RecState,RecParams)
 processedCurrPont = size(ProcessedSequence,1);
 [~,absoluteSiplifiedContour] = SimplifyContour(ProcessedSequence(1:processedCurrPont,:));  % this one is to avoid gettinf critical point on letters that start with a straight line like K and 3
 Res = RecState.HSStart == -1 && Slope && ProcessedSequence(processedCurrPont,1)<ProcessedSequence(processedCurrPont-1,1) && ~(size(absoluteSiplifiedContour,1)==2);
-%Check that the horizontal segment is close to the baseline of the word,
-%which is calulated by extrapolating the previous check points.
-%We need to handle the valeys of the F_Fin, Y_Fin and N_Fin using linear regression to calculate the baseline using previous Critical points.
-%if the Horizontal segments is far away from the regression line, avoid it.
+
 if (Res==true)
     Res = Res && IsOnBaseline(RecState,RecParams);
-else
-    return;
 end
 
-%Check That the slope of the CurrPoint in the simplified version of the
-%sequence is small (horizontal). This should fix the problem that very
-%small horizontal segments are taken into acount. (Bad condition because we would like to know about smal HS like in KLM*H)
-% if (Res==true)
-%     resampled = ResampleContour(proportionalSiplifiedContour,size(absoluteSiplifiedContour,1)*5);
-%     plot(resampled(:,1),resampled(:,2))
-%     lastPoint = size(resampled,1);
-%     slope = CalculateSlope(resampled,max(lastPoint-1,1),lastPoint);
-%     SlopeRes = CheckSlope(slope,CheckSlope);
-%     Res = Res && SlopeRes;
-% end
-
-%Check that there is enough information between the (last critical checkpoint) and the (the last candidate)
-%to the current HS start. Theoritacally this condition should
-%always be true, however viberation in the digitizer can cause too much
-%small HS that should be a single HS.
-OrigSequence = RecState.Sequence;
-OrigCurrPoint = size(OrigSequence,1);
-
-if (Res==true && ~isempty(RecState.CandidateCP))
-    LCCPP = RecState.CandidateCP.Point;
-    [~,abs] = SimplifyContour(OrigSequence(LCCPP:OrigCurrPoint,:));
+if (Res==true)
+    OrigSequence = RecState.Sequence;
+    OrigCurrPoint = size(OrigSequence,1);
+    LCPP = CalculateLCP(RecState);
+    [~,abs] = SimplifyContour(OrigSequence(LCPP:OrigCurrPoint,:));
+    if (size(abs,1)<3)
+        Res = false;
+    end
     if (size(abs,1)==3)
         v1 = abs(1,:)-abs(2,:);
         v2 = abs(3,:)-abs(2,:);
         theta = acos(dot(v1,v2)/(norm(v1)*norm(v2)));
-        Res = Res && (theta<(3*pi/4));
-    end
-    
-    Res = Res && (size(abs,1)>3);
-    
-    return;
-else if (Res==true && RecState.LCCPI~=0)
-    LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
-    [~,abs] = SimplifyContour(OrigSequence(LCCPP:OrigCurrPoint,:));
-    Res = Res && (size(abs,1)>2);
+        Res = (theta<(3*pi/4));
     end
 end
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -280,6 +251,16 @@ else
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function LastCheckPoint  = CalculateLCP(RecState)
+
+if (~isempty(RecState.CandidateCP))
+    LastCheckPoint = RecState.CandidateCP.Point;
+    return;
+end
+[LastCheckPoint,~]  = CalculateLCCP(RecState);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [IsMerged,MergedPoint] = TryToMerge(RecParams,Sequence,LastCriticalPoint,Candidate,LastPoint)
 global LettersDataStructure;
 
@@ -325,7 +306,7 @@ Double_SecondLetterMin = CalculateAvgCandidatesDistane (DoubleLetterOption.Secon
 DoubleAvgDist = (Double_FirstLetterMin+Double_SecondLetterMin)/2;
 SingleAvgDist = CalculateAvgCandidatesDistane (SingleLetterOption.FirstPoint);
 
-Condition = Double_FirstLetterMin<=SingleAvgDist && Double_SecondLetterMin<=SingleAvgDist;
+%Condition = Double_FirstLetterMin<=SingleAvgDist && Double_SecondLetterMin<=SingleAvgDist;
 
 Sequence = RecState.Sequence;
 
@@ -339,7 +320,7 @@ subSequenceLength2  = SequenceLength( subsequence2 );
 
 Condition2 = sequenceLength>5*subSequenceLength1 || sequenceLength>5*subSequenceLength2;
 
-if (DoubleAvgDist<SingleAvgDist && Condition && ~Condition2)
+if (DoubleAvgDist<SingleAvgDist && ~Condition2)
     BO=1;
 else
     BO=2;
@@ -393,50 +374,6 @@ Avg = min (arr);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function res = CheckSlope(Slope,RecParams)
 res = Slope<RecParams.MaxSlopeRate && Slope>=0;
-
-
-%%%%%%%%%%%%%%%%%%     UNUSED FUNCTIONS      %%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function [CheckPoint,SumDist,CDist,minDist] = CreateCheckPointAndDistanceInfo (RecParams,Sequence,StartPoint,EndPoint,Position)
-global LettersDataStructure;
-SubSeq = Sequence(StartPoint:EndPoint,:);
-[RecognitionResults,SumDist] = RecognizeSequence(SubSeq , RecParams, Position, LettersDataStructure);
-CheckPoint.Point = EndPoint;
-CheckPoint.Candidates = RecognitionResults;
-distances = [RecognitionResults{:,2}];
-CDist = sum (distances);
-minDist = min (distances);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function CheckPoint = CreateEmptyCheckPoint (RecParams,Sequence,StartPoint,EndPoint,Position)
-SubSeq = Sequence(StartPoint:EndPoint,:);
-CheckPoint.Point = EndPoint;
-CheckPoint.Candidates = [];
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function Res = IsCheckPoint(Sequence,CurrPoint,SimplifiedSequence,Slope)
-%A candidate point is a Checkpoint only if all the below are valid:
-%1. The current Sub sequence contains enough information
-%2. Directional - > going "forward" in x axes
-%3. The point environmnt is horizontal
-%%%MaxSlope=RecParams.MaxSlope;
-Res = (length(SimplifiedSequence)>2 && CheckSlope(Slope)&& Sequence(CurrPoint,1)<Sequence(CurrPoint-1,1));
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [SeqLen] = CalculateSequenceLength (Sequence,CurrPoint,RecState)
-LCCPI=RecState.LCCPI;
-if(LCCPI==0)
-    SeqLen = SequenceLength(Sequence);
-else
-    LastCCP = RecState.CriticalCPs(LCCPI);
-    sub_s= Sequence(LastCCP.Point:CurrPoint,:);
-    SeqLen = SequenceLength(sub_s);
-end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
