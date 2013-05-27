@@ -141,7 +141,14 @@ end
 OrigSequence = RecState.Sequence;
 LCPP = CalculateLCP(RecState);
 
-Res = Res && OrigSequence(end,1)<= OrigSequence(LCPP,1);
+
+if (Res==true)
+    minX = min(OrigSequence(LCPP:end-5,1));
+    if (minX<OrigSequence(end,1))
+        Res = false;
+    end
+end
+
 
 if (Res==true)
 
@@ -164,15 +171,13 @@ function Res = IsClosingHS(ProcessedSequence, SlopeRes,RecState,RecParams)
 processedCurrPont = size(ProcessedSequence,1);
 Res = RecState.HSStart~=-1 && (~SlopeRes || ProcessedSequence(processedCurrPont,1)>ProcessedSequence(processedCurrPont-1,1));
 
-% if (Res)
-%     if (RecState.HSStart~=-1 && SlopeRes==0)
-%         slope = CalculateSlope(Sequence,lastPoint-2,lastPoint-1);
-%         SlopeRes = CheckSlope(slope);
-%         Res = SlopeRes && (size(abs,1)==2);
-%     else
-%         Res = false;
-%     end
-% end
+OrigSequence = RecState.Sequence;
+if (Res==false && RecState.HSStart~=-1)
+    [~,abs] = SimplifyContour(OrigSequence(RecState.HSStart:end,:));
+    if (size(abs,1)>2)
+        Res=true;
+    end
+end
 
 % OrigSequence = RecState.Sequence;
 % Res = false;
