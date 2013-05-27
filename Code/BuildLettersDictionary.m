@@ -38,7 +38,7 @@ if(~exist(TargetFolder,'dir'))
     mkdir(TargetFolder);
 end
 
-numMedoids = 120;
+numMedoids = 45;
 
 IniStruct = []; MidStruct=[]; FinStruct = []; IsoStruct=[];
 LettersSamplesFolderList = dir(LettersSamplesFolder);
