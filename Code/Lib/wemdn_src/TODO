@@ -1,0 +1,10 @@
+Lifting:
+
+-- Add support for biorthogonal wavelets.
+-- Add more wavelets to lifting-schemes.h
+-- Use MPI for parallel computation.
+
+WEMD:
+
+-- Change the best partial match function to work with vector pairs for sparse 
+data instead of maps.

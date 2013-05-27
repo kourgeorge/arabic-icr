@@ -1,0 +1,127 @@
+Author: Sameer Sheorey, University of Maryland, College Park and Toyota 
+Technological Institute at Chicago.
+Contact: ssameer@tti-c.org.
+
+This software implements the linear time earth mover's distance (EMD) 
+approximation algorithm described in [1,2]. You can use this to approximate 
+EMD in any dimension. You will need to modify the code (wemdn_mex.cpp: 
+function mexFunction) a bit for dimensions higher than 5. For 1D, EMD can be 
+exactly computed in linear time in 1D. The Matlab formula is 
+sum(abs(cumsum(p1-p2))) for probability densities represented as vectors p1 
+and p2.
+
+It also provides functions for computing the forward and inverse lifting 
+wavelet transform [3] (LWT) in arbitrary dimensions.
+
+Software requirements:
+-- Blitz++ 0.9 (or later) from http://www.oonumerics.org/blitz/
+-- A recent C++ compiler. gcc 4.0 or later and Microsoft Visual Studio 2005 or 
+later should work.
+-- Matlab (Tested on R2007b to R2009a, but previous ones should work as well.)
+[Only if you want to use the Matlab mex interface.]
+
+Description of the files:
+
+lift.h, lift_impl.h: Lifting wavelet transform declaration and definitions.
+
+lifting-schemes.h: Wavelet lifiting schemes. Currently, only the following 
+orthonormal wavelets work :
+Lazy, Haar, Daubechies (db2 , db3, db4), Symmetric Daubechies (sym2, sym3, 
+sym4, sym5), Coiflets (coif1, coif2).
+
+blitz_util_SS.h: Utility functions needed by the LWT.
+
+test.cpp: Tests for the LWT.
+
+makefile: makefile for gcc. You will probably need to change this for your 
+environment. 
+
+wemd.h, wemd_impl.h: Wavelet EMD declaration and implementation.
+wemdn_mex.cpp: Matlab mex file for calling wemd from Matlab.
+
+EMD_compare: Code for comparing WEMD to Rubner et al's implementation. Uses 
+EMD code from http://www.cs.duke.edu/~tomasi/software/emd.htm
+Run test_wemdn.m from Matlab after compiling with make to compare on random 
+histograms.
+
+USAGE:
+
+Wavelet Earth Mover's Distance: 
+
+The function wemddes in wemd_impl.h computes wavelet EMD descriptors. It takes 
+a set of histograms of the same size (and dimension) and outputs a set of 
+sparse 1D arrays as the WEMD descriptors.  Each sparse array is a weighted 
+wavelet transform, as described in [1]. WEMD can be computed by the L_1 norm 
+of the difference of two descriptors. The sparse array is obtained by 
+converting the N dimensional weighted wavelet transform into a vector, and is 
+stored as a pair of vectors for index and value respectively. Other parameters 
+in the computation are :
+C_0 : Weight for approx. coeffs. See [1]. (Default = 0.) Note that C_1 is 
+      always 1.
+s   : The ground distance is Euclidean ^ s. 0 < s <= 1 (default = 1)
+tper: Determines how many wavelet coefficients are set to zero to reduce 
+      storage. If the mean absolute value of the weighted coefficients is M, 
+      any value < tper * M is set to 0. (Default = 0.01)
+wname: Wavelet to be used. Recommended are coif1, coif2, sym5. For 
+      approximation guaranteed to hold, the wavelet should be orthonormal and 
+      have atleast one continuous derivative.
+
+Relation to Rubner et al [7]: The WEMD computed is not normalized by net flow, 
+as in [7].  To compare, multiply the result of [7] by the net flow, which is 
+the mass of the smaller histogram. In the case of histograms with unequal 
+mass, WEMD approximates {EMD + extra mass}. See [2] for details.
+
+You can use the Matlab mex interface in the files wemdn_mex.cpp and wemdn.m.  
+The function wemdn_cpp takes a cell array of histograms (of same size) as 
+input and returns a sparse matrix as output. Each row of the sparse matrix is 
+the WEMD descriptor of a cell in the input. See wemdn_mex.cpp and wemdn.m for 
+more help. Note that while compiling this mex file, you must link it with the 
+Blitz library. See the makefile for Unix. For windows (Visual Studio), the 
+project settings are :
+Add blitz include and library directories to the project paths.
+Add blitz.lib to the set of libraries to be linked statically.
+Disable Microsoft language extensions to C++. (Use ANSI/ISO C++)
+Enable instruction set for your architecture.
+Enable Optimization for max speed.  Profile guided optimization helps a lot 
+for the wavelet transform, but I'm not sure how to get this to work for a mex 
+  file.
+
+Lifting wavelet transform: 
+
+See test.cpp for examples using the lifting wavelet transform in different 
+dimensions. the file lift.h contains function level documentation. You can 
+choose the wavelet to be used and specify a different extension method along 
+each dimension. The choices for extension methods are either periodic or zero 
+padding. In general, lwt takes the data matrix as input and changes it to the 
+approximation coefficients. The detail coefficients are returned in the vector 
+Y. Y has an element for each level.  Each element of Y is a TinyVector with 
+ncomps =  2^ndims-1 components.  For example, in 2D, each level will have 3 
+detail coefficients (horzontal, vertical and diagonal).
+
+Normally, LWT (and the more popular Mallat's algorithm) assume that the input 
+data is the fine scale wavelet coefficients. Optionally, the finest scale 
+coefficients can be initialized (see [6]) from the data for greater accuracy.  
+This is necessary for WEMD.
+
+Note: The scale j follows Meyer's [4] convention. This is different from 
+Mallat [5] and Matlab conventions. j=0 is the coursest scale, i.e. the scale 
+of the approximation coefficients. The maximum level j=J corresponds to the 
+finest scale detail coefficients.
+
+References:
+
+[1] Approximate earth mover's distance in linear time -- Sameer Shirdhonkar 
+and David Jacobs, CVPR 2008.
+[2] Recognitinon and Matchinig in the presence of deformation and lighting 
+change -- Sameer Sheorey, PhD Thesis, University of Maryland, 2008.
+[3] Factoring wavelet transforms into lifting steps -- Daubechies and 
+Sweldens, Journal of Fourier Analysis and Applications, Vol 4 issue 3, 1998
+[4] Wavelets and Operators, Vol. 1 -- Yves Meyer, Cambridge University Press
+[5] A wavelet tour of signal processing -- Stephane Mallat, 2nd edition, 
+Academic Press.
+[6] From the wavelet series to the discrete wavelet transform: The 
+initialization -- X.-P. Zhang, L.-S. Tian, and Y.-N. Peng. IEEE Trans. on 
+signal proc., 44(1):129--133, 1996
+[7] The earth mover's distance as a metric for image retrieval. Y. Rubner, C.  
+Tomasi, and L. J. Guibas. International Journal of Computer Vision, 40:99{121, 
+Nov 2000.
