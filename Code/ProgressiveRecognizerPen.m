@@ -211,11 +211,11 @@ RecState.Sequence = [];
 function RecParams = InitializeRecParams()
 % Algorithm parameters
 RecParams.Alg = {'EMD'}; %Res_DTW
-RecParams.K = 5;
-RecParams.PointEnvLength = 5;
+RecParams.K = 3;
+RecParams.PointEnvLength =1;
 RecParams.MaxSlopeRate = 0.6;
 RecParams.MaxDistFromBaseline = 0.15;
-RecParams.NumCandidates = 3;
+RecParams.NumCandidates = 5;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
