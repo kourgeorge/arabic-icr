@@ -23,7 +23,6 @@ end
 if (strcmp(Position,'Ini'))
     C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Ini', RecParams)];
     C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Mid', RecParams)];
-    C = [C; RecognizeLetter( Sequence, LettersDataStructure, 'Fin', RecParams)];
     
 end
 
