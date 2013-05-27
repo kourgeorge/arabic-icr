@@ -1,9 +1,0 @@
-compilation command: mex -largeArrayDims wemdn_mex.cpp
-
-Note:
------
-To avoid the following error:
-c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\INCLUDE\yvals.h(576) : error C2371: 'char16_t' : redefinition; different basic types 
-        c:\program files\matlab\r2009b\extern\include\matrix.h(332) : see declaration of 'char16_t' 
- 
-comment the defecition of 'char16_t' from C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\INCLUDE\yvals.h before compiling.
