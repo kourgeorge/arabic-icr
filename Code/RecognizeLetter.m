@@ -66,10 +66,10 @@ if (strcmp(RecParams.Alg(1),'EMD')==true)
     InputSequence = FeatureVector;
     for i=1: size(Candidates,1)    
         LetterCandidate = Candidates{i,3}';
-        [m1,~] = size(InputSequence);
-        [m2,~] = size(LetterCandidate{1});
-        [p,q,D,Diff,WarpingPath] = DTWContXY(InputSequence,LetterCandidate{1});
-        Candidates{i,2} = Diff;
+        %[m1,~] = size(InputSequence);
+        %[m2,~] = size(LetterCandidate{1});
+        [~,~,~,Diff,~] = DTWContXY(InputSequence,LetterCandidate{1});
+        Candidates{i,2} = (Candidates{i,2}*2+Diff)/2;
     end
 
     Candidates = Candidates(:,1:3);
@@ -105,7 +105,6 @@ for i=1:length(IDX)
     if (size (Candidates,1)==NumCandidates)
         return;
     end
-    %Diff = dist2(vector_vals(i,:), vector');  %Approx. EMD is an L1 Metric, thus this is wrong. 
     Diff = D(i);
     if (UniqueCandidate(AddPoisitionIndicator(LettersMap(IDX(i)),pos),Candidates))
         WPcell={ AddPoisitionIndicator(LettersMap(IDX(i)),pos),Diff , FeaturesSpaceVectors(IDX(i))};
