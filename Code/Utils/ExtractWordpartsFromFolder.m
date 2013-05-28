@@ -1,6 +1,6 @@
 function ExtractWordpartsFromFolder( setFolder, outputFolderPath )
 %EXTRACTWORDPARTSFROMFOLDER Summary of this function goes here
-%   ExtractWordpartsFromFolder( 'C:\Users\kour\OCRData Old\Archieve\adab_database_v1.0\Data\set_1' , 'C:\Users\kour\Desktop\WPs' )
+%   ExtractWordpartsFromFolder( 'C:\Users\kour\OCRData Old\Archieve\adab_database_v1.0\Data\set_1' , 'C:\OCRData\WPs' )
 
 inkmlFolder = [setFolder,'\inkml'];
 inkmlFolderList = dir(inkmlFolder);
