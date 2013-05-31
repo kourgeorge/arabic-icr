@@ -15,13 +15,13 @@ if (OutputImages==true)
     fig = figure();
     cl = clock;
     ax = axes();
-    OutputFolder = ['C:\OCRData\TestOutput (',Comments,')\'];
+    OutputFolder = ['C:\OCRData\TestOutput (',Comments,')'];
     if(~exist(OutputFolder,'dir'))
         mkdir(OutputFolder);
     end
 end
 clc;
-diary([OutputFolder,'Results.txt']);
+diary([OutputFolder,'\Results.txt']);
 diary on;
 correctRec = 0;
 correctSeg = 0;
@@ -29,6 +29,7 @@ count = 0;
 overSeg = 0;
 underSeg = 0;
 Comments
+TestSetFolder
 start_total = cputime;
 TestSetWordsFolderList = dir(TestSetFolder);
 for i = 3:length(TestSetWordsFolderList)
@@ -70,7 +71,7 @@ for i = 3:length(TestSetWordsFolderList)
         %Output letters images to folder
         if (CorrectRecognition == false && OutputImages==true)
             if (LetterNumDiff~=0)
-                WordFolder =[OutputFolder,'Segmentation\',FileName];
+                WordFolder =[OutputFolder,'\Segmentation\',FileName];
             else
                 WordFolder =[OutputFolder,'\',FileName];
             end
@@ -108,7 +109,9 @@ OverSegmentationRate = (overSeg/(count-correctSeg))*100
 UnderSegmentationRate = (underSeg/(count-correctSeg))*100
 AvgTime=(cputime-start_total)/count
 count
+
 diary off;
+movefile (OutputFolder,[OutputFolder,' [R=',int2str(round(RecognitionRate)), ' S=', int2str(round(SegmentationRate)),']'], 'f');
 
 end
 
