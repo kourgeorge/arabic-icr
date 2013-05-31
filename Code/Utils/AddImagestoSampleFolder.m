@@ -1,4 +1,4 @@
-function [ output_args ] = AddImagestoSampleFolder( SampleFolder )
+function AddImagestoSampleFolder( SampleFolder )
 %ADDIMAGESTOSAMPLEFOLDER Summary of this function goes here
 %   AddImagestoSampleFolder( 'C:\OCRData\WPsLabeled' )
 
