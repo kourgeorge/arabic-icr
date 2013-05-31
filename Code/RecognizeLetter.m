@@ -68,8 +68,8 @@ if (strcmp(RecParams.Alg(1),'EMD')==true)
         LetterCandidate = Candidates{i,3}';
         %[m1,~] = size(InputSequence);
         %[m2,~] = size(LetterCandidate{1});
-        [~,~,~,Diff,~] = DTWContXY(InputSequence,LetterCandidate{1});
-        Candidates{i,2} = (Candidates{i,2}*2+Diff)/2;
+        Diff = Cons_DTW(InputSequence,LetterCandidate{1},5);
+        Candidates{i,2} = (Candidates{i,2}+Diff)/2;
     end
 
     Candidates = Candidates(:,1:3);
