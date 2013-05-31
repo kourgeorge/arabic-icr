@@ -162,7 +162,6 @@ function listbox1_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns listbox1 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from listbox1
-global NumOfStrokes;
 global WordData;
 global EnglishWord;
 global arabAscii;
@@ -225,8 +224,7 @@ function ClearDatabutton_Callback(hObject, eventdata, handles)
 % hObject    handle to ClearDatabutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global NumOfStrokes;
-global WordData;
+
 global arabAscii;
 global EnglishWord;
 clear NumOfStrokes;
@@ -312,7 +310,10 @@ for i=1:size(Word,2)
 end
 outputFolder = get(handles.targetFolder,'String');
 Englishtxt = get(handles.Englishtxt,'String');
-dlmwrite([outputFolder,'\',Englishtxt,'.m'],word(2:end,:));
+index = get(handles.listbox1,'value');
+name=get(handles.listbox1,'string');
+wordFileName=char(name(index));
+dlmwrite([outputFolder,'\',Englishtxt,' (',wordFileName(:,end-1:end),').m'],word(2:end,:));
 
 
 
