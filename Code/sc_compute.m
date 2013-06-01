@@ -35,7 +35,7 @@ end
 r_array_n=r_array/mean_dist;
 
 % use a log. scale for binning the distances
-r_bin_edges=logspace(log10(r_inner),log10(r_outer),nbins_r);
+r_bin_edges=logspace(log10(r_inner),log10(r_outer/mean_dist),nbins_r);
 r_array_q=zeros(nsamp,nsamp);
 for m=1:nbins_r
    r_array_q=r_array_q+(r_array_n<r_bin_edges(m));

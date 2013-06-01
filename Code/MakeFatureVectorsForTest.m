@@ -25,7 +25,7 @@ if (TypeOfFature == 1)
 end
 
 r_inner=1/8;
-r_outer=3;
+r_outer=sqrt(2);
 
 mean_dist_global=[]; % use [] to estimate scale from the data
 nbins_theta=12;
@@ -37,6 +37,7 @@ if (TypeOfFature == 2)
         nsamp=size(NextCont,1);
         out_vec=zeros(1,nsamp);
         [FaturesValues,mean_dist_1]=sc_compute((NextCont)',zeros(1,nsamp),mean_dist_global,nbins_theta,nbins_r,r_inner,r_outer,out_vec);
+        %if size(FaturesValues,
         WPTFeaureVectors {i,1} = FaturesValues;
         
     end
