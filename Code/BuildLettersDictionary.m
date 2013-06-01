@@ -38,8 +38,6 @@ if(~exist(TargetFolder,'dir'))
     mkdir(TargetFolder);
 end
 
-numMedoids = 45;
-
 IniStruct = []; MidStruct=[]; FinStruct = []; IsoStruct=[];
 LettersSamplesFolderList = dir(LettersSamplesFolder);
 for i = 3:length(LettersSamplesFolderList)
@@ -57,8 +55,7 @@ for i = 3:length(LettersSamplesFolderList)
             Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Ini,2));
             LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Ini,Feature,'UniformOutput', false);
             LetterWavelets = cellfun(@CreateWaveletFromFV, LetterFeatures ,'UniformOutput', false);
-            [LetterFeaturesMedoids, LetterWaveletsMedoids] = CalcKMedoids(LetterFeatures, LetterWavelets, numMedoids);
-            IniStruct = [IniStruct;FolderName , {LetterFeaturesMedoids}, {LetterWaveletsMedoids}];
+            IniStruct = [IniStruct;FolderName , {LetterFeatures}, {LetterWavelets}];
         end
         
         %Mid - Not all letters has Mid Form
@@ -66,8 +63,7 @@ for i = 3:length(LettersSamplesFolderList)
             Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Mid,2));
             LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Mid,Feature,'UniformOutput', false);
             LetterWavelets = cellfun(@CreateWaveletFromFV, LetterFeatures ,'UniformOutput', false);
-            [LetterFeaturesMedoids, LetterWaveletsMedoids] = CalcKMedoids(LetterFeatures, LetterWavelets, numMedoids);
-            MidStruct = [MidStruct;FolderName , {LetterFeaturesMedoids}, {LetterWaveletsMedoids}];
+            MidStruct = [MidStruct;FolderName , {LetterFeatures}, {LetterWavelets}];
         end
         
         %Fin
@@ -75,8 +71,7 @@ for i = 3:length(LettersSamplesFolderList)
             Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Fin,2));
             LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Fin,Feature,'UniformOutput', false);
             LetterWavelets = cellfun(@CreateWaveletFromFV, LetterFeatures ,'UniformOutput', false);
-            [LetterFeaturesMedoids, LetterWaveletsMedoids] = CalcKMedoids(LetterFeatures, LetterWavelets, numMedoids);
-            FinStruct = [FinStruct;FolderName , {LetterFeaturesMedoids}, {LetterWaveletsMedoids}];
+            FinStruct = [FinStruct;FolderName , {LetterFeatures}, {LetterWavelets}];
         end
         
         
@@ -85,8 +80,7 @@ for i = 3:length(LettersSamplesFolderList)
             Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Iso,2));
             LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Iso,Feature,'UniformOutput', false);
             LetterWavelets = cellfun(@CreateWaveletFromFV, LetterFeatures ,'UniformOutput', false);
-            [LetterFeaturesMedoids, LetterWaveletsMedoids] = CalcKMedoids(LetterFeatures, LetterWavelets, numMedoids);
-            IsoStruct = [IsoStruct;FolderName , {LetterFeaturesMedoids}, {LetterWaveletsMedoids}];
+            IsoStruct = [IsoStruct;FolderName , {LetterFeatures}, {LetterWavelets}];
         end
     end
     
