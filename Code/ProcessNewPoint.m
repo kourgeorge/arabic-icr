@@ -4,7 +4,6 @@ function RecState = ProcessNewPoint(RecParams,RecState,Sequence,IsMouseUp,UI )
 global gUI;
 gUI = UI;
 
-Alg = RecParams.Alg;
 CurrPoint = length(Sequence);
 RecState.Sequence=Sequence;
 
@@ -73,7 +72,7 @@ if(IsMouseUp==true)
 else    %Mouse not up
     if (rem(CurrPoint,RecParams.K)==0)
         
-        [proportionalSiplifiedContour,absoluteSiplifiedContour] = SimplifyContour(Sequence(1:CurrPoint,:));
+        [absoluteSiplifiedContour,proportionalSiplifiedContour] = SimplifyContour(Sequence(1:CurrPoint,:));
         resampledSequence = ResampleContour(proportionalSiplifiedContour,size(absoluteSiplifiedContour,1)*5);
         resSeqLastPoint = size(resampledSequence,1);
         
@@ -131,7 +130,7 @@ end
 %HS means Horiontal Sections.
 function Res = IsFirstPointInHS(ProcessedSequence,Slope,RecState,RecParams)
 processedCurrPont = size(ProcessedSequence,1);
-[~,absoluteSiplifiedContour] = SimplifyContour(ProcessedSequence(1:processedCurrPont,:));  % this one is to avoid gettinf critical point on letters that start with a straight line like K and 3
+[absoluteSiplifiedContour] = SimplifyContour(ProcessedSequence(1:processedCurrPont,:));  % this one is to avoid gettinf critical point on letters that start with a straight line like K and 3
 Res = RecState.HSStart == -1 && Slope && ProcessedSequence(processedCurrPont,1)<ProcessedSequence(processedCurrPont-1,1) && ~(size(absoluteSiplifiedContour,1)==2);
 
 if (Res==true)
@@ -152,7 +151,7 @@ end
 
 if (Res==true)
 
-    [~,abs] = SimplifyContour(OrigSequence(LCPP:end,:));
+    [abs] = SimplifyContour(OrigSequence(LCPP:end,:));
     if (size(abs,1)<3)
         Res = false;
     end
@@ -173,7 +172,7 @@ Res = RecState.HSStart~=-1 && (~SlopeRes || ProcessedSequence(processedCurrPont,
 
 OrigSequence = RecState.Sequence;
 if (Res==false && RecState.HSStart~=-1)
-    [~,abs] = SimplifyContour(OrigSequence(RecState.HSStart:end,:));
+    [abs] = SimplifyContour(OrigSequence(RecState.HSStart:end,:));
     if (size(abs,1)>2)
         Res=true;
     end
@@ -182,7 +181,7 @@ end
 % OrigSequence = RecState.Sequence;
 % Res = false;
 % if (~SlopeRes && RecState.HSStart~=-1)
-%     [~,abs] = SimplifyContour(OrigSequence(RecState.HSStart:RecState.LastSeenHorizontalPoint,:));
+%     [abs] = SimplifyContour(OrigSequence(RecState.HSStart:RecState.LastSeenHorizontalPoint,:));
 %     segmentSlope = CalculateSlope(abs,1,size(abs,1));
 %     segmentSlopeRes = CheckSlope(segmentSlope,RecParams);
 %     Res = segmentSlopeRes; %&& (size(abs,1)==2);
@@ -328,6 +327,11 @@ subSequenceLength2  = SequenceLength( subsequence2 );
 
 Condition2 = sequenceLength>5*subSequenceLength1 || sequenceLength>5*subSequenceLength2;
 
+[abs] = SimplifyContour(subsequence2);
+if (size(abs,1)<3)
+    Condition2=true;
+end
+
 if (DoubleAvgDist<SingleAvgDist && ~Condition2)
     BO=1;
 else
@@ -395,16 +399,16 @@ global gUI;
 if (gUI==true)
     switch Type
         case 'CandidatePoint',
-            plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'c.-','Tag','SHAPE','LineWidth',10);
+            %plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'c.-','Tag','SHAPE','LineWidth',5);
             return;
         case 'CriticalCP'
-            plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'r.-','Tag','SHAPE','LineWidth',10);
+            plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'r.-','Tag','SHAPE','LineWidth',5);
             return;
         case 'StartHorizontalIntervalPoint'
-            plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'g.-','Tag','SHAPE','LineWidth',10);
+            %plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'g.-','Tag','SHAPE','LineWidth',5);
             return;
         case 'EndHorizontalIntervalPoint'
-            plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'k.-','Tag','SHAPE','LineWidth',10);
+            %plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'k.-','Tag','SHAPE','LineWidth',5);
             return;
         otherwise
             return;

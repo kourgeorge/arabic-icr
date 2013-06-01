@@ -1,7 +1,7 @@
 function ResampledSequence = ResampleSequence( Sequence, Nt )
 %RESAMPLESEQUENCE Summary of this function goes here
 %   CharacterSequence = dlmread(['C:\OCRData\GeneratedWordsIso\sample1\B.m']);
-%   SimplifiedContour = SimplifyContour( CharacterSequence)
+%   [~,SimplifiedContour] = SimplifyContour( CharacterSequence)
 %   resampleSequence( SimplifiedContour ,10)
 
 % here is a simple polygon, a triangle. Note that

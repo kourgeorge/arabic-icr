@@ -17,7 +17,7 @@ for i = 1:numSamples
     %Sequence Pre-Processing = Normalization->Simplification->Resampling
     %NormalizedSequence = NormalizeContLetter(sequence,LetterPositionFolder(end-4),LetterPositionFolder(end-2:end));
     NormalizedSequence = NormalizeCont(sequence);
-    SimplifiedSequence = SimplifyContour(NormalizedSequence);
+    [~,SimplifiedSequence] = SimplifyContour(NormalizedSequence);
     ResampledSequence = ResampleContour(SimplifiedSequence,ResampleSize);
     %%%
     

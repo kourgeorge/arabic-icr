@@ -183,7 +183,7 @@ global InputContour;
 InputContour = TestingMouse();
 
 %Simplify the contour.
-InputContour = SimplifyContour(InputContour);
+[~,InputContour] = SimplifyContour(InputContour);
 
 plot(handles.InputWPAxes,InputContour(:,1),InputContour(:,2),'LineWidth',3);
 

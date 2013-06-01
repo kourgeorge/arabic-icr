@@ -46,7 +46,7 @@ end
 
 %Sequence Pre-Processing = Normalization->Simplification->Resampling
 NormalizedLetterSequence = NormalizeCont(LetterSequence);
-SimplifiedLetterSequence = SimplifyContour( NormalizedLetterSequence);
+[~,SimplifiedLetterSequence] = SimplifyContour( NormalizedLetterSequence);
 ResampledLetterSequence = ResampleContour(SimplifiedLetterSequence,ResampleSize);
 
 %Activate to see the subsequences that are given from ProcessNewPoint
