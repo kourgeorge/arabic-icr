@@ -18,8 +18,25 @@ PCACOEFF = PCACOEFF(:,1:PCA_NumOfPCs);
 tempReducedFeaturesMatrix = FeaturesMatrix * PCACOEFF;
 
 A.data = tempReducedFeaturesMatrix;
-A.labels =  Labeling;
 
+Labeling = double(Labeling);
+%%%%%%%%%%%%%%Fix LDA labeling%%%%%%%%%%%%%%%%%%%
+[UniqueLabels,IA,IC] = unique (Labeling);
+for i=1:size(IA,1)
+    ClassNumber = IA(i);
+    indexes_of_class = find(IC==ClassNumber);
+    if (size(indexes_of_class,1)<20)
+        continue;
+    end
+    vectors = tempReducedFeaturesMatrix(indexes_of_class,:);
+    NumOfInnerClusters = 4; %clusters estimations alg.
+    [label, energy, index] = kmedoidsL1(vectors',NumOfInnerClusters,5);
+
+    Labeling(indexes_of_class) = Labeling(indexes_of_class)+1000+label'; 
+
+end
+A.labels =  Labeling;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 dims = intrinsic_dim(tempReducedFeaturesMatrix, 'MLE');
 NumOfPCs = ceil(dims);
 
