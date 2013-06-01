@@ -8,17 +8,16 @@ TestSetFolder = 'C:\OCRData\WPsLabeled';
 %TestSetFolder = 'C:\OCRData\GeneratedWords';
 
 LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
-
 OutputImages = true;
 if (OutputImages==true)
     Comments = input('Enter Experiment comments\n','s');
     fig = figure();
     cl = clock;
     ax = axes();
-    OutputFolder = ['C:\OCRData\TestOutput (',Comments,')'];
-    if(~exist(OutputFolder,'dir'))
-        mkdir(OutputFolder);
-    end
+end
+OutputFolder = ['C:\OCRData\TestOutput (',Comments,')'];
+if(~exist(OutputFolder,'dir'))
+    mkdir(OutputFolder);
 end
 clc;
 diary([OutputFolder,'\Results.txt']);
@@ -102,7 +101,8 @@ for i = 3:length(TestSetWordsFolderList)
         end
     end
 end
-
+Comments
+TestSetFolder
 RecognitionRate = (correctRec/count)*100
 SegmentationRate = (correctSeg/count)*100
 OverSegmentationRate = (overSeg/(count-correctSeg))*100
