@@ -46,7 +46,6 @@ end
 len = size(sequence,1);
 InfIndexes = find (sequence(:,1) == Inf);
 InfIndexes = [0;InfIndexes;len+1];
-
 for j=1:length(InfIndexes)-1
     strokes{j} = sequence(InfIndexes(j)+1:InfIndexes(j+1)-1,:);
 end
@@ -65,12 +64,15 @@ for j=1:size(strokes,2)
         end
     end
     RecState = ProcessNewPoint(RecParams,RecState,stroke,true,UI);
-    
+    RecResults(j) =  RecState;
     if (UI == true)
-        GetCandidatesFromRecState( RecState )
+        strokeRes = GetCandidatesFromRecState( RecState )
         %close (himage);
     end
 end
+
+
+
 %%%%%%%%%%%%%%%%    Initialization Functions   %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function RecState = InitializeRecState()
