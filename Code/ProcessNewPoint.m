@@ -10,24 +10,10 @@ RecState.Sequence=Sequence;
 if(IsMouseUp==true)
     if (RecState.LCCPI == 0)
         if (~isempty(RecState.CandidateCP))
-            [IsMerged,MergedPoint] = TryToMerge(RecParams,Sequence,1,RecState.CandidateCP,CurrPoint);
-            if (IsMerged)
-                %[7] - CP(merged - old CP and the remainder)
-                RecState = AddCriticalPoint(RecState,Sequence,MergedPoint);
-            else
-                %[5]- CP ->CP (of MU) => Ini, Fin || Iso
-                Option1 = CreateOptionDouble(RecParams,Sequence,1,RecState.CandidateCP.Point,'Ini',RecState.CandidateCP.Point,CurrPoint,'Fin');
-                Option2 = CreateOptionSingle(RecParams,Sequence,1,CurrPoint,'Iso');
-                BO = BetterOption(1, Option1, Option2,RecState);
-                if (BO==1)
-                    %Add 2 Critical Points 'Ini','Fin'
-                    RecState = AddCriticalPoint(RecState,Sequence,Option1.FirstPoint);
-                    RecState = AddCriticalPoint(RecState,Sequence,Option1.SecondPoint);
-                else
-                    %Add 1 Critical Point 'Iso'
-                    RecState = AddCriticalPoint(RecState,Sequence,Option2.FirstPoint);
-                end
-            end
+            startPoint = 1;
+            endLetter1Point = RecState.CandidateCP.Point;
+            endLetter2Point = CurrPoint;
+            RecState = DetermineSingleOrDouble (RecParams, RecState , Sequence,startPoint,endLetter1Point,'Ini',endLetter2Point,'Fin', 'Iso');
         else
             %[6]- CP(MU) => Iso
             RecState = RecognizeAndAddCriticalPoint(RecParams,Sequence,RecState,1,CurrPoint,'Iso');
@@ -35,18 +21,10 @@ if(IsMouseUp==true)
     else %not the first letter
         if (~isempty(RecState.CandidateCP))
             %[1] - Critical CP -> CP -> CP (of MU)
-            LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
-            Option1 = CreateOptionDouble(RecParams,Sequence,LCCPP,RecState.CandidateCP.Point,'Mid',RecState.CandidateCP.Point,CurrPoint,'Fin');
-            Option2 = CreateOptionSingle(RecParams,Sequence,LCCPP,CurrPoint,'Fin');
-            BO = BetterOption(LCCPP, Option1, Option2, RecState);
-            if (BO==1)
-                %Add 2 Critical Points 'Mid','Fin'
-                RecState = AddCriticalPoint(RecState,Sequence,Option1.FirstPoint);
-                RecState = AddCriticalPoint(RecState,Sequence,Option1.SecondPoint);
-                
-            else
-                RecState = AddCriticalPoint(RecState,Sequence,Option2.FirstPoint);
-            end
+            startPoint = RecState.CriticalCPs(RecState.LCCPI).Point;
+            endLetter1Point = RecState.CandidateCP.Point;
+            endLetter2Point = CurrPoint;
+            RecState = DetermineSingleOrDouble (RecParams, RecState , Sequence,startPoint,endLetter1Point,'Mid',endLetter2Point,'Fin', 'Fin');
         else
             if (RecState.LCCPI==1)
                 BLCCP.Point = 1;
@@ -287,6 +265,19 @@ else
     IsMerged = false;
 end
 
+
+function RecState = DetermineSingleOrDouble (RecParams, RecState, Sequence, firstPoint, Letter1Point, Letter1Position , Letter2Point, Letter2Position, SingleLetterPosition ) 
+Option1 = CreateOptionDouble(RecParams,Sequence,firstPoint,Letter1Point,Letter1Position,Letter1Point,Letter2Point,Letter2Position);
+Option2 = CreateOptionSingle(RecParams,Sequence,firstPoint,Letter2Point,SingleLetterPosition);
+Res = BetterOption(firstPoint, Option1, Option2, Sequence);
+if (Res==1)
+    RecState = AddCriticalPoint(RecState,Sequence,Option1.FirstPoint);
+    RecState = AddCriticalPoint(RecState,Sequence,Option1.SecondPoint);
+    
+else
+     RecState = AddCriticalPoint(RecState,Sequence,Option2.FirstPoint);
+end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function Option = CreateOptionDouble(RecParams,Sequence,Start1,End1,Position1,Start2,End2,Position2)
@@ -305,7 +296,7 @@ Option.FirstPoint =  FirstPoint;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function BO = BetterOption(startPoint, DoubleLetterOption, SingleLetterOption, RecState)
+function BO = BetterOption(startPoint, DoubleLetterOption, SingleLetterOption, Sequence)
 
 Double_FirstLetterMin = CalculateAvgCandidatesDistane (DoubleLetterOption.FirstPoint);
 Double_SecondLetterMin = CalculateAvgCandidatesDistane (DoubleLetterOption.SecondPoint);
@@ -314,8 +305,6 @@ DoubleAvgDist = (Double_FirstLetterMin+Double_SecondLetterMin)/2;
 SingleAvgDist = CalculateAvgCandidatesDistane (SingleLetterOption.FirstPoint);
 
 %Condition = Double_FirstLetterMin<=SingleAvgDist && Double_SecondLetterMin<=SingleAvgDist;
-
-Sequence = RecState.Sequence;
 
 subsequence1 = Sequence(startPoint:DoubleLetterOption.FirstPoint.Point,:);
 subsequence2 = Sequence(DoubleLetterOption.FirstPoint.Point:size(Sequence,1),:);
@@ -399,7 +388,7 @@ global gUI;
 if (gUI==true)
     switch Type
         case 'CandidatePoint',
-            %plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'c.-','Tag','SHAPE','LineWidth',5);
+            plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'c.-','Tag','SHAPE','LineWidth',5);
             return;
         case 'CriticalCP'
             plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'r.-','Tag','SHAPE','LineWidth',5);
