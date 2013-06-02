@@ -7,7 +7,7 @@ if (~exist(LetterPositionFolder,'dir'))
 end
 LetterPositionFolderList = dir (fullfile(LetterPositionFolder,'*.m'));
 LetterPositionFolder
-numSamples = min(400,length(LetterPositionFolderList))
+numSamples = min(600,length(LetterPositionFolderList))
 Samples = cell(1,numSamples);
 for i = 1:numSamples
     current_object = LetterPositionFolderList(i);
@@ -15,7 +15,6 @@ for i = 1:numSamples
     sequence = dlmread([LetterPositionFolder,'\',FileName]);
     
     %Sequence Pre-Processing = Normalization->Simplification->Resampling
-    %NormalizedSequence = NormalizeContLetter(sequence,LetterPositionFolder(end-4),LetterPositionFolder(end-2:end));
     NormalizedSequence = NormalizeCont(sequence);
     [~,SimplifiedSequence] = SimplifyContour(NormalizedSequence);
     ResampledSequence = ResampleContour(SimplifiedSequence,ResampleSize);
