@@ -1,19 +1,17 @@
-function RecState = SimulateOnlineRecognizer( sequence, loadDataStructure, showUI )
+function RecResults = SimulateOnlineRecognizer( sequence, loadDataStructure, showUI )
 %SIMULATEONLINERECOGNIZER This funtion simulate the Online pen recognizer.
 % a = dlmread(['C:\OCRData\WPsLabeled\.m']);
 % Res = SimulateOnlineRecognizer(a,true,true)
 
-
+global LettersDataStructure;
 %%%%%%%%%%%%%% Activate at first run  id not running from TestOnlineRecognizer %%%%%%%%%%%%%%%%%%%%%%%%
 if (nargin<2 || loadDataStructure==true)
-    global LettersDataStructure;
     LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 RecParams = InitializeRecParams();
 RecState = InitializeRecState();
-
 sequence = NormalizeCont(sequence);
 
 
@@ -66,11 +64,13 @@ for j=1:size(strokes,2)
     RecState = ProcessNewPoint(RecParams,RecState,stroke,true,UI);
     RecResults(j) =  RecState;
     if (UI == true)
-        strokeRes = GetCandidatesFromRecState( RecState )
-        %close (himage);
+        fprintf('%s',GetCandidatesFromRecState( RecState ));
     end
 end
-
+if (UI == true)
+    clear h_axes;
+    close (himage);
+end
 
 
 %%%%%%%%%%%%%%%%    Initialization Functions   %%%%%%%%%%%%%%%%%%%%%%%%%%
