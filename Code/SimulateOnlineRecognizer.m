@@ -11,7 +11,6 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 RecParams = InitializeRecParams();
-RecState = InitializeRecState();
 sequence = NormalizeCont(sequence);
 
 
@@ -51,7 +50,6 @@ end
 for j=1:size(strokes,2)
     RecState = InitializeRecState();
     stroke = strokes{j};
-    %sequence = NormalizeCont(sequence);
     strokeLen = size(stroke,1);
     Stroke = [];
     for k=1:strokeLen-1
