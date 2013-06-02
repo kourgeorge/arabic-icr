@@ -10,11 +10,11 @@ TestSetFolder = 'C:\OCRData\WPsLabeled';
 LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
 OutputImages = true;
 if (OutputImages==true)
-    Comments = input('Enter Experiment comments\n','s');
     fig = figure();
     cl = clock;
     ax = axes();
 end
+Comments = input('Enter Experiment comments\n','s');
 OutputFolder = ['C:\OCRData\TestOutput (',Comments,')'];
 if(~exist(OutputFolder,'dir'))
     mkdir(OutputFolder);
@@ -27,8 +27,7 @@ correctSeg = 0;
 count = 0;
 overSeg = 0;
 underSeg = 0;
-Comments
-TestSetFolder
+
 start_total = cputime;
 TestSetWordsFolderList = dir(TestSetFolder);
 for i = 3:length(TestSetWordsFolderList)
@@ -38,11 +37,11 @@ for i = 3:length(TestSetWordsFolderList)
     FileNameSize = size(FileName);
     LastCharacter = FileNameSize(2);
     if (IsFile==1 && FileName(LastCharacter)=='m')
+        disp(' ');
         sequence = dlmread([TestSetFolder,'\',FileName]);
-        disp(' ')
         disp(['Word  ',num2str(count),': ',FileName,])
         t = cputime;
-        RecState = SimulateOnlineRecognizer( sequence ,false);
+        RecState = SimulateOnlineRecognizer( sequence ,false, false);
         e = cputime-t;
         disp(['Time Elapsed: ',num2str(e)])
         [LetterNumDiff, CorrectRecognition] = correctRecognition(RecState,strtok(FileName, ' .('));
