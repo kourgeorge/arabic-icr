@@ -6,7 +6,7 @@ function [ReducedFeaturesMatrix, mapping, NumOfPCs] = DimensionalityReduction2( 
 %   output dimentsions of the oca given the PCADataPreservingRate minus 1.
 
 % DimensionalityReduction Using PCA
-[PCACOEFF,SCORE,LATENT] = princomp(FeaturesMatrix);
+[PCACOEFF,~,LATENT] = princomp(FeaturesMatrix);
 
 % build a vector with the data preservation rate.
 data_preserving_vector = cumsum(LATENT)./sum(LATENT);
@@ -21,7 +21,7 @@ A.data = tempReducedFeaturesMatrix;
 
 Labeling = double(Labeling);
 %%%%%%%%%%%%%%Fix LDA labeling%%%%%%%%%%%%%%%%%%%
-[UniqueLabels,IA,IC] = unique (Labeling);
+[~,IA,IC] = unique (Labeling);
 for i=1:size(IA,1)
     ClassNumber = IA(i);
     indexes_of_class = find(IC==ClassNumber);
@@ -30,7 +30,7 @@ for i=1:size(IA,1)
     end
     vectors = tempReducedFeaturesMatrix(indexes_of_class,:);
     NumOfInnerClusters = 4; %clusters estimations alg.
-    [label, energy, index] = kmedoidsL1(vectors',NumOfInnerClusters,5);
+    [label, ~, ~] = kmedoidsL1(vectors',NumOfInnerClusters,5);
 
     Labeling(indexes_of_class) = Labeling(indexes_of_class)+1000+label'; 
 
