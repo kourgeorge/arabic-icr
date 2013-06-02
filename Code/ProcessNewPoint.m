@@ -32,19 +32,22 @@ if(IsMouseUp==true)
                 BLCCP = RecState.CriticalCPs(RecState.LCCPI-1);
             end
             LCCP = RecState.CriticalCPs(RecState.LCCPI);
-            [IsMerged,MergedPoint] = TryToMerge(RecParams,Sequence,BLCCP.Point,LCCP,CurrPoint);
             
-            if (IsMerged)
-                %[4]Critical CP -> New Critical CP(merged with remainder)
-                %Remove the previous critical CP
-                MarkOnSequence('CandidatePoint',Sequence,LCCP.Point);
-                RecState.LCCPI = RecState.LCCPI-1;
-                RecState.CriticalCPs = RecState.CriticalCPs(1:RecState.LCCPI);
-                RecState = AddCriticalPoint(RecState,Sequence,MergedPoint);
+            startPoint = BLCCP.Point;
+            endLetter1Point = LCCP.Point;
+            endLetter2Point = CurrPoint;
+            
+            %remove LCCP
+            MarkOnSequence('CandidatePoint',Sequence,LCCP.Point);
+            RecState.LCCPI = RecState.LCCPI-1;
+            RecState.CriticalCPs = RecState.CriticalCPs(1:RecState.LCCPI);
+            
+            if (startPoint == 1)
+                RecState = DetermineSingleOrDouble (RecParams, RecState, Sequence, startPoint, endLetter1Point, 'Ini', endLetter2Point, 'Fin', 'Iso');
             else
-                %[2] - Critical CP -> CP(MU)
-                RecState = RecognizeAndAddCriticalPoint(RecParams,Sequence,RecState,LCCP.Point,CurrPoint,'Fin');
+                RecState = DetermineSingleOrDouble (RecParams, RecState, Sequence, startPoint, endLetter1Point, 'Mid', endLetter2Point, 'Fin', 'Fin');
             end
+            
         end
     end
 else    %Mouse not up
@@ -56,8 +59,6 @@ else    %Mouse not up
         
         Slope = CalculateSlope(resampledSequence,resSeqLastPoint-RecParams.PointEnvLength,resSeqLastPoint);
         SlopeRes = CheckSlope(Slope,RecParams);
-
-        %scatter(Sequence(size(Sequence,1),1),Sequence(size(Sequence,1),2));
         
         %Update Horizontal Point
         if (RecState.HSStart ~= -1 && SlopeRes && resampledSequence(resSeqLastPoint,1)<resampledSequence(resSeqLastPoint-1,1))
@@ -128,7 +129,7 @@ end
 
 
 if (Res==true)
-
+    
     [abs] = SimplifyContour(OrigSequence(LCPP:end,:));
     if (size(abs,1)<3)
         Res = false;
@@ -155,18 +156,6 @@ if (Res==false && RecState.HSStart~=-1)
         Res=true;
     end
 end
-
-% OrigSequence = RecState.Sequence;
-% Res = false;
-% if (~SlopeRes && RecState.HSStart~=-1)
-%     [abs] = SimplifyContour(OrigSequence(RecState.HSStart:RecState.LastSeenHorizontalPoint,:));
-%     segmentSlope = CalculateSlope(abs,1,size(abs,1));
-%     segmentSlopeRes = CheckSlope(segmentSlope,RecParams);
-%     Res = segmentSlopeRes; %&& (size(abs,1)==2);
-%     if (Res==false)
-%         RecState.HSStart=-1;
-%     end
-% end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -265,8 +254,10 @@ else
     IsMerged = false;
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function RecState = DetermineSingleOrDouble (RecParams, RecState, Sequence, firstPoint, Letter1Point, Letter1Position , Letter2Point, Letter2Position, SingleLetterPosition ) 
+function RecState = DetermineSingleOrDouble (RecParams, RecState, Sequence, firstPoint, Letter1Point, Letter1Position , Letter2Point, Letter2Position, SingleLetterPosition )
 Option1 = CreateOptionDouble(RecParams,Sequence,firstPoint,Letter1Point,Letter1Position,Letter1Point,Letter2Point,Letter2Position);
 Option2 = CreateOptionSingle(RecParams,Sequence,firstPoint,Letter2Point,SingleLetterPosition);
 Res = BetterOption(firstPoint, Option1, Option2, Sequence);
@@ -275,7 +266,7 @@ if (Res==1)
     RecState = AddCriticalPoint(RecState,Sequence,Option1.SecondPoint);
     
 else
-     RecState = AddCriticalPoint(RecState,Sequence,Option2.FirstPoint);
+    RecState = AddCriticalPoint(RecState,Sequence,Option2.FirstPoint);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
