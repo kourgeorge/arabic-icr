@@ -1,14 +1,9 @@
 function [AngsOfCont] = MSC(cont)
-cont = NormalizeCont(cont);
+
 C = mean(cont);
 W = max(cont(:,1)) - min(cont(:,1));
 H = max(cont(:,2)) - min(cont(:,2));
-%Up = max(W,H);
-% UL = [min(cont(:,1))  min(cont(:,2)) ];
-% UR = [max(cont(:,1))  min(cont(:,2)) ];
-% BL = [min(cont(:,1))  max(cont(:,2)) ];
-% BR = [max(cont(:,1))  max(cont(:,2)) ];
-% CC = UL+ [0.5*W 0.5*H];
+
 
 BL = [min(cont(:,1))  min(cont(:,2)) ];
 BR = [max(cont(:,1))  min(cont(:,2)) ];
@@ -24,8 +19,7 @@ StepY = H/NumofSteps;
 Up = (H+W);
 
 [l,c] = size(cont);
-%ShiftCont = cont(2:l,:) ;
-%ShiftCont(l,:) = cont(l,:) ;
+
 Points = zeros(4*NumofSteps+1,2);
 Points(1,:) = C;
 for i=1:NumofSteps
