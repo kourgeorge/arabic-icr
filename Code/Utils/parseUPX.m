@@ -1,4 +1,4 @@
-function [arabascii,theLetter] = parseUPX(filename,UpxTarget)
+function [arabascii,theLetter] = parseUPX(filename,UpxTarget,DoSimplifyLetter)
 strfortext=[UpxTarget,'\upx\',filename,'.upx'];
 xmlToMatlabStruct = theStruct(strfortext);
 arabascii=xmlToMatlabStruct.Children(1,6).Children(1,2).Children(1,2).Children(1,2).Attributes.Value;
@@ -9,69 +9,73 @@ arabascii = dec2hex(arabascii);
 len = size(arabascii);
 j=1;
 for i=1 : len(1)
+    if (DoSimplifyLetter==true)
         simplifiedLetter = simplifyletter(arabascii(j,:));
-        
-   switch simplifiedLetter
-         case ''
-          theLetter=[theLetter ' '];
-       case '627'
-          theLetter=[theLetter 'A'];
-          
-      case '628'
-          theLetter=[theLetter 'B'];
-          
-      case '62D'
-          theLetter=[theLetter '7'];   
-          
-       case '62F'
-          theLetter=[theLetter 'D'];   
-
-       case '631'
-          theLetter=[theLetter 'R'];   
+    else
+        simplifiedLetter =  arabascii(j,:);
+    end
+    
+    switch simplifiedLetter
+        case ''
+            theLetter=[theLetter ' '];
+        case '627'
+            theLetter=[theLetter 'A'];
             
-       case '633'
-          theLetter=[theLetter 'S'];   
+        case '628'
+            theLetter=[theLetter 'B'];
             
-       case '635'
-          theLetter=[theLetter '8'];   
-                  
-       case '637'
-          theLetter=[theLetter '6'];   
-                  
-       case '639'
-          theLetter=[theLetter '3'];   
-                   
+        case '62D'
+            theLetter=[theLetter '7'];
+            
+        case '62F'
+            theLetter=[theLetter 'D'];
+            
+        case '631'
+            theLetter=[theLetter 'R'];
+            
+        case '633'
+            theLetter=[theLetter 'S'];
+            
+        case '635'
+            theLetter=[theLetter '8'];
+            
+        case '637'
+            theLetter=[theLetter '6'];
+            
+        case '639'
+            theLetter=[theLetter '3'];
+            
         case '641'
-          theLetter=[theLetter 'F'];
-          
+            theLetter=[theLetter 'F'];
+            
         case '644'
-          theLetter=[theLetter 'L'];   
-           
+            theLetter=[theLetter 'L'];
+            
         case '643'
-          theLetter=[theLetter 'K'];   
+            theLetter=[theLetter 'K'];
             
         case '645'
-          theLetter=[theLetter 'M'];   
-             
+            theLetter=[theLetter 'M'];
+            
         case '646'
-          theLetter=[theLetter 'N'];   
-              
-       case '648'
-          theLetter=[theLetter 'W'];   
-          
-       case '64A'
-          theLetter=[theLetter 'Y'];   
-               
-      case '647'
-          theLetter=[theLetter 'H'];   
-      case '621'
-          theLetter=[theLetter 'E'];
-       otherwise
-           theLetter=theLetter;
-       
-          
-   end
-   j=j+1;
+            theLetter=[theLetter 'N'];
+            
+        case '648'
+            theLetter=[theLetter 'W'];
+            
+        case '64A'
+            theLetter=[theLetter 'Y'];
+            
+        case '647'
+            theLetter=[theLetter 'H'];
+        case '621'
+            theLetter=[theLetter 'E'];
+        otherwise
+            theLetter=theLetter;
+            
+            
+    end
+    j=j+1;
 end
 theLetter = strrep(theLetter,'LA','X');
 
@@ -194,7 +198,7 @@ switch input_letter
         output_letter = '621';
         return;
     otherwise
-         output_letter = '999';
-         return;
+        output_letter = '999';
+        return;
         
 end
