@@ -42,10 +42,11 @@ for i = 3:length(TestSetWordsFolderList)
         disp(['Word  ',num2str(count),': ',FileName,])
         t = cputime;
         RecState = SimulateOnlineRecognizer( sequence ,false, false);
+        RecState = RecState(1);
         e = cputime-t;
         disp(['Time Elapsed: ',num2str(e)])
         [LetterNumDiff, CorrectRecognition] = correctRecognition(RecState,strtok(FileName, ' .('));
-        
+        numSegmentationPoints = length(RecState.SegmentationPoints);
         %Collect Statistics
         count=count+1;
         if (CorrectRecognition==true)
@@ -75,28 +76,39 @@ for i = 3:length(TestSetWordsFolderList)
             end
             
             mkdir(WordFolder);
-            for k=1:RecState.LCCPI
+            hold off;
+            plot (ax, RecState.Sequence(:,1),RecState.Sequence(:,2),'LineWidth',3);
+            hold on;
+            
+            for k=2:length(RecState.CandidatePointsArray)
+                point = RecState.CandidatePointsArray(k);
+
+                plot(ax,RecState.Sequence(point-1:point,1),RecState.Sequence(point-1:point,2),'c.-','LineWidth',5);
+            end
+            
+            for k=1:numSegmentationPoints
                 if (k==1)
                     startIndex = 1;
                 else
-                    BLCCPP = RecState.CriticalCPs(k-1).Point;
+                    BLCCPP = RecState.SegmentationPoints{k-1}.Point;
                     startIndex = BLCCPP;
                 end
-                LCCP =  RecState.CriticalCPs(k);
+                LCCP =  RecState.SegmentationPoints{k};
                 endIndex = LCCP.Point;
                 dlmwrite([WordFolder,'\',num2str(k),'.m'], RecState.Sequence(startIndex:endIndex,:));
-                plot (ax, RecState.Sequence(startIndex:endIndex,1),RecState.Sequence(startIndex:endIndex,2),'LineWidth',3);
-                hold on;
-                scatter (ax, RecState.Sequence(startIndex:endIndex,1),RecState.Sequence(startIndex:endIndex,2),'LineWidth',3);
-                hold off;
+                plot(ax,RecState.Sequence(endIndex-1:endIndex,1),RecState.Sequence(endIndex-1:endIndex,2),'r.-','LineWidth',5);
                 PrevDir = pwd;
                 cd(WordFolder);
-                saveas(ax,num2str(k),'jpg');
                 cd (PrevDir);
             end
+            PrevDir = pwd;
+            cd(WordFolder);
+            saveas(ax,'image','jpg');
+            cd (PrevDir);
             fid = fopen([WordFolder,'\result.txt'], 'wt');
             fprintf(fid, '%s', error_str);
             fclose(fid);
+            dlmwrite([WordFolder,'\CandidatesMinTable.txt'], RecState.MinScoreTable,'delimiter', '\t', 'precision', 4, 'newline','pc');
         end
     end
 end
@@ -118,14 +130,14 @@ end
 function [LetterNumDiff, CorrectRecognition] = correctRecognition(RecState,Word)
 CorrectRecognition=true;
 LetterNumDiff=0;
-
-if (RecState.LCCPI~=size(Word,2))
-    LetterNumDiff = RecState.LCCPI - size(Word,2);
+numSegmentationPoints = length(RecState.SegmentationPoints);
+if (numSegmentationPoints~=size(Word,2))
+    LetterNumDiff = numSegmentationPoints - size(Word,2);
     CorrectRecognition = false;
     return;
 end
-for i=1:RecState.LCCPI
-    LCCP =  RecState.CriticalCPs(i);
+for i=1:numSegmentationPoints
+    LCCP =  RecState.SegmentationPoints{i};
     CurrCan = LCCP.Candidates(:,1);
     wasRecognized = false;
     for j=1:size(CurrCan,1)

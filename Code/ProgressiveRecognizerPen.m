@@ -182,14 +182,9 @@ Sequence(:,2) = y_pen;
 
 RecParams = InitializeRecParams();
 
-Old_LCCPI = RecState.LCCPI;
 
 RecState = ProcessNewPoint(RecParams,RecState,Sequence,IsMouseUp,true);
 
-%Update the heading in the Pen Window
-if (Old_LCCPI < RecState.LCCPI || IsMouseUp==true)
-    UpdateHeading(RecState);
-end
 
 %Output all the candidates.
 if (IsMouseUp==true)
@@ -199,12 +194,12 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function RecState = InitializeRecState()
 
-RecState.LCCPI=0; % LastCriticalCheckPointIndex, the corrent root
-RecState.CriticalCPs=[]; %Each cell contains the Candidates of the interval from the last CP and the last Point
-RecState.CandidateCP=[]; %Holds the first candidate to be a Critical CP after the LCCP
+RecState.CandidatePointsArray = [1];
+RecState.RecognitionScoreTable = {};
+RecState.SegmentationPoints = {};
+RecState.MinScoreTable = [];
 RecState.HSStart = -1;
 RecState.LastSeenHorizontalPoint = -1;
-RecState.Sequence = [];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -215,7 +210,8 @@ RecParams.K = 3;
 RecParams.PointEnvLength =1;
 RecParams.MaxSlopeRate = 0.6;
 RecParams.MaxDistFromBaseline = 0.15;
-RecParams.NumCandidates = 5;
+RecParams.NumCandidates = 3;
+RecParams.MaxIndecisiveCandidates = 3;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

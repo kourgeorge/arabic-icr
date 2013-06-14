@@ -1,4 +1,4 @@
-function RecResults = SimulateOnlineRecognizer( sequence, loadDataStructure, showUI )
+function [MainStrokesResults,AdditionalStrokesResults] = SimulateOnlineRecognizer( sequence, loadDataStructure, showUI )
 %SIMULATEONLINERECOGNIZER This funtion simulate the Online pen recognizer.
 % a = dlmread(['C:\OCRData\WPsLabeled\.m']);
 % Res = SimulateOnlineRecognizer(a,true,true)
@@ -46,7 +46,8 @@ InfIndexes = [0;InfIndexes;len+1];
 for j=1:length(InfIndexes)-1
     strokes{j} = sequence(InfIndexes(j)+1:InfIndexes(j+1)-1,:);
 end
-
+m = 0;
+a = 0;
 for j=1:size(strokes,2)
     RecState = InitializeRecState();
     stroke = strokes{j};
@@ -57,17 +58,39 @@ for j=1:size(strokes,2)
         RecState = ProcessNewPoint(RecParams,RecState,Stroke,false,UI);
         if (UI == true)
             plot(h_axes,[stroke(k,1) stroke(k+1,1)],[stroke(k,2) stroke(k+1,2)],'b.-','Tag','SHAPE','LineWidth',3);
+            scatter(h_axes, stroke(k,1),stroke(k,2));
         end
     end
     RecState = ProcessNewPoint(RecParams,RecState,stroke,true,UI);
-    RecResults(j) =  RecState;
+    
     if (UI == true)
         fprintf('%s',GetCandidatesFromRecState( RecState ));
     end
+    
+    if (IsAdditionalStroke(stroke,RecState)==true)
+        a=a+1;
+        AdditionalStrokesResults(a) = RecState;
+        
+    else
+        m=m+1;
+        MainStrokesResults(m) =  RecState;
+    end
 end
+
+[ MainStrokesResults, AdditionalStrokes ] = ExtractAdditionalStroke( MainStrokesResults , sequence);
+
+AdditionalStrokesResults = [AdditionalStrokesResults;AdditionalStrokes];
+
+if (a ==1 )
+    AdditionalStrokesResults = false;
+end
+if (m ==1)
+    MainStrokesResults = false;
+end
+
 if (UI == true)
     clear h_axes;
-    close (himage);
+%    close (himage);
 end
 
 
@@ -75,9 +98,10 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function RecState = InitializeRecState()
 
-RecState.LCCPI=0; % LastCriticalCheckPointIndex, the corrent root
-RecState.CriticalCPs=[]; %Each cell contains the Candidates of the interval from the last CP and the last Point
-RecState.CandidateCP=[]; %Holds the first candidate to be a Critical CP after the LCCP
+RecState.CandidatePointsArray = [1];
+RecState.RecognitionScoreTable = {};
+RecState.SegmentationPoints = {};
+RecState.MinScoreTable = [];
 RecState.HSStart = -1;
 RecState.LastSeenHorizontalPoint = -1;
 
@@ -91,5 +115,6 @@ RecParams.K = 3;
 RecParams.PointEnvLength =1;
 RecParams.MaxSlopeRate = 0.6;
 RecParams.MaxDistFromBaseline = 0.15;
-RecParams.NumCandidates = 5;
+RecParams.NumCandidates = 3;
+RecParams.MaxIndecisiveCandidates = 3;
 
