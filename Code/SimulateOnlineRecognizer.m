@@ -79,12 +79,14 @@ end
 
 [ MainStrokesResults, AdditionalStrokes ] = ExtractAdditionalStroke( MainStrokesResults , sequence);
 
-AdditionalStrokesResults = [AdditionalStrokesResults;AdditionalStrokes];
+if (~isempty(AdditionalStrokes))
+    AdditionalStrokesResults = [AdditionalStrokesResults;AdditionalStrokes];
+end
 
-if (a ==1 )
+if (a == 0 )
     AdditionalStrokesResults = false;
 end
-if (m ==1)
+if (m == 0)
     MainStrokesResults = false;
 end
 
