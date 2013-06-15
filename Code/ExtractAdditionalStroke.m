@@ -14,7 +14,12 @@ for i=1:size(StrokesResults,2)
         mi=mi+1;
     end
 end
-
+if (ai==1)
+    AdditionalStrokes = [];
+end
+if (mi==1)
+    MainStrokes = [];
+end
 function [len] =  finddistLneg(Word)
 temp = Word(:,1);
 x = temp(temp~=Inf('single'));
