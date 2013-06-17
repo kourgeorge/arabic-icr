@@ -5,18 +5,16 @@ function [NormContour] = NormalizeCont(Contour)
 temp = Contour(:,1);
 Contourtemp(:,1) = temp(temp~=Inf('single'));
 temp=  Contour(:,2);
-Contourtemp(:,2) = temp(temp~=Inf('single'));
+Contourtemp(:,2) = temp(temp~=-Inf('single'));
 
 MeanXY = mean(Contourtemp);
-CenteredContour = Contour - repmat(MeanXY,size(Contour,1),1);
+CenteredContour = Contourtemp - repmat(MeanXY,size(Contourtemp,1),1);
 
-temp = CenteredContour(:,1);
-MaxX = max(temp(temp~=Inf('single')));
-MinX = min(temp(temp~=Inf('single')));
+MaxX = max(CenteredContour(:,1));
+MinX = min(CenteredContour(:,1));
 
-temp = CenteredContour(:,2);
-MaxY = max(temp(temp~=Inf('single')));
-MinY = min(temp(temp~=Inf('single')));
+MaxY = max(CenteredContour(:,2));
+MinY = min(CenteredContour(:,2));
 
 norm = max((MaxX-MinX),(MaxY-MinY));
 NormContour(:,1) = CenteredContour(:,1)/norm;
