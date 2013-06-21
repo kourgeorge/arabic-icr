@@ -179,7 +179,7 @@ imshow(ImagePath,'Parent',handles.axes1);
 arabAscii = ArabicAscii(name(index),UPXpath);
 set( handles.Englishtxt, 'String', EnglishWord );
 set( handles.arabictxt, 'String', arabAscii );
-xmlToMatlabStruct = theStruct(XmlsPath); % getting the xml from choosen item
+xmlToMatlabStruct = parseXML(XmlsPath); % getting the xml from choosen item
 xmlToParsedStruct=xmlToMatlabStruct.Children; % parse the data from the structure into childrens
 len=size(xmlToParsedStruct,2); % getting the length of chidlrens
 

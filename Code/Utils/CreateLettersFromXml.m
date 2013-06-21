@@ -11,7 +11,7 @@ if (strcmp(IncludeImages,'Yes'))
     
 end
 for i=1 : lenOfFolder
-    xmlToMatlabStruct = theStruct([LettersXMLsourcefolder,'\',LetFolder(i).name]); % getting the xml from choosen item
+    xmlToMatlabStruct = parseXML([LettersXMLsourcefolder,'\',LetFolder(i).name]); % getting the xml from choosen item
     xmlToParsedStruct=xmlToMatlabStruct.Children; % parse the data from the structure into childrens
     lenOfAllWordParts=size(xmlToParsedStruct,2); % getting the length of chidlrens
     PrevDir=pwd;

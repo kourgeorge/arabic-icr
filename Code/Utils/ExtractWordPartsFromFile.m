@@ -5,7 +5,7 @@ function ExtractWordPartsFromFile( setPath, wordFileName, outputFolderPath)
 %wordFileName = '1231874627010';
 %setPath = 'C:\Users\kour\OCRData Old\Archieve\adab_database_v1.0\Data\set_1\';
 inkmlPath = [setPath,'\inkml\',wordFileName,'.inkml'];
-xmlToMatlabStruct = theStruct(inkmlPath); % getting the xml from choosen item
+xmlToMatlabStruct = parseXML(inkmlPath); % getting the xml from choosen item
 xmlToParsedStruct=xmlToMatlabStruct.Children; % parse the data from the structure into childrens
 len=size(xmlToParsedStruct,2); % getting the length of chidlrens
 NumOfStrokes=1; % index for each new data
