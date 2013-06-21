@@ -2,7 +2,7 @@ function TestStrokesRecognizer()
 %TESTSTROKESRECOGNIZER Summary of this function goes here
 global LettersDataStructure;
 LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
-StrokesDictionaryFolder  = 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\ParsedADABWords';
+StrokesDictionaryFolder  = 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\ParsedADABWords_Copy';
 
 %HandleOutputFolder
 Comments = input('Enter Experiment comments\n','s');
@@ -23,7 +23,7 @@ for i=3:min (length(strokesFilesList),500)
     IsFile=~[current_object.isdir];
     FileName = current_object.name
     if (IsFile)
-        [ NumOfWordParts ,NumOfCorrectRecognition, NumOfCorrectlySegmentedStrokes] = RecognizeStrokeFromFile( [StrokesDictionaryFolder,'\',FileName], false, ax, OutputFolder );
+        [ NumOfWordParts ,NumOfCorrectRecognition, NumOfCorrectlySegmentedStrokes] = RecognizeStrokeFromFile( [StrokesDictionaryFolder,'\',FileName], false, OutputFolder, ax );
         TotalStrokes = TotalStrokes + NumOfWordParts;
         TotalCorrectRecognition = TotalCorrectRecognition + NumOfCorrectRecognition;
         TotalCorrectSegmentation = TotalCorrectSegmentation + NumOfCorrectlySegmentedStrokes;

@@ -1,10 +1,22 @@
-function [ NumOfWordParts ,NumOfCorrectRecognition ,NumOfCorrectlySegmentedStrokes ] = RecognizeStrokeFromFile(xmlFile, LoadDataStructure, ax, OutputFolder )
+function [ NumOfWordParts ,NumOfCorrectRecognition ,NumOfCorrectlySegmentedStrokes ] = RecognizeStrokeFromFile(xmlFile, LoadDataStructure, OutputFolder, ax )
 %RECOGNIZESTROKEFROMFILE Summary of this function goes here
-%   RecognizeStrokeFromFile( 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\ParsedADABWords\1232275347507.xml' , true)
+
+%   RecognizeStrokeFromFile( 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\ParsedADABWords\1232017002109.xml' , true, 'C:\OCRData\StrokeOutput\')
 
 global LettersDataStructure;
 if (LoadDataStructure ==true)
     LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
+end
+
+if (~strcmp(OutputFolder(end),'\'))
+    OutputFolder = [OutputFolder,'\'];
+end
+if(~exist(OutputFolder,'dir'))
+    mkdir(OutputFolder);
+end
+
+if (nargin<4)
+    ax = axes();
 end
 
 WPStructArray = XML2WPStructArray( xmlFile );
@@ -26,7 +38,7 @@ for i=1:length(FilteredSequenceArray)
     MainStrokesResults = [MainStrokesResults;AdditionalStrokesResults];
     
     adaptedStr = AdaptString(FilteredSequenceArray(i).Label);
-    [LetterNumDiff, CorrectRecognition] = correctRecognition (MainStrokesResults,adaptedStr);
+    [LetterNumDiff, CorrectRecognition] = IsWordRecognizedCorrectly(MainStrokesResults,adaptedStr);
     
     
     if (CorrectRecognition == true || LetterNumDiff ==0 )
@@ -36,11 +48,12 @@ for i=1:length(FilteredSequenceArray)
     if (CorrectRecognition==true)
         NumOfCorrectRecognition = NumOfCorrectRecognition + 1;
     else
-        filename = [OutputFolder,FilteredSequenceArray(i).Label,'_',xmlFile(end-16:end-4)];
-        dlmwrite([filename,'.m'], FilteredSequenceArray(i).Sequence);
+        folderName = [OutputFolder,FilteredSequenceArray(i).Label,'_',xmlFile(end-16:end-4)];
+        mkdir(folderName);
+        dlmwrite([folderName,'\sequence.m'], FilteredSequenceArray(i).Sequence);
         error_str = GetCandidatesFromRecState( MainStrokesResults );
         disp (error_str)
-        fid = fopen([filename,'_result.txt'], 'wt');
+        fid = fopen([folderName,'\result.txt'], 'wt');
         fprintf(fid, '%s', error_str);
         fclose(fid);
         hold off;
@@ -50,8 +63,15 @@ for i=1:length(FilteredSequenceArray)
             LCCP =  MainStrokesResults.SegmentationPoints{k};
             endIndex = LCCP.Point;
             plot(ax,MainStrokesResults.Sequence(endIndex-1:endIndex,1),MainStrokesResults.Sequence(endIndex-1:endIndex,2),'r.-','LineWidth',5);
+            
         end
-        saveas(ax,[filename,'_image'],'jpg');
+        sequence =MainStrokesResults.Sequence;
+        maxX = max(sequence(:,1)); minX = min(sequence(:,1)); maxY = max(sequence(:,2)); minY = min(sequence(:,2));
+        windowSize = max(maxX-minX,maxY-minY);
+        ylim([minY-0.1*windowSize minY+windowSize+0.1*windowSize]);
+        xlim([minX-0.1*windowSize minX+windowSize+0.1*windowSize]);
+        axis(ax,[minX-0.1*windowSize minX+windowSize+0.1*windowSize minY-0.1*windowSize minY+windowSize+0.1*windowSize]);
+        saveas(ax,[folderName,'\image'],'jpg');
     end
 end
 
@@ -64,7 +84,9 @@ function FilteredSequenceArray = FilterIllegalSequences (WPStructArray)
 %avoid Word Parts with penUp.
 index = 1;
 for j=1:length(WPStructArray)
-    if (~(j>2 && any(WPStructArray(j).Sequence(1,:)~= WPStructArray(j-1).Sequence(end,:)) || any(ismember(WPStructArray(j).Sequence(:,1),Inf))))
+    condition1 = any(ismember(WPStructArray(j).Sequence(:,1),Inf));
+    condition2 = j>2 && any(WPStructArray(j).Sequence(1,:)~= WPStructArray(j-1).Sequence(end,:));
+    if (~condition1)
         FilteredSequenceArray(index) = WPStructArray(j);
         index = index + 1;
     end
@@ -76,16 +98,6 @@ end
 function Res = AdaptString(str)
 Res = strrep(str, '_', '');
 Res = strrep(Res, 'Y', 'B');
-end
-
-
-function [LetterNumDiff, CorrectRecognition] = correctRecognition(RecState,Word)
-CorrectRecognition=true;
-LetterNumDiff=0;
-numSegmentationPoints = length(RecState.SegmentationPoints);
-if (numSegmentationPoints~=size(Word,2))
-    LetterNumDiff = numSegmentationPoints - size(Word,2);
-    CorrectRecognition = false;
-    return;
-end
+Res = strrep(Res, 'N', 'B');
+Res = strrep(Res, '6', '8');
 end
