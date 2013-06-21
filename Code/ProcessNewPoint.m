@@ -9,7 +9,7 @@ RecState.Sequence=Sequence;
 
 if(IsMouseUp==true)
     
-    if (size(Sequence,1)<10)
+    if (size(Sequence,1)<2 || SequenceLength(Sequence) < 0.03)
         CheckPoint.Point = size(Sequence,1);
         CheckPoint.Sequence = Sequence;
         return
@@ -236,6 +236,7 @@ end
 function Res = ContainsInformation(Sequence,startPoint, endPoint)
 
 [abs] = SimplifyContour(Sequence(startPoint:endPoint,:));
+Res = true;
 
 if (size(abs,1)==2)
     Res = false;
