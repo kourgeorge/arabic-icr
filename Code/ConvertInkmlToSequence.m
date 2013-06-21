@@ -5,7 +5,7 @@ function [ Word ] = ConvertInkmlToSequence( DataSetPath, filename )
 
 
 inkmlPath = [DataSetPath,'\inkml\',filename,'.inkml'];
-xmlToMatlabStruct = theStruct(inkmlPath); % getting the xml from choosen item
+xmlToMatlabStruct = parseXML(inkmlPath); % getting the xml from choosen item
 xmlToParsedStruct=xmlToMatlabStruct.Children; % parse the data from the structure into childrens
 len=size(xmlToParsedStruct,2); % getting the length of chidlrens
 NumOfStrokes=1; % index for each new data
