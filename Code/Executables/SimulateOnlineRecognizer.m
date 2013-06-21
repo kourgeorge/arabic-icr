@@ -11,7 +11,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 RecParams = InitializeRecParams();
-sequence = NormalizeCont(sequence);
+%sequence = NormalizeCont(sequence);
 
 
 %%%%%%%%%%%%%%%%%%%%%%  Enable Gui  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -77,17 +77,17 @@ for j=1:size(strokes,2)
     end
 end
 
-[ MainStrokesResults, AdditionalStrokes ] = ExtractAdditionalStroke( MainStrokesResults , sequence);
-
-if (~isempty(AdditionalStrokes))
-    AdditionalStrokesResults = [AdditionalStrokesResults;AdditionalStrokes];
+if (m>0)
+    [ MainStrokesResults, AdditionalStrokes ] = ExtractAdditionalStroke( MainStrokesResults , sequence); 
+    if (~isempty(AdditionalStrokes))
+        AdditionalStrokesResults = [AdditionalStrokesResults;AdditionalStrokes];
+    end
 end
-
 if (a == 0 )
-    AdditionalStrokesResults = false;
+    AdditionalStrokesResults = [];
 end
 if (m == 0)
-    MainStrokesResults = false;
+    MainStrokesResults = [];
 end
 
 if (UI == true)
