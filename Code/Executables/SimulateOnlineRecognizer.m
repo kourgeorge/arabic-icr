@@ -67,14 +67,14 @@ for j=1:size(strokes,2)
         fprintf('%s',GetCandidatesFromRecState( RecState ));
     end
     
-    if (IsAdditionalStroke(stroke,RecState)==true)
-        a=a+1;
-        AdditionalStrokesResults(a) = RecState;
-        
-    else
+%     if (IsAdditionalStroke(stroke,RecState)==true)
+%         a=a+1;
+%         AdditionalStrokesResults(a) = RecState;
+%         
+%     else
         m=m+1;
         MainStrokesResults(m) =  RecState;
-    end
+%     end
 end
 
 if (m>0)
