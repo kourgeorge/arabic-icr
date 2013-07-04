@@ -13,10 +13,7 @@ for i=1:length(xmlToMatlabStruct.Children)
         end
     end
 end
-
 WPStructArray = WPs;
-
-
 end
 
 function WPStruct = getWordPart (WordPartNode)
@@ -27,7 +24,7 @@ for j=1:length(WordPartNode.Children)
         LetterNode = WordPartNode.Children(j);
         label = [label,LetterNode.Attributes(1).Value];
         CurrentLetterSequence = GetSequenceFromString(LetterNode.Children(1).Data);
-        sequence = [sequence;CurrentLetterSequence(1:end,:)];
+        sequence = [sequence;CurrentLetterSequence];
     end
     
 end

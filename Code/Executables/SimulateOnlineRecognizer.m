@@ -1,6 +1,6 @@
-function [MainStrokesResults,AdditionalStrokesResults] = SimulateOnlineRecognizer( sequence, loadDataStructure, showUI )
+function [MainStrokesResults,AdditionalStrokesResults,himage] = SimulateOnlineRecognizer( sequence, loadDataStructure, showUI )
 %SIMULATEONLINERECOGNIZER This funtion simulate the Online pen recognizer.
-% a = dlmread(['C:\OCRData\WPsLabeled\.m']);
+% a = dlmread(['C:\OCRData\WordPartFromUI.m']);
 % Res = SimulateOnlineRecognizer(a,true,true)
 
 global LettersDataStructure;
@@ -29,7 +29,7 @@ if (UI == true)
     temp = Contour(:,1);
     Contourtemp(:,1) = temp(temp~=Inf('single'));
     temp=  Contour(:,2);
-    Contourtemp(:,2) = temp(temp~=Inf('single'));
+    Contourtemp(:,2) = temp(temp~=-Inf('single'));
     
     maxX = max(Contourtemp(:,1)); minX = min(Contourtemp(:,1)); maxY = max(Contourtemp(:,2)); minY = min(Contourtemp(:,2));
     windowSize = max(maxX-minX,maxY-minY);
@@ -64,7 +64,7 @@ for j=1:size(strokes,2)
     RecState = ProcessNewPoint(RecParams,RecState,stroke,true,UI);
     
     if (UI == true)
-        fprintf('%s',GetCandidatesFromRecState( RecState ));
+        %fprintf('%s',GetCandidatesFromRecState( RecState ));
     end
     
 %     if (IsAdditionalStroke(stroke,RecState)==true)
@@ -76,13 +76,13 @@ for j=1:size(strokes,2)
         MainStrokesResults(m) =  RecState;
 %     end
 end
-
-if (m>0)
-    [ MainStrokesResults, AdditionalStrokes ] = ExtractAdditionalStroke( MainStrokesResults , sequence); 
-    if (~isempty(AdditionalStrokes))
-        AdditionalStrokesResults = [AdditionalStrokesResults;AdditionalStrokes];
-    end
-end
+% 
+% if (m>0)
+%     [ MainStrokesResults, AdditionalStrokes ] = ExtractAdditionalStroke( MainStrokesResults , sequence); 
+%     if (~isempty(AdditionalStrokes))
+%         AdditionalStrokesResults = [AdditionalStrokesResults;AdditionalStrokes];
+%     end
+% end
 if (a == 0 )
     AdditionalStrokesResults = [];
 end
@@ -91,7 +91,7 @@ if (m == 0)
 end
 
 if (UI == true)
-    clear h_axes;
+%    clear h_axes;
 %    close (himage);
 end
 
@@ -118,5 +118,5 @@ RecParams.PointEnvLength =1;
 RecParams.MaxSlopeRate = 0.6;
 RecParams.MaxDistFromBaseline = 0.15;
 RecParams.NumCandidates = 3;
-RecParams.MaxIndecisiveCandidates = 3;
+RecParams.MaxIndecisiveCandidates = 10;
 

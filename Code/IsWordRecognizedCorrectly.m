@@ -1,18 +1,20 @@
-function [LetterNumDiff, CorrectRecognition] = IsWordRecognizedCorrectly(RecState,Word)
+function [SegmentationDirection, CorrectRecognition] = IsWordRecognizedCorrectly(RecState,Word)
 %ISWORDRECOGNIZEDCORRECTLY Summary of this function goes here
 %   Detailed explanation goes here
 
 CorrectRecognition=true;
-LetterNumDiff=0;
-numSegmentationPoints = length(RecState.SegmentationPoints);
+SegmentationDirection=0;
+SegmentationPoints = [RecState.SegmentationPoints];
+numSegmentationPoints = length(SegmentationPoints);
 if (numSegmentationPoints~=size(Word,2))
-    LetterNumDiff = numSegmentationPoints - size(Word,2);
+     if (numSegmentationPoints - size(Word,2) > 0) SegmentationDirection = 1; end
+     if (numSegmentationPoints - size(Word,2) < 0) SegmentationDirection = -1; end    
     CorrectRecognition = false;
     return;
 end
 for i=1:numSegmentationPoints
-    LCCP =  RecState.SegmentationPoints{i};
-    CurrCan = LCCP.Candidates(:,1);
+    SP =  SegmentationPoints{i};
+    CurrCan = SP.Candidates(:,1);
     wasRecognized = false;
     for j=1:size(CurrCan,1)
         if (ValidateRecognizedLetter(CurrCan{j},Word,i))

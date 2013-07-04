@@ -1,6 +1,5 @@
-function [ Results ] = RecognizeWordStrokes(xmlFile, LoadDataStructure, OutputFolder, ax )
+function [ WPsResults , Name] = RecognizeWordStrokes(xmlFile, LoadDataStructure, OutputFolder )
 %RecognizeWordStrokes Summary of this function goes here
-
 %   RecognizeWordStrokes( 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\ParsedADABWords\1231874635809.xml' , true, 'C:\OCRData\StrokeOutput\')
 
 global LettersDataStructure;
@@ -8,86 +7,75 @@ if (LoadDataStructure ==true)
     LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
 end
 
-if (~strcmp(OutputFolder(end),'\'))
-    OutputFolder = [OutputFolder,'\'];
-end
-if(~exist(OutputFolder,'dir'))
-    mkdir(OutputFolder);
-end
-
-if (nargin<4)
-    ax = axes();
-end
 
 WPStructArray = XML2WPStructArray( xmlFile );
 
 NormalizedWPStructArray = NormalizeWPStructArray(WPStructArray);
 
-FilteredSequenceArray = FilterIllegalSequences (NormalizedWPStructArray);
+%FilteredSequenceArray = FilterIllegalSequences (NormalizedWPStructArray);
 
-Results = [];
+WPsResults = [];
 
-if (isempty(FilteredSequenceArray))
+if (isempty(NormalizedWPStructArray))
     return;
 end
-%disp(' ');
-%disp(['Filename: ',xmlFile(end-16:end-4)]);
-%xmlToMatlabStruct = parseXML(xmlFile);
-%disp(['Word Label: ',xmlToMatlabStruct.Attributes(2).Value]);
 
-for i=1:length(FilteredSequenceArray)
-    [MainStrokesResults,AdditionalStrokesResults] = SimulateOnlineRecognizer( FilteredSequenceArray(i).Sequence, false, false );
+xmlToMatlabStruct = parseXML(xmlFile);
+Name = xmlToMatlabStruct.Attributes(2).Value;
+
+for i=1:length(NormalizedWPStructArray)
     
-    adaptedStr = AdaptString(FilteredSequenceArray(i).Label);
-    [letterNumDiff, correctRecognition] = IsWordRecognizedCorrectly(MainStrokesResults,adaptedStr);
+    WPSequence = NormalizedWPStructArray(i).Sequence;
+    WPLabel = NormalizedWPStructArray(i).Label;
+    tic
+    [MainStrokesResults,~,ax] = SimulateOnlineRecognizer( WPSequence, false, true );
+    time = toc;
+    adaptedStr = AdaptString(WPLabel);
     
-    if (correctRecognition == true || letterNumDiff ==0 )
-        segmentation = 0;
-    else
-        if (letterNumDiff > 0)
-            segmentation  = 1;
-        else
-            segmentation  = -1;
+    [SegmentationDirection, correctRecognition] = IsWordRecognizedCorrectly(MainStrokesResults,adaptedStr);
+    
+    if (nargin>2)
+        if (~strcmp(OutputFolder(end),'\'))
+            OutputFolder = [OutputFolder,'\'];
         end
-    end
-    
-    if (~correctRecognition==true)
-        if (segmentation==0)
-            folderName = [OutputFolder,FilteredSequenceArray(i).Label,'_',xmlFile(end-16:end-4)];
+        if(~exist(OutputFolder,'dir'))
+            mkdir(OutputFolder);
+        end
+        if (correctRecognition==true)
+            ImagesFolder = [OutputFolder,'CorrectlyRecognizedWPsImages\'];
+            detailsOutputFolder = [OutputFolder,'CorrectlyRecognizedWPs\',WPLabel,'_',num2str(i),'_',xmlFile(end-16:end-4)];
+        elseif (SegmentationDirection ==0)
+            ImagesFolder = [OutputFolder,'CorrectlySegmentedWPsImages\'];
+            detailsOutputFolder = [OutputFolder,'CorrectlySegmentedWPs\',WPLabel,'_',num2str(i),'_',xmlFile(end-16:end-4)];
         else
-            folderName = [OutputFolder,'segmentation\',FilteredSequenceArray(i).Label,'_',xmlFile(end-16:end-4)];
+            ImagesFolder = [OutputFolder,'BadlySegmentedWPsImages\'];
+            detailsOutputFolder = [OutputFolder,'BadlySegmentedWPs\',WPLabel,'_',num2str(i),'_',xmlFile(end-16:end-4)];
         end
         
-        mkdir(folderName);
-        dlmwrite([folderName,'\sequence.m'], FilteredSequenceArray(i).Sequence);
-        disp(['Stroke: ' adaptedStr]);
-        error_str = GetCandidatesFromRecState( MainStrokesResults );
-        disp (error_str);
-        fid = fopen([folderName,'\result.txt'], 'wt');
-        fprintf(fid, '%s', error_str);
+        mkdir(detailsOutputFolder);
+        dlmwrite([detailsOutputFolder,'\sequence.m'], WPSequence);
+        
+        WPResultString = GetCandidatesFromRecState( MainStrokesResults );
+        
+        fid = fopen([detailsOutputFolder,'\result.txt'], 'wt');
+        fprintf(fid, '%s', WPResultString);
         fclose(fid);
-        hold off;
-        plot (ax,MainStrokesResults.Sequence(:,1),MainStrokesResults.Sequence(:,2),'LineWidth',3);
-        hold on;
-        for k=1:length(MainStrokesResults.SegmentationPoints)
-            LCCP =  MainStrokesResults.SegmentationPoints{k};
-            endIndex = LCCP.Point;
-            plot(ax,MainStrokesResults.Sequence(endIndex-1:endIndex,1),MainStrokesResults.Sequence(endIndex-1:endIndex,2),'r.-','LineWidth',5);
-            
+        
+        saveas(ax,[detailsOutputFolder,'\image'],'jpg');
+        
+        if (~exist(ImagesFolder,'dir'))
+            mkdir(ImagesFolder);
         end
-        sequence = MainStrokesResults.Sequence;
-        maxX = max(sequence(:,1)); minX = min(sequence(:,1)); maxY = max(sequence(:,2)); minY = min(sequence(:,2));
-        windowSize = max(maxX-minX,maxY-minY);
-        ylim([minY-0.1*windowSize minY+windowSize+0.1*windowSize]);
-        xlim([minX-0.1*windowSize minX+windowSize+0.1*windowSize]);
-        axis(ax,[minX-0.1*windowSize minX+windowSize+0.1*windowSize minY-0.1*windowSize minY+windowSize+0.1*windowSize]);
-        saveas(ax,[folderName,'\image'],'jpg');
+        
+        saveas(ax,[ImagesFolder,xmlFile(end-16:end-4),'_',WPLabel],'jpg');
     end
+    WPsResults(i).Word = adaptedStr;
+    WPsResults(i).Recognition = correctRecognition;
+    WPsResults(i).Segmentation = SegmentationDirection;
+    WPsResults(i).NumStrokes = length(MainStrokesResults);
+    WPsResults(i).time = time;
     
-    Results(i).Word = adaptedStr;
-    Results(i).Recognition = correctRecognition;
-    Results(i).Segmentation = segmentation;
-    
+    close (ax);
 end
 end
 

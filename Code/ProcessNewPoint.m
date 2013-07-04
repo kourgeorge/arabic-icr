@@ -22,49 +22,49 @@ if(IsMouseUp==true)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Filter Candidates %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    Dx = max(Sequence(:,1)) - min(Sequence(:,1));
-    Dy = max(Sequence(:,2)) - min(Sequence(:,2));
-    for i=1:size(RecState.MinScoreTable,2)
-        for j=i+1:min(i+RecParams.MaxIndecisiveCandidates,size(RecState.MinScoreTable,1))
-            startPoint = RecState.CandidatePointsArray(i);
-            endPoint = RecState.CandidatePointsArray(j);
-            subSequence = RecState.Sequence(startPoint:endPoint,:);
-            dx = max(subSequence(:,1)) - min(subSequence(:,1));
-            dy = max(subSequence(:,2)) - min(subSequence(:,2));
-            if (Dx*Dy>25*dx*dy)
-                RecState.MinScoreTable(j,i) = 1.5*RecState.MinScoreTable(j,i);
-            end
-            
-            if (j>i+2)
-                RecState.MinScoreTable(j,i) = 1.5*RecState.MinScoreTable(j,i);
-            end
-        end
-    end
-    
-    if (length(RecState.CandidatePointsArray)>4)
-        CandidatePoints = [];
-        for i=2:length(RecState.CandidatePointsArray)-1
-            CandidatePoints = [CandidatePoints;Sequence(RecState.CandidatePointsArray(i),:)];
-        end
-        % p = polyfit(CandidatePoints(:,1),CandidatePoints(:,2),1);
-        %PC = princomp(Sequence);
-        %PC = PC(:,1);
-        %slope=PC(2)/PC(1);
-        
-        [hi,cen] = hist(Sequence(:,2),10);
-        [~,maxBin] = max(hi);
-        maxBinPosition = cen(maxBin);
-        for j=1:length(CandidatePoints)
-            %p = [slope,0];
-            %yfit = polyval(p,CandidatePoints(j,1));
-            if (abs(maxBinPosition-CandidatePoints(j,2))>2*(max(cen(2)-cen(1),0.15)))
-                RecState.MinScoreTable(:,j+1) = NaN;
-                RecState.MinScoreTable(j+1,:) = NaN;
-            end
-        end
-    end
-    
-    
+%     Dx = max(Sequence(:,1)) - min(Sequence(:,1));
+%     Dy = max(Sequence(:,2)) - min(Sequence(:,2));
+%     for i=1:size(RecState.MinScoreTable,2)
+%         for j=i+1:min(i+RecParams.MaxIndecisiveCandidates,size(RecState.MinScoreTable,1))
+%             startPoint = RecState.CandidatePointsArray(i);
+%             endPoint = RecState.CandidatePointsArray(j);
+%             subSequence = RecState.Sequence(startPoint:endPoint,:);
+%             dx = max(subSequence(:,1)) - min(subSequence(:,1));
+%             dy = max(subSequence(:,2)) - min(subSequence(:,2));
+%             if (Dx*Dy>25*dx*dy)
+%                 RecState.MinScoreTable(j,i) = 1.5*RecState.MinScoreTable(j,i);
+%             end
+%             
+%             if (j>i+2)
+%                 RecState.MinScoreTable(j,i) = 1.5*RecState.MinScoreTable(j,i);
+%             end
+%         end
+%     end
+%     
+%     if (length(RecState.CandidatePointsArray)>4)
+%         CandidatePoints = [];
+%         for i=2:length(RecState.CandidatePointsArray)-1
+%             CandidatePoints = [CandidatePoints;Sequence(RecState.CandidatePointsArray(i),:)];
+%         end
+%         % p = polyfit(CandidatePoints(:,1),CandidatePoints(:,2),1);
+%         %PC = princomp(Sequence);
+%         %PC = PC(:,1);
+%         %slope=PC(2)/PC(1);
+%         
+%         [hi,cen] = hist(Sequence(:,2),10);
+%         [~,maxBin] = max(hi);
+%         maxBinPosition = cen(maxBin);
+%         for j=1:length(CandidatePoints)
+%             %p = [slope,0];
+%             %yfit = polyval(p,CandidatePoints(j,1));
+%             if (abs(maxBinPosition-CandidatePoints(j,2))>2*(max(cen(2)-cen(1),0.15)))
+%                 RecState.MinScoreTable(:,j+1) = NaN;
+%                 RecState.MinScoreTable(j+1,:) = NaN;
+%             end
+%         end
+%     end
+%     
+%     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Start to end traversal %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     k = 1;
     i = 1;
@@ -97,7 +97,6 @@ if(IsMouseUp==true)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Inteligant traversal %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     i=1;
-    j=1;
     sumI = 0;
     traversalTable = RecState.MinScoreTable;
     while (find(~isnan(traversalTable)))
@@ -106,13 +105,16 @@ if(IsMouseUp==true)
         SPI(i+1) = endI;
         sumI = sumI + traversalTable(endI,startI);
         i=i+2;
-        j=j+1;
         for k=startI:endI-1
             traversalTable(:,k) = NaN;
         end
         
         for k=startI+1:endI
             traversalTable(k,:) = NaN;
+        end
+        
+        for c=1:startI
+            traversalTable(endI:end,c)=NaN;
         end
     end
     SPI = unique(SPI);
@@ -291,129 +293,12 @@ HS = [RecState.HSStart,size(RecState.Sequence,1)-RecParams.K];
 RecState.HSStart = -1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function Res = IsOnBaseline(RecState,RecParams)
-Sequence = RecState.Sequence;
-CurrPoint = size(RecState.Sequence,1);
-
-Res = true;
-if (RecState.LCCPI<2)
-    return;
-else
-    CCParr =[];
-    for i=1:RecState.LCCPI
-        CCPI = RecState.CriticalCPs(i).Point;
-        CCParr = [CCParr;Sequence(CCPI,:)];
-    end
-    if (~isempty(RecState.CandidateCP) && RecState.LCCPI>1)
-        CCParr = [CCParr;Sequence(RecState.CandidateCP.Point,:)];
-    end
-    p = polyfit(CCParr(:,1),CCParr(:,2),1);
-    yfit = polyval(p,Sequence(CurrPoint,1));
-    %%%% Activate to see the baseline %%%%%%%
-    %     figure
-    %     scatter(Sequence(:,1),Sequence(:,2))
-    %     t = (Sequence(1,1):-0.001:Sequence(CurrPoint,1));
-    %     y = p(1)*t+p(2);
-    %     hold on;
-    %     plot(t,y)
-    %     hold off;
-    %     abs(yfit-Sequence(CurrPoint,2))
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    if (abs(yfit-Sequence(CurrPoint,2))>RecParams.MaxDistFromBaseline)
-        Res = false;
-    end
-end
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function MidPoint = CalcuateHSMidPoint(HS)
 MidPoint = round((HS(1)+HS(2))/2);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [LCCPP,LetterPosition]  = CalculateLCCP(RecState)
-if ( RecState.LCCPI == 0)
-    LCCPP = 1;
-    if (nargout>1)
-        LetterPosition = 'Ini';
-    end
-else
-    LCCPP = RecState.CriticalCPs(RecState.LCCPI).Point;
-    if (nargout>1)
-        LetterPosition = 'Mid';
-    end
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function Point  = LastCandidatePoint(RecState)
 Point = RecState.CandidatePointsArray(length(RecState.CandidatePointsArray));
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function RecState = DetermineSingleOrDouble (RecParams, RecState, Sequence, firstPoint, Letter1Point, Letter1Position , Letter2Point, Letter2Position, SingleLetterPosition )
-Option1 = CreateOptionDouble(RecParams,Sequence,firstPoint,Letter1Point,Letter1Position,Letter1Point,Letter2Point,Letter2Position);
-Option2 = CreateOptionSingle(RecParams,Sequence,firstPoint,Letter2Point,SingleLetterPosition);
-Res = BetterOption(firstPoint, Option1, Option2, Sequence);
-if (Res==1)
-    RecState = AddCriticalPoint(RecState,Sequence,Option1.FirstPoint);
-    RecState = AddCriticalPoint(RecState,Sequence,Option1.SecondPoint);
-    
-else
-    RecState = AddCriticalPoint(RecState,Sequence,Option2.FirstPoint);
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function Option = CreateOptionDouble(RecParams,Sequence,Start1,End1,Position1,Start2,End2,Position2)
-Option.OptionType = 'Double';
-FirstPoint = CreateCheckPoint (RecParams,Sequence,Start1,End1,Position1);
-Option.FirstPoint =  FirstPoint;
-SecondPoint = CreateCheckPoint (RecParams,Sequence,Start2,End2,Position2);
-Option.SecondPoint =  SecondPoint;
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function Option = CreateOptionSingle(RecParams,Sequence,Start,End,Position)
-Option.OptionType = 'Single';
-FirstPoint = CreateCheckPoint (RecParams,Sequence,Start,End,Position);
-Option.FirstPoint =  FirstPoint;
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function BO = BetterOption(startPoint, DoubleLetterOption, SingleLetterOption, Sequence)
-
-Double_FirstLetterMin = CalculateAvgCandidatesDistane (DoubleLetterOption.FirstPoint);
-Double_SecondLetterMin = CalculateAvgCandidatesDistane (DoubleLetterOption.SecondPoint);
-
-DoubleAvgDist = (Double_FirstLetterMin+Double_SecondLetterMin)/2;
-SingleAvgDist = CalculateAvgCandidatesDistane (SingleLetterOption.FirstPoint);
-
-%Condition = Double_FirstLetterMin<=SingleAvgDist && Double_SecondLetterMin<=SingleAvgDist;
-
-subsequence1 = Sequence(startPoint:DoubleLetterOption.FirstPoint.Point,:);
-subsequence2 = Sequence(DoubleLetterOption.FirstPoint.Point:size(Sequence,1),:);
-sequence = Sequence(startPoint:size(Sequence,1),:);
-
-sequenceLength  = SequenceLength ( sequence );
-subSequenceLength1  = SequenceLength( subsequence1 );
-subSequenceLength2  = SequenceLength( subsequence2 );
-
-Condition2 = sequenceLength>5*subSequenceLength1 || sequenceLength>5*subSequenceLength2;
-
-[abs] = SimplifyContour(subsequence2);
-if (size(abs,1)<3)
-    Condition2=true;
-end
-
-if (DoubleAvgDist<SingleAvgDist && ~Condition2)
-    BO=1;
-else
-    BO=2;
-end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function CheckPoint = CreateCheckPoint (RecParams,Sequence,StartPoint,EndPoint,Position)
@@ -423,46 +308,10 @@ RecognitionResults = RecognizeSequence(SubSeq , RecParams, Position, LettersData
 CheckPoint.Point = EndPoint;
 CheckPoint.Candidates = RecognitionResults;
 CheckPoint.Sequence = SubSeq;
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function RecState = RecognizeAndAddCriticalPoint(RecParams,Sequence,RecState,StartPoint,EndPoint,LetterPos)
-WarpedPoint= CreateCheckPoint (RecParams,Sequence,StartPoint,EndPoint,LetterPos);
-RecState = AddCriticalPoint(RecState,Sequence,WarpedPoint);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function RecState = AddCriticalPoint(RecState,Sequence,WrappedPoint)
-RecState.CriticalCPs = [RecState.CriticalCPs;WrappedPoint];
-RecState.LCCPI = RecState.LCCPI + 1;
-MarkOnSequence('CriticalCP',Sequence,WrappedPoint.Point);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function BCP = BetterCP (CP1,CP2)
-AvgCP1 = CalculateAvgCandidatesDistane(CP1);
-AvgCP2 = CalculateAvgCandidatesDistane(CP2);
-if (AvgCP1<AvgCP2)
-    BCP = CP1;
-else
-    BCP = CP2;
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function Avg = CalculateAvgCandidatesDistane (CandidateCP)
-NumCandidates = size(CandidateCP.Candidates,1);
-arr = [];
-for k=1:NumCandidates
-    arr = [arr;CandidateCP.Candidates{k,2}];
-end
-Avg = min (arr);
-%Avg = mean (arr);
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function res = LowSlope(Slope,RecParams)
 res = Slope<RecParams.MaxSlopeRate && Slope>=0;
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
