@@ -7,8 +7,7 @@ SegmentationDirection=0;
 SegmentationPoints = [RecState.SegmentationPoints];
 numSegmentationPoints = length(SegmentationPoints);
 if (numSegmentationPoints~=size(Word,2))
-     if (numSegmentationPoints - size(Word,2) > 0) SegmentationDirection = 1; end
-     if (numSegmentationPoints - size(Word,2) < 0) SegmentationDirection = -1; end    
+    SegmentationDirection =  numSegmentationPoints - size(Word,2);    
     CorrectRecognition = false;
     return;
 end

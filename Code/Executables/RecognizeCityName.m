@@ -32,7 +32,7 @@ for i=1:length(NormalizedWPStructArray)
     time = toc;
     adaptedStr = AdaptString(WPLabel);
     
-    [SegmentationDirection, correctRecognition] = IsWordRecognizedCorrectly(MainStrokesResults,adaptedStr);
+    [SegmentationDiff, correctRecognition] = IsWordRecognizedCorrectly(MainStrokesResults,adaptedStr);
     
     if (nargin>2)
         if (~strcmp(OutputFolder(end),'\'))
@@ -44,7 +44,7 @@ for i=1:length(NormalizedWPStructArray)
         if (correctRecognition==true)
             ImagesFolder = [OutputFolder,'CorrectlyRecognizedWPsImages\'];
             detailsOutputFolder = [OutputFolder,'CorrectlyRecognizedWPs\',WPLabel,'_',num2str(i),'_',xmlFile(end-16:end-4)];
-        elseif (SegmentationDirection ==0)
+        elseif (SegmentationDiff ==0)
             ImagesFolder = [OutputFolder,'CorrectlySegmentedWPsImages\'];
             detailsOutputFolder = [OutputFolder,'CorrectlySegmentedWPs\',WPLabel,'_',num2str(i),'_',xmlFile(end-16:end-4)];
         else
@@ -71,30 +71,31 @@ for i=1:length(NormalizedWPStructArray)
     end
     WPsResults(i).Word = adaptedStr;
     WPsResults(i).Recognition = correctRecognition;
-    WPsResults(i).Segmentation = SegmentationDirection;
+    WPsResults(i).SegmentationDiff = SegmentationDiff;
     WPsResults(i).NumStrokes = length(MainStrokesResults);
     WPsResults(i).time = time;
     
     close (ax);
 end
 end
+% 
+% function FilteredSequenceArray = FilterIllegalSequences (WPStructArray)
+% %The end of the previous letter has to be the same as the beggining of the cyrrent letter
+% %avoid Word Parts with penUp.
+% index = 1;
+% for j=1:length(WPStructArray)
+%     condition1 = any(ismember(WPStructArray(j).Sequence(:,1),Inf));
+%     condition2 = j>2 && any(WPStructArray(j).Sequence(1,:)~= WPStructArray(j-1).Sequence(end,:));
+%     if (~condition1)
+%         FilteredSequenceArray(index) = WPStructArray(j);
+%         index = index + 1;
+%     end
+% end
+% if (index ==1)
+%     FilteredSequenceArray = [];
+% end
+% end
 
-function FilteredSequenceArray = FilterIllegalSequences (WPStructArray)
-%The end of the previous letter has to be the same as the beggining of the cyrrent letter
-%avoid Word Parts with penUp.
-index = 1;
-for j=1:length(WPStructArray)
-    condition1 = any(ismember(WPStructArray(j).Sequence(:,1),Inf));
-    condition2 = j>2 && any(WPStructArray(j).Sequence(1,:)~= WPStructArray(j-1).Sequence(end,:));
-    if (~condition1)
-        FilteredSequenceArray(index) = WPStructArray(j);
-        index = index + 1;
-    end
-end
-if (index ==1)
-    FilteredSequenceArray = [];
-end
-end
 function Res = AdaptString(str)
 Res = strrep(str, '_', '');
 Res = strrep(Res, 'Y', 'B');
