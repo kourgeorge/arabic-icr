@@ -1,5 +1,5 @@
-function [ WPsResults , Name] = RecognizeWordStrokes(xmlFile, LoadDataStructure, OutputFolder )
-%RecognizeWordStrokes Summary of this function goes here
+function [ WPsResults , Name] = RecognizeCityName(xmlFile, LoadDataStructure, OutputFolder )
+%RecognizeCityName Summary of this function goes here
 %   RecognizeWordStrokes( 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\ParsedADABWords\1231874635809.xml' , true, 'C:\OCRData\StrokeOutput\')
 
 global LettersDataStructure;
@@ -28,7 +28,7 @@ for i=1:length(NormalizedWPStructArray)
     WPSequence = NormalizedWPStructArray(i).Sequence;
     WPLabel = NormalizedWPStructArray(i).Label;
     tic
-    [MainStrokesResults,~,ax] = SimulateOnlineRecognizer( WPSequence, false, true );
+    [MainStrokesResults,~,ax] = OnlineRecognizer( WPSequence, false, true );
     time = toc;
     adaptedStr = AdaptString(WPLabel);
     

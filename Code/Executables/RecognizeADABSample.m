@@ -18,7 +18,7 @@ WordSequenceCells = ConvertInkmlToSequence( DataSetPath, filename );
 WordSequence = Struct2Sequece(WordSequenceCells);
 
 % 4. for each stroke, recognize stroke (if it is an additional stroke, keep to the end)
-[MainStrokesResults,AdditionalStrokesResults] = SimulateOnlineRecognizer( WordSequence, true, true);
+[MainStrokesResults,AdditionalStrokesResults] = OnlineRecognizer( WordSequence, true, true);
 
 %Get the letters from the recognition results 
 LettersMatrix = GetLettersCandidatesMatrix (MainStrokesResults);

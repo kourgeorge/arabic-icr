@@ -1,7 +1,7 @@
-function [MainStrokesResults,AdditionalStrokesResults,himage] = SimulateOnlineRecognizer( sequence, loadDataStructure, showUI )
-%SIMULATEONLINERECOGNIZER This funtion simulate the Online pen recognizer.
+function [MainStrokesResults,AdditionalStrokesResults,himage] = OnlineRecognizer( sequence, loadDataStructure, showUI )
+%ONLINERECOGNIZER This funtion simulate the Online pen recognizer.
 % a = dlmread(['C:\OCRData\WordPartFromUI.m']);
-% Res = SimulateOnlineRecognizer(a,true,true)
+% Res = OnlineRecognizer(a,true,true)
 
 global LettersDataStructure;
 %%%%%%%%%%%%%% Activate at first run  id not running from TestOnlineRecognizer %%%%%%%%%%%%%%%%%%%%%%%%

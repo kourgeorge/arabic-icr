@@ -1,5 +1,5 @@
-function TestStrokesRecognizer()
-%TESTSTROKESRECOGNIZER Summary of this function goes here
+function TestCityNameRecognizer()
+%TestCityNameRecognizer Summary of this function goes here
 global LettersDataStructure;
 global Statistics;
 LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');

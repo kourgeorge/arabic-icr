@@ -41,7 +41,7 @@ for i = 3:length(TestSetWordsFolderList)
         sequence = dlmread([TestSetFolder,'\',FileName]);
         disp(['Word  ',num2str(count),': ',FileName,])
         t = cputime;
-        RecState = SimulateOnlineRecognizer( sequence ,false, false);
+        RecState = OnlineRecognizer( sequence ,false, false);
         RecState = RecState(1);
         e = cputime-t;
         disp(['Time Elapsed: ',num2str(e)])
