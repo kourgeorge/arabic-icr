@@ -1,13 +1,13 @@
-function [SegmentationDirection, CorrectRecognition] = IsWordRecognizedCorrectly(RecState,Word)
-%ISWORDRECOGNIZEDCORRECTLY Summary of this function goes here
+function [CorrectRecognition] = IsWPRecognizedCorrectly(RecState,WordPart)
+%ISWPRECOGNIZEDCORRECTLY Summary of this function goes here
 %   Detailed explanation goes here
 
 CorrectRecognition=true;
-SegmentationDirection=0;
+SegmentationDiff=0;
 SegmentationPoints = [RecState.SegmentationPoints];
 numSegmentationPoints = length(SegmentationPoints);
-if (numSegmentationPoints~=size(Word,2))
-    SegmentationDirection =  numSegmentationPoints - size(Word,2);    
+if (numSegmentationPoints~=size(WordPart,2))
+    SegmentationDiff =  numSegmentationPoints - size(WordPart,2);    
     CorrectRecognition = false;
     return;
 end
@@ -16,7 +16,7 @@ for i=1:numSegmentationPoints
     CurrCan = SP.Candidates(:,1);
     wasRecognized = false;
     for j=1:size(CurrCan,1)
-        if (ValidateRecognizedLetter(CurrCan{j},Word,i))
+        if (ValidateRecognizedLetter(CurrCan{j},WordPart,i))
             wasRecognized = true;
         end
     end
@@ -27,21 +27,21 @@ for i=1:numSegmentationPoints
 end
 end
 
-function res = ValidateRecognizedLetter(candidate,Word,i)
+function res = ValidateRecognizedLetter(candidate,WordPart,i)
 
-if (strcmp(candidate, Word(i)))
+if (strcmp(candidate, WordPart(i)))
     res = true;
     return;
 end
-if (strcmp (candidate, ['_',Word(i)]))
+if (strcmp (candidate, ['_',WordPart(i)]))
     res = true;
     return;
 end
-if (strcmp (candidate, ['_',Word(i),'_']))
+if (strcmp (candidate, ['_',WordPart(i),'_']))
     res = true;
     return;
 end
-if (strcmp (candidate, [Word(i),'_']))
+if (strcmp (candidate, [WordPart(i),'_']))
     res = true;
     return;
 end

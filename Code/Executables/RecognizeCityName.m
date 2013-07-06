@@ -1,6 +1,6 @@
 function [ WPsResults , Name] = RecognizeCityName(xmlFile, LoadDataStructure, OutputFolder )
 %RecognizeCityName Summary of this function goes here
-%   RecognizeWordStrokes( 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\ParsedADABWords\1231874635809.xml' , true, 'C:\OCRData\StrokeOutput\')
+%   RecognizeCityName( 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\ParsedADABWords\1231874635809.xml' , true, 'C:\OCRData\StrokeOutput\')
 
 global LettersDataStructure;
 if (LoadDataStructure ==true)
@@ -23,6 +23,7 @@ end
 xmlToMatlabStruct = parseXML(xmlFile);
 Name = xmlToMatlabStruct.Attributes(2).Value;
 
+%Iterate Over all WordParts
 for i=1:length(NormalizedWPStructArray)
     
     WPSequence = NormalizedWPStructArray(i).Sequence;
@@ -32,7 +33,15 @@ for i=1:length(NormalizedWPStructArray)
     time = toc;
     adaptedStr = AdaptString(WPLabel);
     
-    [SegmentationDiff, correctRecognition] = IsWordRecognizedCorrectly(MainStrokesResults,adaptedStr);
+    correctRecognition = IsWPRecognizedCorrectly(MainStrokesResults,adaptedStr);
+    if (correctRecognition == true)
+        correctSegmentation = true;
+        TP_SP =  length(adaptedStr);
+        FP_SP = 0 ;
+        FN_SP = 0;
+    else
+    	[correctSegmentation, TP_SP, FP_SP, FN_SP] = IsWPSegmentedCorrectly(MainStrokesResults,NormalizedWPStructArray(i));
+    end
     
     if (nargin>2)
         if (~strcmp(OutputFolder(end),'\'))
@@ -44,7 +53,7 @@ for i=1:length(NormalizedWPStructArray)
         if (correctRecognition==true)
             ImagesFolder = [OutputFolder,'CorrectlyRecognizedWPsImages\'];
             detailsOutputFolder = [OutputFolder,'CorrectlyRecognizedWPs\',WPLabel,'_',num2str(i),'_',xmlFile(end-16:end-4)];
-        elseif (SegmentationDiff ==0)
+        elseif (correctSegmentation == true)
             ImagesFolder = [OutputFolder,'CorrectlySegmentedWPsImages\'];
             detailsOutputFolder = [OutputFolder,'CorrectlySegmentedWPs\',WPLabel,'_',num2str(i),'_',xmlFile(end-16:end-4)];
         else
@@ -70,8 +79,11 @@ for i=1:length(NormalizedWPStructArray)
         saveas(ax,[ImagesFolder,xmlFile(end-16:end-4),'_',WPLabel],'jpg');
     end
     WPsResults(i).Word = adaptedStr;
-    WPsResults(i).Recognition = correctRecognition;
-    WPsResults(i).SegmentationDiff = SegmentationDiff;
+    WPsResults(i).CorrectRecognition = correctRecognition;
+    WPsResults(i).CorrectSegmentation = correctSegmentation;
+    WPsResults(i).TP_SP = TP_SP; 
+    WPsResults(i).FP_SP = FP_SP;
+    WPsResults(i).FN_SP = FN_SP;
     WPsResults(i).NumStrokes = length(MainStrokesResults);
     WPsResults(i).time = time;
     

@@ -1,4 +1,4 @@
-function [ WPStructArray ] = XML2WPStructArray( XMLFileName )
+function [ WPStructArray , TrueSegmentationPoints] = XML2WPStructArray( XMLFileName )
 %XML2WPStructArray Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -6,7 +6,7 @@ index = 1;
 xmlToMatlabStruct = parseXML(XMLFileName); % getting the xml from choosen item
 for i=1:length(xmlToMatlabStruct.Children)
     if  strcmp(xmlToMatlabStruct.Children(i).Name,'WordPart')
-        WP = getWordPart(xmlToMatlabStruct.Children(i));
+        WP= getWordPart(xmlToMatlabStruct.Children(i));
         if (~isempty(WP.Label))
             WPs(index) = WP;
             index = index+1;
@@ -19,17 +19,20 @@ end
 function WPStruct = getWordPart (WordPartNode)
 label = '';
 sequence = [];
+SegmentationPoints = [];
 for j=1:length(WordPartNode.Children)
     if  strcmp(WordPartNode.Children(j).Name,'Letter')
         LetterNode = WordPartNode.Children(j);
         label = [label,LetterNode.Attributes(1).Value];
         CurrentLetterSequence = GetSequenceFromString(LetterNode.Children(1).Data);
         sequence = [sequence;CurrentLetterSequence];
+        SegmentationPoints = [SegmentationPoints; length(sequence)];
     end
     
 end
 WPStruct.Label = label;
 WPStruct.Sequence = sequence;
+WPStruct.SPs = SegmentationPoints;
 end
 
 function Sequence = GetSequenceFromString (Data)

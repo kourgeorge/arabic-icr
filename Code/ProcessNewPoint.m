@@ -140,7 +140,7 @@ if(IsMouseUp==true)
 else    %Mouse not up
     if (rem(CurrPoint,RecParams.K)==0)
         
-        [absoluteSiplifiedContour,proportionalSiplifiedContour] = SimplifyContour(Sequence(1:CurrPoint,:));
+        [absoluteSiplifiedContour,proportionalSiplifiedContour] = SimplifyContour(Sequence(1:CurrPoint,:), RecParams.AbsoluteSimplificationEpsilon);
         resampledSequence = ResampleContour(proportionalSiplifiedContour,size(absoluteSiplifiedContour,1)*5);
         resSeqLastPoint = size(resampledSequence,1);
         Slope = CalculateSlope(resampledSequence,resSeqLastPoint-RecParams.PointEnvLength,resSeqLastPoint);
@@ -163,7 +163,7 @@ else    %Mouse not up
             return;
         end
         
-        [RecState,midPoint] = TryMergeCandidatePoints(RecState,midPoint);
+        [RecState,midPoint] = TryMergeCandidatePoints(RecState,midPoint,RecParams);
         RecState = UpdateRecognitionTable(RecState,midPoint,RecParams,IsMouseUp);
         
     end
@@ -173,7 +173,7 @@ end
 %%%%%%%%%%%%%%%%%    HELPER FUNCTIONS   %%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [RecState, newPoint] = TryMergeCandidatePoints(RecState,midPoint)
+function [RecState, newPoint] = TryMergeCandidatePoints(RecState, midPoint, RecParams)
 lastPointIndex = RecState.CandidatePointsArray(end);
 newPoint = midPoint;
 if (lastPointIndex==1)
@@ -181,15 +181,13 @@ if (lastPointIndex==1)
 end
 sequence  = RecState.Sequence;
 
-Res = ContainsInformation(sequence,lastPointIndex, midPoint);
+Res = ContainsInformation(sequence,lastPointIndex, midPoint, RecParams);
 if (Res==false)
     HS = [RecState.CandidatePointsArray(end),midPoint];
     newPoint=CalcuateHSMidPoint(HS);
     RecState.CandidatePointsArray = RecState.CandidatePointsArray(1:end-1);
     MarkOnSequence('MergedCandidatePoint',RecState.Sequence,newPoint);
 end
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %HS means Horiontal Sections.
@@ -197,7 +195,7 @@ function Res = IsFirstPointInHS(ProcessedSequence,lowSlope,RecState,RecParams)
 
 Res = RecState.HSStart == -1 && lowSlope && ProcessedSequence(end,1)<ProcessedSequence(end-1,1);
 if(Res==true)
-    Res = ContainsInformation(ProcessedSequence,1, size(ProcessedSequence,1));
+    Res = ContainsInformation(ProcessedSequence,1, size(ProcessedSequence,1),RecParams);
 end
 if (Res==true)
     %    Res = Res && IsOnBaseline(RecState,RecParams);
@@ -212,9 +210,8 @@ LCP = LastCandidatePoint(RecState);
 % end
 currentPoint = size(OrigSequence,1);
 if (Res==true)
-    Res = ContainsInformation(OrigSequence,LCP, currentPoint);
+    Res = ContainsInformation(OrigSequence,LCP, currentPoint, RecParams);
 end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function Res = IsClosingHS(ProcessedSequence, lowSlope,RecState,RecParams)
@@ -225,38 +222,22 @@ Res = RecState.HSStart~=-1 && (~lowSlope || (ProcessedSequence(processedCurrPont
 OrigSequence = RecState.Sequence;
 currentPoint = size(OrigSequence,1);
 if (Res==false && RecState.HSStart~=-1)
-    Res = ContainsInformation(OrigSequence,RecState.HSStart, currentPoint);
+    Res = ContainsInformation(OrigSequence,RecState.HSStart, currentPoint, RecParams);
 end
 
 if (Res == false && RecState.HSStart~=-1)
     Slope = CalculateSlope(OrigSequence,RecState.HSStart,currentPoint);
     Res = ~LowSlope(Slope,RecParams);
 end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function Res = ContainsInformation(Sequence,startPoint, endPoint)
+function Res = ContainsInformation(Sequence,startPoint, endPoint, RecParams)
 
-[abs] = SimplifyContour(Sequence(startPoint:endPoint,:));
-Res = true;
-
-if (size(abs,1)==2)
+if (InformationMeasure( Sequence(startPoint:endPoint,:), RecParams.AbsoluteSimplificationEpsilon )>1)
+    Res = true;
+else
     Res = false;
 end
-if (size(abs,1)>3)
-    Res=true;
-end
-if (size(abs,1)==3)
-    v1 = abs(1,:)-abs(2,:);
-    v2 = abs(3,:)-abs(2,:);
-    theta = acos(dot(v1,v2)/(norm(v1)*norm(v2)));
-    if (theta>(5*pi/6))
-        Res = false;
-    else
-        Res = true;
-    end
-end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function RecState = UpdateRecognitionTable(RecState,midPoint,RecParams,IsMouseUp)

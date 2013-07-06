@@ -1,9 +1,10 @@
-function [ AbsoluteSimplification, ProportionalSimplification] = SimplifyContour( Contour)
+function [ AbsoluteSimplification, ProportionalSimplification] = SimplifyContour( Contour, epsilon)
 %CONTOURSIMPLIFICATION returns a simplified contour of the givem one using Recursive Douglas-Peucker Polyline Simplification.
 %   Detailed explanation goes here
 
-
-epsilon = 1/75; %epsilon is absolute
+if (nargin <2)
+    epsilon = 1/75; %default absolute epsilon 
+end
 [ps,~] = dpsimplify(Contour,epsilon);
 AbsoluteSimplification = ps;
 

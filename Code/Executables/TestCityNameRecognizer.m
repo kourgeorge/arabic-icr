@@ -44,24 +44,18 @@ for i=1:length(WPsResults)
     Statistics.NumStrokes = Statistics.NumStrokes + WPsResults(i).NumStrokes;
     Statistics.WPsLengthDistribution(strokeLength) = Statistics.WPsLengthDistribution(strokeLength) + 1;
 
-    if (WPsResults(i).SegmentationDiff == 0)
+    if (WPsResults(i).CorrectSegmentation == true)
         Statistics.WPsCorrectSegmentation = Statistics.WPsCorrectSegmentation + 1;
-        Statistics.SPTruePositive = Statistics.SPTruePositive + length(WPsResults(i).Word);  
-    end
-    if (WPsResults(i).SegmentationDiff > 0)
-        Statistics.WPsOverSegmentation = Statistics.WPsOverSegmentation + 1;
+        Statistics.SPTruePositive = Statistics.SPTruePositive + WPsResults(i).TP_SP;  
+    
+    else
         NameSegmentedCorrectly = false;
-        Statistics.SPFalsePositive = Statistics.SPFalsePositive + WPsResults(i).SegmentationDiff;
-        Statistics.SPTruePositive = Statistics.SPTruePositive + length(WPsResults(i).Word);  
-        
+        Statistics.SPFalsePositive = Statistics.SPFalsePositive + WPsResults(i).FP_SP;
+        Statistics.SPTruePositive = Statistics.SPTruePositive + WPsResults(i).TP_SP;  
+        Statistics.SPFalseNegative = Statistics.SPFalseNegative + WPsResults(i).FN_SP;  
     end
-    if (WPsResults(i).SegmentationDiff < 0)
-        Statistics.WPsUnderSegmentation = Statistics.WPsUnderSegmentation + 1;
-        NameSegmentedCorrectly = false;
-        Statistics.SPFalseNegative = Statistics.SPFalseNegative - WPsResults(i).SegmentationDiff;  
-        Statistics.SPTruePositive = Statistics.SPTruePositive + (length(WPsResults(i).Word) + WPsResults(i).SegmentationDiff );  
-    end
-    if (WPsResults(i).Recognition == true)
+    
+    if (WPsResults(i).CorrectRecognition == true)
         Statistics.WPsCorrectRecognition = Statistics.WPsCorrectRecognition + 1;
     end
     Statistics.TotalTime = Statistics.TotalTime + WPsResults(i).time;
@@ -76,8 +70,8 @@ function ShowStatistics(Statistics)
 %WP Level Info
 WPSR = (Statistics.WPsCorrectSegmentation/Statistics.NumWPs)*100;
 WPRR = (Statistics.WPsCorrectRecognition/Statistics.NumWPs)*100;
-WPOS = (Statistics.WPsOverSegmentation/(Statistics.NumWPs-Statistics.WPsCorrectSegmentation))*100;
-WPUS = (Statistics.WPsUnderSegmentation/(Statistics.NumWPs-Statistics.WPsCorrectSegmentation))*100;
+%WPOS = (Statistics.WPsOverSegmentation/(Statistics.NumWPs-Statistics.WPsCorrectSegmentation))*100;
+%WPUS = (Statistics.WPsUnderSegmentation/(Statistics.NumWPs-Statistics.WPsCorrectSegmentation))*100;
 WPAvgTime = Statistics.TotalTime/Statistics.NumWPs;
 
 %City Names Level Info
@@ -96,7 +90,7 @@ SP_TP = Statistics.SPTruePositive;
 SP_FP = Statistics.SPFalsePositive;
 SP_FN = Statistics.SPFalseNegative;
 
-SP_Persition = SP_TP/(SP_TP+SP_FP);
+SP_Precision = SP_TP/(SP_TP+SP_FP);
 SP_Recall  = SP_TP/(SP_TP+SP_FN);
 
 disp(' ');
@@ -109,8 +103,8 @@ disp ('WP Level Info');
 disp('-----------------');
 disp (['WPSR = ',num2str(WPSR)]);
 disp (['WPRR = ',num2str(WPRR)]);
-disp (['WPOS = ',num2str(WPOS)]);
-disp (['WPUS = ',num2str(WPUS)]);
+%disp (['WPOS = ',num2str(WPOS)]);
+%disp (['WPUS = ',num2str(WPUS)]);
 disp (['WPAvgTime = ',num2str(WPAvgTime)]);
 
 disp(' ');
@@ -132,7 +126,7 @@ disp('----------------');
 disp (['SP TP = ',num2str(SP_TP)]);
 disp (['SP FP = ',num2str(SP_FP)]);
 disp (['SP FN = ',num2str(SP_FN)]);
-disp (['SP Pecision = ',num2str(SP_Persition)]);
+disp (['SP Precision = ',num2str(SP_Precision)]);
 disp (['SP Recall = ',num2str(SP_Recall)]);
 end
 
@@ -143,8 +137,8 @@ Statistics.NumWPs = 0;
 Statistics.NumStrokes = 0;
 Statistics.WPsLengthDistribution = zeros (1,10);
 Statistics.WPsCorrectSegmentation = 0;
-Statistics.WPsOverSegmentation = 0;
-Statistics.WPsUnderSegmentation = 0;
+%Statistics.WPsOverSegmentation = 0;
+%Statistics.WPsUnderSegmentation = 0;
 Statistics.WPsCorrectRecognition = 0;
 Statistics.NamesCorrectSegmentation = 0;
 Statistics.SPTruePositive = 0;
