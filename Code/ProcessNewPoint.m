@@ -22,126 +22,71 @@ if(IsMouseUp==true)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Filter Candidates %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-%     Dx = max(Sequence(:,1)) - min(Sequence(:,1));
-%     Dy = max(Sequence(:,2)) - min(Sequence(:,2));
-%     for i=1:size(RecState.MinScoreTable,2)
-%         for j=i+1:min(i+RecParams.MaxIndecisiveCandidates,size(RecState.MinScoreTable,1))
-%             startPoint = RecState.CandidatePointsArray(i);
-%             endPoint = RecState.CandidatePointsArray(j);
-%             subSequence = RecState.Sequence(startPoint:endPoint,:);
-%             dx = max(subSequence(:,1)) - min(subSequence(:,1));
-%             dy = max(subSequence(:,2)) - min(subSequence(:,2));
-%             if (Dx*Dy>25*dx*dy)
-%                 RecState.MinScoreTable(j,i) = 1.5*RecState.MinScoreTable(j,i);
-%             end
-%             
-%             if (j>i+2)
-%                 RecState.MinScoreTable(j,i) = 1.5*RecState.MinScoreTable(j,i);
-%             end
-%         end
-%     end
-%     
-%     if (length(RecState.CandidatePointsArray)>4)
-%         CandidatePoints = [];
-%         for i=2:length(RecState.CandidatePointsArray)-1
-%             CandidatePoints = [CandidatePoints;Sequence(RecState.CandidatePointsArray(i),:)];
-%         end
-%         % p = polyfit(CandidatePoints(:,1),CandidatePoints(:,2),1);
-%         %PC = princomp(Sequence);
-%         %PC = PC(:,1);
-%         %slope=PC(2)/PC(1);
-%         
-%         [hi,cen] = hist(Sequence(:,2),10);
-%         [~,maxBin] = max(hi);
-%         maxBinPosition = cen(maxBin);
-%         for j=1:length(CandidatePoints)
-%             %p = [slope,0];
-%             %yfit = polyval(p,CandidatePoints(j,1));
-%             if (abs(maxBinPosition-CandidatePoints(j,2))>2*(max(cen(2)-cen(1),0.15)))
-%                 RecState.MinScoreTable(:,j+1) = NaN;
-%                 RecState.MinScoreTable(j+1,:) = NaN;
-%             end
-%         end
-%     end
-%     
-%     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Start to end traversal %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    k = 1;
-    i = 1;
-    sumForward = 0;
-    while (k<=size(RecState.MinScoreTable,2))
-        [~,minIndex] = min (RecState.MinScoreTable(:,k));
-        SegmentationPointsForward(i) = RecState.RecognitionScoreTable(minIndex,k);
-        sumForward = sumForward + RecState.MinScoreTable(minIndex,k);
-        SPF(i) = RecState.RecognitionScoreTable{minIndex,k}.Point;
-        i=i+1;
-        k=minIndex;
-    end
+    %     Dx = max(Sequence(:,1)) - min(Sequence(:,1));
+    %     Dy = max(Sequence(:,2)) - min(Sequence(:,2));
+    %     for i=1:size(RecState.MinScoreTable,2)
+    %         for j=i+1:min(i+RecParams.MaxIndecisiveCandidates,size(RecState.MinScoreTable,1))
+    %             startPoint = RecState.CandidatePointsArray(i);
+    %             endPoint = RecState.CandidatePointsArray(j);
+    %             subSequence = RecState.Sequence(startPoint:endPoint,:);
+    %             dx = max(subSequence(:,1)) - min(subSequence(:,1));
+    %             dy = max(subSequence(:,2)) - min(subSequence(:,2));
+    %             if (Dx*Dy>25*dx*dy)
+    %                 RecState.MinScoreTable(j,i) = 1.5*RecState.MinScoreTable(j,i);
+    %             end
+    %
+    %             if (j>i+2)
+    %                 RecState.MinScoreTable(j,i) = 1.5*RecState.MinScoreTable(j,i);
+    %             end
+    %         end
+    %     end
+    %
+    %     if (length(RecState.CandidatePointsArray)>4)
+    %         CandidatePoints = [];
+    %         for i=2:length(RecState.CandidatePointsArray)-1
+    %             CandidatePoints = [CandidatePoints;Sequence(RecState.CandidatePointsArray(i),:)];
+    %         end
+    %         % p = polyfit(CandidatePoints(:,1),CandidatePoints(:,2),1);
+    %         %PC = princomp(Sequence);
+    %         %PC = PC(:,1);
+    %         %slope=PC(2)/PC(1);
+    %
+    %         [hi,cen] = hist(Sequence(:,2),10);
+    %         [~,maxBin] = max(hi);
+    %         maxBinPosition = cen(maxBin);
+    %         for j=1:length(CandidatePoints)
+    %             %p = [slope,0];
+    %             %yfit = polyval(p,CandidatePoints(j,1));
+    %             if (abs(maxBinPosition-CandidatePoints(j,2))>2*(max(cen(2)-cen(1),0.15)))
+    %                 RecState.MinScoreTable(:,j+1) = NaN;
+    %                 RecState.MinScoreTable(j+1,:) = NaN;
+    %             end
+    %         end
+    %     end
+    %
+    %
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% end to start traversal %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    [ SegmentationPointsForward, sumForward] = ForwardSegmentationSelection( RecState.MinScoreTable,  RecState.RecognitionScoreTable);
+    [ SegmentationPointsBackwards, sumBackward] = BackwardSegmentationSelection( RecState.MinScoreTable,  RecState.RecognitionScoreTable);
+    [ SegmentationPointsGreedy, sumGreedy] = GreedySegmentationSelection( RecState.MinScoreTable,  RecState.RecognitionScoreTable);
     
-    k = size(RecState.MinScoreTable,1);
-    i = 1;
-    sumBackward = 0;
-    while (k>1)
-        [~,minIndex] = min (RecState.MinScoreTable(k,:));
-        SegmentationPointsBackwards(i) = RecState.RecognitionScoreTable(k,minIndex);
-        sumBackward = sumBackward + RecState.MinScoreTable (k,minIndex);
-        SPB(i) = RecState.RecognitionScoreTable{k,minIndex}.Point;
-        i=i+1;
-        k=minIndex;
-    end
+    [~,bestSegmentationindex] = min([sumGreedy/(length(SegmentationPointsGreedy)),sumForward/(length(SegmentationPointsForward)),sumBackward/(length(SegmentationPointsBackwards))]);
+    AllSegmentations = [{SegmentationPointsGreedy},{SegmentationPointsForward},{SegmentationPointsBackwards}];
     
-    SPB = fliplr(SPB);
-    SegmentationPointsBackwards = fliplr(SegmentationPointsBackwards);
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Inteligant traversal %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    i=1;
-    sumI = 0;
-    traversalTable = RecState.MinScoreTable;
-    while (find(~isnan(traversalTable)))
-        [endI,startI]=find(traversalTable==min(min(traversalTable)));
-        SPI(i) = startI;
-        SPI(i+1) = endI;
-        sumI = sumI + traversalTable(endI,startI);
-        i=i+2;
-        for k=startI:endI-1
-            traversalTable(:,k) = NaN;
-        end
-        
-        for k=startI+1:endI
-            traversalTable(k,:) = NaN;
-        end
-        
-        for c=1:startI
-            traversalTable(endI:end,c)=NaN;
-        end
-    end
-    SPI = unique(SPI);
-    for i=1:length(SPI)-1
-        SegmentationPointsInteligent(i) = RecState.RecognitionScoreTable(SPI(i+1),SPI(i));
-    end
-    
-    for i=1:length(SegmentationPointsInteligent)
-        SP(i) = SegmentationPointsInteligent{i}.Point;
-    end
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Inteligant traversal %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    
-    [~,indx] = min([sumI/(length(SP)),sumForward/(length(SPF)),sumBackward/(length(SPB))]);
-    FinalSegmentation = [{SegmentationPointsInteligent},{SegmentationPointsForward},{SegmentationPointsBackwards}];
-    
-    RecState.SegmentationPoints = FinalSegmentation{indx};
+    RecState.SegmentationPoints = AllSegmentations{bestSegmentationindex};
     
     for i=1:length(RecState.SegmentationPoints)
         MarkOnSequence('SegmentationPoint',Sequence,RecState.SegmentationPoints{i}.Point);
     end
+    
     
 else    %Mouse not up
     if (rem(CurrPoint,RecParams.K)==0)
         
         [absoluteSiplifiedContour,proportionalSiplifiedContour] = SimplifyContour(Sequence(1:CurrPoint,:), RecParams.AbsoluteSimplificationEpsilon);
         resampledSequence = ResampleContour(proportionalSiplifiedContour,size(absoluteSiplifiedContour,1)*5);
+        %resampledSequence = ResampleContour(absoluteSiplifiedContour,size(absoluteSiplifiedContour,1)*5);
+        
         resSeqLastPoint = size(resampledSequence,1);
         Slope = CalculateSlope(resampledSequence,resSeqLastPoint-RecParams.PointEnvLength,resSeqLastPoint);
         SlopeRes = LowSlope(Slope,RecParams);

@@ -2,7 +2,7 @@ function res = GetCandidatesFromRecState( RecState )
 %GETCANDIDATESFROMRECSTATE Summary of this function goes here
 %   Detailed explanation goes here
 res = '';
-segmentationPoints = RecState.SegmentationPoints;
+segmentationPoints = [RecState.SegmentationPoints];
 for i=1:length(segmentationPoints) 
     if (i==1)
         startIndex = num2str(1);

@@ -1,6 +1,6 @@
 function [ WPsResults , Name] = RecognizeCityName(xmlFile, LoadDataStructure, OutputFolder )
 %RecognizeCityName Summary of this function goes here
-%   RecognizeCityName( 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\ParsedADABWords\1231874635809.xml' , true, 'C:\OCRData\StrokeOutput\')
+%   RecognizeCityName( 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\ParsedADABWords\1232530266938.xml' , true, 'C:\OCRData\StrokeOutput\')
 
 global LettersDataStructure;
 if (LoadDataStructure ==true)
@@ -11,8 +11,6 @@ end
 WPStructArray = XML2WPStructArray( xmlFile );
 
 NormalizedWPStructArray = NormalizeWPStructArray(WPStructArray);
-
-%FilteredSequenceArray = FilterIllegalSequences (NormalizedWPStructArray);
 
 WPsResults = [];
 
@@ -33,8 +31,8 @@ for i=1:length(NormalizedWPStructArray)
     time = toc;
     adaptedStr = AdaptString(WPLabel);
     
-    correctRecognition = IsWPRecognizedCorrectly(MainStrokesResults,adaptedStr);
-    if (correctRecognition == true)
+    correctWPRecognition = IsWPRecognizedCorrectly(MainStrokesResults,adaptedStr);
+    if (correctWPRecognition == true)
         correctSegmentation = true;
         TP_SP =  length(adaptedStr);
         FP_SP = 0 ;
@@ -50,7 +48,7 @@ for i=1:length(NormalizedWPStructArray)
         if(~exist(OutputFolder,'dir'))
             mkdir(OutputFolder);
         end
-        if (correctRecognition==true)
+        if (correctWPRecognition==true)
             ImagesFolder = [OutputFolder,'CorrectlyRecognizedWPsImages\'];
             detailsOutputFolder = [OutputFolder,'CorrectlyRecognizedWPs\',WPLabel,'_',num2str(i),'_',xmlFile(end-16:end-4)];
         elseif (correctSegmentation == true)
@@ -64,11 +62,11 @@ for i=1:length(NormalizedWPStructArray)
         mkdir(detailsOutputFolder);
         dlmwrite([detailsOutputFolder,'\sequence.m'], WPSequence);
         
-        WPResultString = GetCandidatesFromRecState( MainStrokesResults );
-        
-        fid = fopen([detailsOutputFolder,'\result.txt'], 'wt');
-        fprintf(fid, '%s', WPResultString);
-        fclose(fid);
+%         WPResultString = GetCandidatesFromRecState( MainStrokesResults );
+%         
+%         fid = fopen([detailsOutputFolder,'\result.txt'], 'wt');
+%         fprintf(fid, '%s', WPResultString);
+%         fclose(fid);
         
         saveas(ax,[detailsOutputFolder,'\image'],'jpg');
         
@@ -78,8 +76,8 @@ for i=1:length(NormalizedWPStructArray)
         
         saveas(ax,[ImagesFolder,xmlFile(end-16:end-4),'_',WPLabel],'jpg');
     end
-    WPsResults(i).Word = adaptedStr;
-    WPsResults(i).CorrectRecognition = correctRecognition;
+    WPsResults(i).WPLabel = adaptedStr;
+    WPsResults(i).CorrectRecognition = correctWPRecognition;
     WPsResults(i).CorrectSegmentation = correctSegmentation;
     WPsResults(i).TP_SP = TP_SP; 
     WPsResults(i).FP_SP = FP_SP;
@@ -90,23 +88,7 @@ for i=1:length(NormalizedWPStructArray)
     close (ax);
 end
 end
-% 
-% function FilteredSequenceArray = FilterIllegalSequences (WPStructArray)
-% %The end of the previous letter has to be the same as the beggining of the cyrrent letter
-% %avoid Word Parts with penUp.
-% index = 1;
-% for j=1:length(WPStructArray)
-%     condition1 = any(ismember(WPStructArray(j).Sequence(:,1),Inf));
-%     condition2 = j>2 && any(WPStructArray(j).Sequence(1,:)~= WPStructArray(j-1).Sequence(end,:));
-%     if (~condition1)
-%         FilteredSequenceArray(index) = WPStructArray(j);
-%         index = index + 1;
-%     end
-% end
-% if (index ==1)
-%     FilteredSequenceArray = [];
-% end
-% end
+
 
 function Res = AdaptString(str)
 Res = strrep(str, '_', '');

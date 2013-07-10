@@ -15,17 +15,21 @@ end
 
 diary([OutputFolder,'\Results.txt']);
 diary on;
+
+NumSamples = 30;
+
 startFileIndex = 1000;
 Statistics = InitializeStatistics();
 strokesFilesList = dir (StrokesDictionaryFolder);
-for i=3+startFileIndex:startFileIndex+min (length(strokesFilesList),200)
+for i=3+startFileIndex:startFileIndex+min (length(strokesFilesList),NumSamples)
     current_object = strokesFilesList(i);
     IsFile=~[current_object.isdir];
     FileName = current_object.name;
     if (IsFile)
+        disp([num2str(i-2-startFileIndex),': ','                  ',FileName]);
         [WPsResults,Name] = RecognizeCityName( [StrokesDictionaryFolder,'\',FileName], false, OutputFolder );
         Statistics = CollectStatistics (Statistics, WPsResults, GetNumWordsInName (Name));
-        disp([num2str(i-2-startFileIndex),': ',Name]);
+        
     end
 end
 Statistics
@@ -39,20 +43,20 @@ Statistics.NumNames = Statistics.NumNames + 1;
 Statistics.NumWords = Statistics.NumWords + NumWords;
 NameSegmentedCorrectly = true;
 for i=1:length(WPsResults)
-    strokeLength = length(WPsResults(i).Word);
+    WPLength = length(WPsResults(i).WPLabel);
     Statistics.NumWPs = Statistics.NumWPs + 1;
     Statistics.NumStrokes = Statistics.NumStrokes + WPsResults(i).NumStrokes;
-    Statistics.WPsLengthDistribution(strokeLength) = Statistics.WPsLengthDistribution(strokeLength) + 1;
-
+    Statistics.WPsLengthDistribution(WPLength) = Statistics.WPsLengthDistribution(WPLength) + 1;
+    
     if (WPsResults(i).CorrectSegmentation == true)
         Statistics.WPsCorrectSegmentation = Statistics.WPsCorrectSegmentation + 1;
-        Statistics.SPTruePositive = Statistics.SPTruePositive + WPsResults(i).TP_SP;  
-    
+        Statistics.SPTruePositive = Statistics.SPTruePositive + WPsResults(i).TP_SP;
+        
     else
         NameSegmentedCorrectly = false;
         Statistics.SPFalsePositive = Statistics.SPFalsePositive + WPsResults(i).FP_SP;
-        Statistics.SPTruePositive = Statistics.SPTruePositive + WPsResults(i).TP_SP;  
-        Statistics.SPFalseNegative = Statistics.SPFalseNegative + WPsResults(i).FN_SP;  
+        Statistics.SPTruePositive = Statistics.SPTruePositive + WPsResults(i).TP_SP;
+        Statistics.SPFalseNegative = Statistics.SPFalseNegative + WPsResults(i).FN_SP;
     end
     
     if (WPsResults(i).CorrectRecognition == true)
@@ -93,6 +97,11 @@ SP_FN = Statistics.SPFalseNegative;
 SP_Precision = SP_TP/(SP_TP+SP_FP);
 SP_Recall  = SP_TP/(SP_TP+SP_FN);
 
+TotalNumLetters = 0;
+for i=1:length(Statistics.WPsLengthDistribution)
+    TotalNumLetters = TotalNumLetters + i*Statistics.WPsLengthDistribution(i);
+end
+
 disp(' ');
 disp('Strokes Level Info');
 disp('--------------------');
@@ -128,6 +137,7 @@ disp (['SP FP = ',num2str(SP_FP)]);
 disp (['SP FN = ',num2str(SP_FN)]);
 disp (['SP Precision = ',num2str(SP_Precision)]);
 disp (['SP Recall = ',num2str(SP_Recall)]);
+disp (['Total Leters Num= ',num2str(TotalNumLetters)]);
 end
 
 function Statistics = InitializeStatistics()
@@ -147,7 +157,7 @@ Statistics.SPFalseNegative = 0;
 Statistics.TotalTime = 0;
 end
 
-function numWords = GetNumWordsInName (Name) 
+function numWords = GetNumWordsInName (Name)
 Name = strtrim(Name);
 spaces = strfind(Name, ' ');
 numWords = length(spaces) + 1;

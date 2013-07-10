@@ -1,28 +1,26 @@
-function [CorrectRecognition] = IsWPRecognizedCorrectly(RecState,WordPart)
+function [CorrectWPRecognition] = IsWPRecognizedCorrectly(WPResults,WordPart)
 %ISWPRECOGNIZEDCORRECTLY Summary of this function goes here
 %   Detailed explanation goes here
 
-CorrectRecognition=true;
-SegmentationDiff=0;
-SegmentationPoints = [RecState.SegmentationPoints];
+CorrectWPRecognition=true;
+
+SegmentationPoints = GetWPSegmentationPointsFromResults(WPResults);
 numSegmentationPoints = length(SegmentationPoints);
 if (numSegmentationPoints~=size(WordPart,2))
-    SegmentationDiff =  numSegmentationPoints - size(WordPart,2);    
-    CorrectRecognition = false;
+    CorrectWPRecognition = false;
     return;
 end
 for i=1:numSegmentationPoints
-    SP =  SegmentationPoints{i};
+    SP =  SegmentationPoints(i);
     CurrCan = SP.Candidates(:,1);
-    wasRecognized = false;
+    letterRecognized = false;
     for j=1:size(CurrCan,1)
         if (ValidateRecognizedLetter(CurrCan{j},WordPart,i))
-            wasRecognized = true;
+            letterRecognized = true;
         end
     end
-    if (wasRecognized==false)
-        CorrectRecognition = false;
-        return;
+    if (letterRecognized==false)
+        CorrectWPRecognition = false;
     end
 end
 end
