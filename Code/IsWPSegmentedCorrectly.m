@@ -2,13 +2,12 @@ function [SegmentedCorrectly, TP_SP, FP_SP, FN_SP] = IsWPSegmentedCorrectly( WPR
 %ISWPSEGMENTEDCORRECTLY Summary of this function goes here
 %   Detailed explanation goes here
 
-SegmentationPoints = GetWPSegmentationPointsFromResults(WPResults);
 Sequence = WPInfo.Sequence;
 GT_SPIndexes = WPInfo.SPs;
 GT_SP_Array = zeros(length(GT_SPIndexes),1);
 nomatch = 0;
-for i=1:length(SegmentationPoints)
-    currentSP = SegmentationPoints(i).Point;
+for i=1:length(WPResults)
+    currentSP = WPResults(i).Point;
     matchedToTrueSP = false;
     %look for the corresponding Segmentation Point is the GT.
     for k=1:length(GT_SPIndexes)

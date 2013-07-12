@@ -119,6 +119,6 @@ RecParams.AbsoluteSimplificationEpsilon = 1/75;
 RecParams.MaxSlopeRate = 0.6;
 RecParams.MaxDistFromBaseline = 0.15;
 RecParams.NumCandidates = 3;
-RecParams.MaxIndecisiveCandidates = 10;
+RecParams.MaxIndecisiveCandidates = 4;
 
 

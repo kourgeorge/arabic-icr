@@ -1,6 +1,6 @@
 function [ WPsResults , Name] = RecognizeCityName(xmlFile, LoadDataStructure, OutputFolder )
 %RecognizeCityName Summary of this function goes here
-%   RecognizeCityName( 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\ParsedADABWords\1232530266938.xml' , true, 'C:\OCRData\StrokeOutput\')
+%   RecognizeCityName( 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\ParsedADABWords\1232530410536.xml' , true, 'C:\OCRData\StrokeOutput\')
 
 global LettersDataStructure;
 if (LoadDataStructure ==true)
@@ -31,14 +31,16 @@ for i=1:length(NormalizedWPStructArray)
     time = toc;
     adaptedStr = AdaptString(WPLabel);
     
-    correctWPRecognition = IsWPRecognizedCorrectly(MainStrokesResults,adaptedStr);
+    WPResults = ParseWPResults(MainStrokesResults);
+    
+    correctWPRecognition = IsWPRecognizedCorrectly(WPResults,adaptedStr);
     if (correctWPRecognition == true)
         correctSegmentation = true;
         TP_SP =  length(adaptedStr);
         FP_SP = 0 ;
         FN_SP = 0;
     else
-    	[correctSegmentation, TP_SP, FP_SP, FN_SP] = IsWPSegmentedCorrectly(MainStrokesResults,NormalizedWPStructArray(i));
+    	[correctSegmentation, TP_SP, FP_SP, FN_SP] = IsWPSegmentedCorrectly(WPResults,NormalizedWPStructArray(i));
     end
     
     if (nargin>2)
@@ -62,11 +64,13 @@ for i=1:length(NormalizedWPStructArray)
         mkdir(detailsOutputFolder);
         dlmwrite([detailsOutputFolder,'\sequence.m'], WPSequence);
         
-%         WPResultString = GetCandidatesFromRecState( MainStrokesResults );
-%         
-%         fid = fopen([detailsOutputFolder,'\result.txt'], 'wt');
-%         fprintf(fid, '%s', WPResultString);
-%         fclose(fid);
+        WPResultString = '';
+        for k=1:length(WPResults)
+           WPResultString = [WPResultString, 'Letter ', num2str(k), ':  ',[WPResults(k).Candidates{:,1}], sprintf('\n')]; 
+        end
+        fid = fopen([detailsOutputFolder,'\result.txt'], 'wt');
+        fprintf(fid, '%s', WPResultString);
+        fclose(fid);
         
         saveas(ax,[detailsOutputFolder,'\image'],'jpg');
         

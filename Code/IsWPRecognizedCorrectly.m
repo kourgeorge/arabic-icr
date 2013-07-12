@@ -4,14 +4,13 @@ function [CorrectWPRecognition] = IsWPRecognizedCorrectly(WPResults,WordPart)
 
 CorrectWPRecognition=true;
 
-SegmentationPoints = GetWPSegmentationPointsFromResults(WPResults);
-numSegmentationPoints = length(SegmentationPoints);
+numSegmentationPoints = length(WPResults);
 if (numSegmentationPoints~=size(WordPart,2))
     CorrectWPRecognition = false;
     return;
 end
 for i=1:numSegmentationPoints
-    SP =  SegmentationPoints(i);
+    SP =  WPResults(i);
     CurrCan = SP.Candidates(:,1);
     letterRecognized = false;
     for j=1:size(CurrCan,1)

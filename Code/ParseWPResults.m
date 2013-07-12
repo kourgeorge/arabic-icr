@@ -1,5 +1,5 @@
-function SegmentationPoints = GetWPSegmentationPointsFromResults(WPResults)
-%GetWPSegmentationPointsFromResults Summary of this function goes here
+function SegmentationPoints = ParseWPResults(WPResults)
+%ParseWPResults Summary of this function goes here
 %   Detailed explanation goes here
 SegmentationPoints = [];
 Sequence = [];

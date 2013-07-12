@@ -20,51 +20,7 @@ if(IsMouseUp==true)
     RecState.MinScoreTable(RecState.MinScoreTable==0) = NaN;
     
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Filter Candidates %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    %     Dx = max(Sequence(:,1)) - min(Sequence(:,1));
-    %     Dy = max(Sequence(:,2)) - min(Sequence(:,2));
-    %     for i=1:size(RecState.MinScoreTable,2)
-    %         for j=i+1:min(i+RecParams.MaxIndecisiveCandidates,size(RecState.MinScoreTable,1))
-    %             startPoint = RecState.CandidatePointsArray(i);
-    %             endPoint = RecState.CandidatePointsArray(j);
-    %             subSequence = RecState.Sequence(startPoint:endPoint,:);
-    %             dx = max(subSequence(:,1)) - min(subSequence(:,1));
-    %             dy = max(subSequence(:,2)) - min(subSequence(:,2));
-    %             if (Dx*Dy>25*dx*dy)
-    %                 RecState.MinScoreTable(j,i) = 1.5*RecState.MinScoreTable(j,i);
-    %             end
-    %
-    %             if (j>i+2)
-    %                 RecState.MinScoreTable(j,i) = 1.5*RecState.MinScoreTable(j,i);
-    %             end
-    %         end
-    %     end
-    %
-    %     if (length(RecState.CandidatePointsArray)>4)
-    %         CandidatePoints = [];
-    %         for i=2:length(RecState.CandidatePointsArray)-1
-    %             CandidatePoints = [CandidatePoints;Sequence(RecState.CandidatePointsArray(i),:)];
-    %         end
-    %         % p = polyfit(CandidatePoints(:,1),CandidatePoints(:,2),1);
-    %         %PC = princomp(Sequence);
-    %         %PC = PC(:,1);
-    %         %slope=PC(2)/PC(1);
-    %
-    %         [hi,cen] = hist(Sequence(:,2),10);
-    %         [~,maxBin] = max(hi);
-    %         maxBinPosition = cen(maxBin);
-    %         for j=1:length(CandidatePoints)
-    %             %p = [slope,0];
-    %             %yfit = polyval(p,CandidatePoints(j,1));
-    %             if (abs(maxBinPosition-CandidatePoints(j,2))>2*(max(cen(2)-cen(1),0.15)))
-    %                 RecState.MinScoreTable(:,j+1) = NaN;
-    %                 RecState.MinScoreTable(j+1,:) = NaN;
-    %             end
-    %         end
-    %     end
-    %
-    %
+    [ RecState ] = FilterCandidatePoints( RecState );
     
     [ SegmentationPointsForward, sumForward] = ForwardSegmentationSelection( RecState.MinScoreTable,  RecState.RecognitionScoreTable);
     [ SegmentationPointsBackwards, sumBackward] = BackwardSegmentationSelection( RecState.MinScoreTable,  RecState.RecognitionScoreTable);
@@ -82,10 +38,8 @@ if(IsMouseUp==true)
     
 else    %Mouse not up
     if (rem(CurrPoint,RecParams.K)==0)
-        
-        [absoluteSiplifiedContour,proportionalSiplifiedContour] = SimplifyContour(Sequence(1:CurrPoint,:), RecParams.AbsoluteSimplificationEpsilon);
-        resampledSequence = ResampleContour(proportionalSiplifiedContour,size(absoluteSiplifiedContour,1)*5);
-        %resampledSequence = ResampleContour(absoluteSiplifiedContour,size(absoluteSiplifiedContour,1)*5);
+
+        resampledSequence = ResampleContour(Sequence,size(Sequence,1));
         
         resSeqLastPoint = size(resampledSequence,1);
         Slope = CalculateSlope(resampledSequence,resSeqLastPoint-RecParams.PointEnvLength,resSeqLastPoint);
