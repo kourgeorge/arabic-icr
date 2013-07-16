@@ -15,19 +15,27 @@ if(IsMouseUp==true)
         return
     end
     
+    RecState = TryMergeLastPoint(RecState, CurrPoint, RecParams);
     
     RecState = UpdateRecognitionTable(RecState,CurrPoint,RecParams,IsMouseUp);
-    RecState.MinScoreTable(RecState.MinScoreTable==0) = NaN;
     
+    RecState.MinScoreTable(RecState.MinScoreTable==0) = NaN;
     
     [ RecState ] = FilterCandidatePoints( RecState );
     
-    [ SegmentationPointsForward, sumForward] = ForwardSegmentationSelection( RecState.MinScoreTable,  RecState.RecognitionScoreTable);
-    [ SegmentationPointsBackwards, sumBackward] = BackwardSegmentationSelection( RecState.MinScoreTable,  RecState.RecognitionScoreTable);
-    [ SegmentationPointsGreedy, sumGreedy] = GreedySegmentationSelection( RecState.MinScoreTable,  RecState.RecognitionScoreTable);
+    [ SegmentationPointsForward, sumForward, FSPs] = ForwardSegmentationSelection( RecState.MinScoreTable,  RecState.RecognitionScoreTable);
+    [ SegmentationPointsBackwards, sumBackward, BSPs] = BackwardSegmentationSelection( RecState.MinScoreTable,  RecState.RecognitionScoreTable);
+    [ SegmentationPointsGreedy, sumGreedy, GSPs] = GreedySegmentationSelection( RecState.MinScoreTable,  RecState.RecognitionScoreTable);
     
-    [~,bestSegmentationindex] = min([sumGreedy/(length(SegmentationPointsGreedy)),sumForward/(length(SegmentationPointsForward)),sumBackward/(length(SegmentationPointsBackwards))]);
-    AllSegmentations = [{SegmentationPointsGreedy},{SegmentationPointsForward},{SegmentationPointsBackwards}];
+    [ SegmentationPointsYA, sumYA, YASPs] = YASegmentationSelection( RecState.MinScoreTable,  RecState.RecognitionScoreTable);
+
+    ScoreForward = sumForward/(length(SegmentationPointsForward));
+    ScoreBackwards = sumBackward/(length(SegmentationPointsBackwards));
+    ScoreGreedy = sumGreedy/(length(SegmentationPointsGreedy));
+    ScoreYA = sumYA/(length(SegmentationPointsYA));
+    
+    [~,bestSegmentationindex] = min([ScoreForward,ScoreBackwards,ScoreGreedy,ScoreYA]);
+    AllSegmentations = [{SegmentationPointsForward},{SegmentationPointsBackwards},{SegmentationPointsGreedy},{SegmentationPointsYA}];
     
     RecState.SegmentationPoints = AllSegmentations{bestSegmentationindex};
     
@@ -38,8 +46,8 @@ if(IsMouseUp==true)
     
 else    %Mouse not up
     if (rem(CurrPoint,RecParams.K)==0)
-
-        resampledSequence = ResampleContour(Sequence,size(Sequence,1));
+        
+        resampledSequence = ResampleContour(Sequence,round(size(Sequence,1)/2));
         
         resSeqLastPoint = size(resampledSequence,1);
         Slope = CalculateSlope(resampledSequence,resSeqLastPoint-RecParams.PointEnvLength,resSeqLastPoint);
@@ -73,7 +81,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [RecState, newPoint] = TryMergeCandidatePoints(RecState, midPoint, RecParams)
-lastPointIndex = RecState.CandidatePointsArray(end);
+lastPointIndex = LastCandidatePoint(RecState);
 newPoint = midPoint;
 if (lastPointIndex==1)
     return;
@@ -87,30 +95,39 @@ if (Res==false)
     RecState.CandidatePointsArray = RecState.CandidatePointsArray(1:end-1);
     MarkOnSequence('MergedCandidatePoint',RecState.Sequence,newPoint);
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function RecState = TryMergeLastPoint (RecState, lastPoint, RecParams)
+LastCandidate = LastCandidatePoint(RecState);
+if (LastCandidate==1)
+    return;
+end
+Res = ContainsInformation(RecState.Sequence,LastCandidate, lastPoint, RecParams);
+if (Res==false)
+    RecState.CandidatePointsArray = RecState.CandidatePointsArray(1:end-1);
+    MarkOnSequence('MergedCandidatePoint',RecState.Sequence,lastPoint);
+end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %HS means Horiontal Sections.
 function Res = IsFirstPointInHS(ProcessedSequence,lowSlope,RecState,RecParams)
 
 Res = RecState.HSStart == -1 && lowSlope && ProcessedSequence(end,1)<ProcessedSequence(end-1,1);
+
 if(Res==true)
     Res = ContainsInformation(ProcessedSequence,1, size(ProcessedSequence,1),RecParams);
 end
-if (Res==true)
-    %    Res = Res && IsOnBaseline(RecState,RecParams);
-end
+
 OrigSequence = RecState.Sequence;
 LCP = LastCandidatePoint(RecState);
+
+% currentPoint = size(OrigSequence,1);
 % if (Res==true)
-%     minX = min(OrigSequence(LCP:end-5,1));
-%     if (minX<OrigSequence(end,1))
-%         Res = false;
-%     end
+%     Res = ContainsInformation(OrigSequence,LCP, currentPoint, RecParams);
 % end
-currentPoint = size(OrigSequence,1);
-if (Res==true)
-    Res = ContainsInformation(OrigSequence,LCP, currentPoint, RecParams);
-end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function Res = IsClosingHS(ProcessedSequence, lowSlope,RecState,RecParams)
@@ -128,6 +145,18 @@ if (Res == false && RecState.HSStart~=-1)
     Slope = CalculateSlope(OrigSequence,RecState.HSStart,currentPoint);
     Res = ~LowSlope(Slope,RecParams);
 end
+
+% We need to try closing the HF only after the there is no intersection, to
+% minimize the effrct of
+% OrigSequence = RecState.Sequence;
+% LCP = LastCandidatePoint(RecState);
+% if (Res==true)
+%     minX = min(OrigSequence(LCP:end-5,1));
+%     if (minX<OrigSequence(end,1))
+%         Res = false;
+%     end
+% end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function Res = ContainsInformation(Sequence,startPoint, endPoint, RecParams)
@@ -216,7 +245,7 @@ if (gUI==true)
             %plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'k.-','Tag','SHAPE','LineWidth',5);
             return;
         case 'MergedCandidatePoint'
-            plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'k.-','Tag','SHAPE','LineWidth',5);
+            plot(findobj('Tag','AXES'),Sequence(Point-3:Point,1),Sequence(Point-3:Point,2),'g.-','Tag','SHAPE','LineWidth',5);
             return;
         otherwise
             return;

@@ -193,54 +193,26 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function RecState = InitializeRecState()
-
 RecState.CandidatePointsArray = [1];
 RecState.RecognitionScoreTable = {};
 RecState.SegmentationPoints = {};
 RecState.MinScoreTable = [];
 RecState.HSStart = -1;
 RecState.LastSeenHorizontalPoint = -1;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function RecParams = InitializeRecParams()
-% Algorithm parameters
 RecParams.Alg = {'EMD'}; %Res_DTW
 RecParams.K = 3;
 RecParams.PointEnvLength =1;
+RecParams.AbsoluteSimplificationEpsilon = 1/75;
 RecParams.MaxSlopeRate = 0.6;
 RecParams.MaxDistFromBaseline = 0.15;
 RecParams.NumCandidates = 3;
-RecParams.MaxIndecisiveCandidates = 3;
+RecParams.MaxIndecisiveCandidates = 4;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function UpdateHeading (RecState)
-LCCPI=RecState.LCCPI;
-stat_str= num2str(LCCPI);
-str = '';
-if (LCCPI==0)
-    %Do nothing
-elseif (LCCPI==1)
-    LCCP = RecState.CriticalCPs(LCCPI);
-    CurrCan = LCCP.Candidates;
-    for i=1:size(CurrCan,1)
-        str = [str,'  ',CurrCan{i,1}];
-    end
-    endIndex = num2str(LCCP.Point);
-    set(findobj('Tag','TEXT'),'String',['[Current State: ', stat_str,']  ',' Interval: 0 - ',  endIndex, ' Candidates: ' str]);
-else
-    LCCP = RecState.CriticalCPs(LCCPI);
-    CurrCan = LCCP.Candidates;
-    for i=1:size(CurrCan,1)
-        str = [str,'  ',CurrCan{i,1}];
-    end
-    BLCCP = RecState.CriticalCPs(LCCPI-1);
-    startIndex = num2str(BLCCP.Point);
-    endIndex = num2str(LCCP.Point);
-    set(findobj('Tag','TEXT'),'String',['[Current State: ' stat_str, ']  ','   Previous State:- ',' Interval: ' , startIndex, ' - ',  endIndex, '   Candidates: ' str]);
-end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%     EOF      %%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

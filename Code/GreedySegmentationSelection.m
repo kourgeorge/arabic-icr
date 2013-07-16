@@ -1,31 +1,23 @@
-function [ SegmentationPointsData, SegmentationScore] = GreedySegmentationSelection( minScoresTable, recognitionScoreTable )
+function [ SegmentationPointsData, SegmentationScore, SPIndexes] = GreedySegmentationSelection( minScoresTable, recognitionScoreTable )
 %GREEDYSEGMENTATIONSELECTION Summary of this function goes here
 %   Detailed explanation goes here
 
 SegmentationScore = 0;
-SPI = [];
-SegmentationPointsData = [];
+SPIndexes = [];
+
 while (find(~isnan(minScoresTable)))
     [endI,startI]=find(minScoresTable==min(min(minScoresTable)));
-    SPI = [SPI; startI ; endI];
+    SPIndexes = [SPIndexes, startI, endI];
     
     SegmentationScore = SegmentationScore + minScoresTable(endI,startI);
-    for k=startI:endI-1
-        minScoresTable(:,k) = NaN;
-    end
     
-    for k=startI+1:endI
-        minScoresTable(k,:) = NaN;
-    end
-    
-    for c=1:startI
-        minScoresTable(endI:end,c)=NaN;
-    end
+    minScoresTable = RemoveIntervalFromMinMatrix(minScoresTable, startI, endI);
 end
-SPI = unique(SPI);
-for i=1:length(SPI)-1
-    SegmentationPointsData = [SegmentationPointsData; recognitionScoreTable(SPI(i+1),SPI(i))];
+SPIndexes = unique(SPIndexes);
+
+SegmentationPointsData = [];
+for i=1:length(SPIndexes)-1
+    SegmentationPointsData = [SegmentationPointsData; recognitionScoreTable(SPIndexes(i+1),SPIndexes(i))];
 end
 
 end
-
