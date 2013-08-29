@@ -6,7 +6,7 @@
 %\usepackage{fixltx2e}
 %\usepackage{stfloats}
 %\usepackage{url}
-%\usepackage[cmex10]{amsmath}
+\usepackage[cmex10]{amsmath}
 %\usepackage{array}
 %\usepackage{mdwmath}
 %\usepackage{mdwtab}
@@ -40,7 +40,7 @@
 
 \IEEEcompsoctitleabstractindextext{
 \begin{abstract}
-character segmentation has an integral role in many Optical Character Recognition (OCR) systems due to the fact that correctly segmented characters are likely to be recognized correctly. However, Correct and efficient segmentation of Arabic text into characters is considered to be an essential problem. The cursive and unconstrained nature of the Arabic script in both printed and handwritten forms anneals the segmentation task. The Arabic script is composed of strokes which represent a single letter, multiple connected letters or diacritics. This paper proposes a novel on-line strokes-level recognition-based segmentation technique of Arabic script. The uniqueness and the main contribution of our approach is that the most time consuming procedures are performed while the stroke is being scribed. The system consists of three stages. The first stage, which requires the most calculation effort, is performed whilst the stroke is being written and involves three main parts: 1. Preprocessing of the written stroke. 2. Over-segmentation of the written stroke using on topological and directional local features. 3. Recognition-based scoring of adjacent combinations of sub-strokes that induced by the proposed segmentation points. The second stage contains filtering of the topologically invalid segmentation points. The last stage involves several segmentation points selections algorithm which determines the best subset of segmentation points. The system has been designed and tested using the ADAB Database. Promising results were obtained without using context help.
+character segmentation has an integral role in many Optical Character Recognition (OCR) systems due to the fact that correctly segmented characters are likely to be recognized correctly. However, Correct and efficient segmentation of Arabic text into characters is considered to be an essential problem. The cursive and unconstrained nature of the Arabic script in both printed and handwritten forms anneals the segmentation task. The Arabic script is composed of strokes which represent a single letter, multiple connected letters or diacritics. This paper proposes a novel on-line strokes-level recognition-based segmentation technique of Arabic script. The advantage of our approach is that the most time consuming procedures are performed while the stroke is being scribed. The system consists of three stages. The first stage, which requires the most calculation effort, is performed whilst the stroke is being written and involves three main parts: 1. Preprocessing of the written stroke. 2. Over-segmentation of the written stroke using on topological and directional local features. 3. Recognition-based scoring of adjacent combinations of sub-strokes that induced by the proposed segmentation points. The second stage contains filtering of the topologically invalid segmentation points. The last stage involves several segmentation points selections algorithm which determines the best subset of segmentation points. The system has been designed and tested using the ADAB Database. Promising results were obtained without using context help.
 \end{abstract}
 \begin{IEEEkeywords}
 Arabic Handwriting Recognition, Arabic Script Segmentation, Arabic Strokes Segmentation, On-line Text Recognition
@@ -52,34 +52,23 @@ Arabic Handwriting Recognition, Arabic Script Segmentation, Arabic Strokes Segme
 
 \section{Introduction}
 \date
-\IEEEPARstart{H}{andwriting} remains the most used mean of communication and recording of information in the daily life. Therefore, a growing interest in the on-line character recognition field has taken place in the recent years.
-Handwriting recognition can be categorized into two main fields: off-line and on-line. In the off-line script recognition, a digital image containing text is fed to the computers and the system attempt to converts the spatial representation of the letters into digital symbols \cite{al2011online}. Nevertheless, on-line handwriting recognition refers to the situation where the recognition is performed concurrently to the writing process. The main existing approaches for script recognition are the holistic approach \cite{biadsy2011segmentation} and the analytic approach \cite{abdulla2008off, sari2002off, Dinges2011, elanwar2012unconstrained}. The holistic approach considers the global properties of the written text while the analytic approach involves segmentation and classification of each part of the text.  In the holistic approach, the recognition system needs to be trained over all words in the dictionary, while it is possible for small vocabulary of words; this is not feasible for large vocabularies (20,000 words or more). Since each word is constructed from a subset of the character alphabet, it is much more efficient to classify words using the analytic approach. \cite{elanwar2012unconstrained} \\
+\IEEEPARstart{H}{andwriting} remains the most used mean of communication and recording of information in the daily life. Therefore, a growing interest in the on-line character recognition field has taken place in the recent years. Handwriting recognition can be categorized into two main fields: off-line and on-line. In the off-line script recognition, a digital image containing text is fed to the computers and the system attempts to convert the spatial representation of the letters into digital symbols \cite{al2011online}. On the contrary, on-line handwriting recognition refers to the situation where the recognition is performed concurrently to the writing process. Approaches for script recognition are usually classified into two types: 1.The holistic approach \cite{biadsy2011segmentation} and 2.the analytic approach \cite{abdulla2008off, sari2002off, Dinges2011, elanwar2012unconstrained}. The holistic approach considers the global properties of the written text while the analytic approach involves segmentation and classification of each part of the text.  In the holistic approach, the recognition system needs to be trained over all words in the dictionary, while it is possible for small vocabulary of words; this is not feasible for large vocabularies (20,000 words or more). Since each word is constructed from a subset of the character alphabet, it is much more efficient to classify words using the analytic approach \cite{elanwar2012unconstrained}.\\
 
-The main motivation behind researching the field of Arabic handwriting segmentation its widespread. Although no reliable resource could be found which specifically mention the exact number of people whom read and write the Arabic system, it is known that the the Arabic language is the forth most spoken language by natives after Mandarin, Spanish and English. The Arabic language contains many different dialects used for nearly all everyday speaking situations however the formal standardized language, found mostly in writing or in prepared speech, is common \emph{[add citation from Wikipedia]}.  Approximately 25 languages have adopted the Arabic writing system with some changes. Thus the ability to segment and recognize Arabic script would have a widespread benefits. Nevertheless, the Arabic script recognition is at early stage in relation to the script recognition of Latin, Chinese and Kanji which has been a focus of study in the last decade and achieved an impressive recognition rates. The reason for this is mainly the peculiarity nature of the Arabic script, lack of funds and other utilities such as text database, dictionaries, etc. \cite{zeki2011segmentation}
-The Arabic language is written right to left in a cursive manner in both handwritten and printed forms. Most Arabic letters has 4 main body shapes: Isolated, Medial, Initial and Final, while other letters have 2 main body shapes: Isolated and Final. An occurrence of two shapes letters inside a word will lead to a split of the body into two or more parts, called Word-Parts (WP). Within the WP, the letters are connected in both handwritten and printed. Different letters may share the same body and only differ by additional strokes and dots called diacritics as seen in figure \ref{fig:same_main_body_letters}. In many cases Arabic word parts, which are connected when printed, are written in multiple strokes in handwritten form.\\  
+The main motivation behind researching the field of Arabic handwriting segmentation its widespread. Although no reliable resource could be found which the exact number of people whom read and write the Arabic text, it is known that the the Arabic language is the forth most spoken language by natives after Mandarin, Spanish and English. The Arabic language contains many different dialects used for nearly all everyday speaking situations however the formal standardized language, found mostly in writing or in prepared speech, is common \emph{[add citation from Wikipedia]}.  Approximately 25 languages have adopted the Arabic writing system with some changes. Thus the ability to segment and recognize Arabic script would have a significant academic and economic impact. Nevertheless, the Arabic script recognition is at early stage in relation to the script recognition of Latin, Chinese and Kanji which has been a focus of study in the last decade and achieved an impressive recognition rates. Complexities such as cursiveness, context sensitive shapes and overlapping of the Arabic script causes the OCR of the Arabic languages much more complicated than other languages such as English and Chinese \cite{razzak2010locally}. 
+Character Recognition of the Arabic script is more complicated than other languages such as English and Chinese due to complexities such as cursiveness, context sensitive shapes and overlapping. 
 
-Segmentation of the word into entities is a crucial part of the text recognition process in the segmentation based approaches. The segmentation do not necessarily correspond to exactly one character however it could be broken into components called graphemes, which are a combination of two or three letters, or a part of a letter. Correct segmentation of a word into letter is likely to result in a correct recognition. The other way around is also valid when it comes to recognition-based segmentation techniques, i.e. a firm recognition system improves the segmentation precision. Several segmentation approaches have been proposed in the literature for Arabic OCR. Still, correct and efficient segmentation of Arabic text is still considered a challenging and a fundamental problem even for off-line printed text. A common approach that is followed by many researchers is over-segmentation of the text and validating each such candidate segmentation point by extracting feature vectors representing the segmented parts to some classifier or rules based engine \cite{daifallah2009recognition}.\\
+The reason for this is mainly the peculiarity nature of the Arabic script, lack of funds and other utilities such as text database, dictionaries, etc.\cite{zeki2011segmentation}.\\
 
-\emph{[discuss the features of a horizontal point, 1. horizontal, 2. right to left, on the baseline]}\\
+The Arabic language is written right to left in a cursive manner in both handwritten and printed forms. Most Arabic letters has four main body shapes: Isolated, Medial, Initial and Final, while other letters have two main body shapes: Isolated and Final. An occurrence of two shapes letters inside a word will lead to a split of the body into two or more parts, called Word-Parts (WPs). Within the WP, the letters are connected in both handwritten and printed. Different letters may share the same body and only differ by additional strokes and dots named diacritics. For example the letters \RL{.h}  (Ha),\RL{j} (Jim),\RL{x} (Kha), and also the letters \RL{r} (Ra),\RL{z} (Zayn) and more.
+In many cases Arabic WPs, which are connected when printed, are written in multiple strokes in handwritten form as can be seen in figure \ref{fig:kmbot}. \\
 
+\emph{[consider adding a table of the similar body letters.]}\\
+
+Correct segmentation of a word into letter is likely to result in a correct recognition. The other way around is also valid when it comes to recognition-based segmentation techniques, i.e. a firm recognition system improves the segmentation precision. Several segmentation approaches have been proposed in the literature for Arabic OCR. Yet, correct and efficient segmentation of Arabic text is an unmet need and considered to be a challenging and a fundamental problem even for off-line printed text. A common approach that is followed by many researchers is over-segmentation of the text and validating each such candidate segmentation point by extracting feature vectors representing the segmented parts to some classifier or rules based engine \cite{daifallah2009recognition}.\\
 
 \emph{[talk about over and under segmentation in the general case, not specifically to the Arabic]}\\
 
-\begin{figure}
-\centering
-        \subfloat[]{
-            \label{fig:letters_same_body_1}
-            \includegraphics[width=0.2\textwidth]{./figures/letters_same_body_1}
-        }
-        \subfloat[]{
-           \label{fig:letters_same_body_2}
-           \includegraphics[width=0.2\textwidth]{./figures/letters_same_body_2}
-        }        
-    \caption{Letters groups sharing the same main body.}
-   \label{fig:same_main_body_letters}
-\end{figure}
-
-Methods used by segmentation-based approaches can be mainly classified into two: Dissection and Recognition-Based Segmentation. Dissection techniques learn the characteristic of the segmentation point and attempts to find appropriate candidate points. For instance, local minima in the upper or lower contour is commonly used for segmenting English cursive script.\emph{[TODO:add citation]}. Other widely used feature that characterizes a segmentation point is the low slope of its local environment. Several segmentation techniques divides the word into graphemes rather than into letters and the relationship between graphemes and letters is applied in a later phase \emph{[TODO:add citation]}. The recognition-based techniques operation is quite different. The method include using a moving window with a predefined width which breaks the word into many overlapping pieces without regard to its content and the attempts to classify those sub-components to find interesting points of interest or trajectories. An iterative or parallel scanning of the words followed by a recognition method is used to search for "satisfactory" classification scoring for joint sub-components usually by generating a lattice of all or many possible combinations. The final decision is determined by the best path through the lattice. While avoiding using complex dissection techniques, such techniques relies heavily on the classifier accuracy \cite{casey1996survey}. A similar methodology is used in this study.\\
+Methods used by segmentation-based approaches can be mainly classified into two: Dissection and Recognition-Based Segmentation. Dissection techniques learn the characteristic of the segmentation point and attempt to find appropriate candidate points. For instance, local minima in the upper or lower contour is commonly used for segmenting English cursive script.\emph{[TODO:add citation]}. Other widely used feature that characterizes a segmentation point is the low slope of its local environment. The dissection of words into segments do not necessarily correspond to exactly one character per segment, however it could segment the words into components called graphemes, which are a combination of two or three letters, or a part of a letter. The relationship between graphemes and letters is applied in a later phase \emph{[TODO:add citation]}. The recognition-based techniques operate quite differently. The method includes using a moving window with a predefined width which breaks the word into many overlapping pieces without regard to its content and the attempts to classify those sub-components to find points of interest or trajectories. An iterative or parallel scanning of the words followed by a recognition method is used to search for "satisfactory" classification scoring for joint sub-components usually by generating a lattice of all or many possible combinations. The final decision is determined by the best path through the lattice. While avoiding using complex dissection methods, such techniques rely heavily on the classifier accuracy \cite{casey1996survey}. \\
 
 In this paper we propose a novel approach which performs segmentation and recognition in the strokes level. We combine both holistic and analytic techniques for recognizing open dictionary Arabic on-line script. In section \ref{sec:related_word} we mention related studies done in the field of on-line Arabic recognition. The proposed approach is described in details in section \ref{sec:approach}. Results are shown in the section \ref{sec:results}. We present the future work we plan in section \ref{sec:future_work}.
 
@@ -115,8 +104,11 @@ The motivation behind this method is based on the intuition that the most basic 
 The proposed technique describes a general concept of ongoing strokes segmentation. The decoupling between the different components and sub-components in the system enables different alternatives techniques to be integrated easily such as dissection techniques and graphemes or letters classification. A high level visual description of the system can be seen in figure \ref{fig:system_flow}.\\
 
 Below, a digest of the three main stages of our approach: \\
+
 \textbf{Stage 1.} This stage is activated on every reception of a new point by from the tablet. The whole trajectory received since the last "pen down" event is preprocessed to remove noises and imperfections. The horizontal handler that joint a pair of connected Arabic letters is mostly horizontal, directed right to left and located near the baseline, thus our goal is identify this Horizontal segments and pinpoint a segmentation point, preferably, as much as close the the middle of the handler. Thus, the preprocessed stroke is investigated in an attempt to determine whether the newly acquired point represents the beginning of a new horizontal fragment or end of an horizontal fragment (HF) by calculating the slope of the local point area. If a the last point ends a HF, the medial point of the HF is nominated as a Candidate Point (CP). For each new CP is a row and a column is added to the Subsequence Scoring Matrix which contains the classification scoring of sub-strokes spanning from candidate point that spans between any two candidate points. The scoring is calculated using a letter classification system. Once the corresponding "Pen up" event occur, the system moves for the next stage.\\ 
+
 \textbf{Stage 2.} The CP's are investigated and both invalid and redundant candidate points are filtered out. Then, a scoring correction process is invoked to adjust very high scoring for least probable candidate points using some heuristics. An example for invalid candidate point can be a point which do not reside on a HF or on a contour of a loop. Redundant candidate point happens when more than a single candidate point were nominated on the same HF  that represent joint trajectory between two connected letters.\\
+
 \textbf{Stage 3.} At this point the scoring matrix is ready and all the bad candidate points are eliminated. Next, a collection of algorithms is employed to select the final set of segmentation points.
 
 Detailed explanation on each stage is provided in the subsections below.
@@ -140,7 +132,7 @@ Our preprocessing phase include three steps in the following order: normalizatio
 
 \textbf{Normalization.} Size normalization is done to achieve a uniform size of the bounding box surrounding the pattern. This is done to enable the classifier to recognize the sequence pattern even when the stroke is written in different sizes. Shape similarity algorithms tend to be sensitive for nonuniform shapes size, thus this procedure is important and can be found in many approaches in the literature. The bounding box of the sequence after this procedure is $[0,1]\times[0,1]$. We include in this step also translation of the sequence's center of gravity to the origin point $[0,0]$.\\
 
-\textbf{Simplification.} The input obtained by the digitizer may contain a large amount of noise. The noise is mainly duplication of points. In this process redundant points are filtered out and a similar sequence with fewer points is obtained. Douglas-Peucker algorithm is used and the maximum distance parameter used by the algorithm is set to be \emph{[]}. The resulted curve is a skeletonized angular sequence. \\
+\textbf{Simplification.} The input obtained by the digitizer may contain a large amount of noise. The noise is mainly duplication of points. In this process redundant points are filtered out and a similar sequence with fewer points is obtained. Douglas-Peucker algorithm is used and the maximum distance parameter used by the algorithm is set to be \emph{[]}. The resulted curve is a skeletonized angular sequence. \emph{[talk about the epsilon value]}\\
 
 \textbf{Re-sampling.} As a result of the simplification process the points are distributed uniformly along the stroke trajectory. Naturally, there are less point in relatively straight areas and a higher amount of points in the curved areas of the stroke. The process of re-sampling produces equidistant smoothed data sequence. The Re-sampling is performed using splines interpolation, the target number of points for a sample pattern which is classified to a letter is set to 40. This number found empirically.
 
@@ -149,15 +141,15 @@ Our preprocessing phase include three steps in the following order: normalizatio
 \begin{figure}
 	\centering
         \subfloat[]{
-            \label{fig:letters_same_body_1}
+            \label{fig:letter_before_preprocessing}
             \includegraphics[width=0.2\textwidth]{./figures/letter_before_preprocessing}
         }
         \subfloat[]{
-           \label{fig:letters_same_body_2}
+           \label{fig:letter_after_preprocessing}
            \includegraphics[width=0.2\textwidth]{./figures/letter_after_preprocessing}
         }        
     \caption{The letter \RL{d} before (a) and after (b) preprocessing}
-   \label{fig:same_main_body_letters}
+   \label{fig:D_before_after_preprocessing}
 \end{figure}
 
 \subsubsection{Horizontal Fragment identification}
@@ -167,12 +159,11 @@ The goal of this process is to identify HF's in the written text. Once an HF is 
 \item low slope
 \item directed right to left 
 \end{enumerate}
-The method described below tries to identify the largest possible HF and disregard small horizontal regions that are usually caused by the imperfection of the digitizer. 
-The horizontal fragment is performed by spotting the start and the end point of the horizontal fragment. For every newly obtained point, the slope is calculated.\\
+The method described below tries to identify the largest possible HF and disregard small horizontal regions that are usually caused by the imperfection of the digitizer. The horizontal fragment is performed by spotting the start and the end point of the horizontal fragment. For every newly obtained point, the slope is calculated.\\
 
 The process is ongoing thus to get the largest possible HF, we mark both the beginning and the end of the horizontal segment, these two points were given the names "start horizontal Fragment" (SHF) and "end horizontal Fragment" (EHF). 
 A point $p_{i}$ is named a "horizontal point" if the slope of the line $\overline{p_{i-1}p_{i}}$ if $\frac{\Delta x}{\Delta y}\leq0.6$ i.e the angle between the HP and the positive x-axis $\phi \leq \frac{\pi}{6}$ . This parameter was tunes empirically. The same exact value for this parameter was found independently in \cite{daifallah2009recognition} which strengthen our confidence in the finding.\\
-To reliably calculate the slope value, despite the noisy data obtained by the tablet, some preprocessing steps need to be performed. However a whole process of normalization, simplification and re-sampling mentioned in the previous may be costly, and since the this preprocessing need to be performed on almost every newly obtained point, it would be impractical and can't be performed on-line while the stroke is being written.\\
+To reliably calculate the slope value, despite the noisy data obtained by the tablet, some preprocessing steps need to be performed. However a whole process of normalization, simplification and re-sampling mentioned in the previous may be costly. Since this preprocessing need to be performed on almost every newly obtained point, it would be impractical and can't be performed on-line while the stroke is being written.\\
 
 The preprocessing include only down-sampling of the trajectory, to the half of the sample points of the original trajectory.
 Once a low slope point is recognized, the algorithm sets this point as a HF starting point. Every next low slope point is marked as "Last Seem Horizontal point" Until a high slope point is obtained. The point lastly marked as "Last Seen Horizontal point" is set to be an "Ending Horizontal point".\\
@@ -180,7 +171,7 @@ Once a low slope point is recognized, the algorithm sets this point as a HF star
 Ideally the whole process should be initiated on every new point received by the digitizer, however, it is unnecessary since no much information is obtained by each new point. Alternatively, the process is invoked on every k point, when k is set to 5 in our system. A horizontal fragment must contain two points at least.\\
 
 The nominated segmentation points in this stage is supposed to be an over-segmentation of the stroke. In table \emph{[]} in section \emph{[]} we show that almost all true segmentation points were included in the over-segmentation imposed in this stage. 
-It is important the note that this process is imperfect and may result is finding fragments that would not be classified as horizontal segment by a human perform the same task. However, it is important not to apply many too many restrictions such imposing too large minimal length on the HF, since while extra HS can be easily filtered out in a later phase when the entire stroke is available, failing to find a horizontal joint can't be recoverable.\\
+It is important the note that this process is imperfect and may result in finding fragments that would not be classified as horizontal segment by a human perform the same task. However, it is important not to apply too many restrictions such imposing too large minimal length on the HF, since while extra CP can be easily filtered out in a later phase when the entire stroke is available, failing to find a CP can't be recovered.\\
 
 \emph{[mention the merge candidate point.]}
 
@@ -195,7 +186,6 @@ It is important the note that this process is imperfect and may result is findin
 \end{figure}
 
 \subsubsection{Sub-strokes scoring}
-The candidate point $CP_{i}$ represents the index of the candidate point $i$ in the stroke $S$. For the simplicity of the presentation we define $CP_{i}=1$, i.e. the first point in the stroke $S$, although the first point is not defined as a segmentation point. We also we define the last point in the stroke $S$ as a candidate point, although it is not a candidate point but an obvious segmentation point. Both the "first candidate point" and the "last candidate point" will not be taken into account in the results sections.   
 
 \begin{figure}
 \centering
@@ -204,62 +194,84 @@ The candidate point $CP_{i}$ represents the index of the candidate point $i$ in 
 \label{fig:candidate_points}
 \end{figure}
 
-A sub-stroke $S_{i}^{j}$ is a sub-sequence of the stroke $CP_{i}$ that starts at candidate point $CP_{j}$ and ends at candidate point , i.e.
+Let $CPA$ refer to the array containing the indexes of the candidate segmentation point in the stroke $S$. i.e. $CPA_{i}$ contains the index of the $i^{th}$ CP. Since the first point of the stroke $S$ (i.e. $p_{1}$) is always the beginning of a letter and the last point in the stroke $S$ (i.e. $p_{n}$) is always and last point of a letter, the \emph{Generalized Candidate points array} ($GCPA$) will be a zero based array and will contain two more cells than the $CPA$. Assuming $L$ candidate points were found, below how $GCPA$ is defined: 
 \begin{equation}
-S_{i}^{j}=(p_{k})_{k=CP_{i}}^{CP_{j}}; i<j
+GCPA_{i} =\begin{cases} 1, & \mbox{if } i=0 \\
+							CPA_{i}, & \mbox{if } 1\leq i \leq L \\
+							n, & \mbox{if } i=L+1 
+			\end{cases}				
 \end{equation}
-
-The sub-stroke  $S_{i}^{j}$ may represent a letter or a portion of a letter. In some cases it also may represent a multiple connected letters. The scores matrix $D\in\mathbb{R}^{nXn}$ contains the resemblance scoring for all sub-strokes. 
+A sub-stroke $S_{i}^{j}$ is a sub-sequence of the stroke $S$ that starts at $GCPA_{i}$ and ends at $GCPA_{j}$ , i.e.
+\begin{equation}
+S_{i}^{j}=(p_{k})_{k=GCPA_{i}}^{GCPA_{j}}; i<j
+\end{equation}
+The Sub-sequence Scoring Matrix $D\in\mathbb{R}^{n\times n}$ contains the resemblance scoring obtained by the classifier to the corresponding sub-strokes in$S$, i.e:
 \begin{equation}
 D(i,j)=Score(S_{i}^{j})
 \end{equation}
-Score($S_{i}^{j}$) is the classification scoring given by the letter classifier to the sub-stroke $S_{i}^{j}$. It is s clear that $D$ is an upper triangular matrix. For the sake of good performance as well as segmentation correctness we add a locality constraint to improve performance and to avoid marginal segmentation. That is, we only calculate a narrow band of the $D$ matrix above the diagonal. The band width is no larger than $L$.
+It is clear that $D$ is an upper triangular matrix. In-order to maintain good performance as well as high segmentation accuracy, we added a locality constraint to avoid marginal segmentation. That is, we only calculate a narrow band of the $D$ matrix above the main diagonal. Assume the band width is equal to $B$.
 \begin{equation}
-D(i,j)=\inf \Leftrightarrow j \leq i \vee j-i>L 
+D(i,j)=\inf \Leftrightarrow j \leq i \vee j-i>B 
 \end{equation}
+Our hypothesis is that sub-strokes that represent a letter will achieve better resemblance scoring, i.e. $D(i,j)$ value will be smaller relative to other sub-stroke. The matrix $D$ is calculated while the stroke is being scribed. Once a new CP is identified, let it be the $j^{th}$ element in the $GCPA_{j}$ a new row and column are added to the matrix $D$. However since the matrix is upper triangular matrix and also the relevant cells are constrained by $B$ width band, the maximal number of cells that will be actually calculated is $B$, all located in the new column. Formally, only the cells $D(k,j)$ which maintain $j-B\leq k \leq j-1$ will be calculated.\\
 
-The matrix $D$ is calculated while the stroke is being scribed. Once a new candidate point is identified, a new row and column is added to the matrix with the corresponding Score($S_{i}^{j}$) for each added cell in the band of the lower triangular matrix. It can be easily noted that the number of cells calculates in the limited band is $O(LN)$ where $N$ is the number of candidate points in the stroke. 
-A letters classifier that is described in depth in [my paper] is used to score the sub-strokes. For the sake of completeness, here we will outline the main idea of the classification system. The classifier uses Earth movers Distance embedding technique descried in \cite{shirdhonkar2008approximate} to project samples of the Arabic letters to a low dimensional space. Since the embedding is into the L1 space, given a sequence, the k-NN are found using k-dtree. The exact resemblance score is determined by a minimum score that is given by a predefined linear combination of the $L_{1}$ distance in the embedding space and Sokoe-Chuba DTW.
+A letters classifier that is described in depth in \emph{[my paper]} is used to score the sub-strokes. For the sake of completeness, here we will outline the main idea of the classification system. The classifier uses Shape Context to extract the pattern feature, then Earth movers Distance embedding technique descried in \cite{shirdhonkar2008approximate} to project samples of the Arabic letters to a high dimensional $L_{1}$ space. A combination of Principle Component Analysis (PCA) and Linear Discrimination Analysis (LDA) is used to reduce the samples dimensionality and k-NN are found using k-dtree. The exact resemblance score is determined by a minimum score that is given by a predefined linear combination of the $L_{1}$ distance in the embedding space and Sokoe-Chuba DTW.\\
 
-The classifier receives a sequence and a position, and it contains 4 databases; each database contains letter samples in a certain position (Ini, Mid, Fin or Iso) regardless of the letter label. As mentioned before a stroke can contain a single or several letters. Here we enumerate all the letters positions options that a stroke can contain.  
-
+The classifier contains four databases, one for each letter position. It receive a sequence and a position (Ini, Mid, Fin and Iso).
+As mentioned earlier a stroke spans from the "mouse-down" to the "mouse-up" event. A stroke that contains a complete WP may contain only the following letters position sequence: \{Iso\} or \{$Ini,Mid^{*},Fin$\}.
+However since a stroke could contain a partial WP, the letters of the stroke may have one of the following options, where the  $^{+}$ notation represents more than one occurrence and $^{*}$ notation represents zero or more occurrences.:
 \begin{multicols}{2}
 \begin{itemize}
-    \item $Ini$
-    \item $Mid^{+}$
     \item $Fin$
+    \item $Iso$
+    \item $Mid^{+}$
     \item $Ini,Mid^{*},Fin$
-    \item $Ini,Mid^{+}$
+    \item $Ini,Mid^{*}$
     \item $Mid^{+},Fin$
 \end{itemize}
 \end{multicols}
-Where $^+$ represent more than one occurrence and $^*$ represents zero or more occurrences. The $D_p$ matrix below demonstrates the databases in which the classifier will look into when trying to find the closest candidates. In Equation \ref{dp_matrix}, the Greek letter represents the set of position databases that the sub-stroke may belong to:
+ 
+In order to maximize performance and accuracy, the system should attempt to look for the letter label in the smallest number of databases. 
+To make the following explanation clearer let us define the following: 
+Let $S$ be a sequence which contains $L$ candidate points:\\
+\textbf{Initial Subsequence.} A sub-sequence $S_1^k$ where $ 1< k \leq L+1$ will be given the name \emph{Initial Subsequence} (IS).\\
+\textbf{Medial Subsequence.} A sub-sequence $S_m^k$ where $m \geq 2 \wedge m< k \leq L$ will be name \emph{Medial Subsequence} (MS).\\
+\textbf{Final Subsequence.} A sub-sequence $S_k^{L+1}$ where $k \leq 1$ will be referred to as \emph{Final Subsequence} (FS).\\
+
+The $D_p$ matrix below demonstrates the databases in which the system will require the classifier to look into. It is important to note that the $D$ matrix is filled while the stroke is being written, thus the system has no knowledge on how many candidate points the stroke will end up having or when the writer will end the stroke. However the absence of this knowledge does not affect our local decision because the decision only relies on the fact that as long as the writer did not raise the pen every candidate point found does not represent a final letter. Given the definition above below we present 4 types of sub-sequences that were given the names $\alpha$, $\beta$, $\chi$ and $\delta$ which relates the between the cell location in the $D$ matrix and the database that the classifier will look for the best matches.
+\begin{itemize}
+	\item \textbf{$\alpha$ subsequence:} IS which is not an FS may contain an initial or medial letter only.
+	\item \textbf{$\beta$ subsequence:} MS can contain only a medial letter.
+	\item \textbf{$\chi$ subsequence:} FS which is not an an IS can contain only a medial or final letter.
+	\item \textbf{$\delta$ subsequence:} IS which is also and IS can represent letter in any position.
+\end{itemize}
 
 \begin{equation}
 D_{p}=
-\left( \begin{array}{cccccc}
-\infty & \alpha & \alpha & \alpha & \cdots & \delta \\
-\infty & \infty & \beta & \beta & \cdots & \chi \\
-\infty & \infty & \alpha & \beta & \cdots & \chi \\
-\infty & \infty & \infty & \infty & \cdots & \chi \\
-\vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
-\infty & \infty & \infty & \infty & \cdots & \infty \end{array} \right)
+\left( \begin{array}{ccccccc}
+\infty 	& \alpha & \alpha & \alpha  & \cdots & \alpha & \delta \\
+\infty  & \infty  & \beta   & \beta   & \cdots  & \beta  & \chi    \\
+\infty  & \infty  & \infty   & \beta   & \cdots  & \beta  & \chi    \\
+\vdots & \vdots & \vdots  & \vdots & \ddots  & \vdots & \vdots \\
+\infty  & \infty  & \infty   & \infty   & \cdots  & \beta  & \chi    \\
+\infty  & \infty  & \infty   & \infty   & \cdots  & \infty  & \chi    \\
+\infty  & \infty  & \infty   & \infty   & \cdots  & \infty  & \infty \end{array} \right)
 \label{dp_matrix}
 \end{equation}
+%
+%\setlength\multicolsep{1pt}
+%\begin{multicols}{2}
+%\begin{itemize}
+%    \item[] $\alpha=\{Ini \vee Mid\}$
+%    \item[] $\beta=\{Mid\}$
+%    \item[] $\chi=\{Mid \vee Fin\}$
+%    \item[] $\delta=\{Iso \vee Ini \vee Mid \vee Fin\}$
+%\end{itemize}
+%\end{multicols}
 
-\setlength\multicolsep{1pt}
-\begin{multicols}{2}
-\begin{itemize}
-    \item[] $\alpha=\{Ini \vee Mid\}$
-    \item[] $\beta=\{Mid\}$
-    \item[] $\chi=\{Mid \vee Fin\}$
-    \item[] $\delta=\{Iso \vee Ini \vee Mid \vee Fin\}$
-\end{itemize}
-\end{multicols}
+For each subsequence, the recognition system returns a set of K potential letters candidates, with their resemblance scoring (in our implementation $K=3$). In the current implementation we consider only the candidate with the best (minimal) scoring, however, any function taking into consideration the scoring returned by the classifier for all the candidate can be used to determine the final scoring of the cell.
+Figure \ref{substrokes_demo} visually demonstrates the Subsequences that is scored for each cell in matrix $D$.
 
-As mentioned before, for each subsequence, the recognition system returns a set of 3 potential letters candidates, with their resemblance scoring. In the current implementation we consider only the candidate with the best (minimal) scoring . In a future work we can evaluate other scoring technique that will be based on other scoring technique that will take into consideration all the relevant candidates.
-In figure 5 and table [] we demonstrate the idea of the segmentation points nomination and the Subsequences matrix.
-Table [] visually demonstrates the subsequences of the word shown in the figure above. Note that we have eliminated the first column and the last row of the matrix since it contains no subsequences.
 
 \begin{figure}
 \renewcommand{\arraystretch}{2}
@@ -305,12 +317,12 @@ $CP_{6}$
 \end{figure}
 
 \subsection{Second  Stage: Candidate points sieving and scoring correction}
-In this stage we eliminate redundant segmentation points. The elimination is based on the following rules:
+In this stage we eliminate redundant segmentation points found in the over-segmentation process found in the previous stage. The elimination is based on the following rules:
 
 \begin{itemize}
-\item [Rule 1]: Inner Segmentation point lies close to the baseline. 
-\item [Rule 2]: Segmentation points do not reside in loops.
-\item [Rule 3]: A sub-stroke length/area is proportional to the stroke/length of the containing stroke.
+	\item [Rule 1]: Inner Segmentation point lies close to the baseline. 
+	\item [Rule 2]: Segmentation points do not reside in loops.
+	\item [Rule 3]: A sub-stroke length/area is proportional to the stroke/length of the containing stroke.
 \end{itemize}
 
 The first is based on the fact that segmentation point lies on the baseline (see []), thus points that are mainly far from the baseline are eliminated. The baseline is proved to be an important piece of information in both segmentation and recognition domains of both on-line and off-line handwriting recognition. In words recognition, it plays a role in determining if an additional stroke to differentiate between diacritic dots according to their position from the baseline (above or under).
@@ -323,16 +335,24 @@ In some cases candidate segmentation points are incorrectly nominated on areas t
 \begin{figure}
 \centering
 \includegraphics[width=6cm]{./figures/candidate_in_no_horizontal}
-\caption{Incorrect nomination of a candidate point that lays on a Segmentation fragment.}
+\caption{The main body of Arabic word \RL{`yn}. CPs are colored in cyan, Segmentation points are colored in red, a the green areas ensigns that CPs merge has taken place. Three types of false candidate points can be seen: 1. CP on the HF of the letter \RL{-`}. 2. A candidate point that do not reside on a HF. 3. A CP on the valley of the letter \RL{-n}. }
 \label{fig:candidate_in_no_horizontal}
 \end{figure}
 
 In several cases we encountered candidate points that reside on the same horizontal fragment. [why does it happen?]. We filter out this redundant candidate points in the nomination process and do not wait till this filtering phase. The reason is that since we calculate a narrow band of the Scoring matrix, leaving the impermissible candidate points will result in low performance since highly over segment the word will cause also the system to miss letters because we calculate only a portion a narrow band of the scoring matrix. If such case is identified by the nomination algorithm the medial point between the adjacent candidate points is taken.
 
+\subsubsection{Baseline detection}
+Once the entire stroke is available, a baseline detection algorithm is activated only if more than four CP's were detected. The reason for this threshold is to prevent the baseline detection procedure to be activated on small strokes where the baseline can't be reliably determined. To find the handwritten stroke's baseline, the vertical density histogram of the re-sampled stroke is used. The $\Delta y$ of the stroke is calculated and partitioned to 10 intervals, then the center of the of the most common interval is calculated $I_{max}$. A candidate point $CP$ is filtered out if the following holds:
+\begin{equation}
+|Y(CP)-I_max|>2*max(|I|,0.15) 
+\end{equation}
+Where $Y(\cdot)$ is the y coordinate of the CP and $|I|$ is the length of the interval. 
+Filtering out CPs that are relatively far from the baseline has proven to be very effective in eliminating false CP's that reside on valleys of several letters, such as \RL{q}, \RL{s} and \RL{n}, in the their final and isolated positions. These CPs are usually challenging because they tend to be included in the final set of candidate points if not filtered out. An example can be seen in figure \ref{fig:candidate_in_no_horizontal}, note the candidate point (cyan) inside the last letter \RL{-n}. 
+
 \subsection{Third  Stage: Segmentation Selection}
 The goal of this phase is to select the best segmentation points set among the candidate segmentation points. It is done by finding the best segmentation path in $D$ which represent the final segmentation. 
  
-A path with the length in the scoring matrix $D^{mXn}$ is defined as follows:  
+A path with the length in the scoring matrix $D^{m\times n}$ is defined as follows:  
 \begin{enumerate}
 \item First link: $p_{1}=(1,j)$
 \item $p_{k}=(i,j)\Rightarrow p_{k+1}=(j,r);s.t.:r>j \forall 1<k<l $
