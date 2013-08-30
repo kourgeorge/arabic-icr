@@ -4,10 +4,6 @@ function ResampledSequence = ResampleSequence( Sequence, Nt )
 %   [~,SimplifiedContour] = SimplifyContour( CharacterSequence)
 %   resampleSequence( SimplifiedContour ,10)
 
-% here is a simple polygon, a triangle. Note that
-% I've wrapped the ends, so that the last point is
-% also the first point. This is necessary.
-
 %Sequence = [Sequence; Sequence(1,:)]
 px = Sequence(:,1)';
 py = Sequence(:,2)';
@@ -25,8 +21,7 @@ sply = mkpp(t,[diff(py(:))./diff(t'),py(1:(end-1))']);
 
 % now interpolate the polygon splines, splx and sply.
 % Nt is the number of points to generate around the
-% polygon. The first and last points should be replicates
-% at least to within floating point trash.)
+% polygon.
 tint = linspace(0,tmax,Nt);
 
 qx = ppval(splx,tint);
