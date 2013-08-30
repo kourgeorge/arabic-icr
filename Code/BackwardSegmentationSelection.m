@@ -14,7 +14,7 @@ while (k>1)
     SPIndexes = [SPIndexes, minIndex];
 end
 
-SegmentationPointsData = fliplr(SegmentationPointsData);
+SegmentationPointsData = flipud(SegmentationPointsData);
 SPIndexes = fliplr(SPIndexes);
 end
 
