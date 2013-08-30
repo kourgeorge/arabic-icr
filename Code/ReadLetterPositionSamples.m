@@ -7,7 +7,7 @@ if (~exist(LetterPositionFolder,'dir'))
 end
 LetterPositionFolderList = dir (fullfile(LetterPositionFolder,'*.m'));
 LetterPositionFolder
-numSamples = min(600,length(LetterPositionFolderList))
+numSamples = min(200,length(LetterPositionFolderList))
 Samples = cell(1,numSamples);
 for i = 1:numSamples
     current_object = LetterPositionFolderList(i);
