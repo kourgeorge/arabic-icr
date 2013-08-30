@@ -12,7 +12,6 @@ Sequences = [];
 % Clean directory from image files
 delete([LettersFolder,'\*.jpg']);
 % get all files names (only .m files exist at this point.)
-names = dir(LettersFolder);
 names = {names(~[names.isdir]).name};
 
 % Rename all files names

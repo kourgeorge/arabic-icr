@@ -12,9 +12,9 @@ while (~isempty(candidatesSet))
     
     [~,endP1] = min (minScoresTable(:,P1));
     SPIndexes = [SPIndexes, endP1];
-    candidatesSet = candidatesSet(candidatesSet>endP1);
     SegmentationScore = SegmentationScore + minScoresTable(endP1,P1);
     minScoresTable = RemoveIntervalFromMinMatrix(minScoresTable, P1, endP1);
+    candidatesSet = candidatesSet(candidatesSet>endP1);
     P1 = endP1;
     
     [~,beginP2] = min (minScoresTable(P2,:));
