@@ -317,15 +317,15 @@ $CP_{6}$
 \end{figure}
 
 \subsection{Second  Stage: Candidate points sieving and scoring correction}
-In this stage we eliminate redundant segmentation points found in the over-segmentation process found in the previous stage. The elimination is based on the following rules:
+In this stage we eliminate redundant segmentation points found in the over-segmentation process of the previous stage. The elimination is based on the following rules:
 
 \begin{itemize}
-	\item [Rule 1]: Inner Segmentation point lies close to the baseline. 
-	\item [Rule 2]: Segmentation points do not reside in loops.
-	\item [Rule 3]: A sub-stroke length/area is proportional to the stroke/length of the containing stroke.
+	\item[] \textbf{Rule 1:} Inner Segmentation point lies close to the baseline. 
+	\item[] \textbf{Rule 2:} Segmentation points do not reside in loops.
+	\item[] \textbf{Rule 3:} A sub-stroke length/area is proportional to the stroke/length of the containing stroke.
 \end{itemize}
 
-The first is based on the fact that segmentation point lies on the baseline (see []), thus points that are mainly far from the baseline are eliminated. The baseline is proved to be an important piece of information in both segmentation and recognition domains of both on-line and off-line handwriting recognition. In words recognition, it plays a role in determining if an additional stroke to differentiate between diacritic dots according to their position from the baseline (above or under).
+The baseline is proved to be an important piece of information for both segmentation and recognition in both on-line and off-line handwriting recognition. In the recognition process, it plays a role in determining the type of the diacritic according to their position from the baseline (above or under). In this work we use the baseline to determine if a candidate point is a possible segmentation point according to its distance from the baseline. We don't need to determine the exact position of the baseline since all we need to do is to make sure that the candidate points are in a reasonable distance from the baseline.
 The second rule is clear since in most writing styles, segmentation point do not reside inside a loop.
 The third rule's goal is to avoid high scoring resulted for discordant scaling of the letters; a scoring correction should be employed. It aims to reduce the effect of scaling problem. To illustrate the discordant scaling problem, see figure below. The suffix of the letter \RL{d} is very similar to the letter \RL{-a}. The only way to visually discriminate between them is by comparing the scaling of this suffix to the whole stroke dimensions. Thus this phase refines the recognition results according the subsequence scale in accordance to the sequence scale. We have penalized sub-strokes that are disproportional to the stroke size by multiplying the score of each sub-stroke with a Gaussian normalized by the stroke area/Length.
 In some cases candidate segmentation points are incorrectly nominated on areas that are not horizontal, this is caused from the fact that the nomination is done while the word is being scribed, and our filtering algorithm should be corrected to handle this case.
@@ -335,7 +335,7 @@ In some cases candidate segmentation points are incorrectly nominated on areas t
 \begin{figure}
 \centering
 \includegraphics[width=6cm]{./figures/candidate_in_no_horizontal}
-\caption{The main body of Arabic word \RL{`yn}. CPs are colored in cyan, Segmentation points are colored in red, a the green areas ensigns that CPs merge has taken place. Three types of false candidate points can be seen: 1. CP on the HF of the letter \RL{-`}. 2. A candidate point that do not reside on a HF. 3. A CP on the valley of the letter \RL{-n}. }
+\caption{The main body of Arabic word \RL{`yn}. CPs are colored in cyan, Segmentation points are colored in red, a the green areas ensigns that CPs merge has taken place. Three types of false candidate points can be seen: 1. CP on the HF of the letter \RL{`-}. 2. A candidate point that do not reside on a HF. 3. A CP on the valley of the letter \RL{-n}. }
 \label{fig:candidate_in_no_horizontal}
 \end{figure}
 
@@ -350,15 +350,20 @@ Where $Y(\cdot)$ is the y coordinate of the CP and $|I|$ is the length of the in
 Filtering out CPs that are relatively far from the baseline has proven to be very effective in eliminating false CP's that reside on valleys of several letters, such as \RL{q}, \RL{s} and \RL{n}, in the their final and isolated positions. These CPs are usually challenging because they tend to be included in the final set of candidate points if not filtered out. An example can be seen in figure \ref{fig:candidate_in_no_horizontal}, note the candidate point (cyan) inside the last letter \RL{-n}. 
 
 \subsection{Third  Stage: Segmentation Selection}
-The goal of this phase is to select the best segmentation points set among the candidate segmentation points. It is done by finding the best segmentation path in $D$ which represent the final segmentation. 
+The goal of this phase is to select the best segmentation points set among the candidate segmentation points. It is done by finding a segmentation path in $D$ having best scoring possible. 
  
-A path with the length in the scoring matrix $D^{m\times n}$ is defined as follows:  
+A segmentation path $\pi$ with length $L$ in matrix $D^{m\times n}$ must have the following form: $\pi=(1,a_{1}),(a_{1},a_{2}),(a_{2},a_{3}),...,(a_{l},n)$.
+It is formally defined as follows:
 \begin{enumerate}
-\item First link: $p_{1}=(1,j)$
-\item $p_{k}=(i,j)\Rightarrow p_{k+1}=(j,r);s.t.:r>j \forall 1<k<l $
-\item Last link: $p_{l}=(1,n)$
+\item First link: $\pi_{1}=(1,\_)$
+\item $ \forall (1<k<L): \mbox{ if } \pi_{k-1}=(i,j) \mbox{ then } \pi_{k}=(j,r) \mbox{ s.t } j<r<n$
+\item Last link: $\pi_{L}=(\_,n)$
 \end{enumerate}
-Three algorithms are proposed in this work. The first was given the name "Forward Segmentation Selection" (FSS) and the other is was named the “Backward Segmentation Selection” (BSS) and the third named “Greedy Segmentation Selection” (GSS). The final segmentation is the segmentation that has the minimal between the FSS and BSS and GSS normalized by the number of Segmentation points. In the algorithm below, is the set of candidate points Including the pen-down point.  
+The scoring of the path $\pi$ is defined as follows:
+\begin{equation}
+\Pi = \Sigma_{i=1}^{L}{D(\pi_{i})}
+\end{equation}
+Two algorithms are proposed in this work for finding the best segmentation path, i.e. the path $\pi$ with the smallest $\Pi$ possible. The first was given the name "Forward Segmentation Selection" (FSS) and the other is was named the “Backward Segmentation Selection” (BSS) and the third named “Greedy Segmentation Selection” (GSS). The final segmentation is the segmentation that has the minimal between the FSS and BSS and GSS normalized by the number of Segmentation points. In the algorithm below, is the set of candidate points Including the pen-down point.  
 
 %\begin{figure}
 %\begin{algorithmic}
