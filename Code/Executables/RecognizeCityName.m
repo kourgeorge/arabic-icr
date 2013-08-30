@@ -1,6 +1,6 @@
 function [ WPsResults , Name] = RecognizeCityName(xmlFile, LoadDataStructure, OutputFolder )
 %RecognizeCityName Summary of this function goes here
-%   RecognizeCityName( 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\ParsedADABWords\1232530410536.xml' , true, 'C:\OCRData\StrokeOutput\')
+%   RecognizeCityName( 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\TestSet\1233527638652.xml' , true, 'C:\OCRData\StrokeOutput\')
 
 global LettersDataStructure;
 if (LoadDataStructure ==true)
@@ -36,7 +36,8 @@ for i=1:length(NormalizedWPStructArray)
     correctWPRecognition = IsWPRecognizedCorrectly(WPResults,adaptedStr);
     if (correctWPRecognition == true)
         correctSegmentation = true;
-        TP_SP =  length(adaptedStr);
+        %the -1 is to avoid taking into account the last point.
+        TP_SP =  length(adaptedStr) -1 ;
         FP_SP = 0 ;
         FN_SP = 0;
     else
@@ -96,8 +97,17 @@ end
 
 function Res = AdaptString(str)
 Res = strrep(str, '_', '');
-Res = strrep(Res, 'Y', 'B');
-Res = strrep(Res, 'N', 'B');
-Res = strrep(Res, '6', '8');
-Res = strrep(Res, 'K', 'L');
+
+Prefix = Res(:,1:end-1);
+Suffix = Res(:,end);
+
+Prefix = strrep(Prefix, 'Y', 'B');
+Prefix = strrep(Prefix, 'N', 'B');
+Prefix = strrep(Prefix, '6', '8');
+Prefix = strrep(Prefix, 'K', 'L');
+
+Suffix = strrep(Suffix, '6', '8');
+
+Res = [Prefix,Suffix];
+
 end

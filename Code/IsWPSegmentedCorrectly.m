@@ -3,18 +3,21 @@ function [SegmentedCorrectly, TP_SP, FP_SP, FN_SP] = IsWPSegmentedCorrectly( WPR
 %   Detailed explanation goes here
 
 Sequence = WPInfo.Sequence;
-GT_SPIndexes = WPInfo.SPs;
+%the -1 is to avoid taking account the last pont.
+GT_SPIndexes = WPInfo.SPs(1:end-1,:);
+WPResults_NoLastPoint = WPResults(1:end-1);
+
 GT_SP_Array = zeros(length(GT_SPIndexes),1);
 nomatch = 0;
-for i=1:length(WPResults)
-    currentSP = WPResults(i).Point;
+for i=1:length(WPResults_NoLastPoint)
+    currentSP = WPResults_NoLastPoint(i).Point;
     matchedToTrueSP = false;
     %look for the corresponding Segmentation Point is the GT.
     for k=1:length(GT_SPIndexes)
         if(GT_SPIndexes(k) < currentSP)
-            InfoMeas = InformationMeasure(Sequence(GT_SPIndexes(k):currentSP,:),1/75);
+            InfoMeas = InformationMeasure(Sequence(GT_SPIndexes(k):currentSP,:),1/75,0.6);
         else
-            InfoMeas = InformationMeasure(Sequence(currentSP:GT_SPIndexes(k),:),1/75);
+            InfoMeas = InformationMeasure(Sequence(currentSP:GT_SPIndexes(k),:),1/75,0.6);
         end
         if (InfoMeas < 1)
             GT_SP_Array(k) = GT_SP_Array(k) + 1;
