@@ -25,8 +25,7 @@ if(IsMouseUp==true)
     
     [ SegmentationPointsForward, sumForward, FSPs] = ForwardSegmentationSelection( RecState.MinScoreTable,  RecState.RecognitionScoreTable);
     [ SegmentationPointsBackwards, sumBackward, BSPs] = BackwardSegmentationSelection( RecState.MinScoreTable,  RecState.RecognitionScoreTable);
-    [ SegmentationPointsGreedy, sumGreedy, GSPs] = GreedySegmentationSelection( RecState.MinScoreTable,  RecState.RecognitionScoreTable);
-    
+    [ SegmentationPointsGreedy, sumGreedy, GSPs] = GreedySegmentationSelection( RecState.MinScoreTable,  RecState.RecognitionScoreTable); 
     [ SegmentationPointsYA, sumYA, YASPs] = YASegmentationSelection( RecState.MinScoreTable,  RecState.RecognitionScoreTable);
 
     ScoreForward = sumForward/(length(SegmentationPointsForward));
@@ -65,7 +64,7 @@ else    %Mouse not up
             return;
         elseif (IsClosingHS(resampledSequence,SlopeRes,RecState,RecParams))
             [HS,RecState] = EndHS(RecState,RecParams);
-            midPoint=CalcuateHSMidPoint(HS);
+            midPoint=CalcuateHSMidPoint(HS,RecState);
         else
             return;
         end
@@ -91,7 +90,7 @@ sequence  = RecState.Sequence;
 Res = ContainsInformation(sequence,lastPointIndex, midPoint, RecParams);
 if (Res==false)
     HS = [RecState.CandidatePointsArray(end),midPoint];
-    newPoint=CalcuateHSMidPoint(HS);
+    newPoint=CalcuateHSMidPoint(HS,RecState);
     RecState.CandidatePointsArray = RecState.CandidatePointsArray(1:end-1);
     MarkOnSequence('MergedCandidatePoint',RecState.Sequence,newPoint);
 end
@@ -161,7 +160,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function Res = ContainsInformation(Sequence,startPoint, endPoint, RecParams)
 
-if (InformationMeasure( Sequence(startPoint:endPoint,:), RecParams.AbsoluteSimplificationEpsilon )>1)
+if (InformationMeasure( Sequence(startPoint:endPoint,:), RecParams.AbsoluteSimplificationEpsilon, RecParams.MaxSlopeRate  )>1)
     Res = true;
 else
     Res = false;
@@ -202,8 +201,18 @@ HS = [RecState.HSStart,size(RecState.Sequence,1)-RecParams.K];
 RecState.HSStart = -1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function MidPoint = CalcuateHSMidPoint(HS)
-MidPoint = round((HS(1)+HS(2))/2);
+function MidPoint = CalcuateHSMidPoint(HS,RecState)
+if (HS(2)-HS(1)==1)
+    MidPoint = HS(2);
+    return;
+end
+originalHS = RecState.Sequence(HS(1):HS(2),:);
+resampledSequence = ResampleContour(originalHS,5);
+mid = resampledSequence(3,:);
+D = pdist2(originalHS,mid,'euclidean');
+[~,centerIndex] = min(D);
+MidPoint = HS(1) + centerIndex;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function Point  = LastCandidatePoint(RecState)
@@ -245,7 +254,7 @@ if (gUI==true)
             %plot(findobj('Tag','AXES'),Sequence(Point-1:Point,1),Sequence(Point-1:Point,2),'k.-','Tag','SHAPE','LineWidth',5);
             return;
         case 'MergedCandidatePoint'
-            plot(findobj('Tag','AXES'),Sequence(Point-3:Point,1),Sequence(Point-3:Point,2),'g.-','Tag','SHAPE','LineWidth',5);
+            plot(findobj('Tag','AXES'),Sequence(Point-2:Point,1),Sequence(Point-2:Point,2),'g.-','Tag','SHAPE','LineWidth',5);
             return;
         otherwise
             return;
