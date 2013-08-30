@@ -3,9 +3,8 @@ function TestCityNameRecognizer()
 global LettersDataStructure;
 global Statistics;
 LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
-StrokesDictionaryFolder  = 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\ParsedADABWords_Copy';
+CityNamesXMLFolder  = 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\TestSet';
 
-%HandleOutputFolder
 Comments = input('Enter Experiment comments\n','s');
 OutputFolder = ['C:\OCRData\StrokesSegmentationOutput (',Comments,')'];
 
@@ -13,21 +12,24 @@ if(~exist(OutputFolder,'dir'))
     mkdir(OutputFolder);
 end
 
+xmlFolder = dir(fullfile(CityNamesXMLFolder,'*.xml'));
+
 diary([OutputFolder,'\Results.txt']);
 diary on;
+disp(Comments);
+disp(CityNamesXMLFolder);
 
-NumSamples = 30;
+NumSamples = 1000;
 
-startFileIndex = 1000;
+%startFileIndex = 1000;
 Statistics = InitializeStatistics();
-strokesFilesList = dir (StrokesDictionaryFolder);
-for i=3+startFileIndex:startFileIndex+min (length(strokesFilesList),NumSamples)
-    current_object = strokesFilesList(i);
+for i=1:min (length(xmlFolder),NumSamples)
+    current_object = xmlFolder(i);
     IsFile=~[current_object.isdir];
     FileName = current_object.name;
     if (IsFile)
-        disp([num2str(i-2-startFileIndex),': ','                  ',FileName]);
-        [WPsResults,Name] = RecognizeCityName( [StrokesDictionaryFolder,'\',FileName], false, OutputFolder );
+        disp([num2str(i),': ','                  ',FileName]);
+        [WPsResults,Name] = RecognizeCityName( [CityNamesXMLFolder,'\',FileName], false);%, OutputFolder );
         Statistics = CollectStatistics (Statistics, WPsResults, GetNumWordsInName (Name));
         
     end
@@ -94,6 +96,7 @@ SP_TP = Statistics.SPTruePositive;
 SP_FP = Statistics.SPFalsePositive;
 SP_FN = Statistics.SPFalseNegative;
 
+SP_TotalNumber = SP_TP+SP_FN; 
 SP_Precision = SP_TP/(SP_TP+SP_FP);
 SP_Recall  = SP_TP/(SP_TP+SP_FN);
 
@@ -138,6 +141,7 @@ disp (['SP FN = ',num2str(SP_FN)]);
 disp (['SP Precision = ',num2str(SP_Precision)]);
 disp (['SP Recall = ',num2str(SP_Recall)]);
 disp (['Total Leters Num= ',num2str(TotalNumLetters)]);
+disp (['Total Segmentation Points = ',num2str(SP_TotalNumber)]);
 end
 
 function Statistics = InitializeStatistics()
