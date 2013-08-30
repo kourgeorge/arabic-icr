@@ -2,6 +2,11 @@ function [ AbsoluteSimplification, ProportionalSimplification] = SimplifyContour
 %CONTOURSIMPLIFICATION returns a simplified contour of the givem one using Recursive Douglas-Peucker Polyline Simplification.
 %   Detailed explanation goes here
 
+if (length(Contour)<3)
+    AbsoluteSimplification = Contour;
+    ProportionalSimplification = Contour;
+    return;
+end
 if (nargin <2)
     epsilon = 1/75; %default absolute epsilon 
 end
