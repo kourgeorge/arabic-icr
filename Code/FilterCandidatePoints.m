@@ -4,7 +4,7 @@ function [ RecState ] = FilterCandidatePoints( RecState )
 
 % 1. Filter in loops
 % 2. Filter ajecent candidate points that there is no info berween them
-% 3. 
+% 3. Filter nominated points that are 
 
 %     Dx = max(Sequence(:,1)) - min(Sequence(:,1));
 %     Dy = max(Sequence(:,2)) - min(Sequence(:,2));
@@ -25,6 +25,16 @@ function [ RecState ] = FilterCandidatePoints( RecState )
 %         end
 %     end
 %
+
+% We need to remove candidate points that are in loops!!
+% simplify/resample the whole stroke and check if a candidate point is on a
+% sufficently long horizontal segment.
+
+% % Perform simplidication of the area and then check the area of the cand
+% for i=2:length(RecState.CandidatePointsArray)-1
+%     candidatePointIndex = RecState.CandidatePointsArray(i);
+%     [~,propSimplifiedSequence] = SimplifyContour(RecState.Sequence(candidatePointIndex-10:candidatePointIndex+10), 1/75); 
+% end
 if (length(RecState.CandidatePointsArray)>4)
     CandidatePoints = [];
     for i=2:length(RecState.CandidatePointsArray)-1
