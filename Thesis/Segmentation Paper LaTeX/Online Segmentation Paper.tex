@@ -15,7 +15,7 @@
 %packages that were not copied from the IEEE template - need to check if it is valid to add them
 \usepackage{amssymb}
 \usepackage{multicol}
-\usepackage{algorithm2e}
+\usepackage[linesnumbered]{algorithm2e}
 
 %TODO: make sure that all citation are before the period and not after.
 %TODO: Add biography and image for me and for DR. Raid.
@@ -173,7 +173,34 @@ Ideally the whole process should be initiated on every new point received by the
 The nominated segmentation points in this stage is supposed to be an over-segmentation of the stroke. In table \emph{[]} in section \emph{[]} we show that almost all true segmentation points were included in the over-segmentation imposed in this stage. 
 It is important the note that this process is imperfect and may result in finding fragments that would not be classified as horizontal segment by a human perform the same task. However, it is important not to apply too many restrictions such imposing too large minimal length on the HF, since while extra CP can be easily filtered out in a later phase when the entire stroke is available, failing to find a CP can't be recovered.\\
 
-\emph{[mention the merge candidate point.]}
+To avoid the case where HF's are over identified, we have employed HF merging method that operates as follows: At every HF identification, we calculate the complexity measure of the stroke from the previous HF and if the result a too small the two HF is merged into a single HF.
+The reason for executing this operation while the stroke is being written and not waiting to the filtering stage is that over identification of HFs may result in extreme over-segmentation, and reduce the performance and accuracy of the selection stage. As can be seen in figure \ref{fig:candidate_in_no_horizontal} this stage may find very small HF that may result from the digitizer imperfections. 
+
+\subsection{Subsequence Complexity measure }
+\label{subsec:scm}
+This measure gives a numerical representation of the captured complexity of a sequence. It can be thought of as the amount of information stored in a sub-sequence or the complexity of the sequence. The more curved the sequence is the higher is the complexity value. We use this measure twice in this work. In the HF identification process as discussed earlier and also in the selected segmentation points validation step which we will discuss later. In the later, we need to determine if the candidate point found by the algorithm and the segmentation point that was identified by a human expert reside on the relatively same straight line over the stroke. The idea is demonstrated in figure \ref{fig:sequence_complexity}.
+A preprocessing is done to ensure this measure is invariant and unaffected of infinitesimal warpings so that it will give a uniform measure,. 
+Then, for each inner point in the subsequence (angle) $\phi=\angle(\overline{p_{i-1}p_{i}},\overline{p_{i}p_{i+1}})$ we calculate the parameter $\alpha_{i}$.
+\begin{equation}
+ \alpha_{i}=\frac{\pi-\phi_{i}}{\frac{\pi}{6}}
+\end{equation}
+The complexity measure is the defined as:
+\begin{equation}
+CM(S)=\Sigma_{i}\alpha_{i}
+\end{equation}
+
+\begin{figure}[h]
+     \begin{center}
+        \subfloat[sequence 1]{
+            \includegraphics[width=0.2\textwidth]{./figures/angles_1}
+        }
+        \subfloat[sequence 2]{
+           \includegraphics[width=0.2\textwidth]{./figures/angles_2}
+        }        
+    \end{center}
+    \caption{A graphical representation of the angles of a sequence. It can be seen that per our definition Sequence 1 Complexity measure is smaller than sequence 2 complexity measure.}
+   \label{fig:sequence_complexity}
+\end{figure}
 
 % Candidate point types: valid, invalid.
 % True segmentation point types:  found, Missed.
@@ -258,60 +285,51 @@ D_{p}=
 \infty  & \infty  & \infty   & \infty   & \cdots  & \infty  & \infty \end{array} \right)
 \label{dp_matrix}
 \end{equation}
-%
-%\setlength\multicolsep{1pt}
-%\begin{multicols}{2}
-%\begin{itemize}
-%    \item[] $\alpha=\{Ini \vee Mid\}$
-%    \item[] $\beta=\{Mid\}$
-%    \item[] $\chi=\{Mid \vee Fin\}$
-%    \item[] $\delta=\{Iso \vee Ini \vee Mid \vee Fin\}$
-%\end{itemize}
-%\end{multicols}
 
 For each subsequence, the recognition system returns a set of K potential letters candidates, with their resemblance scoring (in our implementation $K=3$). In the current implementation we consider only the candidate with the best (minimal) scoring, however, any function taking into consideration the scoring returned by the classifier for all the candidate can be used to determine the final scoring of the cell.
 Figure \ref{substrokes_demo} visually demonstrates the Subsequences that is scored for each cell in matrix $D$.
 
-
 \begin{figure}
 \renewcommand{\arraystretch}{2}
+%{\footnotesize
 \begin{tabular}{| c |c | c | c| c | c | c |}
 \hline
- & $CP_{1}$ & $CP_{2}$ & $CP_{3}$ & $CP_{4}$ & $CP_{5}$ & $CP_{6}$\\ 
+ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\ 
 \hline
-$CP_{1}$
+$1$
    & N/A
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/L}}
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/LB1}}
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/LB1B2}}
    & N/A & N/A \\
 \hline
-$CP_{2}$
+$2$
    & N/A & N/A
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/B1}}
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/B1B2}}
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/B1B2H1}}
    & N/A \\
 \hline
-$CP_{3}$
+$3$
    & N/A  & N/A & N/A
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/B2}}
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/B2H1}}
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/B2H}} \\
 \hline
-$CP_{4}$
+$4$
    & N/A & N/A & N/A & N/A
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/H1}}
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/H}} \\
 \hline
-$CP_{5}$
+$5$
    & N/A & N/A & N/A & N/A & N/A
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/H2}}\\
 \hline
-$CP_{6}$
+$6$
    & N/A & N/A & N/A & N/A & N/A & N/A \\
 \hline
 \end{tabular}
+%}
 \caption{Visual demonstration of subsequences of the word shown in figure \ref{fig:candidate_points}}
 \label{table:substrokes_demo}
 \end{figure}
@@ -363,116 +381,37 @@ The scoring of the path $\pi$ is defined as follows:
 \begin{equation}
 \Pi = \Sigma_{i=1}^{L}{D(\pi_{i})}
 \end{equation}
-Two algorithms are proposed in this work for finding the best segmentation path, i.e. the path $\pi$ with the smallest $\Pi$ possible. The first was given the name "Forward Segmentation Selection" (FSS) and the other is was named the “Backward Segmentation Selection” (BSS) and the third named “Greedy Segmentation Selection” (GSS). The final segmentation is the segmentation that has the minimal between the FSS and BSS and GSS normalized by the number of Segmentation points. In the algorithm below, is the set of candidate points Including the pen-down point.  
-
-%\begin{figure}
-%\begin{algorithmic}
-%$i=1$
-%$sum=0$
-%\WHILE{$i<|CS|$}
-%$j = \mathop {\arg \min }\limits_k \left( {D\left( {i,k} \right)} \right)$
-%$FSS = FSS \cup \left\{ j \right\}$
-%$sum = sum + D\left( {i,j} \right)$
-%$i=j$
-%\ENDWHILE
-%\end{algorithmic}
-%\caption{Forward Segmentation Selection (FSS)}
-%\end{figure}
+Two algorithms are proposed in this work for finding the best segmentation path, i.e. the path $\pi$ with the smallest $\Pi$ possible. The first algorithm was given the name \emph{Backward-Forward Segmentation Selection} (BFSS). The output of the algorithm described in \ref{alg:bfss} is a set, named \emph{Selected Segmentation Points} $SSP$, which contain indexes of the final segmentation points in $GCPA$. The first point of the stroke (namely, $GCPA[1]$ and $GCPA[n]$) are added to the output set $SSP$ as can be seen in lines 1 and 2. BFSS operates from the sides of the stroke toward the center. While the set of the unselected candidate points is not empty, in each iteration the algorithm selects two candidate points to include to the $SSP$ set. The selection of a the next candidate point is done by finding the next best sub-stroke, i.e. the cell with the least scoring that start with the current selected segmentation point.
+When a candidate point is added to the $SSP$ set "cleaning" operation is done to remove all the preceding candidate points that were not selected. For example, if $GCPA[i]$ was selected in the previous iteration and the current iteration $GCPA[i+2]$ is selected, all cells related to $GCPA[i+1]$ will be set to $\infty$ in the matrix $D$ to avoid this candidate point to be selected in a later iteration. Also all cells that represent a sub-stroke starting from candidate point $GCPA[i]$ or ending in $GCPA[i+2]$ will be set to $\infty$. Lines 7-10 handles the the segmentation of the left side of the word and the lines 11-15 handles the right side of the word. This algorithm is an combination of two algorithm we were suggested, the first that operates forward to select the segmentation path and the other is backward algorithm that start from the end of the word toward the start. However, we noted that the forward algorithm tended to under-segment the suffix of the stroke, i.e. missing true segmentation points and the other tended to under-segment the prefix of the stroke.  
 
 \begin{algorithm}
-$i=1$\;
+$cp_{a}=1$\;
+$cp_{b}=n$\;
 $sum=0$\;
-\While{$i<|CS|$}
-{
-	$j = \mathop {\arg \min }\limits_k \left( {D\left( {i,k} \right)} \right)$\;
-	$FSS = FSS \cup \left\{ j \right\}$\;
-	$sum = sum + D\left( {i,j} \right)$\;
-	$i=j$\;
-}
-\caption{Forward Segmentation Selection (FSS)}
-\label{alg:fss}
-\end{algorithm}
-
-
-%\begin{figure}
-%\begin{algorithmic}
-%$j={CS|}$
-%$sum=0$
-%\WHILE{$i<|CS|$}
-%$j = \mathop {\arg \min }\limits_k \left( {D\left( {k,j} \right)} \right)$
-%$BSS = BSS \cup \left\{ i \right\}$
-%$sum = sum + D\left( {i,j} \right)$
-%$j=i$
-%\ENDWHILE
-%\end{algorithmic}
-%\caption{Backward Segmentation Selection (BSS)}
-%\label{alg:bss}
-%\end{figure}
-
-\begin{algorithm}
-$j={|CS|}$\;
-$sum=0$\;
-\While{$i<|CS|$}
-{
-	$j = \mathop {\arg \min }\limits_k \left( {D\left( {k,j} \right)} \right)$\;
-	$BSS = BSS \cup \left\{ i \right\}$\;
-	$sum = sum + D\left( {i,j} \right)$\;
-	$j=i$\;
-}
-\caption{Backward Segmentation Selection (BSS)}
-\label{alg:bss}
-\end{algorithm}
-
-The idea in the following algorithm, is that in each iteration two segmentation point are selected, the first is the best score candidate point from the end of the stroke and the second is the best from the beginning. In this approach, it is less likely to step over segmentation point, like what happened in the FSS and BSS.
-
-\begin{algorithm}
-$p_{a}=1$\;
-$p_{b}=|CS|$\;
-$sum=0$\;
-$SSP=\{p_{a},p_{b}\}$\;
+$SSP=\{cp_{a},cp_{b}\}$\;
 \While{$SP \neq \emptyset$}
 {
-	$p_{a,next} = \mathop {\arg \min}\limits_k (D(p_{a,next},k))$\;
-	$SSP = SSP \cup \{p_{a,next}\}$\;
-	$sum = sum + D(p_a,p_{a,next})$\;
-	Remove all cells that represent a candidate point that has an index lower than $p_{a,next}$\;
-	$p_{a}=p_{a,next}$\;
-	$p_{b,next} = \mathop {\arg \min}\limits_k (D(k,p_{b,next}))$\;
-	$SSP = SSP \cup \{p_{b,next}\}$\;
-	$sum = sum + D(p_{b,next},p_b)$\;
-	Remove all cells that represent a candidate point that has an index larger than  $p_{b,next}$\;
-	$p_{b}=p_{b,next}$\;
+	$cp_{a,next} = \mathop {\arg \min}\limits_k (D(cp_a,k))$\;
+	$SSP = SSP \cup \{cp_{a,next}\}$\;
+	$sum = sum + D(cp_a,cp_{a,next})$\;
+	$UpdateMatrix(cp_a,cp_{a,next})$\;
+	$cp_{a}=cp_{a,next}$\;
+	
+	$cp_{b,next} = \mathop {\arg \min}\limits_k (D(k,cp_{b,next}))$\;
+	$SSP = SSP \cup \{cp_{b,next}\}$\;
+	$sum = sum + D(cp_{b,next},cp_b)$\;
+	$UpdateMatrix(cp_{b,next},cp_b)$\;
+	$cp_{b}=cp_{b,next}$\;
 }
 \caption{Backward-Forward Segmentation Selection (BFSS)}
 \label{alg:bfss}
 \end{algorithm}
-
-%\begin{figure}
-%\begin{algorithmic}
-%$p_{a}=1$
-%$p_{b}=|CS|$
-%$sum=0$
-%$SSP=\{p_{a},p_{b}\}$
-%\WHILE{$SP \neq \emptyset$}
-%$p_{a,next} = \mathop {\arg \min}\limits_k (D(p_{a,next},k))$
-%$SSP = SSP \cup \{p_{a,next}\}$
-%$sum = sum + D(p_a,p_{a,next})$
-%Remove all cells that represent a candidate point that has an index lower than $p_{a,next}$
-%$p_{a}=p_{a,next}$
-%$p_{b,next} = \mathop {\arg \min}\limits_k (D(k,p_{b,next}))$
-%$SSP = SSP \cup \{p_{b,next}\}$
-%$sum = sum + D(p_{b,next},p_b)$
-%Remove all cells that represent a candidate point that has an index larger than  $p_{b,next}$
-%$p_{b}=p_{b,next}$
-%\ENDWHILE
-%\end{algorithmic}
-%\caption{Backward-Forward Segmentation Selection (BFSS)}
-%\label{alg:bfss}
-%\end{figure}
+  
+The second algorithm, that was given the name \emph{Greedy Segmentation Selection} (GSS) operates completely differently. In every iteration, the cell with the best scoring is selected, namely, the selected cell represents a sub-sequence that has the best resemblance for a letter, thus this subsequence must be included in the final segmentation. If cell $D(i,j)$ was selected, both the candidate point $CP_{i}$ and $CP_{j}$ is added to the final set and every segmentation point between $i$ and $j$ are removed from the scoring matrix. 
 
 \begin{algorithm}
 $i={1}$\;
-$SP=\emptyset$\;
+$SSP=\emptyset$\;
 \While{$SP \neq \emptyset$}
 {
 	$p_{a,next} = \mathop {\arg \min}\limits_k (D(i.j))$\;
@@ -484,23 +423,6 @@ $SP=\emptyset$\;
 \label{alg:gss}
 \end{algorithm}
 
-%\begin{figure}
-%\begin{algorithmic}
-%$i={1}$
-%$SP=\emptyset$
-%\WHILE{$SP \neq \emptyset$}
-%$p_{a,next} = \mathop {\arg \min}\limits_k (D(i.j))$
-%$SSP = SSP \cup \{s,e\}$
-%$sum = sum + D(s,e)$
-%\STATE	Remove all cells that represent a candidate point between $CP_{i}$ and $CP_{j}$.
-%\ENDWHILE
-%\end{algorithmic}
-%\caption{Greedy Segmentation Selection (GSS)}
-%\label{alg:gss}
-%\end{figure}
-
-In GSS, in every iteration, the cell with the best scoring is selected thus the selected cell represents a sub-sequence that has the best resemblance for a letter, thus this subsequence must be included in the final segmentation. If cell $D(i,j)$ was selected, both the candidate point $CP_{i}$ and $CP_{j}$ is added to the final set and every segmentation point between $i$ and $j$ are removed from the scoring matrix.
-
 \emph{TODO: show several images of the segmentation process passing through the nomination, the filtering and finally the segmentation selection.}
 
 \section{Validation}
@@ -508,35 +430,6 @@ In GSS, in every iteration, the cell with the best scoring is selected thus the 
 In similar studies on segmentation, visually inspection take place to validate the segmentation. In this work, we applied an automatic validation process using a ground truth provided by the database. We have used the Subsequence complexity measure (SCM) described subsection \ref{subsec:scm} to automitacally determine if a Final segmentation point is a valid segmentation point (True Positive), i.e. it resides on the same horizontal point the true segmentation point is found, invalid, i.e. it resides on a horizontal segment that is not a real junction point between two connected letters (True Negative) and Missing segmentation points, i.e. the final does not include any point which reside on the same horizontal segment where a true segmentation was supposed to occur there (False Negative).  
 For each segmentation point found by our system, for it to be count as a true positive, the information measure between the real segmentation point (marked by an expert human) and the segmentation point sound by the system should be small.
 
-\subsection{Subsequence Complexity measure }
-\label{subsec:scm}
-The aim of this measure is to give a numerical confidence that if two points reside on the relatively same straight line over the stroke. To demonstrate the idea see figure below. From another point of view, it can be thought about as the amount of information stored in a sub-sequence or the complexity of the sequence. This notion is used in 2 places in our work:
-\begin{itemize}
-\item The Horizontal fragment identification.
-\item In the segmentation point validation step.
-\end{itemize}
-
-To calculate the complexity measure of a sequence, first we simplify the subsequence. Then, for each angle  $\phi=\angle(\overline{p_{i-1}p_{i}},\overline{p_{i}p_{i+1}})$ we calculate the parameter $\alpha_{i}$.
-\begin{equation}
- \alpha_{i}=\frac{\pi-\theta_{i}}{\frac{\pi}{6}}
-\end{equation}
-The complexity measure is the defined as:
-\begin{equation}
-CM(S)=\Sigma_{i}\alpha_{i}
-\end{equation}
-
-\begin{figure}[h]
-     \begin{center}
-        \subfloat[sequence 1]{
-            \includegraphics[width=0.2\textwidth]{./figures/angles_1}
-        }
-        \subfloat[sequence 2]{
-           \includegraphics[width=0.2\textwidth]{./figures/angles_2}
-        }        
-    \end{center}
-    \caption{A graphical representation of the angles of a sequence. It can be seen that per our definition Sequence 1 Complexity measure is smaller than sequence 2 complexity measure.}
-   \label{fig:sequence_complexity}
-\end{figure}
 
 \section{The Database}
 \label{sec:database}
@@ -644,7 +537,7 @@ Over segmentation can be caused from typing a letter in a weird form where it is
 \begin{figure}
 \centering
 \includegraphics[width=5cm]{./figures/oversegmentation_s}
-\caption{Over-segmentation in the letter س. These happens since this letter is very similar to the appearance to a combination of two consequtive ب (ـببـ) letters and only can be identified from the context and using the additional strokes }
+\caption{Over-segmentation in the letter \RL{S}. These happens since this letter is very similar to the appearance to a combination of two consecutive \RL{B} (\RL{-bb-}) letters and only can be identified from the context and using the additional strokes }
 \label{fig:oversegmentation_s}
 \end{figure}
 
@@ -668,7 +561,7 @@ The first mainly results from letter pairs that do not contain horizontal joint 
 \begin{figure}[h]
 \centering
 \includegraphics[width=5cm]{./figures/undersegmentation_w}
-\caption{An example of a late candidate point in the letter و.}
+\caption{An example of a late candidate point in the letter \RL{w}.}
 \label{fig:undersegmentation_w}
 \end{figure}
 
@@ -708,11 +601,11 @@ We will show that the maximal number of letters does not affect much the segment
 
 \section{Future Work}
 \label{sec:future_work}
-[we can fix the orientation problem in figure work by rotating by different angles but the ADAB sample are our system could easily handle samples to]
+\emph{[we can fix the orientation problem in figure work by rotating by different angles but the ADAB sample are our system could easily handle samples to]}
 
-[A scoring segmentation point probability techniques can be used to identify the more probable segmentation points]
+\emph{[A scoring segmentation point probability techniques can be used to identify the more probable segmentation points]}.
 
-[Consider the delayed strokes segmentation: every strokes is classified to be in the main body or an additional stroke, id classified in the main body, then we handled it. If classified as a delayed stroke, it should be matched to the letter is related.
+\emph{[Consider the delayed strokes segmentation: every strokes is classified to be in the main body or an additional stroke, id classified in the main body, then we handled it. If classified as a delayed stroke, it should be matched to the letter is related]}.
 
 For every word, the key a serious of features such that
 
