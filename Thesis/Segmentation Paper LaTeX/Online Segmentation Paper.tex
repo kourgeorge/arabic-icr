@@ -114,11 +114,11 @@ The proposed technique describes a general concept of ongoing strokes segmentati
 
 Below, a digest of the three main stages of our approach: \\
 
-\textbf{Stage 1.} This stage is activated on every reception of a new point by from the tablet. The whole trajectory received since the last "pen down" event is preprocessed to remove noises and imperfections. The horizontal handler that joint a pair of connected Arabic letters is mostly horizontal, directed right to left and located near the baseline, thus our goal is identify this Horizontal segments and pinpoint a segmentation point, preferably, as much as close the the middle of the handler. Thus, the preprocessed stroke is investigated in an attempt to determine whether the newly acquired point represents the beginning of a new horizontal fragment or end of an horizontal fragment (HF) by calculating the slope of the local point area. If a the last point ends a HF, the medial point of the HF is nominated as a Candidate Point (CP). For each new CP is a row and a column is added to the Subsequence Scoring Matrix which contains the classification scoring of sub-strokes spanning from candidate point that spans between any two candidate points. The scoring is calculated using a letter classification system. Once the corresponding "Pen up" event occur, the system moves for the next stage.\\ 
+\textbf{Stage 1.} Segmentation points in the Arabic script reside mostly on horizontal handler that joint a pair of connected letters. These handlers are mostly horizontal, directed right to left and located near the baseline. In this stage the system attempts to identify Horizontal Fragments (HF) in the written stroke, nominate candidate segmentation points (CP) and give scoring to the sub-strokes that are imposed by the CPs. The scoring is saved in a matrix-like data-structure and represent the resemblance of the sub-stroke to some Arabic letter. This stage is activated continuously after reception of small and constant number of points. 
 
-\textbf{Stage 2.} The CP's are investigated and both invalid and redundant candidate points are filtered out. Then, a scoring correction process is invoked to adjust very high scoring for least probable candidate points using some heuristics. An example for invalid candidate point can be a point which do not reside on a HF or on a contour of a loop. Redundant candidate point happens when more than a single candidate point were nominated on the same HF  that represent joint trajectory between two connected letters.\\
+\textbf{Stage 2.} The CP's are investigated and invalid candidate points are filtered out. Then, a scoring correction process is invoked to adjust the scoring of the sub-strokes using several heuristics.\\
 
-\textbf{Stage 3.} At this point the scoring matrix is ready and all the bad candidate points are eliminated. Next, a collection of algorithms is employed to select the final set of segmentation points.
+\textbf{Stage 3.} Using the scoring of the sub-strokes, a collection of algorithms are employed to select the final set of segmentation points.
 
 Detailed explanation on each stage is provided in the subsections below.
 
@@ -130,86 +130,24 @@ Detailed explanation on each stage is provided in the subsections below.
 \end{figure}
 
 \subsection{First Stage: Segmentation points nomination and sub-strokes scoring}
-\subsubsection{Preprocessing}
-\label{preprocessing}
-
-\emph{[note that the preprocessing is not done before the HF identification process, but a lite version of it. The complete process is is done only before giving it to the classifier.]}\\
-
-The data obtained by the digitizer is composed of points in the plane that represent the trajectory scribed by the writing instrument on the tablet surface. The data obtained is not assured to be equidistant, filtered or having a uniform structure. On the contrary, it is likely to contain noises and imperfections caused by the handwriting speed, hand vibrations, and general digitizer faultiness.   
-To overcome the flaws mentioned preprocessing operations are usually applied. The preprocessing steps imposes certain uniform structure on the data to comply with the input structure required by the latter parts of the system, such that vector length, sequence bounds, etc.
-Our preprocessing phase include three steps in the following order: normalization, simplification and then re-sampling.\\
-
-\textbf{Normalization.} Size normalization is done to achieve a uniform size of the bounding box surrounding the pattern. This is done to enable the classifier to recognize the sequence pattern even when the stroke is written in different sizes. Shape similarity algorithms tend to be sensitive for nonuniform shapes size, thus this procedure is important and can be found in many approaches in the literature. The bounding box of the sequence after this procedure is $[0,1]\times[0,1]$. We include in this step also translation of the sequence's center of gravity to the origin point $[0,0]$.\\
-
-\textbf{Simplification.} The input obtained by the digitizer may contain a large amount of noise which is mainly duplication of points. In this process redundant points are filtered out and a similar sequence with fewer points is obtained. Douglas-Peucker algorithm is used and the maximum distance parameter used by the algorithm is set to be $\epsilon = 1/\sqrt{d_x^2+d_y^2}$ . The resulted curve is a skeletonized angular sequence.\\
-
-\textbf{Re-sampling.} As a result of the simplification process the points are distributed uniformly along the stroke trajectory. Naturally, there are less point in relatively straight areas and a higher amount of points in the curved areas of the stroke. The process of re-sampling produces equidistant smoothed data sequence. The Re-sampling is performed using splines interpolation, the target number of points for a sample pattern which is classified to a letter is set to 40. This number found empirically.
-
-\emph{[show images of before and after the 3 stages.]}
- 
-\begin{figure}
-	\centering
-        \subfloat[]{
-            \label{fig:letter_before_preprocessing}
-            \includegraphics[width=0.2\textwidth]{./figures/letter_before_preprocessing}
-        }
-        \subfloat[]{
-           \label{fig:letter_after_preprocessing}
-           \includegraphics[width=0.2\textwidth]{./figures/letter_after_preprocessing}
-        }        
-    \caption{The letter \RL{d} before (a) and after (b) preprocessing}
-   \label{fig:D_before_after_preprocessing}
-\end{figure}
-
 \subsubsection{Horizontal Fragment identification}
 The goal of this process is to identify HF's in the written text. Once an HF is detected, its medial point is marked as a candidate point (CP). A HF a subsequence of the stroke having the following properties: 
 \begin{enumerate}
-\item relatively straight (has low complexity measure)
+\item relatively straight
 \item low slope
 \item directed right to left 
 \end{enumerate}
-The method described below tries to identify the largest possible HF and disregard small horizontal regions that are usually caused by the imperfection of the digitizer. The horizontal fragment is performed by spotting the start and the end point of the horizontal fragment. For every newly obtained point, the slope is calculated.\\
+The method described below tries to identify the largest possible HF and disregard small horizontal regions that are usually caused by the imperfection of the digitizer. The horizontal fragment is performed by spotting the start and the end point of the horizontal fragment.
+Once an HF is determined, the medial point of the HF is nominated as a Candidate Point (CP).//
+A point $p_{i}$ is named a "horizontal point" if the slope of the line $\overline{p_{i-1}p_{i}}$ if $\frac{\Delta x}{\Delta y}\leq0.6$. This parameter was tunes empirically. The same exact value for this parameter was found independently in \cite{daifallah2009recognition} which strengthen our confidence of our finding.\\
+To reliably calculate the slope value despite the noisy data obtained by the tablet, a preprocessing step is needed. The preprocessing include down-sampling to the half of the sample points of the original trajectory.
+Once a low slope point is recognized, the algorithm sets this point as a HF starting point. Every next low slope point is marked as "Last Seen Horizontal point" Until a high slope point is obtained. The point lastly marked as "Last Seen Horizontal point" is set to be an "Ending Horizontal point".\\
 
-The process is ongoing thus to get the largest possible HF, we mark both the beginning and the end of the horizontal segment, these two points were given the names "start horizontal Fragment" (SHF) and "end horizontal Fragment" (EHF). 
-A point $p_{i}$ is named a "horizontal point" if the slope of the line $\overline{p_{i-1}p_{i}}$ if $\frac{\Delta x}{\Delta y}\leq0.6$ i.e the angle between the HP and the positive x-axis $\phi \leq \frac{\pi}{6}$ . This parameter was tunes empirically. The same exact value for this parameter was found independently in \cite{daifallah2009recognition} which strengthen our confidence in the finding.\\
-To reliably calculate the slope value, despite the noisy data obtained by the tablet, some preprocessing steps need to be performed. However a whole process of normalization, simplification and re-sampling mentioned in the previous may be costly. Since this preprocessing need to be performed on almost every newly obtained point, it would be impractical and can't be performed on-line while the stroke is being written.\\
+The nominated segmentation points in this stage is an over-segmentation of the stroke. In table \emph{[]} in section \emph{[]} we show that almost all true segmentation points were included in the over-segmentation imposed in this stage. 
+It is important to note that this process is imperfect and may result in finding fragments that would not be classified as HF by a human performing the same task. However, it is important not to apply too many restrictions such imposing a minimal length on the HF since while extra CP can be easily filtered out in a later phase when the entire stroke is available, failing to find a CP can't be recovered.\\
 
-The preprocessing include only down-sampling of the trajectory, to the half of the sample points of the original trajectory.
-Once a low slope point is recognized, the algorithm sets this point as a HF starting point. Every next low slope point is marked as "Last Seem Horizontal point" Until a high slope point is obtained. The point lastly marked as "Last Seen Horizontal point" is set to be an "Ending Horizontal point".\\
-
-Ideally the whole process should be initiated on every new point received by the digitizer, however, it is unnecessary since no much information is obtained by each new point. Alternatively, the process is invoked on every k point, when k is set to 5 in our system. A horizontal fragment must contain two points at least.\\
-
-The nominated segmentation points in this stage is supposed to be an over-segmentation of the stroke. In table \emph{[]} in section \emph{[]} we show that almost all true segmentation points were included in the over-segmentation imposed in this stage. 
-It is important the note that this process is imperfect and may result in finding fragments that would not be classified as horizontal segment by a human perform the same task. However, it is important not to apply too many restrictions such imposing too large minimal length on the HF, since while extra CP can be easily filtered out in a later phase when the entire stroke is available, failing to find a CP can't be recovered.\\
-
-To avoid the case where HF's are over identified, we have employed HF merging method that operates as follows: At every HF identification, we calculate the complexity measure of the stroke from the previous HF and if the result a too small the two HF is merged into a single HF.
-The reason for executing this operation while the stroke is being written and not waiting to the filtering stage is that over identification of HFs may result in extreme over-segmentation, and reduce the performance and accuracy of the selection stage. As can be seen in figure \ref{fig:candidate_in_no_horizontal} this stage may find very small HF that may result from the digitizer imperfections. 
-
-\subsubsection{Subsequence Complexity measure }
-\label{subsec:scm}
-This measure gives a numerical representation of the captured complexity of a sequence. It can be thought of as the amount of information stored in a sub-sequence or the complexity of the sequence. The more curved the sequence is the higher is the complexity value. We use this measure twice in this work. In the HF identification process as discussed earlier and also in the selected segmentation points validation step which we will discuss later. In the later, we need to determine if the candidate point found by the algorithm and the segmentation point that was identified by a human expert reside on the relatively same straight line over the stroke. The idea is demonstrated in figure \ref{fig:sequence_complexity}.
-A preprocessing is done to ensure this measure is invariant and unaffected of infinitesimal warpings so that it will give a uniform measure,. 
-Then, for each inner point in the subsequence (angle) $\phi=\angle(\overline{p_{i-1}p_{i}},\overline{p_{i}p_{i+1}})$ we calculate the parameter $\alpha_{i}$.
-\begin{equation}
- \alpha_{i}=\frac{\pi-\phi_{i}}{\frac{\pi}{6}}
-\end{equation}
-The complexity measure is the defined as:
-\begin{equation}
-CM(S)=\Sigma_{i}\alpha_{i}
-\end{equation}
-
-\begin{figure}[h]
-     \begin{center}
-        \subfloat[sequence 1]{
-            \includegraphics[width=0.2\textwidth]{./figures/angles_1}
-        }
-        \subfloat[sequence 2]{
-           \includegraphics[width=0.2\textwidth]{./figures/angles_2}
-        }        
-    \end{center}
-    \caption{A graphical representation of the angles of a sequence. It can be seen that per our definition Sequence 1 Complexity measure is smaller than sequence 2 complexity measure.}
-   \label{fig:sequence_complexity}
-\end{figure}
+To avoid the case where HF's are over identified, we have employed HF merging method that operates as follows: At every HF identification, we calculate the complexity measure of the stroke ,described in section \ref{subsec:scm}, from the previous HF and if the result is small, the two HF is merged into a single HF.
+The reason for executing this operation while the stroke is being written and not waiting to a later stage is that over identification of HFs may result in extreme over-segmentation, and reduce the performance and accuracy of the selection stage. As can be seen in figure \ref{fig:candidate_in_no_horizontal} this stage may find very small HF that may result from the digitizer imperfections. 
 
 % Candidate point types: valid, invalid.
 % True segmentation point types:  found, Missed.
@@ -222,31 +160,31 @@ CM(S)=\Sigma_{i}\alpha_{i}
 \end{figure}
 
 \subsubsection{Sub-strokes scoring}
-Let $KP$ (Key Points) be an ordered set which contains all the $CP$ which found in the previous sub-stage and that also include the first and the last point of the stroke $S$. The reason for including the first and the last point of the stroke in the $KP$ set is that the first point of the stroke $S$ (i.e. $p_{1}$) is always the beginning of a letter and the last point in the stroke $S$ (i.e. $p_{n}$) is always and last point of a letter and thus these points will be used to refer to subsequences in the stroke $S$ which may be classified as a letter. Let $KP$ be a zero based set and which is defined as follows. Assuming $L$ candidate points were found in the stroke $S$, below how $KP$ is defined: 
+Let $KP$ (Key Points) be an ordered set containing the $CP$ found in the previous sub-stage and that also include the first and the last point of the stroke $S$. Let $KP$ be a zero based ordered-set and which is defined as follows. Assuming $L$ candidate points were found in the stroke $S$, below is the $KP$ definition: 
 \begin{equation}
 KP_{i} =\begin{cases}    1		, & \mbox{if } i=0 \\
 							   CP_{i}	, & \mbox{if } 1\leq i \leq L \\
 							   n    , & \mbox{if } i=L+1 
 			\end{cases}				
 \end{equation}
-A sub-stroke $S_{i}^{j}$ is a sub-sequence of the stroke $S$ that starts at $KP_{i}$ and ends at $KP_{j}$ , i.e.
+A sub-stroke $S_{i}^{j}$ is a sub-sequence of the stroke $S$ that starts at $KP_{i}$ and ends at $KP_{j}$, formally:
 \begin{equation}
 S_{i}^{j}=(p_{k})_{k=KP_{i}}^{KP_{j}}; i<j
 \end{equation}
-The Sub-sequence Scoring Matrix $D\in\mathbb{R}^{n\times n}$ contains the resemblance scoring obtained by the classifier to the corresponding sub-strokes in$S$, i.e:
+The Sub-sequence Scoring Matrix $D\in\mathbb{R}^{n\times n}$ contains the resemblance scoring obtained by the classifier to the corresponding sub-strokes in $S$, i.e:
 \begin{equation}
 D(i,j)=Score(S_{i}^{j})
 \end{equation}
-It is clear that $D$ is an upper triangular matrix. In-order to maintain good performance as well as high segmentation accuracy, we added a locality constraint to avoid marginal segmentation. That is, we only calculate a narrow band of the $D$ matrix above the main diagonal. Assume the band width is equal to $B$.
+It is clear that $D$ is an upper triangular matrix. In Order to maintain good performance as well as high segmentation accuracy, we added a locality constraint to avoid marginal segmentation. That is, we only calculate a narrow band of the $D$ matrix above the main diagonal. Assume the band width is equal to $B$.
 \begin{equation}
 D(i,j)=\inf \Leftrightarrow j \leq i \vee j-i>B 
 \end{equation}
-We assume that sub-strokes that represent a letter will achieve better resemblance scoring, i.e. $D(i,j)$ value will be smaller relative to other sub-stroke. The matrix $D$ is calculated while the stroke is being scribed. Once a new CP is identified, let it be the $j^{th}$ element in the $KP_{j}$ a new row and column are added to the matrix $D$. However since the matrix is upper triangular matrix and also the relevant cells are constrained by $B$ width band, the maximal number of cells that will be actually calculated is $B$, all located in the new column. Formally, only the cells $D(k,j)$ which maintain $j-B\leq k \leq j-1$ will be calculated.\\
+We assume that sub-strokes which represent a letter will achieve better resemblance scoring, i.e. $D(i,j)$ value will be smaller relative to other sub-stroke. The matrix $D$ is calculated while the stroke is being scribed. Once a new CP is identified, let it be the $j^{th}$ element in the $KP_{j}$ a new row and column are added to the matrix $D$. However since the matrix is upper triangular matrix and also the relevant cells are constrained by $B$ width band, the maximal number of cells that will be actually calculated is $B$, all located in the new column. Formally, only the cells $D(k,j)$ which maintain $j-B\leq k \leq j-1$ will be calculated.\\
 
 \begin{figure}
 \centering
 \includegraphics[width=7cm]{./figures/candidate_points}
-\caption{Candidate points of the word  \RL{lbyh}. The first and last candidate points are colored in green. The red points are the actual candidate points}
+\caption{Key Points of the word  \RL{lbyh}. The first and last key points are colored in green. The red points are the candidate points}
 \label{fig:candidate_points}
 \end{figure}
 
@@ -308,7 +246,7 @@ Figure \ref{table:substrokes_demo} visually demonstrates the Subsequences that i
 \renewcommand{\arraystretch}{2}
 \begin{tabular}{| c |c | c | c| c | c | c |}
 \hline
- & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\ 
+ $KP_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\ 
 \hline
 $1$
    & N/A
@@ -452,6 +390,31 @@ In other studies on segmentation, visually inspection usually take place to vali
 For each segmentation point found by our system, for it to be count as a true positive, the information measure between the real segmentation point (marked by an expert human) and the segmentation point found by the system should less a predefined threshold.
 Although, this validation process was tested on several sets and found to be highly accurate, it was used only on the validation set. The validation set was used to evaluate the performance of the different algorithms and for setting the parameters and threshold values of the system. The validity of each segmentation proposed by the system was reviewed by human expert.  
 
+\subsubsection{Subsequence Complexity measure }
+\label{subsec:scm}
+This measure gives a numerical representation of the captured complexity of a sequence. It can be thought of as the amount of information stored in a sub-sequence or the complexity of the sequence. The more curved the sequence is the higher is the complexity value. We use this measure twice in this work. In the HF identification process as discussed earlier and also in the selected segmentation points validation step which we will discuss later. In the later, we need to determine if the candidate point found by the algorithm and the segmentation point that was identified by a human expert reside on the relatively same straight line over the stroke. The idea is demonstrated in figure \ref{fig:sequence_complexity}.
+A preprocessing is done to ensure this measure is invariant and unaffected of infinitesimal warpings so that it will give a uniform measure,. 
+Then, for each inner point in the subsequence (angle) $\phi=\angle(\overline{p_{i-1}p_{i}},\overline{p_{i}p_{i+1}})$ we calculate the parameter $\alpha_{i}$.
+\begin{equation}
+ \alpha_{i}=\frac{\pi-\phi_{i}}{\frac{\pi}{6}}
+\end{equation}
+The complexity measure is the defined as:
+\begin{equation}
+CM(S)=\Sigma_{i}\alpha_{i}
+\end{equation}
+
+\begin{figure}[h]
+     \begin{center}
+        \subfloat[sequence 1]{
+            \includegraphics[width=0.2\textwidth]{./figures/angles_1}
+        }
+        \subfloat[sequence 2]{
+           \includegraphics[width=0.2\textwidth]{./figures/angles_2}
+        }        
+    \end{center}
+    \caption{A graphical representation of the angles of a sequence. It can be seen that per our definition Sequence 1 Complexity measure is smaller than sequence 2 complexity measure.}
+   \label{fig:sequence_complexity}
+\end{figure}
 
 \section{The Database}
 \label{sec:database}
@@ -460,18 +423,65 @@ The information in the ADAB database provides for each word its label and the st
 
 \section{Experimental Results}
 \label{sec:results}
-Our system was implemented in Matlab environment. The total number of samples in the test set is 200. As mentioned before, each sample is city name. It may contain one or more words. Comparing our system results with other works done in this area is not a simple task. The complexity of such task is the different experimental settings and databases and methodology. However, it is apparent that the results are promising. Although our approach segments the written script in the stroke level, we though it is more reasonable to display the results in the WP and word levels. 
+Our system was implemented in Matlab environment. The total number of samples in the test set is 320. As mentioned before, each sample is city name. It may contain one or more words. Comparing our system results with other works done in this area is not a simple task. The complexity of such task is the different experimental settings and databases and methodology. However, it is apparent that the results are promising. To give the reader a good perception of the experimental results in this work we show our results on different levels and different aspects of our results. The large test sample and the usage of the ADAB database and not a own collected database give our results further firmness.
 
-\emph{[emphasize the big test sample and the usage of the ADAB database and not a own collected database and thus gives our results further firmness.]}
+To help the reader better understand the system results in figure \ref{fig:sample_parts} we show the different parts of a sample. 
+
+\begin{figure}
+\centering
+\includegraphics[width=6cm]{./figures/sample_parts}
+\caption{Visual demonstration of a test sample parts.}
+\label{fig:sample_parts}
+\end{figure}
+
+In table \ref{} we show statistics of our testing sample set.
+
+\begin{table}[h]
+\caption{General statistics}
+\begin{tabular}{ | c | c | }
+  \hline
+  Number of samples (city name) & 319 \\
+  \hline
+  Number of words & 433 \\
+  \hline
+  Number of WPs & 1148 \\
+  \hline
+  Number of Strokes & 1237 \\
+  \hline
+\end{tabular}
+\centering
+\label{table:general_stats} 
+\end{table}
+
 
 In table \ref{table:sp_results} we provide experimental results in the segmentation points level. \emph{say something about the results, emphesize the good points (high precision and Recall, maybe the true positive issue) and mention the less good results}.   
 
-\emph{results on how many segmentation points were found in the nomination stage. We would like to show that every real segmentation point was found at least one time in the nomination stage.}
+\begin{table}[h]
+\caption{Segmentation Points Results}
+\begin{tabular}{ | c | c | }
+  \hline
+  Total number of Segmentation point & 1081 \\
+  \hline
+  Valid Suggested Point (True Positive) & 922 \\
+  \hline
+  Invalid Suggested Point (False Positive) & 119 \\
+  \hline
+  Missing (False Negative) & 159 \\
+  \hline                                    
+  Precision & 88.6\% \\ 
+ \hline
+  Recall &  85.3\% \\ 
+ \hline
+\end{tabular}
+\centering
+\label{table:sp_results} 
+\end{table}
 
-\emph{Effectiveness and accuracy of the filtering stage. show how many segmentation point were filtered out in the filtering.}
+
+\emph{1.Show how many segmentation points were found in the nomination stage. We would like to show that every real segmentation point was found at least one time in the nomination stage. 2.Effectiveness and accuracy of the filtering stage. show how many segmentation point were filtered out in the filtering.}
 
 A correct segmentation of a word-part means that all the strokes of the in it were segmented correctly. A correctly segmented stroke is the case when all the letters in the stroke are correctly segmented.
-The segmentation points results were validated automatically, if a word part was recognized correctly that means that the segmentation is correct. For each letter we select the 3 letter and shoe our recognition results based on if one of the candidate letters is the correct letter.
+The segmentation points results were validated automatically, if a word part was recognized correctly that means that the segmentation is correct. For each letter we select the 3 letter and show our recognition results based on if one of the candidate letters is the correct letter.
 
 \emph{[See table 3 in \cite{eraqi2012new}, if our results are better or close to the best results, this table can be added.]}
 
@@ -479,29 +489,6 @@ The segmentation points results were validated automatically, if a word part was
 
 \emph{show valid and invalid segmentation points before the last phase.}
 
-
-\begin{table}[h]
-\caption{Segmentation Points Results}
-\begin{tabular}{ | c | c | }
-  \hline
-  Total number of Segmentation point & [] \\
-  \hline
-  Valid Suggested Point (True Positive) & [] \\
-  \hline
-  Invalid Suggested Point (False Positive) & [] \\
-  \hline
-  Missing (False Negative) & [] \\
-  \hline                                    
-  Precision & 95.4\% \\ 
- \hline
-  Recall &  95.6\% \\ 
- \hline
-  Letters Recognition rate & 87.27\% \\
-\hline
-\end{tabular}
-\centering
-\label{table:sp_results} 
-\end{table}
 
 If the recognition was incorrect, each segmentation point recognized by the system was validated automatically by making sure that there is no much information between the segmentation ground truth and the segmentation provided by the system.
 
