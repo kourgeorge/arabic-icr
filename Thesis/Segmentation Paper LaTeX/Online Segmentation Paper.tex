@@ -390,7 +390,7 @@ In other studies on segmentation, visually inspection usually take place to vali
 For each segmentation point found by our system, for it to be count as a true positive, the information measure between the real segmentation point (marked by an expert human) and the segmentation point found by the system should less a predefined threshold.
 Although, this validation process was tested on several sets and found to be highly accurate, it was used only on the validation set. The validation set was used to evaluate the performance of the different algorithms and for setting the parameters and threshold values of the system. The validity of each segmentation proposed by the system was reviewed by human expert.  
 
-\subsubsection{Subsequence Complexity measure }
+\subsection{Subsequence Complexity measure }
 \label{subsec:scm}
 This measure gives a numerical representation of the captured complexity of a sequence. It can be thought of as the amount of information stored in a sub-sequence or the complexity of the sequence. The more curved the sequence is the higher is the complexity value. We use this measure twice in this work. In the HF identification process as discussed earlier and also in the selected segmentation points validation step which we will discuss later. In the later, we need to determine if the candidate point found by the algorithm and the segmentation point that was identified by a human expert reside on the relatively same straight line over the stroke. The idea is demonstrated in figure \ref{fig:sequence_complexity}.
 A preprocessing is done to ensure this measure is invariant and unaffected of infinitesimal warpings so that it will give a uniform measure,. 
@@ -416,16 +416,10 @@ CM(S)=\Sigma_{i}\alpha_{i}
    \label{fig:sequence_complexity}
 \end{figure}
 
-\section{The Database}
+\section{The ADAB Database}
 \label{sec:database}
-The data is one of the most important part of any supervised learning technique. The data is used for both learning, validation and testing  and also has a critical effect on the system performance. In this work we have chosen to use the ADAB database. The ADAB database is de-facto a standard in the on line Arabic handwriting recognition research field. It is freely available and consists of more than 20k Arabic handwritten words scribed by more than 170 different writers. The words are taken from the 937 Tunisian town/village names. It contains the trajectory information and a plot image of the word trajectory. The ADAB database v.1 is divided to 3 sets. Details about the number of files, words, characters, and writers are detailed in \cite{el2009icdar}. Our training, validation and testing set both are taken from this database. 
-The information in the ADAB database provides for each word its label and the strokes that were scribed by the writer. No additional information relating the strokes to letters or to word parts is provided, thus, extra work was needed to be performed to add this information to the database so that it could be used as letters samples source and also a ground-truth for the segmentation abilities of the system. To provide this additional information, we have created a system that reads the samples from the ADAB database, and employ the skills of a human expert to segment the samples and relate each stroke to the corresponding letter in the WP. The resulted information was saved in an xml file for each word sample. Since additional strokes are not our interest in the segmentation process, the system has automatically filtered out additional strokes. Nevertheless, the human expert had the ability to filter out additional strokes that could not be identified by the system as such. We have manually segmented ~16k samples which consisted about ~40k strokes.
-
-\section{Experimental Results}
-\label{sec:results}
-Our system was implemented in Matlab environment. The total number of samples in the test set is 320. As mentioned before, each sample is city name. It may contain one or more words. Comparing our system results with other works done in this area is not a simple task. The complexity of such task is the different experimental settings and databases and methodology. However, it is apparent that the results are promising. To give the reader a good perception of the experimental results in this work we show our results on different levels and different aspects of our results. The large test sample and the usage of the ADAB database and not a own collected database give our results further firmness.
-
-To help the reader better understand the system results in figure \ref{fig:sample_parts} we show the different parts of a sample. 
+The data is one of the most important part of any supervised learning technique. The data is used for learning, validation and testing. It has a critical effect on the system performance. In this work we have chosen to use the ADAB database. The ADAB database is de-facto a standard in the on-line Arabic handwriting recognition research field. It is freely available and consists of more than 20k Arabic handwritten words scribed by more than 170 different writers. The words are taken from the 937 Tunisian town/village names. It contains the trajectory information and a plot image of the word trajectory. A sample can contain more than a word. In figure \ref{fig:sample_parts} we show the parts of a sample. The ADAB database v.1 is divided to 3 sets. Details about the number of files, words, characters, and writers are given in \cite{el2009icdar}. Our training, validation and testing set both are taken from this database. 
+No information relating the strokes to letters or to word-parts is provided, thus, extra work was needed to add this information to the database so that it could be used as letters samples source and also a ground-truth for the segmentation abilities of the system. To provide this additional information, we have created a system that reads the samples from the ADAB database, and employ the skills of a human expert to segment the samples and relate each stroke to the corresponding letter in the WP. The resulted information was saved in an xml file for each word sample. Since additional strokes are not our interest in the segmentation process, the system has automatically filtered out additional strokes. Nevertheless, the human expert had the ability to filter out additional strokes that could not be identified by the system as such. We have manually segmented ~16k samples which consisted about ~40k strokes. 
 
 \begin{figure}
 \centering
@@ -434,15 +428,15 @@ To help the reader better understand the system results in figure \ref{fig:sampl
 \label{fig:sample_parts}
 \end{figure}
 
-In table \ref{} we show statistics of our testing sample set.
+\section{Experimental Results}
+\label{sec:results}
+This section provides all the relevant experimental results that were conducted by using the proposed technique. Since the system attempts to continuously segments the stroke while it is being written, points of the trajectory were inputed to the system one at a time. Our system is implemented using the Matlab environment. Comparing the performance of our approach to other works done in the field is not a simple task. The complexity of such task is not only the different experimental settings, databases and methodology but also the different parameters that are used to display the work results. For this reason,  to make our results more clear we have chosen to display our results from different points of view. The large test sample and the usage of the ADAB database and not a own collected database give our results further firmness. In table \ref{table:general_stats} we provide basic statistics of our sample set. We made sure that the samples taken to extract letters samples for the training of the scoring system were not used in the sample set.
 
 \begin{table}[h]
 \caption{General statistics}
 \begin{tabular}{ | c | c | }
   \hline
   Number of samples (city name) & 319 \\
-  \hline
-  Number of words & 433 \\
   \hline
   Number of WPs & 1148 \\
   \hline
@@ -453,8 +447,31 @@ In table \ref{} we show statistics of our testing sample set.
 \label{table:general_stats} 
 \end{table}
 
+A correctly segmented stroke is the case when all the letters in the stroke are correctly segmented. A correct segmentation of a WP means that all the strokes of the in it were segmented correctly. The segmentation was validated by a human expert.
 
-In table \ref{table:sp_results} we provide experimental results in the segmentation points level. \emph{say something about the results, emphesize the good points (high precision and Recall, maybe the true positive issue) and mention the less good results}.   
+The results shown in table \ref{table:wp_results} summarizes the system performance in the WP level and in table \ref{table:sp_results} we provide experimental results in the segmentation points level. It is apparent that the results are promising by the high WP segmentation rate and the high precision and recall values.
+
+\begin{table}[h]
+\caption{Word-Parts Results}
+\begin{tabular}{ | c | c | }
+  \hline
+  Segmentation Rate &  83.5\% \\ 
+ \hline
+  Recognition Rate &  77.6\% \\ 
+ \hline
+  Average Time & 0.64 [sec] \\
+\hline
+\end{tabular}
+\centering
+\label{table:wp_results} 
+\end{table}
+
+\begin{figure}
+\centering
+\includegraphics[width=8cm]{./figures/sp_types}
+\caption{Segmentation points types. As described in figure \ref{fig:candidate_in_no_horizontal}, the cyan points indicate candidate segmentation points that were nominated but not selected by the Selection algorithms. The red points indicate the final segmentation points set.}
+\label{fig:sp_types}
+\end{figure}
 
 \begin{table}[h]
 \caption{Segmentation Points Results}
@@ -477,65 +494,15 @@ In table \ref{table:sp_results} we provide experimental results in the segmentat
 \label{table:sp_results} 
 \end{table}
 
-
-\emph{1.Show how many segmentation points were found in the nomination stage. We would like to show that every real segmentation point was found at least one time in the nomination stage. 2.Effectiveness and accuracy of the filtering stage. show how many segmentation point were filtered out in the filtering.}
-
-A correct segmentation of a word-part means that all the strokes of the in it were segmented correctly. A correctly segmented stroke is the case when all the letters in the stroke are correctly segmented.
-The segmentation points results were validated automatically, if a word part was recognized correctly that means that the segmentation is correct. For each letter we select the 3 letter and show our recognition results based on if one of the candidate letters is the correct letter.
-
-\emph{[See table 3 in \cite{eraqi2012new}, if our results are better or close to the best results, this table can be added.]}
-
-\emph{show some images of correctly segmented words.}
-
-\emph{show valid and invalid segmentation points before the last phase.}
-
-
-If the recognition was incorrect, each segmentation point recognized by the system was validated automatically by making sure that there is no much information between the segmentation ground truth and the segmentation provided by the system.
-
-\begin{table}[h]
-\caption{Word-Parts Results}
-\begin{tabular}{ | c | c | }
-  \hline                     
-    Total Number of Word Parts & 197 \\ 
-  \hline
-  Segmentation Rate &  87.7\% \\ 
- \hline
-  Recognition Rate &  70.94\% \\ 
- \hline
-  Average Time & 0.64 [sec] \\
-\hline
-\end{tabular}
-\centering
-\label{table:wp_results} 
-\end{table}
-
-\emph{this table should be removed.}
-\begin{table}[h]
-\caption{Distribution of WP length}
-\begin{tabular}{ | c | c | }
-\hline
-Number of letters in WP & Num WPs\\
-  \hline                     
-    1 & 25 \\ 
-  \hline
-  2 &  171 \\ 
- \hline
-  3 & 136 \\ 
- \hline
-  4 and more & 91 \\
-\hline
-\end{tabular}
-\centering
-\label{table:wp_length_dist} 
-\end{table}
-
+The absolute majority of the false negative segmentation points were nominated to be a candidate points. A small number were filtered out in the filtering phase but most of them were not selected by the segmentation selection algorithm. Thus, to achieve the best results we have developed and combined several segmentation selection approaches.
 
 \subsection{Analysis}
 In this section we will discuss some common cases which were not segmented correctly. In part of these cases we did find solutions and some cases were left for future studies to face. 
 \subsubsection{Over-segmentation}
-To avoid a candidate point nomination in a horizontal fragment at the beginning of the stroke which is in most cases a false candidate point, we have added the limitation that segmentation point is nominated only if the sub-stroke that spans from the beginning of the stroke to the current point, is complex.
+In order to avoid a candidate point nomination in a HF at the beginning of the stroke which is in most cases a false candidate point, we have added the following limitation: A CP is nominated only if the sub-stroke that spans from the beginning of the stroke to the CP is complex.
+In figure \ref{fig:oversegmentation_begin} we examples of such cases.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
         \subfloat[]{
             \label{fig:letters_same_body_1}
@@ -545,36 +512,54 @@ To avoid a candidate point nomination in a horizontal fragment at the beginning 
            \label{fig:letters_same_body_2}
            \includegraphics[width=0.15\textwidth]{./figures/oversegmentation_begin_2}
         }        
-    \caption{Samples of redundant Candidate point at the beginning of the  stroke.}
+    \caption{Samples of redundant Candidate point at the beginning of the stroke.}
    \label{fig:oversegmentation_begin}
 \end{figure}
 
-Over segmentation can be caused from typing a letter in a weird form where it is spanned over several strokes. \emph{elaborate and show an image}
-%Example: of a letter written in multiple strokes - 1233562203787.xml
+Without the additional strokes, there is no way to differentiate between the main body of the letter \RL{-s-} (S) and the main body of two consecutive \RL{-b-} (B) (or other identical main body letters as seen in figure \ref{fig:same_body_letters}). See figure \ref{fig:oversegmentation_s}.  
 
 \begin{figure}
 \centering
 \includegraphics[width=5cm]{./figures/oversegmentation_s}
-\caption{Over-segmentation in the letter \RL{S}. These happens since this letter is very similar to the appearance to a combination of two consecutive \RL{B} (\RL{-bb-}) letters and only can be identified from the context and using the additional strokes }
+\caption{Over-segmentation in the letter \RL{s}. These happens since this letter is very similar to the appearance to a combination of two consecutive \RL{b} (\RL{-bb-}) letters and only can be identified from the context and using the additional strokes.}
 \label{fig:oversegmentation_s}
 \end{figure}
+
+We have noticed that our system tends to over-segment the letter \RL{-m-} when written in the form seen in figure \ref{fig:oversegmentation_m}. The reason for that the segmentation selection algorithm includes the two CPs in the final segmentation set is that the letter in this form can be seen as a combination of a very frequent form of the letter \RL{-m-} and the letter \RL{-b-}. This issue can be solved by enhancing the filtering phase to eliminate CPs that are found in a loop.  
 
 \begin{figure}
 \centering
 \includegraphics[width=5cm]{./figures/oversegmentation_m}
-\caption{Over-segmentation appeared frequently in the letter M, since it contains two horizontal segments (can be handled by elimination candidate points in a loop).}
+\caption{Over-segmentation appeared frequently in the letter \RL{-m}, since it contains two horizontal segments (can be handled by elimination candidate points in a loop which will be handled in future a work).}
 \label{fig:oversegmentation_m}
 \end{figure}
 
-\subsubsection{Under-segmentation}
-It may results from 2 reasons:
+Over segmentation can be caused also from typing a letter in unusual form where it is spanned over several strokes. It happens mostly in the letter forms \RL{-m-}, \RL{-m} and in rare cases in the letter \RL{-.h-} as can be seen in figure \ref{fig:multiple_strokes_letter}.
 
+\begin{figure}[h]
+\centering
+        \subfloat[]{
+        		\label{fig:2_strokes_m}
+            	\includegraphics[width=0.1\textwidth]{./figures/2_strokes_m}
+        }
+        \subfloat[]{
+        		\label{fig:2_strokes_7}
+           	\includegraphics[width=0.1\textwidth]{./figures/2_strokes_7}
+        }        
+    \caption{Samples of writing a single letter using more than a single strokes. In \ref{fig:2_strokes_m} the final form of the letter \RL{m} is written in two strokes and in \ref{fig:2_strokes_7} the letter \RL{.h} is written using two strokes. These forms are less widespread.}
+   \label{fig:multiple_strokes_letter}
+\end{figure}
+
+\subsubsection{Under-segmentation}
+Under-segmentation may results mainly in two cases:
 \begin{enumerate}
 \item No point is get nominated in the horizontal fragment
 \item Nominated but not selected.
 \end{enumerate}
 
-The first mainly results from letter pairs that do not contain horizontal joint between them; this issue is partially solved by extending the notion of a letters to include such pairs of letters. For example the pair لم and لح, these letters may have 2-4 positions. The second may result from nomination of a candidate point on correct horizontal segment but in a late fraction of the segmentation fragment which result is a low scoring and thus not being selected by the Segmentation selection algorithm. This issue usually occurs in the letter و in its final position.
+The first mainly results from letter pairs that do not contain horizontal joint between them; this issue is partially solved by extending the notion of a letters to include such pairs of letters. For example the pair \RL{lm} and \RL{l.h}, these letters may have 2-4 positions. \\
+
+The second may result from nomination of a candidate point on correct horizontal segment but in a late fraction of the segmentation fragment which result in a low scoring and thus not being selected by the segmentation selection algorithm. This issue usually occurs in the letter \RL{w} in its final position (Figure \ref{fig:undersegmentation_w}).
 
 \begin{figure}[h]
 \centering
@@ -583,6 +568,20 @@ The first mainly results from letter pairs that do not contain horizontal joint 
 \label{fig:undersegmentation_w}
 \end{figure}
 
+
+\subsection{The effect of the number of sample on the segmentation and recognition results}
+One may assume that the more samples the system is trained on, the better is the recognition results. This is partially true when there are more than two classes, and when the differences between the number of samples per class is gets bigger.
+We will show that the maximal number of letters does not affect much the segmentation rate and recognition rate, the graph will convergence after 200 samples per letter. In figure \ref{fig:num_letter_impact} it is clearly evident that there is a point where allowing more samples per class may decrease the accuracy of the system.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=9cm]{./figures/num_letter_impact}
+\caption{The diagram shows the influence of the number of letters samples on the segmentation (SR) , recognition rates (RR) , and the average segmentation time. All the three parameters showing convergence when the maximum letter samples per letter position is larger than 200. }
+\label{fig:num_letter_impact}
+\end{figure}
+
+
+\subsection{Segmentation selection algorithms performance}
 
 \begin{table}[h]
 \caption{Performance of each Segmentation selection algorithm}
@@ -597,24 +596,24 @@ Algorithm & Rate & Rate \\
  \hline
  GSS & 77.1\% & 68.7\% \\ 
  \hline
-  FBSS & 83.34\% & 73.74\% \\
+ FBSS & 83.34\% & 73.74\% \\
 \hline
 \end{tabular}
 \centering
 \label{table:ss_algorithms_results} 
 \end{table}
 
-\emph{ show statistics of the number of real horizontal segments that was identified by some CP (and mention that almost there were no misses). Also show show what is the percentage of the CP are redundant.}
-In \emph{[]} percent of the cases a corresponding candidate point on the same Horizontal fragment as the true segmentation point was  segmentation point nominated. Some correct candidate points were filtered out in the filtering case, however this happened relatively rarely.Most error in the final segmentation is caused by segmentation selection algorithm. That was the reason we have combined several segmentation selection approaches to achieve the best results.
-one may assume that the more samples the system is trained on, the better is the recognition results. This is partially true when there are more than two classes, and when the differences between the number of samples per class is gets bigger.
-We will show that the maximal number of letters does not affect much the segmentation rate and recognition rate, the graph will convergence after 200 samples per letter. In figure \ref{fig:num_letter_impact} it is clearly evident that there is a point where allowing more samples per class may decrease the accuracy of the system.
+\emph{
+Handle the following:
+\begin{itemize}
+	\item Show how many segmentation points were found in the nomination stage. We would like to show that every real segmentation point was found at least one time in the nomination stage.
+	\item Effectiveness and accuracy of the filtering stage. show how many segmentation point were filtered out in the filtering.
+	\item See table 3 in \cite{eraqi2012new}, if our results are better or close to the best results, this table can be added.
+	\item show some images of correctly segmented words.
+	\item show valid and invalid segmentation points before the last phase.
+\end{itemize}
+}
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=9cm]{./figures/num_letter_impact}
-\caption{The diagram shows the influence of the number of letters samples on the segmentation (SR) , recognition rates (RR) , and the average segmentation time. All the three parameters showing convergence when the maximum letter samples per letter position is larger than 200. }
-\label{fig:num_letter_impact}
-\end{figure}
 
 
 \section{Future Work}
