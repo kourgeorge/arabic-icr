@@ -17,10 +17,14 @@
 \usepackage{multicol}
 \usepackage[linesnumbered]{algorithm2e}
 
-%TODO: make sure that all citation are before the period and not after.
 %TODO: Add biography and image for me and for DR. Raid.
 %TODO: Check for plagiarism in all the document.
-%TODO: Read the IEEE specification again.
+
+%abbreviations:
+% CP: Candidate Segmentation Point
+% HF: Horizontal Fragment.
+% WP: Word Part
+% SSA: Segmentation Selection Algorithms
 
 \begin{document}
 
@@ -103,23 +107,18 @@ Eraqi and Abdelazeem \cite{eraqi2012new} suggested splitting the Arabic handwrit
 
 \section{Approach}
 \label{sec:approach}
-Our approach employs both rules-based dissection and recognition-base segmentation techniques. The main idea is to segment a stroke while being scribed. A stroke is a subcomponent of a WP that spans from the pen down event to the corresponding pen up event. We assume that the main body of a letter is contained entirely in a single stroke, i.e. no letter span over multiple strokes. This assumption is valid for the majority of Arabic writing styles. 
-A stroke $S$ is represented by a sequence of points on the 2-dimensional space, $p_{i}=(x,y)$ 
-\begin{equation}
-S=\{p_{i}\}_{i=1}^{n}
-\end{equation}
-The motivation behind this method is based on the intuition that the most basic structure that can be recognized by a human reader is the stroke thus being able to correctly segment and recognize the content of a stroke, will vastly facilitate the Arabic script recognition problem. In this work our objective is to maximize the correct segmentation rate while maintaining low complexity and high performance of the system. Maximizing the recognition rate is a secondary objective of this work. 
-The proposed technique describes a general concept of ongoing strokes segmentation. The decoupling between the different components and sub-components in the system enables different alternatives techniques to be integrated easily such as dissection techniques and graphemes or letters classification. A high level visual description of the system can be seen in figure \ref{fig:system_flow}.\\
+Our approach employs both rules-based dissection and recognition-base segmentation techniques. The main idea is to segment a stroke while being scribed. A stroke is a subcomponent of a WP that spans from the pen down event to the corresponding pen up event. We assume that the main body of a letter is contained entirely in a single stroke, i.e. no letter span over multiple strokes. This assumption is valid for the majority of Arabic  handwriting styles. The motivation behind this method is based on the intuition that the most basic structure that can be recognized by a human reader is the stroke. Thus being able to correctly segment and recognize the content of a stroke will vastly facilitate the Arabic script recognition problem. In this work our objective is to maximize the correct segmentation rate while maintaining low complexity and high performance of the system. Maximizing the recognition rate is a secondary objective. 
+The proposed technique describes a general concept of ongoing strokes segmentation. The decoupling between the different components and sub-components in the system enables different alternatives techniques to be integrated easily.\\ 
 
-Below, a digest of the three main stages of our approach: \\
+Below, a digest of the three main stages of our approach: 
 
-\textbf{Stage 1.} Segmentation points in the Arabic script reside mostly on horizontal handler that joint a pair of connected letters. These handlers are mostly horizontal, directed right to left and located near the baseline. In this stage the system attempts to identify Horizontal Fragments (HF) in the written stroke, nominate candidate segmentation points (CP) and give scoring to the sub-strokes that are imposed by the CPs. The scoring is saved in a matrix-like data-structure and represent the resemblance of the sub-stroke to some Arabic letter. This stage is activated continuously after reception of small and constant number of points. 
+\textbf{Stage 1.} Segmentation points in the Arabic script reside, in most cases, in horizontal handler that joint a pair of connected letters. These handlers are mostly horizontal, directed right to left and located near the baseline. In this stage the system attempts to identify horizontal fragments (HF) in the written stroke, nominate candidate segmentation points (CP) and give scoring to the sub-strokes that are imposed by the CPs. The scoring is saved in a matrix-like data-structure and represent the resemblance of the sub-stroke to some Arabic letter. This stage is activated continuously after reception of small and constant number of points. 
 
-\textbf{Stage 2.} The CP's are investigated and invalid candidate points are filtered out. Then, a scoring correction process is invoked to adjust the scoring of the sub-strokes using several heuristics.\\
+\textbf{Stage 2.} The CPs are investigated and invalid candidate points are filtered out. Then, a scoring correction process is invoked to adjust the scoring of the sub-strokes using several heuristics.
 
 \textbf{Stage 3.} Using the scoring of the sub-strokes, a collection of algorithms are employed to select the final set of segmentation points.
 
-Detailed explanation on each stage is provided in the subsections below.
+A high level description of the system flow can be seen in figure \ref{fig:system_flow}. Detailed explanation on each stage is provided in the subsections below.
 
 \begin{figure}
 \centering
@@ -130,33 +129,42 @@ Detailed explanation on each stage is provided in the subsections below.
 
 \subsection{First Stage: Segmentation points nomination and sub-strokes scoring}
 \subsubsection{Horizontal Fragment identification}
-The goal of this process is to identify HF's in the written text. Once an HF is detected, its medial point is marked as a candidate point (CP). A HF a subsequence of the stroke having the following properties: 
+The goal of this process is to identify HFs in the written text. HFs of the Arabic word \RL{jbl} (Jabal) can be seen in figure \ref{fig:horizontal_fragments} .Once an HF is detected, its medial point is marked as a CP. A HF is a subsequence of the stroke having the following properties: 
 \begin{enumerate}
 \item relatively straight
 \item low slope
 \item directed right to left 
 \end{enumerate}
-The method described below tries to identify the largest possible HF and disregard small horizontal regions that are usually caused by the imperfection of the digitizer. The horizontal fragment is performed by spotting the start and the end point of the horizontal fragment.
-Once an HF is determined, the medial point of the HF is nominated as a Candidate Point (CP).
+The method described below attempts to identify the largest possible HF and disregard small horizontal regions that are usually caused by the imperfection of the digitizer. The HF identification is performed by spotting it's start and the end points.
+Once an HF is identified, the medial point of the HF is nominated as a CP.
 A point $p_{i}$ is named a "horizontal point" if the slope of the line $\overline{p_{i-1}p_{i}}$ if $\frac{\Delta x}{\Delta y}\leq0.6$. This parameter was tunes empirically. The same exact value for this parameter was found independently in \cite{daifallah2009recognition} which strengthen our confidence of our finding.\\
-To reliably calculate the slope value despite the noisy data obtained by the tablet, a preprocessing step is needed. The preprocessing include down-sampling to the half of the sample points of the original trajectory.
-Once a low slope point is recognized, the algorithm sets this point as a HF starting point. Every next low slope point is marked as "Last Seen Horizontal point" Until a high slope point is obtained. The point lastly marked as "Last Seen Horizontal point" is set to be an "Ending Horizontal point".\\
+To reliably calculate the slope value despite the noisy data obtained by the digitizer, a preprocessing step is needed. The preprocessing include down-sampling to the half of the sample points of the original trajectory. \emph{which resampling algorithms was used?}
+Once the first low slope point is recognized, the algorithm sets this point as a HF starting point. Every next low slope point is marked as "Last Seen Horizontal point" Until a high slope point is obtained. The point lastly marked as "Last Seen Horizontal point" is set to be an "Ending Horizontal point".\\
 
-The nominated segmentation points in this stage is an over-segmentation of the stroke. In table \emph{[]} in section \emph{[]} we show that almost all true segmentation points were included in the over-segmentation imposed in this stage. 
-It is important to note that this process is imperfect and may result in finding fragments that would not be classified as HF by a human performing the same task. However, it is important not to apply too many restrictions such imposing a minimal length on the HF since while extra CP can be easily filtered out in a later phase when the entire stroke is available, failing to find a CP can't be recovered.\\
+The nominated segmentation points in this stage is an over-segmentation of the stroke. It is important to note that this process is imperfect and may result in finding fragments that would not be classified as HF by a human performing the same task. As can be seen in figure \ref{fig:candidate_in_no_horizontal}, this stage may find very small HF that may result from the digitizer imperfections. However, it is important not to apply too many restrictions such as imposing a minimal length on the HF since while extra CP can be easily filtered out in a later phase when the entire stroke is available, failing to find a CP can't be recovered. In our experiments we observed that more than 99\% of true segmentation points were included in the over-segmentation imposed in this stage.\\
 
-To avoid the case where HF's are over identified, we have employed HF merging method that operates as follows: At every HF identification, we calculate the complexity measure of the stroke ,described in section \ref{subsec:scm}, from the previous HF and if the result is small, the two HF is merged into a single HF.
-The reason for executing this operation while the stroke is being written and not waiting to a later stage is that over identification of HFs may result in extreme over-segmentation, and reduce the performance and accuracy of the selection stage. As can be seen in figure \ref{fig:candidate_in_no_horizontal} this stage may find very small HF that may result from the digitizer imperfections. 
+In order to avoid the case where HFs are over identified frequently, we have employed HF merging method that operates as follows: At every HF identification, we calculate the complexity measure of the stroke (a measure that quantify the cursiveness of the trajectory - described in section \ref{subsec:scm}) from the previous HF and if the result is small, the two HF is merged into a single HF. The reason for executing the HFs merging operation while the stroke is being written and not waiting to a later stage is that over identification of HFs may result in extreme over-segmentation, and reduce the performance and accuracy of the CPs selection stage.
 
 \begin{figure}
 \centering
-\includegraphics[width=5cm]{./figures/horizontal_segments}
-\caption{Horizontal Segments [HS] of the word \RL{jbl}(JABAL)}
-\label{fig:horizontal_segments}
+\includegraphics[width=5cm]{./figures/horizontal_fragments}
+\caption{Horizontal Fragments [HF] of the word \RL{jbl}(JABAL)}
+\label{fig:horizontal_fragments}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=6cm]{./figures/candidate_in_no_horizontal}
+\caption{The main body of Arabic word \RL{`yn}. CPs are colored in cyan. The green areas ensigns that HFs merge has taken place. Three types of false CPs can be seen: 1. A CP at the beginning of a stroke. 2. A candidate point that do not reside on a HF. 3. A CP on the valley of the letter \RL{-n}. }
+\label{fig:candidate_in_no_horizontal}
 \end{figure}
 
 \subsubsection{Sub-strokes scoring}
-Let $KP$ (Key Points) be an ordered set containing the $CP$ found in the previous sub-stage and that also include the first and the last point of the stroke $S$. Let $KP$ be a zero based ordered-set and which is defined as follows. Assuming $L$ candidate points were found in the stroke $S$, below is the $KP$ definition: 
+A stroke $S$ is represented by a sequence of points on the 2-dimensional space, $p_{i}=(x,y)$ 
+\begin{equation}
+S=\{p_{i}\}_{i=1}^{n}
+\end{equation}
+Let $KP$ (Key Points) be zero based ordered set containing the CPs found in the previous sub-stage and that also include the first and the last point of the stroke $S$. Assuming $L$ CPs were found in the stroke $S$, $KP$'s definition is as follows: 
 \begin{equation}
 KP_{i} =\begin{cases}    1		, & \mbox{if } i=0 \\
 							   CP_{i}	, & \mbox{if } 1\leq i \leq L \\
@@ -173,9 +181,10 @@ D(i,j)=Score(S_{i}^{j})
 \end{equation}
 It is clear that $D$ is an upper triangular matrix. In Order to maintain good performance as well as high segmentation accuracy, we added a locality constraint to avoid marginal segmentation. That is, we only calculate a narrow band of the $D$ matrix above the main diagonal. Assume the band width is equal to $B$.
 \begin{equation}
-D(i,j)=\inf \Leftrightarrow j \leq i \vee j-i>B 
+D(i,j)=\infty \Leftrightarrow j \leq i \vee j-i>B 
 \end{equation}
-We assume that sub-strokes which represent a letter will achieve better resemblance scoring, i.e. $D(i,j)$ value will be smaller relative to other sub-stroke. The matrix $D$ is calculated while the stroke is being scribed. Once a new CP is identified, let it be the $j^{th}$ element in the $KP_{j}$ a new row and column are added to the matrix $D$. However since the matrix is upper triangular matrix and also the relevant cells are constrained by $B$ width band, the maximal number of cells that will be actually calculated is $B$, all located in the new column. Formally, only the cells $D(k,j)$ which maintain $j-B\leq k \leq j-1$ will be calculated.\\
+We assume that sub-strokes which represent a letter will achieve better resemblance scoring, i.e. $D(i,j)$ value will be smaller relative to other sub-stroke. The matrix $D$ is calculated while the stroke is being scribed. Once a new CP is identified a new row and column are added to the matrix $D$. 
+The number of cells that will be calculated at each new CP is $B$ (all located in the new column).\\
 
 \begin{figure}
 \centering
@@ -184,38 +193,31 @@ We assume that sub-strokes which represent a letter will achieve better resembla
 \label{fig:candidate_points}
 \end{figure}
 
-A letters classifier that is described in depth in \emph{[my paper]} is used to score the sub-strokes. For the sake of completeness, here we will outline the main idea of the classification system. The classifier uses Shape Context to extract the pattern feature, then Earth movers Distance embedding technique descried in \cite{shirdhonkar2008approximate} to project samples of the Arabic letters to a high dimensional $L_{1}$ space. A combination of Principle Component Analysis (PCA) and Linear Discrimination Analysis (LDA) is used to reduce the samples dimensionality and k-NN are found using k-dtree. The exact resemblance score is determined by a minimum score that is given by a predefined linear combination of the $L_{1}$ distance in the embedding space and Sokoe-Chuba DTW.\\
+The sub-strokes scoring system is described in depth in \emph{[my paper]}. For the sake of completeness, here we will outline the main idea of the classification system. The classifier uses Shape Context to extract the pattern feature, then Earth movers Distance embedding technique descried in \cite{shirdhonkar2008approximate} to project samples of the Arabic letters to a high dimensional $L_{1}$ space. A combination of Principle Component Analysis (PCA) and Linear Discrimination Analysis (LDA) is used to reduce the samples dimensionality and k-NN are found using k-dtree. The exact resemblance score is determined by a minimum score that is given by a predefined linear combination of the $L_{1}$ distance in the embedding space and Sokoe-Chuba DTW.\\
 
-The classifier contains four databases, one for each letter position. It receive a sequence and a position (Ini, Mid, Fin and Iso).
-As mentioned earlier a stroke spans from the "mouse-down" to the "mouse-up" event. 
-A stroke may contain a full or a partial WP and it can be composed of the following letter positions: 
+The scoring system contains four databases, one for each letter position. It receive a sequence and a position (Ini, Mid, Fin and Iso).
+As mentioned earlier a stroke spans from the mouse down to the mouse up event. 
+A stroke may contain a full or a partial WP and can be composed of the following letter positions: 
 \begin{multicols}{2}
 \begin{itemize}
-    \item $Fin$
     \item $Iso$
-    \item $Mid^{+}$
     \item $Ini,Mid^{*}$
-    \item $Ini,Mid^{*},Fin$    
-    \item $Mid^{+},Fin$
+    \item $Mid^{+}$    
+    \item $Mid^{*},Fin$
+    \item $Ini,Mid^{*},Fin$
 \end{itemize}
 \end{multicols}
 In the above list, the $^{+}$ notation represents one or more occurrences and $^{*}$ notation represents zero or more occurrences.
 
-In order to maximize performance and accuracy, the system should attempt to look for the letter label in the smallest number of databases. To make the following explanation clearer let us define the following: 
-Let $S$ be a sequence which contains $L$ candidate points:\\
-\textbf{Initial Subsequence.} A sub-sequence $S_1^k$ where $ 1< k \leq L+1$ will be given the name \emph{Initial Subsequence} (IS).\\
-\textbf{Medial Subsequence.} A sub-sequence $S_m^k$ where $m \geq 2 \wedge m< k \leq L$ will be name \emph{Medial Subsequence} (MS).\\
-\textbf{Final Subsequence.} A sub-sequence $S_k^{L+1}$ where $k \leq 1$ will be referred to as \emph{Final Subsequence} (FS).\\
-
-The $D_p$ matrix below demonstrates the databases in which the system will require the classifier to look into. It is important to note that the $D$ matrix is filled while the stroke is being written, thus the system has no knowledge on how many candidate points the stroke will end up having or when the writer will end the stroke. However the absence of this knowledge does not affect our local decision because the decision only relies on the fact that as long as the writer did not raise the pen every candidate point found does not represent a final letter. Given the definition above below we present 4 types of sub-sequences that were given the names $\alpha$, $\beta$, $\chi$ and $\delta$ which relates the between the cell location in the $D$ matrix and the database that the classifier will look for the best matches.
+In order to maximize performance and accuracy, the system should attempt to look for the letter label and scoring in the smallest number of databases. To make the following explanation clearer let us define the following four types of sub-sequence:
+Let $S$ be a sequence which contains $L$ candidate points: 
 \begin{itemize}
-	\item \textbf{$\alpha$ subsequence:} IS which is not an FS may contain an initial or medial letter only.
-	\item \textbf{$\beta$ subsequence:} MS can contain only a medial letter.
-	\item \textbf{$\chi$ subsequence:} FS which is not an an IS can contain only a medial or final letter.
-	\item \textbf{$\delta$ subsequence:} IS which is also and IS can represent letter in any position.
+	\item \textbf{$\alpha$ subsequence:}  A sub-sequence $S_0^k$ where $ 1\leq k < L+1$. It may contain an initial or medial letter only.
+	\item \textbf{$\beta$ subsequence:}  A sub-sequence $S_m^k$ where $m \geq 1 \wedge m< k \leq L$. It may contain a medial letter only.
+	\item \textbf{$\chi$ subsequence:}  A sub-sequence $S_m^{L+1}$ where $m \geq 1$. It can contain only a medial or final letter.
+	\item \textbf{$\delta$ subsequence:} A sub-sequence $S_0^{L+1}$. It can represent letter in any position.
 \end{itemize}
-
-\begin{figure}
+The $D_p$ matrix in equation \ref{eq:positions_matrix} below relates between the cell location in the $D$ matrix and the database that the scoring system will look for the best matches. It is important to note that the $D$ matrix is filled while the stroke is being written, thus, the system has no knowledge on how many candidate points the stroke will end up having or when the writer will end the stroke. 
 \begin{equation}
 D_{p}=
 \left( 
@@ -227,11 +229,8 @@ D_{p}=
 \infty  & \infty  & \infty   & \infty   & \cdots  & \beta  & \chi    \\
 \infty  & \infty  & \infty   & \infty   & \cdots  & \infty  & \chi    \\
 \infty  & \infty  & \infty   & \infty   & \cdots  & \infty  & \infty \end{array} \right)
-\label{dp_matrix}
+\label{eq:positions_matrix}
 \end{equation}
-\label{table:positions_matrix}
-\caption{$D_{p}$ is the positions matrix.}
-\end{figure}
 
 For each subsequence, the recognition system returns a set of K potential letters candidates, with their resemblance scoring (in our implementation $K=3$). In the current implementation we consider only the candidate with the best (minimal) scoring, however, any function taking into consideration the scoring returned by the classifier for all the candidate can be used to determine the final scoring of the cell.
 Figure \ref{table:substrokes_demo} visually demonstrates the Subsequences that is scored for each cell in matrix $D$.
@@ -242,38 +241,38 @@ Figure \ref{table:substrokes_demo} visually demonstrates the Subsequences that i
 \renewcommand{\arraystretch}{2}
 \begin{tabular}{| c |c | c | c| c | c | c |}
 \hline
- $KP_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\ 
+ $KP_i$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$\\ 
 \hline
-$1$
+$0$
    & N/A
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/L}}
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/LB1}}
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/LB1B2}}
    & N/A & N/A \\
 \hline
-$2$
+$1$
    & N/A & N/A
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/B1}}
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/B1B2}}
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/B1B2H1}}
    & N/A \\
 \hline
-$3$
+$2$
    & N/A  & N/A & N/A
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/B2}}
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/B2H1}}
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/B2H}} \\
 \hline
-$4$
+$3$
    & N/A & N/A & N/A & N/A
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/H1}}
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/H}} \\
 \hline
-$5$
+$4$
    & N/A & N/A & N/A & N/A & N/A
    & \subfloat{\includegraphics[width=0.8cm]{./figures/substrokes/H2}}\\
 \hline
-$6$
+$5$
    & N/A & N/A & N/A & N/A & N/A & N/A \\
 \hline
 \end{tabular}
@@ -297,22 +296,15 @@ In some cases candidate segmentation points are incorrectly nominated on areas t
 
 \emph{[Talk about the scoring correction procedure]}.
 
-\begin{figure}
-\centering
-\includegraphics[width=6cm]{./figures/candidate_in_no_horizontal}
-\caption{The main body of Arabic word \RL{`yn}. CPs are colored in cyan, Segmentation points are colored in red, a the green areas ensigns that CPs merge has taken place. Three types of false candidate points can be seen: 1. CP on the HF of the letter \RL{`-}. 2. A candidate point that do not reside on a HF. 3. A CP on the valley of the letter \RL{-n}. }
-\label{fig:candidate_in_no_horizontal}
-\end{figure}
-
 In several cases we encountered candidate points that reside on the same horizontal fragment. \emph{[why does it happen?]}. We filter out this redundant candidate points in the nomination process and do not wait till this filtering phase. The reason is that since we calculate a narrow band of the Scoring matrix, leaving the impermissible candidate points will result in low performance since highly over segment the word will cause also the system to miss letters because we calculate only a portion a narrow band of the scoring matrix. If such case is identified by the nomination algorithm the medial point between the adjacent candidate points is taken.
 
 \subsubsection{Baseline detection}
-Once the entire stroke is available, a baseline detection algorithm is activated only if more than four CP's were detected. The reason for this threshold is to prevent the baseline detection procedure to be activated on small strokes where the baseline can't be reliably determined. To find the handwritten stroke's baseline, the vertical density histogram of the re-sampled stroke is used. The $\Delta y$ of the stroke is calculated and partitioned to 10 intervals, then the center of the of the most common interval is calculated $I_{max}$. A candidate point $CP$ is filtered out if the following holds:
+Once the entire stroke is available, a baseline detection algorithm is activated only if more than four CPs were detected. The reason for this threshold is to prevent the baseline detection procedure to be activated on small strokes where the baseline can't be reliably determined. To find the handwritten stroke's baseline, the vertical density histogram of the re-sampled stroke is used. The $\Delta y$ of the stroke is calculated and partitioned to 10 intervals, then the center of the of the most common interval is calculated $I_{max}$. A candidate point $CP$ is filtered out if the following holds:
 \begin{equation}
 |Y(CP)-I_{max}|>2*max(|I|,0.15) 
 \end{equation}
 Where $Y(\cdot)$ is the y coordinate of the CP and $|I|$ is the length of the interval. 
-Filtering out CPs that are relatively far from the baseline has proven to be very effective in eliminating false CP's that reside on valleys of several letters, such as \RL{q}, \RL{s} and \RL{n}, in the their final and isolated positions. These CPs are usually challenging because they tend to be included in the final set of candidate points if not filtered out. An example can be seen in figure \ref{fig:candidate_in_no_horizontal}, note the candidate point (cyan) inside the last letter \RL{-n}. 
+Filtering out CPs that are relatively far from the baseline has proven to be very effective in eliminating false CPs that reside on valleys of several letters, such as \RL{q}, \RL{s} and \RL{n}, in the their final and isolated positions. These CPs are usually challenging because they tend to be included in the final set of candidate points if not filtered out. An example can be seen in figure \ref{fig:candidate_in_no_horizontal}, note the candidate point (cyan) inside the last letter \RL{-n}. 
 
 \subsection{Third Stage: Segmentation Selection}
 The goal of this phase is to select the best segmentation points set among the candidate segmentation points. It is done by finding a segmentation path in $D$ having best scoring possible. 
@@ -330,14 +322,14 @@ The scoring of the path $\pi$ is defined as follows:
 \Pi = \Sigma_{i=1}^{L}{D(\pi_{i})}
 \end{equation}
 
-Several segmentation selection algorithms (SSA) are proposed in this work for finding the best segmentation path, i.e. the path $\pi$ with the smallest $\Pi$ possible, which presumingly, represent the correct segmentation of the stroke $S$. The output of all the SSA that will be described is a set, named \emph{Final Segmentation Points} $FSP$, which contain indexes of the final segmentation points in $KP$. The first point of the stroke (namely, $KP_1$ and $KP_n$) not included in FSP.
+Several segmentation selection algorithms (SSAs) are proposed in this work for finding the best segmentation path, i.e. the path $\pi$ with the smallest $\Pi$ possible, which presumingly, represent the correct segmentation of the stroke $S$. The output of all the SSA that will be described is a set, named \emph{Final Segmentation Points} $FSP$, which contain indexes of the final segmentation points in $KP$. The first point of the stroke (namely, $KP_1$ and $KP_n$) not included in FSP.
 The first two proposed algorithm were given the names \emph{Forward Segmentation Selection} (FSS) and \emph{Backward Segmentation Selection} (BSS) which operate is pretty similarly. A pseudo-code of FSS can be seen in Algorithm \ref{alg:fss} below. It operates sequentially on the Candidate points set (CPS). Starting from the first point in the stroke it tries to find the next best segmentation point by selecting the subsequence $S_i^j$ having the best scoring value as can be seen in line 5.  BSS (see Algorithm \ref{alg:bss}) operates similarly, However it starts from the end of the stroke toward the beginning. The weakness of the these two algorithms is that FSS tended to under-segment the suffix of the stroke and BSS tended to under-segment the prefix of the stroke.   
 
 \begin{algorithm}
-$i=1$\;
+$i=0$\;
 $sum=0$\;
 $FSP = \emptyset $\;
-\While{$i<n$}
+\While{$i<L+1$}
 {
 	$j = \mathop {\arg \min }\limits_k \left( {D\left( {i,k} \right)} \right)$\;
 	$FSP = FSP \cup \left\{ j \right\}$\;
@@ -349,10 +341,10 @@ $FSP = \emptyset $\;
 \end{algorithm}
 
 \begin{algorithm}
-$i=n$\;
+$i=L+1$\;
 $sum=0$\;
 $FSP = \emptyset $\;
-\While{$i>1$}
+\While{$i>0$}
 {
 	$j = \mathop {\arg \min }\limits_k \left( {D\left( {k,i} \right)} \right)$\;
 	$FSP = FSP \cup \left\{ j \right\}$\;
@@ -362,7 +354,6 @@ $FSP = \emptyset $\;
 \caption{Backward Segmentation Selection (BSS)}
 \label{alg:bss}
 \end{algorithm}
-
 
 To overcome the aforementioned drawback of FSS and BSS a third SSA was proposed and was given the name \emph{Backward-Forward Segmentation Selection} (BFSS) described in Algorithm \ref{alg:bfss}. It is a combined version of both FSS and BSS. BFSS operates from the sides of the stroke toward the center. While the set of the unselected candidate points is not empty, in each iteration the algorithm selects two candidate points to include to the $SSP$ set. The selection of a the next candidate point is done by finding the next best sub-stroke, i.e. the cell with the least scoring that start with the current selected segmentation point.
 When a candidate point is added to the $SSP$ set "cleaning" operation is done to remove all the preceding candidate points that were not selected. For example, if $KP_{i}$ was selected in the previous iteration and the current iteration $KP_{i+2}$ is selected, all cells related to $KP_{i+1}$ will be set to $\infty$ in the matrix $D$ to avoid this candidate point to be selected in a later iteration. Also all cells that represent a sub-stroke starting from candidate point $KP_i$ or ending in $KP_{i+2}$ will be set to $\infty$. Lines 7-10 handles the the segmentation of the left side of the word and the lines 11-15 handles the right side of the word. This algorithm is an combination of two algorithm we were suggested, the first that operates forward to select the segmentation path and the other is backward algorithm that start from the end of the word toward the start. However, we noted that the forward algorithm tended to under-segment the suffix of the stroke, i.e. missing true segmentation points and the other tended to under-segment the prefix of the stroke.  
@@ -614,7 +605,7 @@ In the following experiment we allowed an increasing maximal number of samples p
 \end{figure}
 
 
-\subsection{SSA performance}
+\subsection{Segmentation Selection Algorithms performance}
 \label{subsec:ssa_performance}
 As can be seen in table \ref{table:ss_algorithms_results} the SSA has a crucial affect on the system performance. We tried to combine two SSA by running both SSA and select the segmentation with the smallest scoring divided by the size of $FSP$ to prevent giving superiority to segmentations with less segmentation points. Combination of two algorithms is symboled by $\oplus$.
 
