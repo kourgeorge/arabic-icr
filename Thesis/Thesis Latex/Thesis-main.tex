@@ -14,9 +14,15 @@
 \usepackage{verbatim}
 \usepackage{pdfpages}
 \usepackage{graphicx}
+\usepackage{subfig} %% This package has to be here
 \usepackage{setspace}
+\usepackage{arabtex}
 \usepackage[numbers]{natbib}
 \usepackage{nomencl}
+
+%Packages Added By George
+\usepackage[linesnumbered]{algorithm2e}
+
 % the following is useful when we have the old nomencl.sty package
 \providecommand{\printnomenclature}{\printglossary}
 \providecommand{\makenomenclature}{\makeglossary}
@@ -26,16 +32,16 @@
 \makeatletter
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
-\providecommand{\LyX}{L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
-%% Because html converters don't know tabularnewline
-\providecommand{\tabularnewline}{\\}
-%% A simple dot to overcome graphicx limitations
-\newcommand{\lyxdot}{.}
+%\providecommand{\LyX}{L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
+%%% Because html converters don't know tabularnewline
+%\providecommand{\tabularnewline}{\\}
+%%% A simple dot to overcome graphicx limitations
+%\newcommand{\lyxdot}{.}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
 \usepackage{tauthesis}
-\usepackage[font={small,bf}, labelfont={small,bf}, margin=1cm]{caption}
+%\usepackage[font={small,bf}, labelfont={small,bf}, margin=1cm]{caption}
 \usepackage{titlesec}
 \newcommand{\hsp}{\hspace{20pt}}
 \titleformat{\chapter}[hang]{\Huge\bfseries}{\thechapter\hsp}{0pt}{\Huge\bfseries}
@@ -47,7 +53,6 @@
 \Supervisor{Prof. Dana Ron}
 \Department{School of Electrical Engineering}
 \Degree{Master of Science}
-% \Degree{Doctor of Philosophy}
 
 \makeatother
 

@@ -27,17 +27,52 @@
 \chapter{Chapter 1}
 
 This is chapter 1.
+
 \nomenclature{$m$}{The mass of one angel} 
 
 
-\section{Section 1}
-This is section 1.
+
+\section{Arabic}
+The word Jabal \RL{jbl}
+
+\section{Algorithms}
+\begin{algorithm}
+$i=0$\;
+$sum=0$\;
+$FSP = \emptyset $\;
+\While{$i<L+1$}
+{
+	$j = \mathop {\arg \min }\limits_k \left( {D\left( {i,k} \right)} \right)$\;
+	$FSP = FSP \cup \left\{ j \right\}$\;
+	$sum = sum + D\left( {i,j} \right)$\;
+	$i=j$\;
+}
+\caption{Forward Segmentation Selection (FSS)}
+\label{alg:fss}
+\end{algorithm}
 
 
+\section{Figures}
+\begin{figure}
+\centering
+\includegraphics[width=6cm]{./figures/angles_1}       
+\caption{The Tunisian city name kambot \RL{kmbw.t}. It contains two word parts (\RL{kmbw} and \RL{.t}). The main body of the first WP is written using three strokes: 1. The letter \RL{k-} 2. The connected letters combination \RL{-mbw} 3. The additional dot of the letter \RL{-b-}. The second WP contains only a single letter (\RL{.t}) and is written using two strokes, the main body and an additional stroke.}
+\label{fig:kmbot}
+\end{figure}
 
-\section{Section 2}
-This is section 2
-
+\begin{figure}[h]
+\centering
+        \subfloat[]{
+            \label{fig:letters_same_body_1}
+            \includegraphics[width=0.3\textwidth]{./figures/angles_1}
+        }
+        \subfloat[]{
+           \label{fig:letters_same_body_2}
+           \includegraphics[width=0.3\textwidth]{./figures/angles_1}
+        }        
+    \caption{Samples of redundant Candidate point at the beginning of the stroke.}
+   \label{fig:oversegmentation_begin}
+\end{figure}
 
 
 
