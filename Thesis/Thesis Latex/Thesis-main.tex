@@ -31,14 +31,6 @@
 
 \makeatletter
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
-%\providecommand{\LyX}{L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
-%%% Because html converters don't know tabularnewline
-%\providecommand{\tabularnewline}{\\}
-%%% A simple dot to overcome graphicx limitations
-%\newcommand{\lyxdot}{.}
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
 \usepackage{tauthesis}
 %\usepackage[font={small,bf}, labelfont={small,bf}, margin=1cm]{caption}
@@ -47,10 +39,11 @@
 \titleformat{\chapter}[hang]{\Huge\bfseries}{\thechapter\hsp}{0pt}{\Huge\bfseries}
 
 
-\Title{\textbf{Online Character Recognition}}
+\Title{\textbf{Arabic On-line Character Recognition}}
 \Author{George Kour}
 \Year{January 2014}
 \Supervisor{Prof. Dana Ron}
+%\Supervisor{Dr. Raid Saabne}
 \Department{School of Electrical Engineering}
 \Degree{Master of Science}
 
@@ -82,7 +75,11 @@
 
 \include{Introduction}
 
-\include{Chapter1}
+\include{Preliminaries}
+
+
+
+%\include{Sandbox}
 
 \bibliographystyle{plainnat}
 \bibliography{references}
