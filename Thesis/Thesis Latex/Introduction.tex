@@ -26,73 +26,8 @@
 
 \chapter{Introduction}
 
-Introduction chapter. We recommend using bibtex to manage your list
-of references and organize the literature citation style. All is done
-automatically by \LyX{}. While working on separate files it's useful
-to include the bibtex file in each file locally, in the yellow note
-(so it's recognized by the compiler but not complaining if you run
-the Master document). 
-
-
-\section{Figures}
-
-Include figures as usual, first Insert -> Float -> Figure, then Insert
--> Graphics. 
-
-Use cross-reference option to talk about Fig. \ref{fig:Some-caption-for}
-
-%\begin{figure}
-%\begin{centering}
-%\includegraphics[width=0.8\textwidth]{few_long_trajectories}
-%\par\end{centering}
-%
-%\caption{Some caption for the figure. Don't forget adding label to the figure
-%and later using the cross-reference to it. \label{fig:Some-caption-for}}
-%\end{figure}
-
-
-
-\section{Tables}
-
-\begin{table}
-\begin{tabular}{|c|c|c|}
-\hline 
-row 1 & cell 1 & cell 2\tabularnewline
-\hline 
-\hline 
-row 2 & cell 1 & cell 2\tabularnewline
-\hline 
-\end{tabular}
-
-\caption{Table float first using Insert - > Float -> Table}
-
-
-\end{table}
-
-
-\begin{comment}
-Use: Insert Note -> Insert List/TOC -> Bibtex Bibliography
-\end{comment}
-
-
-
-
-\begin{comment}
-Then in the text you can use Insert citation (use the icon for the
-quick use)
-\end{comment}
-
-
-
-\section{Citations}
-
-The file references.bib in this folder is an example of how to organize
-the bibliography database. It is very simple to add a reference/citation
-to one of the items in the bibliography list, e.g. see the best source
-of information regarding the OpenPTV origins: \citet{Dracos1996}.
-Simply use: Insert -> Citation and choose from the list on the left.
-Add it to the list on the right and you'll be able to choose the format
-of author-year or author-number or just number to the references.
-At the same time, at the end of the document you'll find References
-chapter with all the cited references automatically chosen and included. 
+The growing use of keyboard-less handheld devices accelerates a transition in the Human-Computer data input interface.  While in the past, keyboards and mice were the primary mode of data entry, nowadays, hand and finger gestures are increasingly used for this task. Consequently, a growing interest in the online character recognition field has taken place. Automated script recognition of Latin, Chinese and Kanji has been a focus of study in the last decade and impressive recognition rates were achieved. However, Arabic text recognition is at an early stage. The reason for this is lack of funds and other utilities such as text database, dictionaries, etc. [2]
+Text recognition can be classified into two main fields: online and offline recognition. Online recognition aims recognizing the text as it is being written. However, in the offline script recognition field, a digital image containing text is fed to the computers and the system attempt to recognise the written text [3]. The main existing approaches for script recognition are the holistic approach and the analytic approach. The holistic approach considers the global properties of the written text while the analytic approach involves segmentation and classification of each part of the text. 
+Arabic text, both handwritten and printed is cursive. An Arabic word consists of one or more sub-words (which will be referred to as word parts). Each word part consists of one character or more. Thus, most of the online Arabic recognition systems perform the recognition soon after the word part scribing is completed using the holistic or the analytic approach. The analysis of Arabic script is further due to obligatory dots and stokes that are placed above or below most letters in addition to the wide range variety of writing fashions.
+In this thesis we propose a novel approach which combines both holistic and analytic techniques for recognizing open dictionary Arabic online script. The recognition process, in our approach, is performed whilst the word part is being written. At the first stage, demarcation points are identified using SVM. At the second stage we employ an agile but loose classifier to select letters candidates for each segment. Finally, we holistically recognize the word part by applying a costly yet accurate classifier. 
 %\end{document}

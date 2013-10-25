@@ -1,0 +1,1 @@
+For symbols run the following: makeindex Thesis-main.nlo -s nomencl.ist -o Thesis-main.nls
