@@ -1,0 +1,91 @@
+%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[12pt,english]{report}
+\usepackage{mathptmx}
+\renewcommand{\familydefault}{\rmdefault}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{verbatim}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage[numbers]{natbib}
+\usepackage{nomencl}
+% the following is useful when we have the old nomencl.sty package
+\providecommand{\printnomenclature}{\printglossary}
+\providecommand{\makenomenclature}{\makeglossary}
+\makenomenclature
+\doublespacing
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\providecommand{\LyX}{L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+%% A simple dot to overcome graphicx limitations
+\newcommand{\lyxdot}{.}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{tauthesis}
+\usepackage[font={small,bf}, labelfont={small,bf}, margin=1cm]{caption}
+\usepackage{titlesec}
+\newcommand{\hsp}{\hspace{20pt}}
+\titleformat{\chapter}[hang]{\Huge\bfseries}{\thechapter\hsp}{0pt}{\Huge\bfseries}
+
+
+\Title{\textbf{Online Character Recognition}}
+\Author{George Kour}
+\Year{January 2014}
+\Supervisor{Prof. Dana Ron}
+\Department{School of Electrical Engineering}
+\Degree{Master of Science}
+% \Degree{Doctor of Philosophy}
+
+\makeatother
+
+\usepackage{babel}
+\begin{document}
+
+
+\prelimpages
+
+\titlepage
+
+\acknowledgments{I would like to thank my ...}
+
+\cleardoublepage
+\setcounter{page}{1} % Start preliminary pages numbering (roman numerals).
+\include{Abstract}
+
+\tableofcontents{}
+
+\listoffigures
+
+\listoftables
+
+\printnomenclature{}
+
+\textpages
+
+\include{Introduction}
+
+\include{Chapter1}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\appendix
+\include{appendix}
+
+\newpage{}
+
+\includepdf[pages=-]{hebrew_part}
+\end{document}
