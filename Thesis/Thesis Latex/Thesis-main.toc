@@ -1,0 +1,47 @@
+\select@language {english}
+\contentsline {chapter}{\@textofAck }{ii}
+\contentsline {chapter}{\@textofLoF }{v}
+\contentsline {chapter}{\@textofLoT }{vi}
+\contentsline {chapter}{\numberline {\@textofChapter \ 1:}Introduction}{1}
+\contentsline {chapter}{\numberline {\@textofChapter \ 2:}Background}{3}
+\contentsline {section}{\numberline {2.1}Hand Writing Recognition}{3}
+\contentsline {subsection}{\numberline {2.1.1}On-line vs. Off-line Handwriting Recognition}{3}
+\contentsline {subsection}{\numberline {2.1.2}Writer Dependent vs. Writer Independent}{4}
+\contentsline {subsection}{\numberline {2.1.3}Closed vs. Open Dictionary}{4}
+\contentsline {section}{\numberline {2.2}Characteristic of the Arabic Script}{4}
+\contentsline {chapter}{\numberline {\@textofChapter \ 3:}Literature Review}{8}
+\contentsline {chapter}{\numberline {\@textofChapter \ 4:}Overview}{10}
+\contentsline {section}{\numberline {4.1}Demarcation Points Nomination}{11}
+\contentsline {section}{\numberline {4.2}Segmentation selection and Letter classification}{11}
+\contentsline {section}{\numberline {4.3}Candidate Word-Part generation and embedding}{11}
+\contentsline {section}{\numberline {4.4}Candidate Word-Part generation and embedding}{12}
+\contentsline {section}{\numberline {4.5}Notes and Limitations}{12}
+\contentsline {chapter}{\numberline {\@textofChapter \ 5:}Samples Collection}{15}
+\contentsline {section}{\numberline {5.1}A self-collected letters database}{16}
+\contentsline {section}{\numberline {5.2}Letters Extraction from the ADAB Database}{16}
+\contentsline {section}{\numberline {5.3}The ADAB Database}{16}
+\contentsline {section}{\numberline {5.4}Letters Extraction}{16}
+\contentsline {chapter}{\numberline {\@textofChapter \ 6:}Letters Classification}{18}
+\contentsline {section}{\numberline {6.1}Samples Preprocessing}{18}
+\contentsline {subsection}{\numberline {6.1.1}Normalization}{18}
+\contentsline {subsection}{\numberline {6.1.2}Simplification}{19}
+\contentsline {subsection}{\numberline {6.1.3}Re-sampling}{20}
+\contentsline {section}{\numberline {6.2}Features Extraction}{20}
+\contentsline {subsection}{\numberline {6.2.1}Shape Context}{21}
+\contentsline {subsection}{\numberline {6.2.2}Multi Angular Descriptor}{22}
+\contentsline {section}{\numberline {6.3}Metric Embedding}{23}
+\contentsline {subsection}{\numberline {6.3.1}Earth Movers Distance}{23}
+\contentsline {subsection}{\numberline {6.3.2}Approximate Earth Movers Distance Embedding}{24}
+\contentsline {subsection}{\numberline {6.3.3}Clustering}{24}
+\contentsline {subsubsection}{L1 K-medoids}{24}
+\contentsline {section}{\numberline {6.4}Features Transformation and Dimensionality Reduction}{24}
+\contentsline {subsection}{\numberline {6.4.1}Principle Component Analysis}{25}
+\contentsline {subsection}{\numberline {6.4.2}Linear Discriminant Analysis}{25}
+\contentsline {subsection}{\numberline {6.4.3}Combining PCA and LDA}{26}
+\contentsline {section}{\numberline {6.5}Fast Retrieval Database}{27}
+\contentsline {subsection}{\numberline {6.5.1}Kd-tree}{27}
+\contentsline {section}{\numberline {6.6}Letters Classification and Scoring}{27}
+\contentsline {section}{\numberline {6.7}Experimental Details, Results and Discussion}{27}
+\contentsline {chapter}{\numberline {\@textofChapter \ 7:}Ongoing Strokes Segmentation}{28}
+\contentsline {chapter}{\@textofBIB }{29}
+\contentsline {chapter}{\numberline {\@textofAppendix \ A:}Appendix title}{31}

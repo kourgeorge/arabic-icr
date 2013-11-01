@@ -1,0 +1,180 @@
+%%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+%%% Do not edit unless you really know what you are doing.
+%\documentclass[english]{report}
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
+%\setcounter{secnumdepth}{3}
+%\setcounter{tocdepth}{3}
+%\usepackage{setspace}
+%\onehalfspacing
+%\usepackage{babel}
+%\begin{document}
+
+\chapter{Letters Classification}
+
+
+Classification is the most important stage in the recognition process. It is a classification of each unknown object into one of a finite set of categories or classes. These categories could be a whole word, word-parts, letter or even strokes. The problem that makes the recognition of online handwriting recognition difficult is variation of shapes of the characters resulting from writing habits, styles, and the social and educational level of the writer. 
+In our process we perform sequence classification in 2 stages: The first classification task is letter classification and the other is word level classification that is done against a dictionary. 
+Our classifier contains 4 distinct databases, one for each position. The figure below describes the process through until it reaches its final position in the corresponding database.
+
+\section{Samples Preprocessing}
+The data variation of the letters data, which is caused by the uniform temporal sampling of the digitizer, should be reduced as much as possible. Digitizers often oversample slow pen motion regions and under-sample fast motion regions. \cite{al2011online}
+This phase contains 3 parts: \emph{Normalization}, \emph{Simplification} and \emph{Resampling}.
+
+\subsection{Normalization}
+Given the written sequence, the normalized sequence $\bar{\pi}=(\bar{p_1},...,\bar{p_N})$ is calculated by: 
+
+\begin{equation}
+{\bar x_i} = {{\left( {{x_i} - {\mu _x}} \right)} \over W},{\bar y_i} = {{\left( {{y_i} - {\mu _y}} \right)} \over W}
+\end{equation}
+Where
+\begin{equation}
+\mu  = \left( {{\mu _x},{\mu _y}} \right) = \left( {{1 \over N}\sum\limits_{i = 1}^N {{x_i}} ,{1 \over N}\sum\limits_{i = 1}^N {{y_i}} } \right)
+\end{equation}
+\begin{equation}
+W = \max \left( {{d_x},{d_y}} \right)
+\end{equation}
+\begin{equation}
+{d_x} = {x_{\max }} - {x_{\min }};\,\,\,{d_y} = {y_{\max }} - {y_{\min }}
+\end{equation}
+\begin{equation}
+{x_{\max }} = \mathop {\max }\limits_i \left( {{x_i}} \right),\,\,{x_{\min }} = \mathop {\min }\limits_i \left( {{x_i}} \right)
+\end{equation}
+and he same for the y coordinate.
+
+\subsection{Simplification}
+In order to eliminate redundant points irrelevant for pattern classification and screening out unwanted noise and vibrations in the letter inscription we have used the Douglas-Peucker Polyline Simplification algorithm described in \cite{douglas1973algorithms}. Briefly, it is a line simplification algorithm to reduce the number of vertices in a piecewise linear curve according to a specified tolerance. The algorithm is also known as Iterative Endpoint Fit. 
+Assuming the stroke presentation is a sequence of points $\left\{ {\left( {{x_i},{y_i}} \right)} \right\}_{i = 1}^n$, the sensitivity parameter that was used in our work is:
+\begin{equation}
+\varepsilon  = {1 \over {200}}\sqrt {{d_x}^2 + {d_y}^2}
+\end{equation}
+
+\begin{figure}
+\centering
+\includegraphics{./figures/ha_simplification}       
+\caption{Non Simplified representation of the letter \RL{.h} (Ha) is shown on the right. A simplified version is shown on the left.}
+\label{fig:ha_simplification}
+\end{figure}
+
+\subsection{Re-sampling}
+The re-sampling is needed to prevent the unbalanced sampling density, which may be influenced by the sampling rate and the user non-uniform letter drawing. The re-sampling was done using linear piecewise splines. Given a number of points N, this technique returns N equidistant points on given curve.
+
+\begin{figure}
+\centering
+\includegraphics{./figures/y_resampling}       
+\caption{Representation of a non-resamples sequence of the letter \RL{y} (Y) is shown in the right. The re-sampled version is shown on the left.}
+\label{fig:y_resampling}
+\end{figure}
+
+\section{Features Extraction}
+{\color{blue}In contemporary handwritten recognition systems, as an informative parameters for learning and recognition, various feature extraction methods are being used. This feature extraction methods vary depending on handwritten script and recognition method. Feature extraction involves simplifying the amount of resources required to describe a large set of data accurately. When performing analysis of complex data one of the major problems stems from the number of variables involved. Analysis with a large number of variables generally requires a large amount of memory and computation power or a classification algorithm which overfits the training sample and generalizes poorly to new samples. Feature extraction is a general term for methods of constructing combinations of the variables to get around these problems while still describing the data with sufficient accuracy. (Word base line detection in handwritten text recognition systems -- Kamil R. Aida-zade and Jamaladdin Z. Hasanov)}
+
+The selection of valuable features is crucial in pattern recognition. In this work we have chosen to work with 2 features, the Shape Context and the Multi Angular Descriptor. Generally, when considering shapes, the contour of the shape is taken into account, thus the following 2 shape descriptors is defined using the contour of the shape. However in the online writing recognition case, the features are applied upon the 2-D sequence. 
+
+\subsection{Shape Context}
+Belongie and Malik have presented a point matching approach named Shape Context \cite{belongie2002shape}. The Shape context is a shape matching approach that intended to be a way of describing shapes that allows for measuring shape similarity and the recovering of point correspondences. This approach is based on the following descriptor: Pick $n$ points on the shape's contour, for each point ${p_i}$ on the shape, consider the $n - 1$ other points and calculate the coarse histogram of the relative coordinates. Equation \ref{eq:sc_bins} is defined to be the shape context of ${p_i}$.
+
+\begin{equation}
+{h_i}(k) = \# \{q \ne p_i:(q - p_i) \in bin(k) \}
+\label{eq:sc_bins}
+\end{equation}
+
+The bins are normally taken to be uniform log-polar space making the descriptor more sensitive to positions of nearby sample points than to those of points farther away. This distribution over relative positions is robust and compact, yet highly discriminative descriptor. The basic Idea of the Shape Context Descriptor is illustrated in Figure \ref{fig:shape_context_demo}. This can be calculated in $O(N^3)$ time using the Hungarian method. 
+
+\begin{figure}
+\centering
+\includegraphics{./figures/shape_context_demo}       
+\caption{Diagram of the log-polar bins used to compute the shape context.}
+\label{fig:shape_context_demo}
+\end{figure}
+
+
+\subsection{Multi Angular Descriptor}
+The Multi Angular Descriptor (MAD) is a shape recognition method described in \cite{saabni2013multi}, which captures the angular view to multi resolution rings in different heights. The shape is treated as a two dimensional set of points and the different rings are upper view points from rings around the shape centroid with different sizes and heights. To enables scale and translation invariance, the sizes and heights of these rings are calculated using the diameter and centroid of the shape.
+Formally, let $S$ be a shape and Let $C$ and $D$ be the centroid and the diameter of the shape respectively. Let $P = \{p_i\}_{i = 1}^l$ a set of $l$ point taken uniformly from the extracted contour of $S$. Given a view point $V_j$ from a given ring with height $h$ over the shape, the angle, obtained by connecting the point ${p_i} \in P$ with each point   and the plain of the shape is a rich description of the shape from this view point. Let $R$ be a ring with the radius $r$ and the center $C$ positioned above the shape $S$ with the height $h$. Let $V = \{V_i\}_{i = 1}^n$ be a set of $n$ viewpoints lying uniformly on the ring $R$ and $\alpha(V_{ij})$ to be the angle between the segment $\overline {{V_i}{p_j}}$ and the plain contains the shape $S$. The vector $Ve{c_i} = \left\{ {\alpha \left( {{V_{ij}}} \right)} \right\}_{j = 1}^l$ can be seen as watching the shape $S$ from one upper view point $V_i$. Illustration can be seen in Figure 7.
+
+\begin{figure}
+\centering
+\includegraphics{./figures/mad_demo}       
+\caption{In this figure we can see an example of three line segments drawn from the same viewpoint $V_i$, generating the three angles $Vec_{ij}$ with the plane of the shape. When the parameter $j$ goes over all contour points we get the vector $Vec_i$ describing the shape from the view point $V_i$ with the parameter $i$ goes over all viewpoints.}
+\label{fig:mad_demo}
+\end{figure}
+
+
+\section{Metric Embedding}
+Given two distributions, it is important to define a quantitative measure of their dissimilarity, with the intent of approximating perceptual dissimilarity as well as possible. Defining a distance between two distributions requires first a notion of distance between the basic features that are aggregated into the distributions. This is known as \emph{ground distance}.
+Mathematically, it would be convenient if these distribution distances were true metrics, which would lead to more efficient data structures and search algorithms. As well, this characteristic is usually required in important kernel based classification techniques. For example, to be able to run efficiently "Radial basis function" (RBF) one needs to calculate efficiently the distance between two samples. The dissimilarity metric that we have used is the Earth Movers Distance (EMD). EMD has experimentally verified to capture well the perceptual notion of a difference between images. Piotr Indyk has suggested an embedding technique in which the un-normed EMD metric is embedded into a normed space, so that the distance between the two images is comparable to the distance between the two points which represent the embedding of the two images.
+
+\emph{[EMD approximation. Do we approximate the EMD and then do the embedding? Or we do the embedding within the EMD calculation?]}
+
+\subsection{Earth Movers Distance}
+Earth movers distance (EMD) is a measure of the dissimilarity between two histograms. Descriptively, if the histograms are interpreted as two different ways of piling up a certain amount of dirt, the EMD is the minimal cost of turning one pile to other, where the cost is assumed to be the amount of dirt moved times the distance by which it moved.
+EMD has been experimentally verified to capture well the perceptual notion of a difference between images \cite{indyk2003fast}.  Computing EMD is based on a solution to the well-known transportation problem. It can be computed as the minimal value of a linear program. 
+\emph{[EMD formal definition]}
+EMD naturally extends the notion of a distance between single elements to that of a distance between sets, or distributions, of elements when used to compare distributions with the same overall mass, the EMD is a true metric. The major hurdle to using EMD is its $O\left( {{N^3}\log N} \right)$ computational complexity (for an N-bin histogram).Various approximation algorithms have been proposed to speed up the computation of EMD. 
+The embedding of EMD given in \cite{indyk2003fast} provides a way to map weighted point sets A and B from the metric space into the normed space $L_1$, such that the $L_1$ distance between the resulting embedded vectors is comparable to the EMD distance between A and B. The motivation of doing so is that the working with normed space is desirable to enable fast approximate Nearest Neighbors (NN) search techniques such as LSH and kdTree. A work conducted by Shirdhonkar and Jacobs in \cite{shirdhonkar2008approximate} has proposed a method for approximating the EMD between two low dimensional histograms using a new on the weighted wavelet coefficients of the difference histogram. The approximation is done by transforming the histograms to $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. They have proven the ratio of EMD to wavelet EMD is bounded by constants. The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity.
+
+
+\subsection{Approximate Earth Movers Distance Embedding}
+
+\subsection{Clustering}
+\begin{itemize}
+\item Talk about the clustering process.
+\item try to implement the number of clusters recommendation system.
+\subsubsection{L1 K-medoids}
+\end{itemize}
+
+\section{Features Transformation and Dimensionality Reduction}
+Feature transformation is a group of methods that create new features (predictor variables). The methods are useful for dimension reduction when the transformed features have a descriptive power that is more easily ordered than the original features. There are 2 main approaches for this task. One is \emph{feature selection} and the other is \emph{feature transformation}. 
+
+Dimensionality Reduction is a process of reducing the number of random variables taken into consideration in the learning and classification of Data. Ideally, the reduced representation should have a dimensionality that corresponds to the intrinsic dimensionality of the data. Reducing the dimensionality of the features vectors would not only simplify and rapid the learning and classification task but rather boosts the classification accuracy.  Feature transformation technique is much more suitable to be implemented in our approach. In this work we have chosen to use two techniques applied in sequential manner in order to obtain the most efficient and linearly discriminative components, \emph{Principle Component Analysis} (PCA) and \emph{Linear Discrimination Analysis} (LDA) Technique. 
+
+\subsection{Principle Component Analysis}
+PCA was invented in 1901 by Karl Pearson. It is a linear technique for dimensionality reduction, which means that it performs dimensionality reduction by embedding the data into a linear subspace of lower dimensionality. Although there exist various techniques to do so, PCA is by far the most popular (unsupervised) linear technique. PCA is an orthogonal linear transformation that transforms the data to a new coordinate system such that the greatest variance by any projection of the data comes to lie on the first coordinate (names the first principal component), the second greatest variance on the second coordinate, and so on. Each principal component is a linear combination of the original variables. All the principal components are orthogonal to each other, so there is no redundant information. The principal components as a whole form an orthogonal basis for the space of the data.
+The full set of principal components is as large as the original set of variables. But taking the first few principal components will preserve most of the information in the data, and reduces the data dimensions.
+
+\subsection{Linear Discriminant Analysis}
+PCA is an unsupervised technique and as such does not include label information of the data. The following example demonstrates the problem drawback: Imagine 2 cigar like clusters in 2 dimensions, one cigar has $y = 1$ and the other $y = -1$. The cigars are positioned in parallel and very closely together, such that the variance in the total data-set, ignoring the labels, is in the direction of the cigars. For classification, this would be a terrible projection, because all labels get evenly mixed and we destroy the useful information. A much more useful projection is orthogonal to the cigars, i.e. in the direction of least overall variance, which would perfectly separate the data-cases.
+
+LDA is closely related to PCA in that they both look for linear combination of variables which best explain the data. LDA explicitly attempts to model the difference between the classes of data. In this method, variability among the feature vectors of the same class is minimized and the variability among the feature vectors of different classes is maximized.
+
+The LDA performs dimensionality reduction while preserving as much of the class discriminatory information as possible. Without going into the math, in order to find a good projection vector, we need to define a measure of separation between the projections. The solution proposed by Fisher is to maximize a function that represents the difference between the means, normalized by a measure of the within-class scatter.
+
+Although, LDA assumes that the distribution of samples in each class is Gaussian and that we cannot prove that the handwritten letters are distributes in a Gaussian manner, we selected LDA as 
+
+Even though LDA is preferred in many application of dimension reduction, it does not always outperform PCA. In order to optimize discrimination performance in a more generative way, a hybrid dimension reduction model combining PCA and LDA is used in this work. 
+
+\subsection{Combining PCA and LDA}
+
+In this system, we use a flavor the dimensionality reduction process can be outlines as follows: the pre-processed feature matrix $M$ projected into subspace $S_1$ using PCA and then into the subspace $S2$ using LDA. In the PCA stage, the largest $t$ eigenvalues are selected to create the PCA projection matrix $W_{PCA}$. $t$ is the number of eigenvalues which guarantee energy E is greater than 0.99. The data preservation value is calculates as seen in Equation \ref{eq:dr_energy} where ${\lambda _i}$ is the ith eigenvalue
+
+\begin{equation}
+E = {{\sum\limits_{i = 1}^t {{\lambda _i}} } \mathord{\left/
+ {\vphantom {{\sum\limits_{i = 1}^t {{\lambda _i}} } {\sum\limits_{i = 1}^{\dim \left( S \right)} {{\lambda _i}} }}} \right.
+ \kern-\nulldelimiterspace} {\sum\limits_{i = 1}^{\dim \left( S \right)} {{\lambda _i}} }}
+\label{eq:dr_energy}
+\end{equation}
+
+The dimensionality of $W_{PCA}$ is much smaller that the dimensionality of $M$. At the second phase LDA is used to project $W_{PCA}$ to $W_{PCA+LDA}$.  The dimension of subspace $S_2$ is smaller than the subspace $S_1$ by 1.
+Why we have used both and what give us every method and how we did join them together to get the most out of both.
+
+\emph{Why we have used both and what give us every method and how we did join them together to get the most out of both.}
+
+\emph{ Talk about other Dimensionality reduction techniques such as LMNN and show results.}
+
+\section{Fast Retrieval Database}
+
+\subsection{Kd-tree}
+
+\section{Letters Classification and Scoring}
+
+\begin{itemize}
+\item How is the classification is done - mention that the system recieves a stroke and it goes over all the stages
+\item A list of candidates is retrieved by the kdtree, then to be more precise we use a combination of the Constrained DTW metric and the distance of the sample and the candidate.
+\item mention the alternatives - using different combination (we can afford using heavy tools since we have small candidate number)
+\item we return the best 3 candidates.
+\end{itemize}
+
+\section{Experimental Details, Results and Discussion}
+ 
+%\end{document}
