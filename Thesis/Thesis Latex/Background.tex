@@ -34,11 +34,54 @@ The problem of handwriting recognition has now been a topic of research for over
 Offline handwriting recognition focuses on documents that have been written on paper at some previous point of time. Information is presented to the system in the form of scanned image of the paper document. In contrast, online Hand Writing Recognition refers to the situation where the recognition is performed concurrently to the writing process. This requires the use of special equipment, such touch screen or digitizing tablet, to capture the strokes of the pen as that are being written. The trace of a writer's pen is stored as a sequence of points sampled at equally spaced time intervals. The information captured for each sample is the   coordinates. While this sequence can be used to construct a static image of the writing, thus allowing offline character recognition techniques to be applied, it has been shown that the information about the pen dynamics can be used to obtain a better recognition accuracies than the static data alone. Therefore, it is beneficial to capture the data in an online form, even if the real-time processing requirements can be relaxed \cite{connell2000online}. 
 Another advantage of online handwritten data over offline data is the availability of the stroke segmentation and the order of writing. Ink in static images must first be separated from the image background, creating a potential source of error. The ability to detect the states of "pen-down" (when the pen touches the tablet or the finger touches the touch screen) and "pen-up" can also be used. A single stroke is defined as the sequence of sample points occurring between consecutive pen-down and pen-up transitions. However, a complication occurs when a stroke is added to a character in a word after the rest of the word has already been written, such as the cross of a 't' or an 'x', or the dot of an 'i' or a 'j' These types are called delayed strokes \cite{connell2000online}. 
 
-\subsection{Writer Dependent vs. Writer Independent}
+{\color{blue}Handwriting data is converted to digital form either by
+scanning the writing on paper or by writing with a special
+pen on an electronic surface such as a digitizer combined
+with a liquid crystal display. The two approaches are
+distinguished as off-line and on-line handwriting, respectively.
+In the on-line case, the two-dimensional coordinates
+of successive points of the writing as a function of time are
+stored in order, i.e., the order of strokes made by the writer
+is readily available. In the off-line case, only the completed
+writing is available as an image. The on-line case deals with
+a spatio-temporal representation of the input, whereas the
+off-line case involves analysis of the spatio-luminance of an
+image. Fig. 1 shows typical input signals that can be
+analyzed in both cases. The raw data storage requirements are widely different. The data requirements for an average
+cursively written word are: in the on-line case (Fig. 1b), a
+few hundred bytes, typically sampled at 100 samples per
+second, and in the off-line case (Fig. 1a), a few-hundred
+kilo-bytes, typically sampled at 300 dots per inch. From a
+global perspective, paper documents, which are an inherently
+analog medium, can be converted into digital form by
+a process of scanning and digitization. This process yields a
+digital image. For instance, a typical 8.5 x 11 inch page is
+scanned at a resolution of 300 dots per inch to create a grayscale
+image of 8.4 megabytes. The resolution is dependent
+on the smallest font size that needs reliable recognition, as
+well as the bandwidth needed for transmission and storage
+of the image. \cite{plamondon2000online}}
 
-\subsection {Closed vs. Open Dictionary}
+\begin{figure}
+	\centering
+        \subfloat[]{
+            \label{fig:offline}
+            \includegraphics[width=0.5\textwidth]{./figures/offline}
+        }
+        \subfloat[]{
+           \label{fig:online}
+           \includegraphics[width=0.5\textwidth]{./figures/online}
+        }        
+    \caption{(a) Off-line word. The image of the word is converted into gray-level pixels using a scanner. (b) On-line word. The x; y coordinates of the pen-tip are recorded as a function of time with a digitizer}
+   \label{fig:offlibe_vs_online}
+\end{figure}
 
-\section{Characteristic of the Arabic Script}
+\emph{talk about Writer Dependent vs. Writer Independent}
+
+\emph{talk about Closed vs. Open Dictionary}
+
+
+\section{Characteristic of the Arabic writing system}
 \emph{[See Online handwriting recognition for the Arabic Letter Set]}
 \emph{[See [1]	G. a. Abandah and M. Z. Khedher, "Analysis of Handwritten Arabic Letters Using Selected Feature Extraction Techniques,"International Journal of Computer Processing of Languages, vol. 22, no. 01, pp. 49-73, Mar. 2009.]}
 
@@ -52,5 +95,6 @@ Certain characteristics relating to the obligatory dots and strokes of the Arabi
 
 Finally, in Arabic script a top-down writing style called vertical ligatures is very common - letters in a word may be written above their consequent letters. In this style, the position of letters cannot be predefined relative to the baseline of the word \cite{biadsy2011segmentation}.    
 Saabni and El-sana have explored a large collection of Arabic texts and extracted 300,000 different word combinations of 82,000 different word-parts. Ignoring the additional strokes reduced the number of different word-parts to 40,000 \cite{saabni2009efficient}. 
+
 
 %\end{document}

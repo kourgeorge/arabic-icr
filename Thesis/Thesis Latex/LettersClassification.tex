@@ -1,28 +1,87 @@
-%%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-%%% Do not edit unless you really know what you are doing.
-%\documentclass[english]{report}
-%\usepackage[T1]{fontenc}
-%\usepackage[latin9]{inputenc}
-%\setcounter{secnumdepth}{3}
-%\setcounter{tocdepth}{3}
-%\usepackage{setspace}
-%\onehalfspacing
-%\usepackage{babel}
-%\begin{document}
+%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[12pt,english]{report}
+\usepackage{mathptmx}
+\renewcommand{\familydefault}{\rmdefault}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{verbatim}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\usepackage{subfig} %% This package has to be here
+\usepackage{setspace}
+\usepackage{arabtex}
+\usepackage[numbers]{natbib}
+\usepackage{nomencl}
 
-\chapter{Letters Classification}
 
+\begin{document}
 
-Classification is the most important stage in the recognition process. It is a classification of each unknown object into one of a finite set of categories or classes. These categories could be a whole word, word-parts, letter or even strokes. The problem that makes the recognition of online handwriting recognition difficult is variation of shapes of the characters resulting from writing habits, styles, and the social and educational level of the writer. 
-In our process we perform sequence classification in 2 stages: The first classification task is letter classification and the other is word level classification that is done against a dictionary. 
+\chapter{Sub-Strokes Classification}
+
+It is a classification of each unknown object into one of a finite set of categories or classes. 
+\emph{
+\begin{itemize}
+\item state the general problem definition of classification. [3-4 sentences]
+\item talk about pattern classification [2 sentences]
+\item talk about the different types and approaches of letters classification [1 paragraph]
+\end{itemize}
+}
+
+In the on-line Arabic text recognition, these categories could be a whole word, word-parts, letter or even strokes. The problem that makes the recognition of on-line handwriting recognition difficult is variation of shapes of the characters resulting from writing habits, styles, and the social and educational level of the writer.\\
+ 
+{\color{blue}
+The process of online handwriting recognition can be broken down into a few general steps:
+preprocessing,
+feature extraction and
+classification.
+The purpose of preprocessing is to discard irrelevant information in the input data, that can negatively affect the recognition.[3] This concerns speed and accuracy. Preprocessing usually consists of binarization, normalization, sampling, smoothing and denoising.[4] The second step is feature extraction. Out of the two- or more-dimensional vector field received from the preprocessing algorithms, higher dimensional data is extracted. The purpose of this step is to highlight important information for the recognition model. This data may include information like pen pressure, velocity or the changes of writing direction. The last big step is classification. In this step various models are used to map the extracted features to different classes and thus identifying the characters or words the features represent. [http://en.wikipedia.org/wiki/Handwriting\_recognition]}
+
+In this chapter we will describe a fast letters classifier. As mentioned in the overview in chapter \ref{[]}, our goal is to perform strokes segmentation and letters recognition while the stroke is being written. Thus, the performance of the of the classification process is a critical part.  
+
+This stage produces a list of candidate characters for an input sequence and the letter position this sequence. The  
+      
 Our classifier contains 4 distinct databases, one for each position. The figure below describes the process through until it reaches its final position in the corresponding database.
 
-\section{Samples Preprocessing}
-The data variation of the letters data, which is caused by the uniform temporal sampling of the digitizer, should be reduced as much as possible. Digitizers often oversample slow pen motion regions and under-sample fast motion regions. \cite{al2011online}
-This phase contains 3 parts: \emph{Normalization}, \emph{Simplification} and \emph{Resampling}.
+\newpage{}
 
-\subsection{Normalization}
-Given the written sequence, the normalized sequence $\bar{\pi}=(\bar{p_1},...,\bar{p_N})$ is calculated by: 
+\section{Samples Preprocessing}
+The data obtained by the digitizer is composed of points in the plane that represent the trajectory scribed by the writing instrument on the tablet surface. Usually, samples are taken in time intervals, thus slow pen motion regions are oversampled and fast motion regions are under-sampled. In addition, when such devices are used to capture handwriting strokes, the shapes of the strokes present a jagged form and the obtained data is non-uniform and noisy. Further imperfections are caused also caused by hand vibrations and duplicated sampled points caused by hesitant writing. This noise should be reduced as much as possible since such noises in the information influence the further processes, such as feature extraction and classification \cite{al2011online} \cite{huang2009preprocessing}.  
+To overcome the flaws mentioned, preprocessing operations are usually applied. The preprocessing steps imposes certain uniform structure on the data to comply with the input structure required by the latter parts of the system, such that vector length, sequence bounds, etc.\\
+
+Our preprocessing phase include three steps in the following order: \emph{Normalization and Translation}, \emph{Noise Elimination} and then \emph{Smoothing and Re-sampling}.\\ 
+
+In figure \ref{fig:D_before_after_preprocessing} we show a sample of the letter \RL{d} sequence before and after preprocessing.\\ 
+
+In the next sub-sections we will describe in details each part of the preprocessing procedure.
+
+\begin{figure}
+	\centering
+        \subfloat[]{
+            \label{fig:letter_before_preprocessing}
+            \includegraphics[width=0.5\textwidth]{./figures/letter_before_preprocessing}
+        }
+        \subfloat[]{
+           \label{fig:letter_after_preprocessing}
+           \includegraphics[width=0.5\textwidth]{./figures/letter_after_preprocessing}
+        }        
+    \caption{The letter \RL{d} before (a) and after (b) preprocessing}
+   \label{fig:D_before_after_preprocessing}
+\end{figure}
+
+
+\subsection{Normalization and Translation}
+
+Size normalization is done to achieve a uniform size of the bounding box surrounding the pattern. This is done to enable the classifier to recognize the sequence pattern even when the stroke is written in different sizes. Shape similarity algorithms tend to be sensitive for non-uniform shapes size, thus this procedure is important and can be found in many approaches in the literature. 
+However, this method could not be applied since normalization is done in our system on the stroke level which could contain a letter, at least.
+The bounding box of the sequence after this procedure is $[0,1]\times[0,1]$. We include in this step also translation of the sequence's center of gravity to the origin point $[0,0]$.
+Given the stroke sequence $S=\{p_i\}_{i=1}^{n}$, the normalized sequence $\bar{S}=\{\bar{p_i}\}_{i=1}^{n}$ is calculated by: 
 
 \begin{equation}
 {\bar x_i} = {{\left( {{x_i} - {\mu _x}} \right)} \over W},{\bar y_i} = {{\left( {{y_i} - {\mu _y}} \right)} \over W}
@@ -38,26 +97,51 @@ W = \max \left( {{d_x},{d_y}} \right)
 {d_x} = {x_{\max }} - {x_{\min }};\,\,\,{d_y} = {y_{\max }} - {y_{\min }}
 \end{equation}
 \begin{equation}
-{x_{\max }} = \mathop {\max }\limits_i \left( {{x_i}} \right),\,\,{x_{\min }} = \mathop {\min }\limits_i \left( {{x_i}} \right)
-\end{equation}
-and he same for the y coordinate.
+{x_{\max }} = \mathop {\max }\limits_i \left( {{x_i}} \right),\,\,{x_{\min }} = \mathop {\min }\limits_i \left( {{x_i}} \right),\,\,{y_{\min }} = \mathop {\min }\limits_i \left( {{y_i}} \right),\,\,{y_{\min }} = \mathop {\min }\limits_i \left( {{y_i}} \right)
+\end{equation}  
 
-\subsection{Simplification}
-In order to eliminate redundant points irrelevant for pattern classification and screening out unwanted noise and vibrations in the letter inscription we have used the Douglas-Peucker Polyline Simplification algorithm described in \cite{douglas1973algorithms}. Briefly, it is a line simplification algorithm to reduce the number of vertices in a piecewise linear curve according to a specified tolerance. The algorithm is also known as Iterative Endpoint Fit. 
-Assuming the stroke presentation is a sequence of points $\left\{ {\left( {{x_i},{y_i}} \right)} \right\}_{i = 1}^n$, the sensitivity parameter that was used in our work is:
+\subsection{Noise Elimination}
+The input obtained by the digitizer may contain a large amount of noise which is mainly duplication of points. In this process redundant points are filtered out and a similar sequence with fewer points is obtained.
+In order to eliminate redundant points irrelevant for pattern classification and screening out unwanted noise and vibrations in the letter inscription we have used the \emph{Douglas-Peucker Polyline Simplification algorithm} described in \cite{douglas1973algorithms}. Briefly, it is a line simplification algorithm to reduce the number of vertices in a piecewise linear curve according to a specified tolerance. The algorithm is also known as \emph{Iterative Endpoint Fit}. The resulted curve is a skeletonized angular sequence. The Normalization is done before the Simplification, since we need a constant simplification parameter $\varepsilon$ which was tuned for $1\times1$ bounds. 
+Assuming the stroke presentation is a sequence of points $S$, the sensitivity parameter that was used in our work is:
 \begin{equation}
 \varepsilon  = {1 \over {200}}\sqrt {{d_x}^2 + {d_y}^2}
 \end{equation}
 
 \begin{figure}
 \centering
-\includegraphics{./figures/ha_simplification}       
-\caption{Non Simplified representation of the letter \RL{.h} (Ha) is shown on the right. A simplified version is shown on the left.}
+\includegraphics[width=0.7\textwidth]{./figures/ha_simplification}       
+\caption{Non Simplified representation of the letter \RL{.h} (Ha) is shown on the right. A simplified version is shown on the left. \emph{TODO: change the pictures to something better}}
 \label{fig:ha_simplification}
 \end{figure}
 
-\subsection{Re-sampling}
-The re-sampling is needed to prevent the unbalanced sampling density, which may be influenced by the sampling rate and the user non-uniform letter drawing. The re-sampling was done using linear piecewise splines. Given a number of points N, this technique returns N equidistant points on given curve.
+\subsection{Smoothing and Re-sampling}
+As a result of the simplification process the points are not distributed uniformly along the stroke trajectory. Naturally, there are less point in relatively straight areas and a higher amount of points in the curved areas of the stroke.\\ 
+%if we wont use simplification we can write this: The re-sampling is needed to prevent the unbalanced sampling density, which may be influenced by the sampling rate and the user non-uniform letter drawing. 
+The re-sampling produces equidistant smoothed data sequence. 
+The Re-sampling is performed using splines interpolation as follows:\\
+Given a stroke $S=\{p_i\}_{i=1}^{n}$ and the re-sampling target number $R$, let $\{X(s_i)\}_{i=1}^{n}$ and $\{Y(s_i)\}_{i=1}^{n}$ represent the x-axis and the y-axis sequences with respect to the parameter $s_i$ which is defined as follows:
+
+\begin{equation}
+s_i=s_{i-1}+arclen(p_{i-1},p_i) 
+\end{equation}  
+
+The arc-length of the stroke is given by $L=s_n$.\\
+
+A piecewise linear spline is created for the $X$ sequence and $Y$ sequence separately, $q_X(s)$ and $q_X(s)$ respectively.
+
+let $t_i=i\frac{L}{R}$ for $i=0,...,R$.
+The re-sampled sequence is given as follows:
+\begin{equation}
+\widehat{S}=\{(q_X(t_i),q_Y(t_i))\}_{i=1}^{R}
+\end{equation}
+
+The target number of points is set to 40. We had to find a number that is good enough for both long and short strokes since strokes can span over a single letter or a whole WP.
+ 
+
+\subsubsection{Spline Interpolation}
+Do we use spline or splines interpolation?
+see the matlab used commands to determine.
 
 \begin{figure}
 \centering
@@ -65,6 +149,8 @@ The re-sampling is needed to prevent the unbalanced sampling density, which may 
 \caption{Representation of a non-resamples sequence of the letter \RL{y} (Y) is shown in the right. The re-sampled version is shown on the left.}
 \label{fig:y_resampling}
 \end{figure}
+
+\newpage{}
 
 \section{Features Extraction}
 {\color{blue}In contemporary handwritten recognition systems, as an informative parameters for learning and recognition, various feature extraction methods are being used. This feature extraction methods vary depending on handwritten script and recognition method. Feature extraction involves simplifying the amount of resources required to describe a large set of data accurately. When performing analysis of complex data one of the major problems stems from the number of variables involved. Analysis with a large number of variables generally requires a large amount of memory and computation power or a classification algorithm which overfits the training sample and generalizes poorly to new samples. Feature extraction is a general term for methods of constructing combinations of the variables to get around these problems while still describing the data with sufficient accuracy. (Word base line detection in handwritten text recognition systems -- Kamil R. Aida-zade and Jamaladdin Z. Hasanov)}
@@ -100,6 +186,7 @@ Formally, let $S$ be a shape and Let $C$ and $D$ be the centroid and the diamete
 \label{fig:mad_demo}
 \end{figure}
 
+\newpage{}
 
 \section{Metric Embedding}
 Given two distributions, it is important to define a quantitative measure of their dissimilarity, with the intent of approximating perceptual dissimilarity as well as possible. Defining a distance between two distributions requires first a notion of distance between the basic features that are aggregated into the distributions. This is known as \emph{ground distance}.
@@ -177,4 +264,4 @@ Why we have used both and what give us every method and how we did join them tog
 
 \section{Experimental Details, Results and Discussion}
  
-%\end{document}
+\end{document}
