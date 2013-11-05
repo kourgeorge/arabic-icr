@@ -2,7 +2,7 @@ function  SegmentationVisualValidation( SegmentedWordsFolder )
 %SEGMENTATIONVISUALVALIDATION This function creates images of the city
 %names extracted from the XML for visual validation that the segmentation
 %was done correctly.
-%   SegmentationVisualValidation( 'C:\Users\kour\Desktop\TestSet' )
+%   SegmentationVisualValidation( 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\TestSet' )
 
 
 delete([SegmentedWordsFolder,'\*.jpg']);

@@ -1,6 +1,6 @@
 function [ WPsResults , Name] = RecognizeCityName(xmlFile, LoadDataStructure, OutputFolder )
 %RecognizeCityName Summary of this function goes here
-%   RecognizeCityName( 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\TestSet\1233527638652.xml' , true, 'C:\OCRData\StrokeOutput\')
+%   RecognizeCityName( 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\TestSet\1233527883322.xml' , true, 'C:\OCRData\StrokeOutput\')
 
 global LettersDataStructure;
 if (LoadDataStructure ==true)
