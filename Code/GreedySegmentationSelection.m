@@ -7,6 +7,8 @@ SPIndexes = [];
 
 while (find(~isnan(minScoresTable)))
     [endI,startI]=find(minScoresTable==min(min(minScoresTable)));
+    endI = endI(end);
+    startI = startI(1);
     SPIndexes = [SPIndexes, startI, endI];
     
     SegmentationScore = SegmentationScore + minScoresTable(endI,startI);
