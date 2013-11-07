@@ -23,7 +23,10 @@
 
 \begin{document}
 
-\chapter{Sub-Strokes Classification}
+\chapter{Letters Classifier}
+
+
+{\color{blue}Online handwriting recognition is one of the very complex and challenging problems [1][2][3] because of variability on size, writing style of hand-printed characters , and duplicate pixels caused by a hesitation in writing or interpolate non-adjacent consecutive pixels caused by fast writing. \cite{verma2004feature}}
 
 It is a classification of each unknown object into one of a finite set of categories or classes. 
 \emph{
@@ -36,12 +39,6 @@ It is a classification of each unknown object into one of a finite set of catego
 
 In the on-line Arabic text recognition, these categories could be a whole word, word-parts, letter or even strokes. The problem that makes the recognition of on-line handwriting recognition difficult is variation of shapes of the characters resulting from writing habits, styles, and the social and educational level of the writer.\\
  
-{\color{blue}
-The process of online handwriting recognition can be broken down into a few general steps:
-preprocessing,
-feature extraction and
-classification.
-The purpose of preprocessing is to discard irrelevant information in the input data, that can negatively affect the recognition.[3] This concerns speed and accuracy. Preprocessing usually consists of binarization, normalization, sampling, smoothing and denoising.[4] The second step is feature extraction. Out of the two- or more-dimensional vector field received from the preprocessing algorithms, higher dimensional data is extracted. The purpose of this step is to highlight important information for the recognition model. This data may include information like pen pressure, velocity or the changes of writing direction. The last big step is classification. In this step various models are used to map the extracted features to different classes and thus identifying the characters or words the features represent. [http://en.wikipedia.org/wiki/Handwriting\_recognition]}
 
 In this chapter we will describe a fast letters classifier. As mentioned in the overview in chapter \ref{[]}, our goal is to perform strokes segmentation and letters recognition while the stroke is being written. Thus, the performance of the of the classification process is a critical part.  
 
@@ -49,11 +46,37 @@ This stage produces a list of candidate characters for an input sequence and the
       
 Our classifier contains 4 distinct databases, one for each position. The figure below describes the process through until it reaches its final position in the corresponding database.
 
+Each Recognition process contains two parts, the learning from samples system and the object classification system. .....\\
+In section \ref{sec:letters_learning} we describe our Letters learning process and in \ref{sec:substrokes_classification} we describe our classifier. 
+
+\section{Letters Learning}
+\label{sec:letters_learning}
+
+\emph{ TODO: show a diagram of the letters learning system}
+
+\section{Sub-strokes Classification}
+\label{sec:substrokes_classification}
+
+\emph{ TODO: show a diagram of the letters learning system}
+
+{\color{blue}
+The process of online handwriting recognition can be broken down into a few general steps:
+preprocessing,
+feature extraction and
+classification.
+The purpose of preprocessing is to discard irrelevant information in the input data, that can negatively affect the recognition.[3] This concerns speed and accuracy. Preprocessing usually consists of binarization, normalization, sampling, smoothing and denoising.[4] The second step is feature extraction. Out of the two- or more-dimensional vector field received from the preprocessing algorithms, higher dimensional data is extracted. The purpose of this step is to highlight important information for the recognition model. This data may include information like pen pressure, velocity or the changes of writing direction. The last big step is classification. In this step various models are used to map the extracted features to different classes and thus identifying the characters or words the features represent. [http://en.wikipedia.org/wiki/Handwriting\_recognition]}
+
+
+
 \newpage{}
 
 \section{Samples Preprocessing}
+
 The data obtained by the digitizer is composed of points in the plane that represent the trajectory scribed by the writing instrument on the tablet surface. Usually, samples are taken in time intervals, thus slow pen motion regions are oversampled and fast motion regions are under-sampled. In addition, when such devices are used to capture handwriting strokes, the shapes of the strokes present a jagged form and the obtained data is non-uniform and noisy. Further imperfections are caused also caused by hand vibrations and duplicated sampled points caused by hesitant writing. This noise should be reduced as much as possible since such noises in the information influence the further processes, such as feature extraction and classification \cite{al2011online} \cite{huang2009preprocessing}.  
 To overcome the flaws mentioned, preprocessing operations are usually applied. The preprocessing steps imposes certain uniform structure on the data to comply with the input structure required by the latter parts of the system, such that vector length, sequence bounds, etc.\\
+
+As seen in figure \ref{[]} and \ref{}, preprocessing is performed in both letters learning and classification of strokes.
+Preprocessing is also done in the segmentation phase, however, not all steps mentioned in this section are performed. For more information see section \ref{[]}
 
 Our preprocessing phase include three steps in the following order: \emph{Normalization and Translation}, \emph{Noise Elimination} and then \emph{Smoothing and Re-sampling}.\\ 
 
@@ -75,12 +98,14 @@ In the next sub-sections we will describe in details each part of the preprocess
    \label{fig:D_before_after_preprocessing}
 \end{figure}
 
+\emph{refer to the slant and Rorarion normalization, i.e. why we don't do it. Is slant common in Arabic?
+}
 
 \subsection{Normalization and Translation}
 
 Size normalization is done to achieve a uniform size of the bounding box surrounding the pattern. This is done to enable the classifier to recognize the sequence pattern even when the stroke is written in different sizes. Shape similarity algorithms tend to be sensitive for non-uniform shapes size, thus this procedure is important and can be found in many approaches in the literature. 
 However, this method could not be applied since normalization is done in our system on the stroke level which could contain a letter, at least.
-The bounding box of the sequence after this procedure is $[0,1]\times[0,1]$. We include in this step also translation of the sequence's center of gravity to the origin point $[0,0]$.
+In our approach size normalization was applied on each stroke such that all strokes have $[0,1]\times[0,1]$ bounding box but retain their original aspect ratio. We include in this step also translation of the sequence's center of gravity to the origin point $[0,0]$.
 Given the stroke sequence $S=\{p_i\}_{i=1}^{n}$, the normalized sequence $\bar{S}=\{\bar{p_i}\}_{i=1}^{n}$ is calculated by: 
 
 \begin{equation}
@@ -120,15 +145,22 @@ As a result of the simplification process the points are not distributed uniform
 %if we wont use simplification we can write this: The re-sampling is needed to prevent the unbalanced sampling density, which may be influenced by the sampling rate and the user non-uniform letter drawing. 
 The re-sampling produces equidistant smoothed data sequence. 
 The Re-sampling is performed using splines interpolation as follows:\\
-Given a stroke $S=\{p_i\}_{i=1}^{n}$ and the re-sampling target number $R$, let $\{X(s_i)\}_{i=1}^{n}$ and $\{Y(s_i)\}_{i=1}^{n}$ represent the x-axis and the y-axis sequences with respect to the parameter $s_i$ which is defined as follows:
+Given a stroke $S=\{p_i\}_{i=1}^{n}$ and the re-sampling target number $R$, let $\{X(a_i)\}_{i=1}^{n}$ and $\{Y(a_i)\}_{i=1}^{n}$ represent the x-axis and the y-axis sequences with respect to the parameter $a_i$ which is defined as follows:
 
 \begin{equation}
-s_i=s_{i-1}+arclen(p_{i-1},p_i) 
+a_i=a_{i-1}+arclen(p_{i-1},p_i) 
 \end{equation}  
 
-The arc-length of the stroke is given by $L=s_n$.\\
+\begin{equation}
+X(a_i)=x_i 
+\end{equation}  
 
-A piecewise linear spline is created for the $X$ sequence and $Y$ sequence separately, $q_X(s)$ and $q_X(s)$ respectively.
+The arc-length of the stroke is given by $L=a_n$.\\
+
+A piecewise linear interpolations $q_X(a)$ and $q_X(a)$ are created for the $X$ sequence and $Y$ sequence respectively.
+The breaks are the $a_i$ sequence and the coefficient of the linear polynomial are $\alpha_{i} = \frac{X(a_i)-X(a_{i-1})}{a_{i}-a_{i-1}}$ 
+
+\emph{[we use quadratic splines for smoothing and simplification.]}
 
 let $t_i=i\frac{L}{R}$ for $i=0,...,R$.
 The re-sampled sequence is given as follows:
@@ -137,11 +169,13 @@ The re-sampled sequence is given as follows:
 \end{equation}
 
 The target number of points is set to 40. We had to find a number that is good enough for both long and short strokes since strokes can span over a single letter or a whole WP.
- 
 
-\subsubsection{Spline Interpolation}
-Do we use spline or splines interpolation?
-see the matlab used commands to determine.
+\emph{[TODO: show the following images: 1. the scattered stroke, 2. X and Y as a function of t., 3. X and Y resampledm and 3. the stroke resampled. ]}
+
+\emph{[TODO: talk about splines.]}
+
+\emph{TODO: talk about the other smoothing techniques as described in \cite{jaeger2001online} -- Online handwriting recognition: the NPen++ recognizer}
+
 
 \begin{figure}
 \centering
@@ -153,8 +187,134 @@ see the matlab used commands to determine.
 \newpage{}
 
 \section{Features Extraction}
-{\color{blue}In contemporary handwritten recognition systems, as an informative parameters for learning and recognition, various feature extraction methods are being used. This feature extraction methods vary depending on handwritten script and recognition method. Feature extraction involves simplifying the amount of resources required to describe a large set of data accurately. When performing analysis of complex data one of the major problems stems from the number of variables involved. Analysis with a large number of variables generally requires a large amount of memory and computation power or a classification algorithm which overfits the training sample and generalizes poorly to new samples. Feature extraction is a general term for methods of constructing combinations of the variables to get around these problems while still describing the data with sufficient accuracy. (Word base line detection in handwritten text recognition systems -- Kamil R. Aida-zade and Jamaladdin Z. Hasanov)}
 
+Answer the following:
+\begin{itemize}
+\item Goal and importance
+\item shape descriptor properties
+\item types of features - local vs. global and simple vs. complex - examples, (hierarchical) 
+\item Discussion - why did we decided to concentrate on shape context and MAD.
+\item Discussion - Is combining several feature extraction technique is recommended?
+\item Results - show the difference between MAD and SC.
+\end{itemize}
+
+Feature extraction is certainly one of the important parts of any pattern classification system. It aims is to cull informative parameters for learning and recognition of patterns.  Most classification methods require that patterns be represented in a fixed dimensional feature space that is often incompatible with input data. Poor feature extraction and selection will always result in a poor system performance, regardless of the ingeniousness of the learning and classification algorithms \cite{parizeau2001character}.\\
+
+Feature extraction is commonly used in pattern recognition. While its goal is same in all fields, feature extraction methods operate differently in different domains. For instance, in the image retrieval field, the input data (i.e. the image) is too large and suspected to be redundant. In this case, feature extraction techniques are used to reduce the representation of the input data into a compact representation set of features. However, In the shape recognition domain, the input data is compact and feature extraction techniques are used to transform it into feature vectors, which are usually referred to as shape descriptors. Shape descriptors offer discriminative characterization to capture the perceptual dissimilarity between two shapes. Unlike in the first case, the raw quantity of data contained in feature vector usually exceeds the amount of data in the input data.\\
+
+
+Many Feature Extraction techniques have been proposed to improve the overall recognition rates. Feature extraction methods vary depending on handwritten script and recognition method.\\
+
+\emph{on-line vs. off-line features - different input data type thus should be different descriptive methods.}
+\emph{shape descriptors are more suitable for off-line input because it contain a contour}
+\
+
+Many features operate on the contour of the shape. This is because most descriptors were developed for off-line case which has a contour thus shape descriptors are more adequate.
+
+
+In the on-line handwriting recognition, the input data is a sequence of points in the 2-D plane
+
+\subsection{Shape Descriptors}
+
+{\color{blue} efficiency is envisaged as equally important as effectiveness due to the on-line retrieval demand. In fact, MPEG-7 has set several principles to measure a shape descriptor, that is, good retrieval
+accuracy, compact features, general application, low computation complexity, robust retrieval performance and hierarchical coarse to fine representation [1].
+
+Good retrieval accuracy requires a shape descriptor be
+able to effectively find perceptually similar shapes from
+a database. Perceptually similar shapes usually means rotated,
+translated, scaled shapes and affinely transformed
+shapes. The descriptor should also be able to find noise
+affected shapes, variously distorted shapes and defective
+shapes, which are tolerated by human beings when comparing
+shapes. This is known as the robustness requirement.
+Compact features are desirable for indexing and on-line
+retrieval.
+
+If a shape descriptor has a hierarchical coarse to fine representation characteristic, it can achieve a high level of matching efficiency. This is because shapes can be matched at coarse level to first eliminate large amount dissimilar shapes, and at finer level, shapes can be matched in
+details.
+
+Low computation complexity is an important
+characteristic of a desirable shape descriptor.
+\cite{zhang2004review} 
+}
+
+{\color{blue}
+Efficient shape features must present some essential properties such as: 
+\begin{itemize}
+	\item dentifiability: shapes which are found perceptually similar by human have the same 
+features that are different from the others. 
+\item translation, rotation and scale invariance: the location, the rotation and the scaling 
+changing of the shape must not affect the extracted features. 
+\item affine invariance: the affine transform performs a linear mapping from coordinates 
+system to other coordinates system that preserves the "straightness" and "parallelism" of 
+lines. Affine transform can be constructed using sequences of translations, scales, flips, 
+rotations and shears. The extracted features must be as invariant as possible with affine 
+transforms. 
+\item noise resistance: features must be as robust as possible against noise, i.e., they must be 
+the same whichever be the strength of the noise in a give range that affects the pattern.
+\item occultation invariance: when some parts of a shape are occulted by other objects, the 
+feature of the remaining part must not change compared to the original shape. 
+\item statistically independent: two features must be statistically independent. This 
+represents compactness of the representation. 
+\item reliability: as long as one deals with the same pattern, the extracted features must 
+remain the same. 
+\end{itemize}
+
+In general, shape descriptor is a set of numbers that are produced to represent a given shape 
+feature. A descriptor attempts to quantify the shape in ways that agree with human intuition 
+(or task-specific requirements). Good retrieval accuracy requires a shape descriptor to be able 
+to effectively find perceptually similar shapes from a database. Usually, the descriptors are in 
+the form of a vector. Shape descriptors should meet the following requirements: 
+
+\begin{itemize}
+\item the descriptors should be as complete as possible to represent the content of the 
+information items. 
+\item the descriptors should be represented and stored compactly. The size of a descriptor 
+vector must not be too large. 
+\item the computation of the similarity or the distance between descriptors should be simple; 
+otherwise the execution time would be too long. 
+\end{itemize}
+
+Shape feature extraction and representation plays an important role in the following 
+categories of applications: 
+\begin{itemize}
+\item shape retrieval: searching for all shapes in a typically large database of shapes that are 
+similar to a query shape. Usually all shapes within a given distance from the query are 
+determined or the first few shapes that have the smallest distance. 
+\item shape recognition and classification: determining whether a given shape matches a 
+model sufficiently, or which of representative class is the most similar. 
+\item shape alignment and registration: transforming or translating one shape so that it best 
+matches another shape, in whole or in part. 
+\item shape approximation and simplification: constructing a shape with fewer elements 
+(points, segments, triangles, etc.), so that it is still similar to the original. 
+\end{itemize}
+
+Many shape description and similarity measurement techniques have been developed in the 
+past. A number of new techniques have been proposed in recent years. There are 3 main 
+classification methods as follows: 
+\begin{itemize}
+\item contour-based methods and region-based methods [1]. This is the most common and 
+general classification and it is proposed by MPEG-7. It is based on the use of shape 
+boundary points as opposed to shape interior points. Under each class, different 
+methods are further divided into structural approaches and global approaches. This 
+sub-class is based on whether the shape is represented as a whole or represented by 
+segments/sections (primitives). 
+\item space domain and transform domain [2]. Methods in space domain match shapes on 
+point (or point feature) basis, while feature domain techniques match shapes on feature 
+(vector) basis. 
+\item information preserving (IP) and non-information preserving (NIP). IP methods allow an 
+accurate reconstruction of a shape from its descriptor, while NIP methods are only 
+capable of partial ambiguous reconstruction. For object recognition purpose, IP is not a 
+requirement.
+\end{itemize} 
+Unlike the traditional classification, the approaches of shape-based feature extraction and 
+representation are classified according to their processing approaches: One-dimensional function for shape representation, Polygonal approximation, Spatial interrelation feature, 
+Moments, Scale space approaches, Shape transform domains. The figure 1 shows the 
+hierarchy of the classification of shape feature extraction approaches. 
+}
+
+
+\subsection{Implementation}
 The selection of valuable features is crucial in pattern recognition. In this work we have chosen to work with 2 features, the Shape Context and the Multi Angular Descriptor. Generally, when considering shapes, the contour of the shape is taken into account, thus the following 2 shape descriptors is defined using the contour of the shape. However in the online writing recognition case, the features are applied upon the 2-D sequence. 
 
 \subsection{Shape Context}
@@ -212,6 +372,19 @@ The embedding of EMD given in \cite{indyk2003fast} provides a way to map weighte
 \end{itemize}
 
 \section{Features Transformation and Dimensionality Reduction}
+
+Answer the following:
+\begin{itemize}
+\item what is DR and what is its important properties?
+\item why do we need DR?
+\item what type of DR are there - kernel based, bla bla bla?
+\item why did we have choosen to use this DR although we are working in $L_1$ and PCA and LDA word in $L_2$?
+\item what package we had used to try different DR techniques?
+\item why did we combine LDA and PCA?
+\end{itemize}
+
+{\color{blue}When performing analysis of complex data one of the major problems stems from the number of variables involved. Analysis with a large number of variables generally requires a large amount of memory and computation power or a classification algorithm which overfits the training sample and generalizes poorly to new samples. Feature extraction is a general term for methods of constructing combinations of the variables to get around these problems while still describing the data with sufficient accuracy. (Word base line detection in handwritten text recognition systems -- Kamil R. Aida-zade and Jamaladdin Z. Hasanov)}
+
 Feature transformation is a group of methods that create new features (predictor variables). The methods are useful for dimension reduction when the transformed features have a descriptive power that is more easily ordered than the original features. There are 2 main approaches for this task. One is \emph{feature selection} and the other is \emph{feature transformation}. 
 
 Dimensionality Reduction is a process of reducing the number of random variables taken into consideration in the learning and classification of Data. Ideally, the reduced representation should have a dimensionality that corresponds to the intrinsic dimensionality of the data. Reducing the dimensionality of the features vectors would not only simplify and rapid the learning and classification task but rather boosts the classification accuracy.  Feature transformation technique is much more suitable to be implemented in our approach. In this work we have chosen to use two techniques applied in sequential manner in order to obtain the most efficient and linearly discriminative components, \emph{Principle Component Analysis} (PCA) and \emph{Linear Discrimination Analysis} (LDA) Technique. 
@@ -231,7 +404,7 @@ Although, LDA assumes that the distribution of samples in each class is Gaussian
 
 Even though LDA is preferred in many application of dimension reduction, it does not always outperform PCA. In order to optimize discrimination performance in a more generative way, a hybrid dimension reduction model combining PCA and LDA is used in this work. 
 
-\subsection{Combining PCA and LDA}
+\subsection{Implementation Details and Discussion}
 
 In this system, we use a flavor the dimensionality reduction process can be outlines as follows: the pre-processed feature matrix $M$ projected into subspace $S_1$ using PCA and then into the subspace $S2$ using LDA. In the PCA stage, the largest $t$ eigenvalues are selected to create the PCA projection matrix $W_{PCA}$. $t$ is the number of eigenvalues which guarantee energy E is greater than 0.99. The data preservation value is calculates as seen in Equation \ref{eq:dr_energy} where ${\lambda _i}$ is the ith eigenvalue
 
@@ -249,12 +422,21 @@ Why we have used both and what give us every method and how we did join them tog
 
 \emph{ Talk about other Dimensionality reduction techniques such as LMNN and show results.}
 
-\section{Fast Retrieval Database}
-
-\subsection{Kd-tree}
 
 \section{Letters Classification and Scoring}
 
+In our framework, sub-strokes classification is done by finding a stored letter sample that is maximally similar to the shape of the sub-stroke.
+
+For a given sub-stroke, we need to find the most perceptually close object in the sample set. Since our samples space is in $L_1$ we use NN classification method.
+
+Mention that sub-stroke passes all the processes of preprocessing, feature extraction and classification, embedding, and then using kdtree the list of $N$ objects in the sample set is retrieved. [beware of the dimensionality reduction.]
+For each candidate a scoring is given to simulate the extend of resemblance between the sub-stroke and each sample. The scoring is based on the manhattan distance between the sample and the substroke and the Restricted DTW.     
+
+\subsection{Kd-tree}
+
+\subsection{Data Time Warping}
+
+Answer the following:
 \begin{itemize}
 \item How is the classification is done - mention that the system recieves a stroke and it goes over all the stages
 \item A list of candidates is retrieved by the kdtree, then to be more precise we use a combination of the Constrained DTW metric and the distance of the sample and the candidate.
@@ -262,6 +444,6 @@ Why we have used both and what give us every method and how we did join them tog
 \item we return the best 3 candidates.
 \end{itemize}
 
-\section{Experimental Details, Results and Discussion}
+\subsection{Implementation Details and Discussion}
  
 \end{document}
