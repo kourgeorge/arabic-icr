@@ -72,8 +72,10 @@ The purpose of preprocessing is to discard irrelevant information in the input d
 
 \section{Samples Preprocessing}
 
-The data obtained by the digitizer is composed of points in the plane that represent the trajectory scribed by the writing instrument on the tablet surface. Usually, samples are taken in time intervals, thus slow pen motion regions are oversampled and fast motion regions are under-sampled. In addition, when such devices are used to capture handwriting strokes, the shapes of the strokes present a jagged form and the obtained data is non-uniform and noisy. Further imperfections are caused also caused by hand vibrations and duplicated sampled points caused by hesitant writing. This noise should be reduced as much as possible since such noises in the information influence the further processes, such as feature extraction and classification \cite{al2011online} \cite{huang2009preprocessing}.  
+The data obtained by the digitizer is composed of points in the plane that represent the trajectory scribed by the writing instrument on the tablet surface. Usually, samples are taken in time intervals, thus slow pen motion regions are oversampled and fast motion regions are under-sampled. In addition, when such devices are used to capture handwriting strokes, the shapes of the strokes present a jagged form and the obtained data is non-uniform and noisy. Further imperfections are caused by hand vibrations and duplicated sampled points resulted from hesitant writing. This noise should be reduced as much as possible since it influence the further processes, such as feature extraction and classification \cite{al2011online} \cite{huang2009preprocessing}.  
 To overcome the flaws mentioned, preprocessing operations are usually applied. The preprocessing steps imposes certain uniform structure on the data to comply with the input structure required by the latter parts of the system, such that vector length, sequence bounds, etc.\\
+
+\emph{TODO: mention other preprocessing approaches mentioned in the literature, like rotation normalization, slant normalization, and missing points interpolation. see \cite{jaeger2001online}.}
 
 As seen in figure \ref{[]} and \ref{}, preprocessing is performed in both letters learning and classification of strokes.
 Preprocessing is also done in the segmentation phase, however, not all steps mentioned in this section are performed. For more information see section \ref{[]}
@@ -202,115 +204,85 @@ Feature extraction is certainly one of the important parts of any pattern classi
 
 Feature extraction is commonly used in pattern recognition. While its goal is same in all fields, feature extraction methods operate differently in different domains. For instance, in the image retrieval field, the input data (i.e. the image) is too large and suspected to be redundant. In this case, feature extraction techniques are used to reduce the representation of the input data into a compact representation set of features. However, In the shape recognition domain, the input data is compact and feature extraction techniques are used to transform it into feature vectors, which are usually referred to as shape descriptors. Shape descriptors offer discriminative characterization to capture the perceptual dissimilarity between two shapes. Unlike in the first case, the raw quantity of data contained in feature vector usually exceeds the amount of data in the input data.\\
 
+The goal of a shape descriptor is to be able to effectively find perceptually similar shapes from a database. Shape descriptors are usually in the form of vectors that are produced to represent a given shape feature and attempts to quantify perceptual similarities between shapes. That is to say, shapes which are found perceptually similar by human have resembling descriptor than from shapes that are different from the others. Effective shape descriptor must present some essential properties such as translation, rotation and scale invariance. It also must be as robust as possible against noise so that variously distorted shapes which are tolerated by human beings when comparing shapes. This is known as the robustness requirement.\cite{zhang2004review}\\
 
-Many Feature Extraction techniques have been proposed to improve the overall recognition rates. Feature extraction methods vary depending on handwritten script and recognition method.\\
+Low computation complexity is an important characteristic of a desirable shape descriptor. Efficiency of a descriptor is equally important as effectiveness due to the on-line retrieval demand. The descriptors should be represented and stored compactly. The size of a descriptor vector must not be too large. 
 
-\emph{on-line vs. off-line features - different input data type thus should be different descriptive methods.}
-\emph{shape descriptors are more suitable for off-line input because it contain a contour}
-\
+In fact, MPEG-7 has set several principles to measure a shape descriptor, that is, good retrieval accuracy, compact features, general application, low computation complexity, robust retrieval performance and hierarchical coarse to fine representation.
+   
+For a detailed review on shape descriptors see \cite{zhang2004review} and \cite{yang2008survey}.
 
-Many features operate on the contour of the shape. This is because most descriptors were developed for off-line case which has a contour thus shape descriptors are more adequate.
+Many types of shape descriptors have been proposed to improve the segmentation and recognition rates. Shape descriptors can be classified into two: 1. local features that are computed at each sample point, i.e. simple: tangent slope angle
+normalized curvature and ratio of tangents (invariant). 
+Complex: which are invariant under translation rotation and scaling.
+such as: shape context and MAD Descriptor. 
+2. High-level features, i.e. cusps, crossings and loops. 
 
+\subsection{Local features}
 
-In the on-line handwriting recognition, the input data is a sequence of points in the 2-D plane
+\begin{itemize}
+\item Writing direction.
+\item Curvature
+\item Pen up/pen Down
 
-\subsection{Shape Descriptors}
+\end{itemize}
 
-{\color{blue} efficiency is envisaged as equally important as effectiveness due to the on-line retrieval demand. In fact, MPEG-7 has set several principles to measure a shape descriptor, that is, good retrieval
-accuracy, compact features, general application, low computation complexity, robust retrieval performance and hierarchical coarse to fine representation [1].
+\subsection{Global Features}
 
-Good retrieval accuracy requires a shape descriptor be
-able to effectively find perceptually similar shapes from
-a database. Perceptually similar shapes usually means rotated,
-translated, scaled shapes and affinely transformed
-shapes. The descriptor should also be able to find noise
-affected shapes, variously distorted shapes and defective
-shapes, which are tolerated by human beings when comparing
-shapes. This is known as the robustness requirement.
-Compact features are desirable for indexing and on-line
-retrieval.
-
+\emph{talk about hierarchical feature and mention the following:}
+{\color{blue} 
 If a shape descriptor has a hierarchical coarse to fine representation characteristic, it can achieve a high level of matching efficiency. This is because shapes can be matched at coarse level to first eliminate large amount dissimilar shapes, and at finer level, shapes can be matched in
 details.
-
-Low computation complexity is an important
-characteristic of a desirable shape descriptor.
 \cite{zhang2004review} 
 }
 
+
+List of descriptors to mention:
+\begin{itemize}
+\item projection profile
+\item upper and lower profile
+\item bending
+\end{itemize}
+
+\emph{on-line vs. off-line features - different input data type thus should be different descriptive methods.}
+\emph{shape descriptors are more suitable for off-line input because it contain a contour}
+
+Many features operate on the contour of the shape. This is because most descriptors were developed for off-line case which has a contour thus shape descriptors are more adequate. In the on-line handwriting recognition, the input data is a sequence of points in the 2-D plane. 
+
+The following is taken from "Combining high-level features with sequential local features for on-line handwriting recognition" \cite{hu1997combining}
+\begin{itemize}
+\item Local features that are computed at each sample point. 
+\item The features are: the y coordinate, tangent slope angle
+normalized curvature and ratio of tangents (invariant)
+\item these local features are commonly used in many on-line handwriting recognition systems.
+\item two more complex features that are invariant under translation rotation and scaling described in "invariant features for HMM based recognition" and in "HMM based on-line handwriting recognition". The incorporation of these two features which are independent of the size, location and orientation of the input word greatly improves the robustness of the system in dealing with unconstrained handwriting, where normalization does not always yield desired results.
+\item then hight-level features are then extracted from the script: cusps, crossings and loops. cusps are pints of abrupt change of drawing direction. The smoothing in the preprocessing should remove such wiggles while preserving the dominant direction changes.
+\item cusps extraction is done by examining the angle formed by the line segments connecting three consecutive sample points. If this angle is smaller than a preset threshold, the center point is labeled as a cusp.
+\item crossing occurs when two separated segments intersect. Two segmented along the script are considered separated if the distance between them them along the drawing trajectory is larger than a threshold. when such intersection is detected, the endpoint closer to the intersection on each intersecting segment is labeled as a crossing point.
+\item to find all crossings, an input script containing $n$ points is sequentially searched for pairs of end points of separated segments which are located nearest each other in the x-y space. 
+\item The segment between to crossing points is declared a loop if the is no pen-up in between.
+
+\end{itemize}
+
 {\color{blue}
-Efficient shape features must present some essential properties such as: 
+
+Shape feature extraction and representation plays an important role in the following categories of applications: 
 \begin{itemize}
-	\item dentifiability: shapes which are found perceptually similar by human have the same 
-features that are different from the others. 
-\item translation, rotation and scale invariance: the location, the rotation and the scaling 
-changing of the shape must not affect the extracted features. 
-\item affine invariance: the affine transform performs a linear mapping from coordinates 
-system to other coordinates system that preserves the "straightness" and "parallelism" of 
-lines. Affine transform can be constructed using sequences of translations, scales, flips, 
-rotations and shears. The extracted features must be as invariant as possible with affine 
-transforms. 
-\item noise resistance: features must be as robust as possible against noise, i.e., they must be 
-the same whichever be the strength of the noise in a give range that affects the pattern.
-\item occultation invariance: when some parts of a shape are occulted by other objects, the 
-feature of the remaining part must not change compared to the original shape. 
-\item statistically independent: two features must be statistically independent. This 
-represents compactness of the representation. 
-\item reliability: as long as one deals with the same pattern, the extracted features must 
-remain the same. 
+\item shape retrieval: searching for all shapes in a typically large database of shapes that are similar to a query shape. Usually all shapes within a given distance from the query are determined or the first few shapes that have the smallest distance. 
+\item shape recognition and classification: determining whether a given shape matches a model sufficiently, or which of representative class is the most similar. 
+\item shape alignment and registration: transforming or translating one shape so that it best matches another shape, in whole or in part. 
+\item shape approximation and simplification: constructing a shape with fewer elements (points, segments, triangles, etc.), so that it is still similar to the original. 
 \end{itemize}
 
-In general, shape descriptor is a set of numbers that are produced to represent a given shape 
-feature. A descriptor attempts to quantify the shape in ways that agree with human intuition 
-(or task-specific requirements). Good retrieval accuracy requires a shape descriptor to be able 
-to effectively find perceptually similar shapes from a database. Usually, the descriptors are in 
-the form of a vector. Shape descriptors should meet the following requirements: 
-
+Many shape description and similarity measurement techniques have been developed in the past. A number of new techniques have been proposed in recent years. There are 3 main classification methods as follows: 
 \begin{itemize}
-\item the descriptors should be as complete as possible to represent the content of the 
-information items. 
-\item the descriptors should be represented and stored compactly. The size of a descriptor 
-vector must not be too large. 
-\item the computation of the similarity or the distance between descriptors should be simple; 
-otherwise the execution time would be too long. 
-\end{itemize}
-
-Shape feature extraction and representation plays an important role in the following 
-categories of applications: 
-\begin{itemize}
-\item shape retrieval: searching for all shapes in a typically large database of shapes that are 
-similar to a query shape. Usually all shapes within a given distance from the query are 
-determined or the first few shapes that have the smallest distance. 
-\item shape recognition and classification: determining whether a given shape matches a 
-model sufficiently, or which of representative class is the most similar. 
-\item shape alignment and registration: transforming or translating one shape so that it best 
-matches another shape, in whole or in part. 
-\item shape approximation and simplification: constructing a shape with fewer elements 
-(points, segments, triangles, etc.), so that it is still similar to the original. 
-\end{itemize}
-
-Many shape description and similarity measurement techniques have been developed in the 
-past. A number of new techniques have been proposed in recent years. There are 3 main 
-classification methods as follows: 
-\begin{itemize}
-\item contour-based methods and region-based methods [1]. This is the most common and 
-general classification and it is proposed by MPEG-7. It is based on the use of shape 
-boundary points as opposed to shape interior points. Under each class, different 
-methods are further divided into structural approaches and global approaches. This 
-sub-class is based on whether the shape is represented as a whole or represented by 
-segments/sections (primitives). 
-\item space domain and transform domain [2]. Methods in space domain match shapes on 
-point (or point feature) basis, while feature domain techniques match shapes on feature 
-(vector) basis. 
-\item information preserving (IP) and non-information preserving (NIP). IP methods allow an 
-accurate reconstruction of a shape from its descriptor, while NIP methods are only 
-capable of partial ambiguous reconstruction. For object recognition purpose, IP is not a 
-requirement.
+\item contour-based methods and region-based methods [1]. This is the most common and general classification and it is proposed by MPEG-7. It is based on the use of shape boundary points as opposed to shape interior points. Under each class, different methods are further divided into structural approaches and global approaches. This sub-class is based on whether the shape is represented as a whole or represented by segments/sections (primitives). 
+\item space domain and transform domain [2]. Methods in space domain match shapes on point (or point feature) basis, while feature domain techniques match shapes on feature (vector) basis. 
+\item information preserving (IP) and non-information preserving (NIP). IP methods allow an accurate reconstruction of a shape from its descriptor, while NIP methods are only capable of partial ambiguous reconstruction. For object recognition purpose, IP is not a requirement.
 \end{itemize} 
-Unlike the traditional classification, the approaches of shape-based feature extraction and 
-representation are classified according to their processing approaches: One-dimensional function for shape representation, Polygonal approximation, Spatial interrelation feature, 
-Moments, Scale space approaches, Shape transform domains. The figure 1 shows the 
-hierarchy of the classification of shape feature extraction approaches. 
+
+Unlike the traditional classification, the approaches of shape-based feature extraction and representation are classified according to their processing approaches: One-dimensional function for shape representation, Polygonal approximation, Spatial interrelation feature, 
+Moments, Scale space approaches, Shape transform domains. The figure 1 shows the hierarchy of the classification of shape feature extraction approaches. 
 }
 
 
@@ -433,6 +405,9 @@ Mention that sub-stroke passes all the processes of preprocessing, feature extra
 For each candidate a scoring is given to simulate the extend of resemblance between the sub-stroke and each sample. The scoring is based on the manhattan distance between the sample and the substroke and the Restricted DTW.     
 
 \subsection{Kd-tree}
+
+Example of how to write:
+{\color{blue}One of the simplest classifiers we can use is the Nearest Neighbour classifier. This takes a test point in vector form, and finds the Euclidean distance between this and the vector representation of each training example. The training example closest to the test point is termed its Nearest Neighbour. Since this example is in some sense the one most similar to our test point, it makes sense to allocate its class label to the test point. This exploits the 'smoothness' assumption that points near each other are likely to have the same class.}
 
 \subsection{Data Time Warping}
 
