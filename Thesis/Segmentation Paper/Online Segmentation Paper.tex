@@ -84,6 +84,8 @@ Wrong segmentation of a word is likely to result in wrong recognition. The other
 
 Methods used by segmentation-based approaches can be mainly classified into two: Dissection and Recognition-Based Segmentation. Dissection techniques learn the characteristic of the segmentation point and attempt to find appropriate candidate points. For instance, local minima in the upper or lower contour is commonly used for segmenting English cursive script. Other widely used feature that characterizes a segmentation point is the low slope of its local environment. The dissection of words into segments do not necessarily correspond to exactly one character per segment, however it could segment the words into components called graphemes, which are a combination of two or three letters, or a part of a letter. The relationship between graphemes and letters is applied in a later phase. The recognition-based techniques operate quite differently. The method includes using a moving window with a predefined width which breaks the word into many overlapping pieces without regard to its content and the attempts to classify those sub-components to find points of interest or trajectories. An iterative or parallel scanning of the words followed by a recognition method is used to search for "satisfactory" classification scoring for joint sub-components usually by generating a lattice of all or many possible combinations. The final decision is determined by the best path through the lattice. While avoiding using complex dissection methods, such techniques rely heavily on the classifier accuracy \cite{casey1996survey}. \\
 
+\emph{TODO: relate to english handwritten script segmentation methods. What are the forms of similarity and differences with the proposed method.}
+
 In this paper we propose a novel approach which performs segmentation and recognition in the strokes level. We combine both holistic and analytic techniques for recognizing open dictionary Arabic on-line script. In section \ref{sec:related_word} we mention related studies done in the field of on-line Arabic recognition. The proposed approach is described in details in section \ref{sec:approach}. Results are shown in the section \ref{sec:results}. We present our plans for future work in section \ref{sec:future_work}.
 
 \begin{figure}
@@ -131,6 +133,9 @@ A high level description of the system flow can be seen in figure \ref{fig:syste
 
 \subsubsection{Subsequence Complexity measure}
 \label{subsec:scm}
+\emph{TODO: fix this section and talk about scaling issues and mention the new method using PCA.}
+\emph{TODO: search for other works than need to define the straightness of sequences.}
+\emph{TODO: note that the straightness is very related to its scaling. and the PCA takes the length into consideration.}
 This measure gives a numerical representation of the captured complexity of a sequence. It can be thought of as the amount of information stored in a sub-sequence or the complexity of the sequence. The more curved the sequence is the higher is the complexity value. We use this measure twice in this work. In the HF identification process as discussed earlier and also in the selected segmentation points validation step which we will discuss later. In the later, we need to determine if the candidate point found by the algorithm and the segmentation point that was identified by a human expert reside on the relatively same straight line over the stroke. The idea is demonstrated in figure \ref{fig:sequence_complexity}.
 A preprocessing is done to ensure this measure is invariant and unaffected of infinitesimal warpings so that it will give a uniform measure,. 
 Then, for each inner point in the subsequence (angle) $\phi=\angle(\overline{p_{i-1}p_{i}},\overline{p_{i}p_{i+1}})$ we calculate the parameter $\alpha_{i}$.
@@ -155,6 +160,9 @@ CM(S)=\Sigma_{i}\alpha_{i}
    \label{fig:sequence_complexity}
 \end{figure}
 
+\subsubsection{Smoothing and Re-sampling}
+\emph{TODO: add information about our resampling techniques and where is was needed.}
+
 \subsection{First Stage: Segmentation points nomination and sub-strokes scoring}
 \subsubsection{Horizontal Fragment identification}
 The goal of this process is to identify HFs in the written text. HFs of the Arabic word \RL{jbl} (Jabal) can be seen in figure \ref{fig:horizontal_fragments} .Once an HF is detected, its medial point is marked as a CP. A HF is a subsequence of the stroke having the following properties: 
@@ -166,8 +174,8 @@ The goal of this process is to identify HFs in the written text. HFs of the Arab
 The method described below attempts to identify the largest possible HF and disregard small horizontal regions that are usually caused by the imperfection of the digitizer. The HF identification is performed by spotting the start and the end points of a straight, low slope line directed right to left. Once an HF is identified, the medial point of the HF is nominated as a CP.
 A point $p_{i}$ is named a "horizontal point" if the slope of the line $\overline{p_{i-1}p_{i}}$ if $\left|\frac{\Delta x}{\Delta y}\right|\leq0.6$ and directed right to left. This parameter was tuned empirically.
 The same exact value for this parameter was found independently in \cite{daifallah2009recognition} which strengthen our confidence of our finding.\\
-To reliably calculate the slope value despite the noisy data obtained by the digitizer, a preprocessing step is needed. The preprocessing include down-sampling to the half of the sample points of the original trajectory.
-Once the first "horizontal point" is identified, the algorithm sets this point as a "HF starting point". For every received point, if it is identified as a "horizontal point" and also the complexity measure, described in section \ref{subsec:scm}, of the sub-stroke spanning from the "HF starting point" to the current point small is marked as "Last Seen Horizontal point". Once a non "horizontal point" is received or the complexity measure is high the point marked as "Last Seen Horizontal point" is set to be an "HF Ending point".\\
+To reliably calculate the slope value despite the noisy data obtained by the digitizer, a preprocessing step is needed. The preprocessing include down-sampling to the half of the sample points of the original trajectory. Detailed explanation about the re sampling procedure is given in section \ref{}.
+Once the first "horizontal point" is identified, the algorithm sets this point as a "HF starting point". For every received point, if it is identified as a "horizontal point" and also the complexity measure, described in section \ref{subsec:scm}, of the sub-stroke spanning from the "HF starting point" to the current point is marked as "Last Seen Horizontal point". Once a non "horizontal point" is received or the complexity measure is high the point marked as "Last Seen Horizontal point" is set to be an "HF Ending point" and the middle point of the segment spanning from HF starting point to the HF Ending point is set as candidate point. In order to obtain the point on the sequence that is mostly close to the moddle point of the segment, we use the re-sampling technique described in section \ref{[]}. We invoke the re-sampling procedure with the target number of point set to 3. The second point of the re-sampled segment is set to be the Candidate point.\\
 
 The nominated segmentation points in this stage is an over-segmentation of the stroke. It is important to note that this process is imperfect and may result in finding fragments that would not be classified as HF by a human performing the same task. As can be seen in figure \ref{fig:candidate_in_no_horizontal}, this stage may find very small HF that may result from the digitizer imperfections and scaling issues. However, it is important not to apply too many restrictions such as imposing a minimal length on the HF since while extra CP can be easily filtered out in a later phase when the entire stroke is available, failing to find a CP can't be recovered. In our experiments we observed that more than 99\% of true segmentation points were included in the over-segmentation imposed in this stage.\\
 
@@ -222,6 +230,7 @@ The number of cells that will be calculated at each new CP is $B$ (all located i
 \end{figure}
 
 The sub-strokes scoring system is described in depth in \emph{[my paper]}. For the sake of completeness, here we will outline the main idea of the classification system. The classifier uses Shape Context to extract the pattern feature, then Earth movers Distance embedding technique descried in \cite{shirdhonkar2008approximate} to project samples of the Arabic letters to a high dimensional $L_{1}$ space. A combination of Principle Component Analysis (PCA) and Linear Discrimination Analysis (LDA) is used to reduce the samples dimensionality and k-NN are found using k-dtree. The exact resemblance score is determined by a minimum score that is given by a predefined linear combination of the $L_{1}$ distance in the embedding space and Sokoe-Chuba DTW.\\
+\\
 
 The scoring system contains four databases, one for each letter position. It receive a sequence and a position (Ini, Mid, Fin and Iso).
 As mentioned earlier a stroke spans from the mouse down to the mouse up event. 
@@ -659,6 +668,7 @@ For every word, the key a serious of features such that
 (A,Ham, KL): أكل
 (D,Dot,HB): ذهب
 
+[Segmentation point shifting in order to position the segmentation point in a better location]
 
 \bibliographystyle{IEEEtran}
 \bibliography{IEEEabrv,bibliography}
