@@ -208,88 +208,21 @@ The goal of a shape descriptor is to be able to effectively find perceptually si
 
 Low computation complexity is an important characteristic of a desirable shape descriptor. Efficiency of a descriptor is equally important as effectiveness due to the on-line retrieval demand. The descriptors should be represented and stored compactly. The size of a descriptor vector must not be too large. 
 
-In fact, MPEG-7 has set several principles to measure a shape descriptor, that is, good retrieval accuracy, compact features, general application, low computation complexity, robust retrieval performance and hierarchical coarse to fine representation.
-   
+A shape descriptor is usually measured according to several principles which include good retrieval accuracy, compact features, low computation complexity and robust retrieval performance. \cite{kim2000region}
+
+Many shape description have been developed in order to improve the segmentation and recognition rates. There are many different classifications and sub classifications of shape descriptors according to their method of operation.The most common classification is the classification for local and global descriptors. Local descriptors calculate some feature at each sample point. Simple local features include the y coordinate and tangent slope angle. \emph{Normalized curvature} and \emph{Ratio of tangent} \cite{hu1995invariant,hu1996hmm} are examples of more complex local shape descriptor. Descriptors such as cusps, crossings and loops are referred to as global descriptors and are calculated on the entire shape \cite{hu1997combining}.
+
 For a detailed review on shape descriptors see \cite{zhang2004review} and \cite{yang2008survey}.
 
-Many types of shape descriptors have been proposed to improve the segmentation and recognition rates. Shape descriptors can be classified into two: 1. local features that are computed at each sample point, i.e. simple: tangent slope angle
-normalized curvature and ratio of tangents (invariant). 
-Complex: which are invariant under translation rotation and scaling.
-such as: shape context and MAD Descriptor. 
-2. High-level features, i.e. cusps, crossings and loops. 
+Many well known and powerful features operate on the contour of the shape. This is because many descriptors were developed for off-line handwriting recognition in which the shape is the script contour. In the on-line handwriting recognition, the input data is a sequence of points  and no contour is involved, however using features in on-line handwriting recognition that we originally developed for the off-line case is common. Saabne and El-Sanna have used shape context, a shape descriptor that was developed for contour based shapes, for the online handwriting recognition in \cite{saabni2009hierarchical}. Multi Scale shape context, a combination of three different shape contexts:
+stroke, local neighborhood and global shape contexts, is used by Hu and Zanibbi in \cite{husegmenting} for on-line handwritten mathematical expressions segmentation.
 
-\subsection{Local features}
+In this work we have chosen to work with two shape descriptors, the Shape context descriptor and the tangent angle feature. The reason for this choice is that we wanted to investigate how both global and local features effectiveness in our proposed process. More information about these features are given in section \ref{sec:shape_context} and in section \ref{sec:mad}
 
-\begin{itemize}
-\item Writing direction.
-\item Curvature
-\item Pen up/pen Down
-
-\end{itemize}
-
-\subsection{Global Features}
-
-\emph{talk about hierarchical feature and mention the following:}
-{\color{blue} 
-If a shape descriptor has a hierarchical coarse to fine representation characteristic, it can achieve a high level of matching efficiency. This is because shapes can be matched at coarse level to first eliminate large amount dissimilar shapes, and at finer level, shapes can be matched in
-details.
-\cite{zhang2004review} 
-}
-
-
-List of descriptors to mention:
-\begin{itemize}
-\item projection profile
-\item upper and lower profile
-\item bending
-\end{itemize}
-
-\emph{on-line vs. off-line features - different input data type thus should be different descriptive methods.}
-\emph{shape descriptors are more suitable for off-line input because it contain a contour}
-
-Many features operate on the contour of the shape. This is because most descriptors were developed for off-line case which has a contour thus shape descriptors are more adequate. In the on-line handwriting recognition, the input data is a sequence of points in the 2-D plane. 
-
-The following is taken from "Combining high-level features with sequential local features for on-line handwriting recognition" \cite{hu1997combining}
-\begin{itemize}
-\item Local features that are computed at each sample point. 
-\item The features are: the y coordinate, tangent slope angle
-normalized curvature and ratio of tangents (invariant)
-\item these local features are commonly used in many on-line handwriting recognition systems.
-\item two more complex features that are invariant under translation rotation and scaling described in "invariant features for HMM based recognition" and in "HMM based on-line handwriting recognition". The incorporation of these two features which are independent of the size, location and orientation of the input word greatly improves the robustness of the system in dealing with unconstrained handwriting, where normalization does not always yield desired results.
-\item then hight-level features are then extracted from the script: cusps, crossings and loops. cusps are pints of abrupt change of drawing direction. The smoothing in the preprocessing should remove such wiggles while preserving the dominant direction changes.
-\item cusps extraction is done by examining the angle formed by the line segments connecting three consecutive sample points. If this angle is smaller than a preset threshold, the center point is labeled as a cusp.
-\item crossing occurs when two separated segments intersect. Two segmented along the script are considered separated if the distance between them them along the drawing trajectory is larger than a threshold. when such intersection is detected, the endpoint closer to the intersection on each intersecting segment is labeled as a crossing point.
-\item to find all crossings, an input script containing $n$ points is sequentially searched for pairs of end points of separated segments which are located nearest each other in the x-y space. 
-\item The segment between to crossing points is declared a loop if the is no pen-up in between.
-
-\end{itemize}
-
-{\color{blue}
-
-Shape feature extraction and representation plays an important role in the following categories of applications: 
-\begin{itemize}
-\item shape retrieval: searching for all shapes in a typically large database of shapes that are similar to a query shape. Usually all shapes within a given distance from the query are determined or the first few shapes that have the smallest distance. 
-\item shape recognition and classification: determining whether a given shape matches a model sufficiently, or which of representative class is the most similar. 
-\item shape alignment and registration: transforming or translating one shape so that it best matches another shape, in whole or in part. 
-\item shape approximation and simplification: constructing a shape with fewer elements (points, segments, triangles, etc.), so that it is still similar to the original. 
-\end{itemize}
-
-Many shape description and similarity measurement techniques have been developed in the past. A number of new techniques have been proposed in recent years. There are 3 main classification methods as follows: 
-\begin{itemize}
-\item contour-based methods and region-based methods [1]. This is the most common and general classification and it is proposed by MPEG-7. It is based on the use of shape boundary points as opposed to shape interior points. Under each class, different methods are further divided into structural approaches and global approaches. This sub-class is based on whether the shape is represented as a whole or represented by segments/sections (primitives). 
-\item space domain and transform domain [2]. Methods in space domain match shapes on point (or point feature) basis, while feature domain techniques match shapes on feature (vector) basis. 
-\item information preserving (IP) and non-information preserving (NIP). IP methods allow an accurate reconstruction of a shape from its descriptor, while NIP methods are only capable of partial ambiguous reconstruction. For object recognition purpose, IP is not a requirement.
-\end{itemize} 
-
-Unlike the traditional classification, the approaches of shape-based feature extraction and representation are classified according to their processing approaches: One-dimensional function for shape representation, Polygonal approximation, Spatial interrelation feature, 
-Moments, Scale space approaches, Shape transform domains. The figure 1 shows the hierarchy of the classification of shape feature extraction approaches. 
-}
-
-
-\subsection{Implementation}
-The selection of valuable features is crucial in pattern recognition. In this work we have chosen to work with 2 features, the Shape Context and the Multi Angular Descriptor. Generally, when considering shapes, the contour of the shape is taken into account, thus the following 2 shape descriptors is defined using the contour of the shape. However in the online writing recognition case, the features are applied upon the 2-D sequence. 
+In this work we have selected two features to work with, the Shape Context and the Multi Angular Descriptor. Generally, when considering shapes, the contour of the shape is taken into account, thus the following 2 shape descriptors is defined using the contour of the shape. However in the on-line writing recognition case, the features are applied upon the stroke sequence. 
 
 \subsection{Shape Context}
+\label{sec:shape_context}
 Belongie and Malik have presented a point matching approach named Shape Context \cite{belongie2002shape}. The Shape context is a shape matching approach that intended to be a way of describing shapes that allows for measuring shape similarity and the recovering of point correspondences. This approach is based on the following descriptor: Pick $n$ points on the shape's contour, for each point ${p_i}$ on the shape, consider the $n - 1$ other points and calculate the coarse histogram of the relative coordinates. Equation \ref{eq:sc_bins} is defined to be the shape context of ${p_i}$.
 
 \begin{equation}
@@ -301,14 +234,29 @@ The bins are normally taken to be uniform log-polar space making the descriptor 
 
 \begin{figure}
 \centering
-\includegraphics{./figures/shape_context_demo}       
+\includegraphics{./figures/shape_context_offline}       
 \caption{Diagram of the log-polar bins used to compute the shape context.}
 \label{fig:shape_context_demo}
 \end{figure}
 
+\begin{figure}
+\centering
+\subfloat[]{
+    \label{fig:shape_context_offline}
+    \includegraphics[width=0.5\textwidth]{./figures/shape_context_offline}
+}
+\subfloat[]{
+	\label{fig:shape_context_online}
+     \includegraphics[width=0.5\textwidth]{./figures/shape_context_online}
+}        
+\caption{Diagram of the log-polar bins used to compute the shape context. On-line and off-line}
+\label{fig:shape_context_demo}
+\end{figure}
 
 \subsection{Multi Angular Descriptor}
-The Multi Angular Descriptor (MAD) is a shape recognition method described in \cite{saabni2013multi}, which captures the angular view to multi resolution rings in different heights. The shape is treated as a two dimensional set of points and the different rings are upper view points from rings around the shape centroid with different sizes and heights. To enables scale and translation invariance, the sizes and heights of these rings are calculated using the diameter and centroid of the shape.
+\label{sec:mad}
+The other shape descriptor used in this thesis is the Multi Angular Descriptor (MAD).
+MAD was proposed by Saabni in \cite{saabni2013multi}. It captures the angular view to multi resolution rings in different heights. The shape is treated as a two dimensional set of points and the different rings are upper view points from rings around the shape centroid with different sizes and heights. To enables scale and translation invariance, the sizes and heights of these rings are calculated using the diameter and centroid of the shape.
 Formally, let $S$ be a shape and Let $C$ and $D$ be the centroid and the diameter of the shape respectively. Let $P = \{p_i\}_{i = 1}^l$ a set of $l$ point taken uniformly from the extracted contour of $S$. Given a view point $V_j$ from a given ring with height $h$ over the shape, the angle, obtained by connecting the point ${p_i} \in P$ with each point   and the plain of the shape is a rich description of the shape from this view point. Let $R$ be a ring with the radius $r$ and the center $C$ positioned above the shape $S$ with the height $h$. Let $V = \{V_i\}_{i = 1}^n$ be a set of $n$ viewpoints lying uniformly on the ring $R$ and $\alpha(V_{ij})$ to be the angle between the segment $\overline {{V_i}{p_j}}$ and the plain contains the shape $S$. The vector $Ve{c_i} = \left\{ {\alpha \left( {{V_{ij}}} \right)} \right\}_{j = 1}^l$ can be seen as watching the shape $S$ from one upper view point $V_i$. Illustration can be seen in Figure 7.
 
 \begin{figure}
@@ -402,7 +350,9 @@ In our framework, sub-strokes classification is done by finding a stored letter 
 For a given sub-stroke, we need to find the most perceptually close object in the sample set. Since our samples space is in $L_1$ we use NN classification method.
 
 Mention that sub-stroke passes all the processes of preprocessing, feature extraction and classification, embedding, and then using kdtree the list of $N$ objects in the sample set is retrieved. [beware of the dimensionality reduction.]
-For each candidate a scoring is given to simulate the extend of resemblance between the sub-stroke and each sample. The scoring is based on the manhattan distance between the sample and the substroke and the Restricted DTW.     
+For each candidate a scoring is given to simulate the extend of resemblance between the sub-stroke and each sample. The scoring is based on the manhattan distance between the sample and the substroke and the Restricted DTW.   
+
+{\color{blue}To reduce the search space,we apply a series of filters in a hierarchicalmanner. The earlier filters perform light processing on a large number of candi- dates, and the later filters perform heavy processing on a small number of candidates. In the first filter, global fea- tures and delayed strokes patterns are used to reduce can- didate word-part models. In the second filter, local features are used to guide a dynamic time warping (DTW) classifi- cation. The resulting k top ranked candidates are sent for shape-context based classifier, which determines the recog- nized word-part. In this work, we have modified the classic DTW to enable different costs for the different operations and control their behavior\cite{saabni2009hierarchical}}
 
 \subsection{Kd-tree}
 

@@ -1,14 +1,22 @@
-%%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-%%% Do not edit unless you really know what you are doing.
-%\documentclass[english]{report}
-%\usepackage[T1]{fontenc}
-%\usepackage[latin9]{inputenc}
-%\setcounter{secnumdepth}{3}
-%\setcounter{tocdepth}{3}
-%\usepackage{setspace}
-%\onehalfspacing
-%\usepackage{babel}
-%\begin{document}
+%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{report}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{babel}
+\usepackage{verbatim}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\usepackage{subfig} %% This package has to be here
+\usepackage{setspace}
+\usepackage{arabtex}
+\usepackage[numbers]{natbib}
+\usepackage{nomencl}
+\begin{document}
 
 \chapter{Samples Collection}
 
@@ -52,4 +60,10 @@ The other source was the ADAB database. The ADAB contains Arabic script samples.
 \emph{TODO: talk about the the need to remove additional strokes. that our thesis considers only the main body. and that there are letters that can be identified only by the additional strokes like \RL{r,z} and that there are combination of letters that may look like othger letter like double \RL{b} and \RL{s}} 
 
 \emph{see "Removing delayed strokes" section in  \cite{jaeger2001online}}
-%\end{document}
+
+{\color{blue}The detection of delayed strokes is performed based on
+their sequential order, location, and size. Delayed strokes
+are detected based on the size and shape of their bounding
+box with respect to the word-part.\cite{saabni2009hierarchical}}
+
+\end{document}
