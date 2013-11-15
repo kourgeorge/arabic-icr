@@ -1,30 +1,30 @@
-%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-%% Do not edit unless you really know what you are doing.
-\documentclass[12pt,english]{report}
-\usepackage{mathptmx}
-\renewcommand{\familydefault}{\rmdefault}
-\usepackage[T1]{fontenc}
-\usepackage[latin9]{inputenc}
-\usepackage[a4paper]{geometry}
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
-\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-\setlength{\parskip}{\medskipamount}
-\setlength{\parindent}{0pt}
-\usepackage{verbatim}
-\usepackage{pdfpages}
-\usepackage{graphicx}
-\usepackage{subfig} %% This package has to be here
-\usepackage{setspace}
-\usepackage{arabtex}
-\usepackage[numbers]{natbib}
-\usepackage{nomencl}
-
-\makenomenclature
-
-
-\begin{document}
-\printnomenclature{}
+%%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+%%% Do not edit unless you really know what you are doing.
+%\documentclass[12pt,english]{report}
+%\usepackage{mathptmx}
+%\renewcommand{\familydefault}{\rmdefault}
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
+%\usepackage[a4paper]{geometry}
+%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+%\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+%\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+%\setlength{\parskip}{\medskipamount}
+%\setlength{\parindent}{0pt}
+%\usepackage{verbatim}
+%\usepackage{pdfpages}
+%\usepackage{graphicx}
+%\usepackage{subfig} %% This package has to be here
+%\usepackage{setspace}
+%\usepackage{arabtex}
+%\usepackage[numbers]{natbib}
+%\usepackage{nomencl}
+%
+%\makenomenclature
+%
+%
+%\begin{document}
+%\printnomenclature{}
 
 \chapter{Letters Classifier}
 
@@ -80,9 +80,10 @@ To overcome the flaws mentioned, preprocessing operations are usually applied. T
 
 \emph{TODO: mention other preprocessing approaches mentioned in the literature, like rotation normalization, slant normalization, and missing points interpolation. see \cite{jaeger2001online}.}
 
-As seen in figure \ref{[]} and \ref{}, preprocessing is performed in both letters learning and classification of strokes.
+As seen in figure \ref{[]} and \ref{[]}, preprocessing is performed in both letters learning and classification of strokes.
 Preprocessing is also done in the segmentation phase, however, not all steps mentioned in this section are performed. For more information see section \ref{[]}
 
+Data samples must be of the same dimension for the system to work properly. Since the collected letters in the database are of varying sizes, they were all resized to some standard size. and re-sampled to to achieve same length sequences.
 Our preprocessing phase include three steps in the following order: \emph{Normalization and Translation}, \emph{Noise Elimination} and then \emph{Smoothing and Re-sampling}.\\ 
 
 In figure \ref{fig:D_before_after_preprocessing} we show a sample of the letter \RL{d} sequence before and after preprocessing.\\ 
@@ -103,7 +104,7 @@ In the next sub-sections we will describe in details each part of the preprocess
    \label{fig:D_before_after_preprocessing}
 \end{figure}
 
-\emph{refer to the slant and Rorarion normalization, i.e. why we don't do it. Is slant common in Arabic?
+\emph{refer to the slant and Rotation normalization, i.e. why we don't do it. Is slant common in Arabic?
 }
 
 \subsection{Normalization and Translation}
@@ -189,15 +190,23 @@ The target number of points is set to 40. We had to find a number that is good e
 \label{fig:y_resampling}
 \end{figure}
 
+\subsection{Implementation}
+Answer the following:
+\begin{itemize}
+\item Mention that the data in the database was not in the same length and thus normalziation and re-sampling were needed. 
+\item Where preprocessing is used in our system? Letters Learning and strokes classification
+\item What parameters were used for each preprocessing stage and why.
+\item what alternatives were considered.
+\end{itemize}
+
+
 \newpage{}
+
 
 \section{Features Extraction}
 
 Answer the following:
 \begin{itemize}
-\item Goal and importance
-\item shape descriptor properties
-\item types of features - local vs. global and simple vs. complex - examples, (hierarchical) 
 \item Discussion - why did we decided to concentrate on shape context and MAD.
 \item Discussion - Is combining several feature extraction technique is recommended?
 \item Results - show the difference between MAD and SC.
@@ -270,6 +279,16 @@ Formally, let $S$ be a shape and Let $C$ and $D$ be the centroid and the diamete
 \caption{In this figure we can see an example of three line segments drawn from the same viewpoint $V_i$, generating the three angles $Vec_{ij}$ with the plane of the shape. When the parameter $j$ goes over all contour points we get the vector $Vec_i$ describing the shape from the view point $V_i$ with the parameter $i$ goes over all viewpoints.}
 \label{fig:mad_demo}
 \end{figure}
+
+\subsection{Implementation}
+
+For each sample in the set, after preprocessing, a single feature was extracted. We 
+
+Answer the following question:
+\begin{itemize}
+\item which results achieved every method?
+\item were there any implementation details we need to mention?
+\end{itemize}
 
 \newpage{}
 
@@ -376,4 +395,4 @@ Answer the following:
 
 \subsection{Implementation Details and Discussion}
  
-\end{document}
+%\end{document}
