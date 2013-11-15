@@ -20,8 +20,11 @@
 \usepackage[numbers]{natbib}
 \usepackage{nomencl}
 
+\makenomenclature
+
 
 \begin{document}
+\printnomenclature{}
 
 \chapter{Letters Classifier}
 
@@ -214,7 +217,7 @@ Many shape description have been developed in order to improve the segmentation 
 
 For a detailed review on shape descriptors see \cite{zhang2004review} and \cite{yang2008survey}.
 
-Many well known and powerful features operate on the contour of the shape. This is because many descriptors were developed for off-line handwriting recognition in which the shape is the script contour. In the on-line handwriting recognition, the input data is a sequence of points  and no contour is involved, however using features in on-line handwriting recognition that we originally developed for the off-line case is common. Saabne and El-Sanna have used shape context, a shape descriptor that was developed for contour based shapes, for the online handwriting recognition in \cite{saabni2009hierarchical}. Multi Scale shape context, a combination of three different shape contexts:
+Many well known and powerful features operate on the contour of the shape. This is because many descriptors were developed for off-line handwriting recognition in which the shape is the script contour. In the on-line handwriting recognition, the input data is a sequence of points  and no contour is involved, however using features in on-line handwriting recognition that we originally developed for the off-line case is common. Saabne and El-Sanna have used the \emph{Shape Context} (SC) descriptor, a global shape descriptor that was developed for contour based shapes, for the online handwriting recognition in \cite{saabni2009hierarchical}. Multi Scale shape context, a combination of three different shape contexts:
 stroke, local neighborhood and global shape contexts, is used by Hu and Zanibbi in \cite{husegmenting} for on-line handwritten mathematical expressions segmentation.
 
 In this work we have chosen to work with two shape descriptors, the Shape context descriptor and the tangent angle feature. The reason for this choice is that we wanted to investigate how both global and local features effectiveness in our proposed process. More information about these features are given in section \ref{sec:shape_context} and in section \ref{sec:mad}
@@ -223,6 +226,7 @@ In this work we have selected two features to work with, the Shape Context and t
 
 \subsection{Shape Context}
 \label{sec:shape_context}
+\nomenclature{$SC$}{Shape Context Descriptor}
 Belongie and Malik have presented a point matching approach named Shape Context \cite{belongie2002shape}. The Shape context is a shape matching approach that intended to be a way of describing shapes that allows for measuring shape similarity and the recovering of point correspondences. This approach is based on the following descriptor: Pick $n$ points on the shape's contour, for each point ${p_i}$ on the shape, consider the $n - 1$ other points and calculate the coarse histogram of the relative coordinates. Equation \ref{eq:sc_bins} is defined to be the shape context of ${p_i}$.
 
 \begin{equation}
@@ -255,6 +259,7 @@ The bins are normally taken to be uniform log-polar space making the descriptor 
 
 \subsection{Multi Angular Descriptor}
 \label{sec:mad}
+\nomenclature{MAD}{Multi Angular Descriptor}
 The other shape descriptor used in this thesis is the Multi Angular Descriptor (MAD).
 MAD was proposed by Saabni in \cite{saabni2013multi}. It captures the angular view to multi resolution rings in different heights. The shape is treated as a two dimensional set of points and the different rings are upper view points from rings around the shape centroid with different sizes and heights. To enables scale and translation invariance, the sizes and heights of these rings are calculated using the diameter and centroid of the shape.
 Formally, let $S$ be a shape and Let $C$ and $D$ be the centroid and the diameter of the shape respectively. Let $P = \{p_i\}_{i = 1}^l$ a set of $l$ point taken uniformly from the extracted contour of $S$. Given a view point $V_j$ from a given ring with height $h$ over the shape, the angle, obtained by connecting the point ${p_i} \in P$ with each point   and the plain of the shape is a rich description of the shape from this view point. Let $R$ be a ring with the radius $r$ and the center $C$ positioned above the shape $S$ with the height $h$. Let $V = \{V_i\}_{i = 1}^n$ be a set of $n$ viewpoints lying uniformly on the ring $R$ and $\alpha(V_{ij})$ to be the angle between the segment $\overline {{V_i}{p_j}}$ and the plain contains the shape $S$. The vector $Ve{c_i} = \left\{ {\alpha \left( {{V_{ij}}} \right)} \right\}_{j = 1}^l$ can be seen as watching the shape $S$ from one upper view point $V_i$. Illustration can be seen in Figure 7.

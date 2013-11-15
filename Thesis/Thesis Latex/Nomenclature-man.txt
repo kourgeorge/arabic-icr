@@ -1,0 +1,6 @@
+For symbols run the following: 
+
+\nomenclature{$SC$}{Shape Context Descriptor}
+
+makeindex Thesis-main.nlo -s nomencl.ist -o Thesis-main.nls
+makeindex LettersClassification.nlo -s nomencl.ist -o LettersClassification.
