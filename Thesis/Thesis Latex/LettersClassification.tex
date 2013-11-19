@@ -318,14 +318,6 @@ Answer the following question:
 
 \section{Similarity Measure}
 
-Answer the following:
-\begin{itemize}
-\item What is similarity measure and why is it used. [Done]
-\item What features a similarity measure need to have? [Done]
-\item What types of similarity measure are there.
-\item the importance of the triangulation property
-\end{itemize}
-
 In this chapter we will discuss methods that were used in this work to asses the similarity measure between two handwritten curves or between vectors in the features space. Given two data inputs or feature vectors, we aim to define a quantitative measure of their dissimilarity with the intent of approximating perceptual resemblance between them. The task of mathematically capturing the human perceptual shape differences is not an easy task. A good similarity measure should be able to cope with various types of discrepancy, such as time shifting, noise and scaling which can be easily handled by a human. Time shifting may be caused by different sampling rate, and noise may be introduced by sensor failures, errors in detection techniques, and disturbance signals \cite{chen2005similarity}. 
 
 The similarity measure is needed to answer the following query: 
@@ -363,20 +355,6 @@ Other types of queries are discussed in the literature, most notably the \emph{n
 \label{fig:range_query}
 \end{figure}
 
-\emph{The triangular equality.}
-
-Distance functions have been proposed for different application, such as Dynamic Time Warping [12, 118, 57, 52], Longest Common Subsequences [13, 108] and Edit distance. Dynamic Time Warping (DTW), which will be described in details in section \ref{[]}, can handle sequences with different lengths and local time shifting, but it does not follow triangle inequality, which is one of important properties of a metric distance function. Since most of the indexing structures assume that the underlying distance functions follow triangle inequality, DTW is non-indexable with current techniques.
-Furthermore, Euclidean distance and DTW are sensitive to noise, thus, they are not suitable for data that contain noise. Longest Common Subsequence (LCSS) is proposed to handle possible noise that may appear in data; however, it ignores the various gaps in between similar subsequences, which leads to inaccuracies. \cite{chen2005similarity}.
-
-\begin{definition}
-Given a data space $D$. A distance function $dist$ is a \emph{metric} if for all $x,y,z \in D$, the following two additional conditions hold:
-\begin{itemize}
-\item $dist(x,y)=0 \Leftrightarrow x=y$ (reflexivity)
-\item $dist(x,z) \leq dist(x,y) + dist(y,z)$ (triangle inequality) 
-\end{itemize}
-In this case, the pair $(D,dist)$ is called \emph{metric space}.
-\end{definition}
-
 \begin{definition}
 $L_p$-norm: Given two sequences $R$ and $S$ of the same length $N$, the $L_p$ norm distance between $R$ and $S$ is:
 \begin{equation}
@@ -393,22 +371,43 @@ d(r_i,s_i)=\sqrt[2]{{r_{i_x}-s_{i_x}}^2+{r_{i_y}-s_{i_y}}^2}
 
 Euclidean distance is the most basic distance function, it is easy to compute and the computation cost is linear in the sequence length.
 
-However, the Euclidian distance has some disadvantages in regards to plane sequences. First, it requires that the that the two sequences to be of the same length. Second, it does not support local shifting. 
-Local shifting occurs when one point of one sequence is shifted  to match an element of the another sequence (even when the two matched elements appear in different positions in the sequences). It is important when the compared sequences have similar shape but are out of phase. It is called "local", because not all of the points of one sequence need to be shifted in the same factor and direction to match the other sequence. By contrast, in "global" shifting, all the points are shifted along the same direction by a fixed shifting factor. Generally, local time shifting cannot be handled by $L_p-norm$, because $L_p-norm$ requires the $i^{th}$ element of query sequence be aligned with the $i^{th}$ element of the data sequence \cite{chen2005similarity}. 
+However, the Euclidian distance has some disadvantages in regards to curve sequences. First, it requires the two sequences to be of the same length. Second, it does not support local shifting. 
+Local shifting occurs when one point of one sequence is shifted  to match an element of the another sequence (even when the two matched elements appear in different positions in the sequences). It is important when the compared sequences have similar shape but are out of phase. It is called "local", because not all of the points of one sequence need to be shifted in the same factor and direction to match the other sequence. By contrast, in "global" shifting, all the points are shifted along the same direction by a fixed shifting factor. Generally, local time shifting cannot be handled by $L_p-norm$, because it requires the $i^{th}$ element of query sequence be aligned with the $i^{th}$ element of the data sequence \cite{chen2005similarity}. 
+The Euclidean distance function is a \emph{metric}. A formal definition of a metric is given below. (Defenition \ref{def:metric})
 
-Mathematically, metric spaces are a generalization of Euclidean space, keeping some of its well-known geometric properties. These convenient properties allow us to achieve more efficient data structures and search algorithms. As well, this characteristic is usually required in important kernel based classification techniques. For example, to be able to run efficiently "Radial basis function" (RBF) one needs to calculate efficiently the distance between two samples.
+\begin{definition}
+Given a data space $D$. A distance function $dist$ is a \emph{metric} if for all $x,y,z \in D$, the following two additional conditions hold:
+\begin{itemize}
+\item $dist(x,y)=0 \Leftrightarrow x=y$ (reflexivity)
+\item $dist(x,z) \leq dist(x,y) + dist(y,z)$ (triangle inequality) 
+\end{itemize}
+In this case, the pair $(D,dist)$ is called \emph{metric space}.
+\label{def:metric}
+\end{definition}
 
-One way of interpreting triangularity is that the concept of overlap becomes meaningful for naturally defined regions such as metric balls (everything within a given distance of some center object). If we're allowed to violate triangularity, two seemingly non-overlapping balls could still share objects. \cite{chen2005similarity}
+Mathematically, metric spaces are a generalization of Euclidean space, keeping some of its well-known geometric properties. These convenient properties allow us to achieve more efficient data structures and search algorithms. 
+
+The most important property of a metric function is triangularity, namely the triangle inequality.
+One way of interpreting triangularity is that the concept of overlap becomes meaningful for naturally defined regions such as metric balls. 
+If we're allowed to violate triangularity, two seemingly non-overlapping balls could still share objects. See figure \ref{fig:non_triangular_space} \cite{chen2005similarity}.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth]{./figures/non_triangular_space}       
+\caption{Illustration of a non-triangular space. Two regions defined as balls (everything within a distance rx and ry of x and y, respectively) seemingly don't overlap, as d(x, y) > rx + ry. Even so, there may be objects (such as z) that are found in both regions}
+\label{fig:non_triangular_space}
+\end{figure}
+
+
  
-A second aspect related to similarity-based retrieval is how to improve retrieval efficiency. The execution time is of a query mainly affected by the number of distance computations. This aspect will be discussed in details in section \ref{[]}.
+A second aspect related to similarity-based retrieval is how to improve retrieval efficiency. The execution time is of a query mainly affected by the number of distance computations. The triangularity property facilitate fast retrieval by using indexing and lower bounding.  This aspect will be discussed in details in section \ref{[]}.
+
+Distance functions have been proposed for different application, such as Dynamic Time Warping [12, 118, 57, 52], Longest Common Subsequences [13, 108] and Edit distance. Dynamic Time Warping (DTW), which will be described in details in section \ref{[]}, can handle sequences with different lengths and local time shifting, but it does not follow triangle inequality, which is one of important properties of a metric distance function. Since most of the indexing structures assume that the underlying distance functions follow triangle inequality, DTW is non-indexable with current techniques.
+Furthermore, Euclidean distance and DTW are sensitive to noise, thus, they are not suitable for data that contain noise. Longest Common Subsequence (LCSS) is proposed to handle possible noise that may appear in data; however, it ignores the various gaps in between similar subsequences, which leads to inaccuracies. \cite{chen2005similarity}.
 
 \emph{How do use the metric properties to obtain fast retrieval algorithms and data-structures.}
 
 More information is given in the next section.
-
-
-
-
 
 \subsection{Earth Movers Distance}
 The dissimilarity metric that we have used is the Earth Movers Distance (EMD). EMD has experimentally verified to capture well the perceptual notion of a difference between images. Piotr Indyk has suggested an embedding technique in which the un-normed EMD metric is embedded into a normed space, so that the distance between the two images is comparable to the distance between the two points which represent the embedding of the two images.
@@ -444,7 +443,6 @@ mention DTW, EMD and ERP.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Similar objects retrieval}
-\subsection{Introduction}
 
 Mention the following:
 \begin{itemize}
@@ -454,11 +452,13 @@ Mention the following:
 \item EMD embedding and 
 \item Why do work on the feature vector and not on the trajectory sequence.
 \item why don't we use the euclidean norm in the feature space?
+\item what is the difference between lower bounding and indexing. see \cite{chen2005similarity}.
 \item Implementation Details.
 \end{itemize}
 
-Indexing is any form of preprocessing of
-the data set designed to facilitate efficient retrieval
+Indexing is any form of preprocessing of the data set designed to facilitate efficient retrieval.
+
+{\color{blue}Index structures are structures built over the given data set in order to speed up queries. The time cost involved in building the index is amortized over the series of queries, and is usually ignored when considering search cost. The main goal, then, of an index method is to enable efficient search, either asymptotically or simply in real wall-clock time.\cite{hetland2009basic}}
 
 
 
