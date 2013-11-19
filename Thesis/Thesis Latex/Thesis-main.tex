@@ -23,6 +23,19 @@
 %Packages Added By George
 \usepackage[linesnumbered]{algorithm2e}
 \usepackage{color}
+\usepackage{amsthm}
+
+% Theorem Styles
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+% Definition Styles
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
 
 % the following is useful when we have the old nomencl.sty package
 \providecommand{\printnomenclature}{\printglossary}

@@ -16,6 +16,23 @@
 \usepackage{arabtex}
 \usepackage[numbers]{natbib}
 \usepackage{nomencl}
+\usepackage{amsthm}
+\usepackage{bbold}
+
+\makenomenclature
+
+% Theorem Styles
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+% Definition Styles
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
 \begin{document}
 
 \chapter{Samples Collection}
@@ -65,5 +82,19 @@ The other source was the ADAB database. The ADAB contains Arabic script samples.
 their sequential order, location, and size. Delayed strokes
 are detected based on the size and shape of their bounding
 box with respect to the word-part.\cite{saabni2009hierarchical}}
+
+\section{Data representation Definition}
+On-line handwriting data is commonly a digitized representation of the pen movement. It may contain sequential information about position, velocity, acceleration, pressure, or even angle and orientation of the pen as a function of time. However, the most basic and used property is the position of the pen. In addition, usually in HWR systems the pen position is not given as a function of time, but as an ordered set of sequential pen position. 
+
+A formal definition of the representation of pen position acquired data, the stroke, is given as follows: 
+\begin{definition}
+A stroke $S$ is defined as a sequence points in the two-dimensional space and given as follows:
+\begin{equation}
+S = \left[(x_1,y_1),...,(x_N,y_N)\right]
+\end{equation} 
+where N is the number of samples in the stroke. 
+\end{definition}
+
+Let us denote the stroke space of all lengths as $D$ and the space that contains strokes of length $N$ as $D^N$. 
 
 \end{document}

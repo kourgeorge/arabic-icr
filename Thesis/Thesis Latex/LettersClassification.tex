@@ -1,33 +1,46 @@
-%%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-%%% Do not edit unless you really know what you are doing.
-%\documentclass[12pt,english]{report}
-%\usepackage{mathptmx}
-%\renewcommand{\familydefault}{\rmdefault}
-%\usepackage[T1]{fontenc}
-%\usepackage[latin9]{inputenc}
-%\usepackage[a4paper]{geometry}
-%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
-%\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-%\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-%\setlength{\parskip}{\medskipamount}
-%\setlength{\parindent}{0pt}
-%\usepackage{verbatim}
-%\usepackage{pdfpages}
-%\usepackage{graphicx}
-%\usepackage{subfig} %% This package has to be here
-%\usepackage{setspace}
-%\usepackage{arabtex}
-%\usepackage[numbers]{natbib}
-%\usepackage{nomencl}
-%
-%\makenomenclature
-%
-%
-%\begin{document}
-%\printnomenclature{}
+%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[12pt,english]{report}
+\usepackage{mathptmx}
+\renewcommand{\familydefault}{\rmdefault}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{verbatim}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\usepackage{subfig} %% This package has to be here
+\usepackage{setspace}
+\usepackage{arabtex}
+\usepackage[numbers]{natbib}
+\usepackage{nomencl}
+\usepackage{amsthm}
+\usepackage{bbold}
+
+\makenomenclature
+
+% Theorem Styles
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+% Definition Styles
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+
+\begin{document}
+\printnomenclature{}
 
 \chapter{Letters Classifier}
-
 
 {\color{blue}Online handwriting recognition is one of the very complex and challenging problems [1][2][3] because of variability on size, writing style of hand-printed characters , and duplicate pixels caused by a hesitation in writing or interpolate non-adjacent consecutive pixels caused by fast writing. \cite{verma2004feature}}
 
@@ -182,6 +195,9 @@ The target number of points is set to 40. We had to find a number that is good e
 
 \emph{TODO: talk about the other smoothing techniques as described in \cite{jaeger2001online} -- Online handwriting recognition: the NPen++ recognizer}
 
+\subsubsection{Approach 1 - Using piecewise linear interpolations}
+
+\subsubsection{Approach 2 - Using quadratic splines}
 
 \begin{figure}
 \centering
@@ -199,9 +215,9 @@ Answer the following:
 \item what alternatives were considered.
 \end{itemize}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Features Extraction}
 
@@ -222,7 +238,11 @@ Low computation complexity is an important characteristic of a desirable shape d
 
 A shape descriptor is usually measured according to several principles which include good retrieval accuracy, compact features, low computation complexity and robust retrieval performance. \cite{kim2000region}
 
+\emph{TODO: add a mathematical definition of the feature extraction as a transformation from the space domain to the feature space.}
+
 Many shape description have been developed in order to improve the segmentation and recognition rates. There are many different classifications and sub classifications of shape descriptors according to their method of operation.The most common classification is the classification for local and global descriptors. Local descriptors calculate some feature at each sample point. Simple local features include the y coordinate and tangent slope angle. \emph{Normalized curvature} and \emph{Ratio of tangent} \cite{hu1995invariant,hu1996hmm} are examples of more complex local shape descriptor. Descriptors such as cusps, crossings and loops are referred to as global descriptors and are calculated on the entire shape \cite{hu1997combining}.
+
+\emph{TODO: review "Local vs. global Features" (p. 30) in \cite{connell2000online} }
 
 For a detailed review on shape descriptors see \cite{zhang2004review} and \cite{yang2008survey}.
 
@@ -256,7 +276,7 @@ The bins are normally taken to be uniform log-polar space making the descriptor 
 \centering
 \subfloat[]{
     \label{fig:shape_context_offline}
-    \includegraphics[width=0.5\textwidth]{./figures/shape_context_offline}
+    \includegraphics[width=0.27\textwidth]{./figures/shape_context_offline}
 }
 \subfloat[]{
 	\label{fig:shape_context_online}
@@ -282,23 +302,116 @@ Formally, let $S$ be a shape and Let $C$ and $D$ be the centroid and the diamete
 
 \subsection{Implementation}
 
-For each sample in the set, after preprocessing, a single feature was extracted. We 
+For each sample in the set, after preprocessing, one of the shape descriptors mentioned above was extracted. We 
 
 Answer the following question:
 \begin{itemize}
-\item which results achieved every method?
+\item which results has achieved every method?
 \item were there any implementation details we need to mention?
+\item perform the following test - create a test set of letters and calculate the recognition rate for each shape descriptor.
 \end{itemize}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Metric Embedding}
-Given two distributions, it is important to define a quantitative measure of their dissimilarity, with the intent of approximating perceptual dissimilarity as well as possible. Defining a distance between two distributions requires first a notion of distance between the basic features that are aggregated into the distributions. This is known as \emph{ground distance}.
-Mathematically, it would be convenient if these distribution distances were true metrics, which would lead to more efficient data structures and search algorithms. As well, this characteristic is usually required in important kernel based classification techniques. For example, to be able to run efficiently "Radial basis function" (RBF) one needs to calculate efficiently the distance between two samples. The dissimilarity metric that we have used is the Earth Movers Distance (EMD). EMD has experimentally verified to capture well the perceptual notion of a difference between images. Piotr Indyk has suggested an embedding technique in which the un-normed EMD metric is embedded into a normed space, so that the distance between the two images is comparable to the distance between the two points which represent the embedding of the two images.
+\section{Similarity Measure}
 
-\emph{[EMD approximation. Do we approximate the EMD and then do the embedding? Or we do the embedding within the EMD calculation?]}
+Answer the following:
+\begin{itemize}
+\item What is similarity measure and why is it used. [Done]
+\item What features a similarity measure need to have? [Done]
+\item What types of similarity measure are there.
+\item the importance of the triangulation property
+\end{itemize}
+
+In this chapter we will discuss methods that were used in this work to asses the similarity measure between two handwritten curves or between vectors in the features space. Given two data inputs or feature vectors, we aim to define a quantitative measure of their dissimilarity with the intent of approximating perceptual resemblance between them. The task of mathematically capturing the human perceptual shape differences is not an easy task. A good similarity measure should be able to cope with various types of discrepancy, such as time shifting, noise and scaling which can be easily handled by a human. Time shifting may be caused by different sampling rate, and noise may be introduced by sensor failures, errors in detection techniques, and disturbance signals \cite{chen2005similarity}. 
+
+The similarity measure is needed to answer the following query: 
+Given a objects database DB and a query object q, find all objects in DB that are perceptively similar to q. Thus, it has a direct and crucial affect on the matching quality of the classification results. 
+
+\emph{show a picture from the DTW or from the thesis that demonstrates the problem with similarity measure.}
+
+The similarity measure is formalized as a so-called distance function. 
+
+\begin{definition}
+Given a space $D$, as defined in section \ref{[]}. For any two data elements $x,y \in D$, a \emph{distance function}, dist, on $D$ is defined as:
+\begin{equation}
+dist: D \times D \longrightarrow \mathbb{R}
+\end{equation}
+where $\mathbb{R}$ is the real data set and $dist$ has the following properties:
+\begin{itemize}
+\item $dist(x,y)=0 \Leftrightarrow x=y$ (reflexivity)
+\item $dist(x,y) = dist(y,x)$ (symmetry)
+\end{itemize}
+The pair $(D,dist)$ is called a distance space.
+\end{definition}
+
+The distance function depends on the application and the data representation and needs to be carefully designed to fit the problem domain. Significant amount of research has been carried out on similarity measure functions, both in distance functions and their efficient evaluation. 
+Much of the previous research was done on similarity search over time series and distributions. 
+
+Under the definition of a distance function, a formal definition of the query mentioned earlier ,namely the \emph{range query}, can be given as follows: 
+For a given distance function $dist$, a query object $q$ and a search radius $r$, return all sample objects that fall within $r$ distant from $q$, i.e. $dist(q,x) \leq r$. See figure  \ref{fig:range_query}.
+
+Other types of queries are discussed in the literature, most notably the \emph{nearest neighbors query}, which "" returning all the closest sample (or k samples) objects to the query object. It can be argued that range queries are fundamental, and virtually all published metric indexing methods support them \cite{hetland2009basic}.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth]{./figures/range_query}       
+\caption{Visualization of a range query in two-dimensional Euclidean space. The small circles are objects in the data set, while the filled dots are returned as a result of the query with sample object $q$ and search radius $r$}
+\label{fig:range_query}
+\end{figure}
+
+\emph{The triangular equality.}
+
+Distance functions have been proposed for different application, such as Dynamic Time Warping [12, 118, 57, 52], Longest Common Subsequences [13, 108] and Edit distance. Dynamic Time Warping (DTW), which will be described in details in section \ref{[]}, can handle sequences with different lengths and local time shifting, but it does not follow triangle inequality, which is one of important properties of a metric distance function. Since most of the indexing structures assume that the underlying distance functions follow triangle inequality, DTW is non-indexable with current techniques.
+Furthermore, Euclidean distance and DTW are sensitive to noise, thus, they are not suitable for data that contain noise. Longest Common Subsequence (LCSS) is proposed to handle possible noise that may appear in data; however, it ignores the various gaps in between similar subsequences, which leads to inaccuracies. \cite{chen2005similarity}.
+
+\begin{definition}
+Given a data space $D$. A distance function $dist$ is a \emph{metric} if for all $x,y,z \in D$, the following two additional conditions hold:
+\begin{itemize}
+\item $dist(x,y)=0 \Leftrightarrow x=y$ (reflexivity)
+\item $dist(x,z) \leq dist(x,y) + dist(y,z)$ (triangle inequality) 
+\end{itemize}
+In this case, the pair $(D,dist)$ is called \emph{metric space}.
+\end{definition}
+
+\begin{definition}
+$L_p$-norm: Given two sequences $R$ and $S$ of the same length $N$, the $L_p$ norm distance between $R$ and $S$ is:
+\begin{equation}
+L_p-norm(R,S)=\sqrt[p]{\sum\limits_{i=1}^N d(r_i,s_i)^p}
+\end{equation}
+Where $d(r_i,s_i)$ is the distance function between $r_i$ and $s_i$. 
+\end{definition}
+$L_1-norm$ is called the \emph{Manhattan distance} or \emph{city block distance}, $L_2-norm$ is known as the \emph{Euclidean distance}.
+
+$d(r_i,s_i)$ is also a matter of choice. However, in most cases it is defined as the $L_2-norm$, i.e. 
+\begin{equation}
+d(r_i,s_i)=\sqrt[2]{{r_{i_x}-s_{i_x}}^2+{r_{i_y}-s_{i_y}}^2}
+\end{equation}
+
+Euclidean distance is the most basic distance function, it is easy to compute and the computation cost is linear in the sequence length.
+
+However, the Euclidian distance has some disadvantages in regards to plane sequences. First, it requires that the that the two sequences to be of the same length. Second, it does not support local shifting. 
+Local shifting occurs when one point of one sequence is shifted  to match an element of the another sequence (even when the two matched elements appear in different positions in the sequences). It is important when the compared sequences have similar shape but are out of phase. It is called "local", because not all of the points of one sequence need to be shifted in the same factor and direction to match the other sequence. By contrast, in "global" shifting, all the points are shifted along the same direction by a fixed shifting factor. Generally, local time shifting cannot be handled by $L_p-norm$, because $L_p-norm$ requires the $i^{th}$ element of query sequence be aligned with the $i^{th}$ element of the data sequence \cite{chen2005similarity}. 
+
+Mathematically, metric spaces are a generalization of Euclidean space, keeping some of its well-known geometric properties. These convenient properties allow us to achieve more efficient data structures and search algorithms. As well, this characteristic is usually required in important kernel based classification techniques. For example, to be able to run efficiently "Radial basis function" (RBF) one needs to calculate efficiently the distance between two samples.
+
+One way of interpreting triangularity is that the concept of overlap becomes meaningful for naturally defined regions such as metric balls (everything within a given distance of some center object). If we're allowed to violate triangularity, two seemingly non-overlapping balls could still share objects. \cite{chen2005similarity}
+ 
+A second aspect related to similarity-based retrieval is how to improve retrieval efficiency. The execution time is of a query mainly affected by the number of distance computations. This aspect will be discussed in details in section \ref{[]}.
+
+\emph{How do use the metric properties to obtain fast retrieval algorithms and data-structures.}
+
+More information is given in the next section.
+
+
+
+
 
 \subsection{Earth Movers Distance}
+The dissimilarity metric that we have used is the Earth Movers Distance (EMD). EMD has experimentally verified to capture well the perceptual notion of a difference between images. Piotr Indyk has suggested an embedding technique in which the un-normed EMD metric is embedded into a normed space, so that the distance between the two images is comparable to the distance between the two points which represent the embedding of the two images.
 Earth movers distance (EMD) is a measure of the dissimilarity between two histograms. Descriptively, if the histograms are interpreted as two different ways of piling up a certain amount of dirt, the EMD is the minimal cost of turning one pile to other, where the cost is assumed to be the amount of dirt moved times the distance by which it moved.
 EMD has been experimentally verified to capture well the perceptual notion of a difference between images \cite{indyk2003fast}.  Computing EMD is based on a solution to the well-known transportation problem. It can be computed as the minimal value of a linear program. 
 \emph{[EMD formal definition]}
@@ -308,12 +421,67 @@ The embedding of EMD given in \cite{indyk2003fast} provides a way to map weighte
 
 \subsection{Approximate Earth Movers Distance Embedding}
 
+\begin{itemize}
+\item Is on-line handwritten data can be approached as time series?
+\item formal problem definition
+\item define the vector space. it is a time series but we do not use the time value but only its index since we remove the timing issue in the preprocessing phase.
+\item Talk about the issue that vectors in our vector space may have various lengthes.
+\item important properties similarity measure techniques
+\item mention similarity measure like DTW and EMD.
+\end{itemize}
+
+mention DTW, EMD and ERP.
+
+\emph{TODO: see \cite{hetland2009basic} for a good introduction to similarity search}
+
+\emph{discuss different distance functions of sequences. ERP, DTW, longest common}
+
+{\color{blue}In order to qualify as a distance function, a function must normally be symmetric and reflexive. If d is a distance defined on the universe U, the pair (U, d) is called a distance space. A metric space is a distance space where non-identical objects are separated by positive distances and where there are no "short-cuts": The distance from x to z cannot be improved by going via another point (object) y.\cite{hetland2009basic}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Similar objects retrieval}
+\subsection{Introduction}
+
+Mention the following:
+\begin{itemize}
+\item The importance of the triangular equality in indexing.
+\item Mention performance.
+\item fast retrieval and indexing techniques (section). lower bounding and kd-tree.
+\item EMD embedding and 
+\item Why do work on the feature vector and not on the trajectory sequence.
+\item why don't we use the euclidean norm in the feature space?
+\item Implementation Details.
+\end{itemize}
+
+Indexing is any form of preprocessing of
+the data set designed to facilitate efficient retrieval
+
+
+
+
+{\color{blue}Similarity search is a mode of information retrieval where the query is a sample object, and the desired result is a set of objects deemed to be similar - in some sense - to the query.
+Under the distance function formalism, several query types may be formulated. In the following I focus on one of the basic kinds, so-called range queries, where all objects that fall within a given distance of the sample are returned. In other words, for a distance function $dist$, a query object $q$, and a
+search radius $r$, objects x for which $dist(q, x) \leq r$ are returned. Another type of query is the nearest neighbors query (returning the nearest object, or the k nearest objects)
+It can be argued that range queries are fundamental, and virtually all published metric indexing methods support them. \cite{hetland2009basic}}.
+
+
+\subsection {Earth Mover's Distance Embedding}
+
+
 \subsection{Clustering}
 \begin{itemize}
 \item Talk about the clustering process.
 \item try to implement the number of clusters recommendation system.
 \subsubsection{L1 K-medoids}
 \end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Features Transformation and Dimensionality Reduction}
 
@@ -367,7 +535,13 @@ Why we have used both and what give us every method and how we did join them tog
 \emph{ Talk about other Dimensionality reduction techniques such as LMNN and show results.}
 
 
-\section{Letters Classification and Scoring}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Nearest Neighbor Classifier}
+
 
 In our framework, sub-strokes classification is done by finding a stored letter sample that is maximally similar to the shape of the sub-stroke.
 
@@ -383,7 +557,6 @@ For each candidate a scoring is given to simulate the extend of resemblance betw
 Example of how to write:
 {\color{blue}One of the simplest classifiers we can use is the Nearest Neighbour classifier. This takes a test point in vector form, and finds the Euclidean distance between this and the vector representation of each training example. The training example closest to the test point is termed its Nearest Neighbour. Since this example is in some sense the one most similar to our test point, it makes sense to allocate its class label to the test point. This exploits the 'smoothness' assumption that points near each other are likely to have the same class.}
 
-\subsection{Data Time Warping}
 
 Answer the following:
 \begin{itemize}
@@ -394,5 +567,14 @@ Answer the following:
 \end{itemize}
 
 \subsection{Implementation Details and Discussion}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
  
-%\end{document}
+\section{Candidates Scoring}
+
+ 
+\end{document}
