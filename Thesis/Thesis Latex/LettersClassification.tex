@@ -50,6 +50,9 @@ It is a classification of each unknown object into one of a finite set of catego
 \item state the general problem definition of classification. [3-4 sentences]
 \item talk about pattern classification [2 sentences]
 \item talk about the different types and approaches of letters classification [1 paragraph]
+\item Talk about the different classification techniques that is common in handwriting recognition such as NN and HMM.
+\item explain why did we choose to use NN rather than HMM.
+\item Are there more classification techniques we may should have considered.
 \end{itemize}
 }
 
@@ -267,13 +270,6 @@ The bins are normally taken to be uniform log-polar space making the descriptor 
 
 \begin{figure}
 \centering
-\includegraphics{./figures/shape_context_offline}       
-\caption{Diagram of the log-polar bins used to compute the shape context.}
-\label{fig:shape_context_demo}
-\end{figure}
-
-\begin{figure}
-\centering
 \subfloat[]{
     \label{fig:shape_context_offline}
     \includegraphics[width=0.27\textwidth]{./figures/shape_context_offline}
@@ -295,7 +291,7 @@ Formally, let $S$ be a shape and Let $C$ and $D$ be the centroid and the diamete
 
 \begin{figure}
 \centering
-\includegraphics{./figures/mad_demo}       
+\includegraphics[width=0.7\textwidth]{./figures/mad_demo}       
 \caption{In this figure we can see an example of three line segments drawn from the same viewpoint $V_i$, generating the three angles $Vec_{ij}$ with the plane of the shape. When the parameter $j$ goes over all contour points we get the vector $Vec_i$ describing the shape from the view point $V_i$ with the parameter $i$ goes over all viewpoints.}
 \label{fig:mad_demo}
 \end{figure}
@@ -366,12 +362,12 @@ $L_1-norm$ is called the \emph{Manhattan distance} or \emph{city block distance}
 
 $d(r_i,s_i)$ is also a matter of choice. However, in most cases it is defined as the $L_2-norm$, i.e. 
 \begin{equation}
-d(r_i,s_i)=\sqrt[2]{{r_{i_x}-s_{i_x}}^2+{r_{i_y}-s_{i_y}}^2}
+d(r_i,s_i)=\sqrt[2]{({r_{i_x}-s_{i_x}})^2+({r_{i_y}-s_{i_y}})^2}
 \end{equation}
 
 Euclidean distance is the most basic distance function, it is easy to compute and the computation cost is linear in the sequence length.
 
-However, the Euclidian distance has some disadvantages in regards to curve sequences. First, it requires the two sequences to be of the same length. Second, it does not support local shifting. 
+However, the Euclidean distance has some disadvantages in regards to curve sequences. First, it requires the two sequences to be of the same length. Second, it does not support local shifting. 
 Local shifting occurs when one point of one sequence is shifted  to match an element of the another sequence (even when the two matched elements appear in different positions in the sequences). It is important when the compared sequences have similar shape but are out of phase. It is called "local", because not all of the points of one sequence need to be shifted in the same factor and direction to match the other sequence. By contrast, in "global" shifting, all the points are shifted along the same direction by a fixed shifting factor. Generally, local time shifting cannot be handled by $L_p-norm$, because it requires the $i^{th}$ element of query sequence be aligned with the $i^{th}$ element of the data sequence \cite{chen2005similarity}. 
 The Euclidean distance function is a \emph{metric}. A formal definition of a metric is given below. (Defenition \ref{def:metric})
 
@@ -387,9 +383,11 @@ In this case, the pair $(D,dist)$ is called \emph{metric space}.
 
 Mathematically, metric spaces are a generalization of Euclidean space, keeping some of its well-known geometric properties. These convenient properties allow us to achieve more efficient data structures and search algorithms. 
 
-The most important property of a metric function is triangularity, namely the triangle inequality.
-One way of interpreting triangularity is that the concept of overlap becomes meaningful for naturally defined regions such as metric balls. 
-If we're allowed to violate triangularity, two seemingly non-overlapping balls could still share objects. See figure \ref{fig:non_triangular_space} \cite{chen2005similarity}.
+The most important property of a metric function is triangle inequality since most of the indexing structures assume that the underlying distance functions follow triangle inequality. One way of interpreting triangularity is that the concept of overlap becomes meaningful for naturally defined regions such as metric balls. If we're allowed to violate triangularity, two seemingly non-overlapping balls could still share objects. See figure \ref{fig:non_triangular_space} \cite{chen2005similarity}.
+
+A second aspect related to similarity-based retrieval is how to improve retrieval efficiency. The execution time is of a query mainly affected by the number of distance computations. The triangularity property facilitate fast retrieval by using indexing and lower bounding. This aspect will be discussed in details in section \ref{[]}.
+
+The idea of using triangle inequality for Indexing will be discussed in the next chapter.
 
 \begin{figure}
 \centering
@@ -398,27 +396,31 @@ If we're allowed to violate triangularity, two seemingly non-overlapping balls c
 \label{fig:non_triangular_space}
 \end{figure}
 
+{\color{blue}Distance functions have been proposed for different application, such as Dynamic Time Warping [12, 118, 57, 52], Longest Common Subsequences [13, 108], Edit distance and Earth Mover's distance. 
+Dynamic Time Warping (DTW), which will be described in details in section \ref{[]}, can handle sequences with different lengths and local time shifting, but it does not follow triangle inequality, which is one of important properties of a metric distance function. Furthermore, Euclidean distance and DTW are sensitive to noise, thus, they are not suitable for data that contain noise. Longest Common Subsequence (LCSS) is proposed to handle possible noise that may appear in data; however, it ignores the various gaps in between similar subsequences, which leads to inaccuracies. \cite{chen2005similarity}.}
 
- 
-A second aspect related to similarity-based retrieval is how to improve retrieval efficiency. The execution time is of a query mainly affected by the number of distance computations. The triangularity property facilitate fast retrieval by using indexing and lower bounding.  This aspect will be discussed in details in section \ref{[]}.
-
-Distance functions have been proposed for different application, such as Dynamic Time Warping [12, 118, 57, 52], Longest Common Subsequences [13, 108] and Edit distance. Dynamic Time Warping (DTW), which will be described in details in section \ref{[]}, can handle sequences with different lengths and local time shifting, but it does not follow triangle inequality, which is one of important properties of a metric distance function. Since most of the indexing structures assume that the underlying distance functions follow triangle inequality, DTW is non-indexable with current techniques.
-Furthermore, Euclidean distance and DTW are sensitive to noise, thus, they are not suitable for data that contain noise. Longest Common Subsequence (LCSS) is proposed to handle possible noise that may appear in data; however, it ignores the various gaps in between similar subsequences, which leads to inaccuracies. \cite{chen2005similarity}.
-
-\emph{How do use the metric properties to obtain fast retrieval algorithms and data-structures.}
-
-More information is given in the next section.
+Indexing techniques of measure functions is not fast enough to our approach strict requirements. Thus we still need to use the euclidean space and integrating sub-linear search technique to achieve the needed performance and also we can't afford performing the computations the similarity measures mentioned above even if the number of computation is sub-linear. Thus we have taken a different approach and used embedding technique to facilitate using 
 
 \subsection{Earth Movers Distance}
-The dissimilarity metric that we have used is the Earth Movers Distance (EMD). EMD has experimentally verified to capture well the perceptual notion of a difference between images. Piotr Indyk has suggested an embedding technique in which the un-normed EMD metric is embedded into a normed space, so that the distance between the two images is comparable to the distance between the two points which represent the embedding of the two images.
-Earth movers distance (EMD) is a measure of the dissimilarity between two histograms. Descriptively, if the histograms are interpreted as two different ways of piling up a certain amount of dirt, the EMD is the minimal cost of turning one pile to other, where the cost is assumed to be the amount of dirt moved times the distance by which it moved.
-EMD has been experimentally verified to capture well the perceptual notion of a difference between images \cite{indyk2003fast}.  Computing EMD is based on a solution to the well-known transportation problem. It can be computed as the minimal value of a linear program. 
+
+The dissimilarity measure that we have used is the \emph{Earth Movers Distance} (EMD). It has experimentally verified to capture well the perceptual notion of a difference between images.
+
+EMD naturally extends the notion of a distance between single elements to that of a distance between sets, or distributions, of elements. When used to compare distributions with the same overall mass, EMD is a metric.
+
+EMD is basically a measure of the dissimilarity between two histograms. Descriptively, if the histograms are interpreted as two different ways of piling up a certain amount of dirt, the EMD is the minimal cost of turning one pile to other, where the cost is assumed to be the amount of dirt moved times the distance by which it moved.
+
 \emph{[EMD formal definition]}
-EMD naturally extends the notion of a distance between single elements to that of a distance between sets, or distributions, of elements when used to compare distributions with the same overall mass, the EMD is a true metric. The major hurdle to using EMD is its $O\left( {{N^3}\log N} \right)$ computational complexity (for an N-bin histogram).Various approximation algorithms have been proposed to speed up the computation of EMD. 
+
+Computing EMD is based on a solution to the well-known transportation problem. It can be computed as the minimal value of a linear program.
+
+\subsection{EMD Embedding}
+
+The major hurdle to using EMD is its $O\left( {{N^3}\log N} \right)$ computational complexity (for an N-bin histogram).Various approximation algorithms have been proposed to speed up the computation of EMD. Piotr Indyk has suggested an embedding technique in which the un-normed EMD metric is embedded into a normed space, so that the distance between the two images is comparable to the distance between the two points which represent the embedding of the two images.
+
 The embedding of EMD given in \cite{indyk2003fast} provides a way to map weighted point sets A and B from the metric space into the normed space $L_1$, such that the $L_1$ distance between the resulting embedded vectors is comparable to the EMD distance between A and B. The motivation of doing so is that the working with normed space is desirable to enable fast approximate Nearest Neighbors (NN) search techniques such as LSH and kdTree. A work conducted by Shirdhonkar and Jacobs in \cite{shirdhonkar2008approximate} has proposed a method for approximating the EMD between two low dimensional histograms using a new on the weighted wavelet coefficients of the difference histogram. The approximation is done by transforming the histograms to $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. They have proven the ratio of EMD to wavelet EMD is bounded by constants. The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity.
 
 
-\subsection{Approximate Earth Movers Distance Embedding}
+\subsection{Approximate EMD Embedding}
 
 \begin{itemize}
 \item Is on-line handwritten data can be approached as time series?
@@ -432,10 +434,6 @@ The embedding of EMD given in \cite{indyk2003fast} provides a way to map weighte
 mention DTW, EMD and ERP.
 
 \emph{TODO: see \cite{hetland2009basic} for a good introduction to similarity search}
-
-\emph{discuss different distance functions of sequences. ERP, DTW, longest common}
-
-{\color{blue}In order to qualify as a distance function, a function must normally be symmetric and reflexive. If d is a distance defined on the universe U, the pair (U, d) is called a distance space. A metric space is a distance space where non-identical objects are separated by positive distances and where there are no "short-cuts": The distance from x to z cannot be improved by going via another point (object) y.\cite{hetland2009basic}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -468,6 +466,13 @@ Under the distance function formalism, several query types may be formulated. In
 search radius $r$, objects x for which $dist(q, x) \leq r$ are returned. Another type of query is the nearest neighbors query (returning the nearest object, or the k nearest objects)
 It can be argued that range queries are fundamental, and virtually all published metric indexing methods support them. \cite{hetland2009basic}}.
 
+
+
+{\color{blue}The idea of using triangle inequality to remove false candidates is illustrated. A distance function dist defined on a data space D satisfies triangle inequality, if and only if 
+\begin{equation}
+\forall Q,R,S \in D, dist(Q,S)+dist(R,S) \geq dist(Q,R)
+\end{equation}
+By rewriting inequality 2.9, $dist(Q,S) \geq dist(Q,R) - dist(R,S)$ can be derived. If $dist(Q,R)$ and $dist(R,S)$ are known, $dist(Q,R) - dist(R,S)$ can be treated as a lower bound distance of dist(Q,S). If the current query range is $r$ and $dist(Q,R)-dist(S,R)> r$, the computation of dist(Q,S) can be saved since S does not belong to the answer set. This is the basic principle that most of distance-based indexing structures follow.\cite{chen2005similarity}}
 
 \subsection {Earth Mover's Distance Embedding}
 
