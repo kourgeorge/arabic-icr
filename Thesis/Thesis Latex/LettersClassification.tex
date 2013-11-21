@@ -50,7 +50,8 @@ It is a classification of each unknown object into one of a finite set of catego
 \item state the general problem definition of classification. [3-4 sentences]
 \item talk about pattern classification [2 sentences]
 \item talk about the different types and approaches of letters classification [1 paragraph]
-\item Talk about the different classification techniques that is common in handwriting recognition such as NN and HMM.
+\item Talk about the different classification techniques that is common in handwriting recognition such as NN, HMM, neural networks, basyian classification, and linear classification or discrimination.
+\item for general overview see M. P.-H. Wu, “Handwritten character Recognition. Thesis”
 \item explain why did we choose to use NN rather than HMM.
 \item Are there more classification techniques we may should have considered.
 \end{itemize}
@@ -396,24 +397,48 @@ The idea of using triangle inequality for Indexing will be discussed in the next
 \label{fig:non_triangular_space}
 \end{figure}
 
-{\color{blue}Distance functions have been proposed for different application, such as Dynamic Time Warping [12, 118, 57, 52], Longest Common Subsequences [13, 108], Edit distance and Earth Mover's distance. 
+{\color{blue}Distance functions have been proposed for different application, such as Dynamic Time Warping [12, 118, 57, 52], Longest Common Subsequences [13, 108], Edit distance. 
 Dynamic Time Warping (DTW), which will be described in details in section \ref{[]}, can handle sequences with different lengths and local time shifting, but it does not follow triangle inequality, which is one of important properties of a metric distance function. Furthermore, Euclidean distance and DTW are sensitive to noise, thus, they are not suitable for data that contain noise. Longest Common Subsequence (LCSS) is proposed to handle possible noise that may appear in data; however, it ignores the various gaps in between similar subsequences, which leads to inaccuracies. \cite{chen2005similarity}.}
 
 Indexing techniques of measure functions is not fast enough to our approach strict requirements. Thus we still need to use the euclidean space and integrating sub-linear search technique to achieve the needed performance and also we can't afford performing the computations the similarity measures mentioned above even if the number of computation is sub-linear. Thus we have taken a different approach and used embedding technique to facilitate using 
 
-\subsection{Earth Movers Distance}
+\subsection{The Earth Movers Distance}
+Answer The following:
+\begin{itemize}
+\item What is EMD?
+\item Where it was used and for what?
+\item Was it used for handwriting recognition? Where?
+\item Was it used for on-line handwriting recognition?
+\end{itemize}
 
-The dissimilarity measure that we have used is the \emph{Earth Movers Distance} (EMD). It has experimentally verified to capture well the perceptual notion of a difference between images.
-
-EMD naturally extends the notion of a distance between single elements to that of a distance between sets, or distributions, of elements. When used to compare distributions with the same overall mass, EMD is a metric.
+\emph{Earth Movers Distance} (EMD) has experimentally verified to capture well the perceptual notion of a difference between images and shapes \cite{grauman2004fast}. It is widely used in content-based image retrieval to compute distances between the color histograms of two digital images.
 
 EMD is basically a measure of the dissimilarity between two histograms. Descriptively, if the histograms are interpreted as two different ways of piling up a certain amount of dirt, the EMD is the minimal cost of turning one pile to other, where the cost is assumed to be the amount of dirt moved times the distance by which it moved.
 
-\emph{[EMD formal definition]}
+EMD naturally extends the notion of a distance between single elements to that of a distance between sets, or distributions, of elements. When used to compare distributions with the same overall mass, EMD is a metric.
+
+As seen in previous sections, Both features used in this thesis produces histograms. The implementation used in this work for the SC produces a feature vector with a constant total mass, i.e. . Thus, EMD is the best fit for our needs.
+In order to find the perceptual distance between the two sequences
+we should find the dissimilarity measures between two feature histograms. 
+
+It was also used by Saabne in cite{[]}for off-line handwriting recognition. However, for the best of our knowledge, this is the first use of EMD in the on-line handwriting recognition.  
+
+{\color{blue}Crossbin distance measures take into account the fact that histograms are based in fea- ture space and it is possible for histogram mass to move between bins in feature space. They penalize this move- ment according to the distance covered, called the ground distance. The earth mover's distance (EMD) is a natural and intuitive metric between histograms if we think of them as piles of sand sitting on the ground (feature space). Each grain of sand is an observed sample. To quantify the differ- ence between two distributions, we can measure howfar the grains of sand have to be moved so that the two distributions coincide exactly. EMD is the minimal total ground distance travelled weighted by the amount of sand moved (called flow)\cite{shirdhonkar2008approximate}}
+
+\begin{definition}
+Given two histograms $f_1(i), f_2(i)$, a ground distance $d_{ij} \geq 0$ and a flow $g_{ij} \geq 0$ (from bin $i$ to bin $j$). EMD is defined as follows:
+\begin{equation}
+EMD(f_1,f_2)=\min{\frac{\sum\limits_{i,j} g_{ij}d_{ij}}{\sum\limits_{i,j} g_{ij}}}
+\end{equation} 
+such that $\sum\limits_{j} g_{ij} \leq f_1(i)$, $\sum\limits_{i} g_{ij} \leq f_2(i)$, $\sum\limits_{i,j} g_{ij}=min\left(\sum\limits_{i} f_1(i), \sum\limits_{i} f_2(i)\right)$
+\end{definition}
 
 Computing EMD is based on a solution to the well-known transportation problem. It can be computed as the minimal value of a linear program.
 
 \subsection{EMD Embedding}
+
+{\color{blue}The minimum cost of matching features from one shape to the features of another often reveals how similar the two shapes are. Unfortunately, computing the optimal matching for a single shape comparison has a complexity that is superpolynomial
+in the number of features. The complexity is of course magnified when one wishes to search for similar shapes ("neighbors") in a large database: a linear scan of the database would require computing a comparison of superpolynomial complexity for each database member against the query shape. Hierarchical search methods, pruning, or the triangle inequality may be employed, yet query times are still linear in the worst case, and individual comparisons maintain their high complexity regardless.\cite{grauman2004fast}}
 
 The major hurdle to using EMD is its $O\left( {{N^3}\log N} \right)$ computational complexity (for an N-bin histogram).Various approximation algorithms have been proposed to speed up the computation of EMD. Piotr Indyk has suggested an embedding technique in which the un-normed EMD metric is embedded into a normed space, so that the distance between the two images is comparable to the distance between the two points which represent the embedding of the two images.
 
@@ -447,19 +472,15 @@ Mention the following:
 \item The importance of the triangular equality in indexing.
 \item Mention performance.
 \item fast retrieval and indexing techniques (section). lower bounding and kd-tree.
-\item EMD embedding and 
+\item what is the difference between lower bounding and indexing. see \cite{chen2005similarity}.
 \item Why do work on the feature vector and not on the trajectory sequence.
 \item why don't we use the euclidean norm in the feature space?
-\item what is the difference between lower bounding and indexing. see \cite{chen2005similarity}.
 \item Implementation Details.
 \end{itemize}
 
 Indexing is any form of preprocessing of the data set designed to facilitate efficient retrieval.
 
 {\color{blue}Index structures are structures built over the given data set in order to speed up queries. The time cost involved in building the index is amortized over the series of queries, and is usually ignored when considering search cost. The main goal, then, of an index method is to enable efficient search, either asymptotically or simply in real wall-clock time.\cite{hetland2009basic}}
-
-
-
 
 {\color{blue}Similarity search is a mode of information retrieval where the query is a sample object, and the desired result is a set of objects deemed to be similar - in some sense - to the query.
 Under the distance function formalism, several query types may be formulated. In the following I focus on one of the basic kinds, so-called range queries, where all objects that fall within a given distance of the sample are returned. In other words, for a distance function $dist$, a query object $q$, and a
@@ -474,14 +495,11 @@ It can be argued that range queries are fundamental, and virtually all published
 \end{equation}
 By rewriting inequality 2.9, $dist(Q,S) \geq dist(Q,R) - dist(R,S)$ can be derived. If $dist(Q,R)$ and $dist(R,S)$ are known, $dist(Q,R) - dist(R,S)$ can be treated as a lower bound distance of dist(Q,S). If the current query range is $r$ and $dist(Q,R)-dist(S,R)> r$, the computation of dist(Q,S) can be saved since S does not belong to the answer set. This is the basic principle that most of distance-based indexing structures follow.\cite{chen2005similarity}}
 
-\subsection {Earth Mover's Distance Embedding}
-
-
-\subsection{Clustering}
+\section{Clustering}
 \begin{itemize}
 \item Talk about the clustering process.
 \item try to implement the number of clusters recommendation system.
-\subsubsection{L1 K-medoids}
+\subsection{L1 K-medoids}
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -546,7 +564,6 @@ Why we have used both and what give us every method and how we did join them tog
 
 
 \section{Nearest Neighbor Classifier}
-
 
 In our framework, sub-strokes classification is done by finding a stored letter sample that is maximally similar to the shape of the sub-stroke.
 
