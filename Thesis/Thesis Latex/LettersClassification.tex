@@ -408,29 +408,57 @@ Indexing techniques of measure functions is not fast enough to our approach stri
 
 \subsection{The Earth Movers Distance}
 
-\emph{Earth Movers Distance} (EMD), introduced by Rubner et al. in \cite{rubner2000earth}, has experimentally verified to capture well perceptual notion of a difference between images and shapes \cite{grauman2004fast}. It is widely used in content-based image retrieval to compute distances between the color histograms of two digital images \emph{TODO: and citation}. 
+\emph{Earth Movers Distance} (EMD), introduced by Rubner et al. in \cite{rubner2000earth}, is a measure of the dissimilarity between two histograms. It has experimentally verified to capture well perceptual notion of a difference between images \cite{grauman2004fast}, since, Images are usually represented using multidimensional histograms. In fact, it is widely used in content-based image retrieval to compute distances between the color histograms of two digital images \emph{TODO: and citation}. 
 
-EMD was used by Saabne in \cite{[]} for off-line handwriting recognition. However, for the best of our knowledge, this is the first use of EMD in the on-line handwriting recognition. {TODO: give more examples of usages, be more specific about the handwriting recognition field.} 
+Histogram based descriptors, such as shape context, are usually compared using bin-wise dissimilarity measure like $L_2$ norm or the $\chi^2$ statistic. While these measures can be computed very fast, since they measure dissimilarities between the content of corresponding bins of the two histograms, they usually fail to consider local and global variations. These um-modeled variations may result in large dissimilarity values between two histograms that are perceived to be small.
 
-EMD is basically a measure of the dissimilarity between two histograms. Histogram descriptors, such as shape Context, are usually compared using bin-wise dissimilarity measure like $L_2$ norm or the $\chi^2$ statistic. While these measures can be computed very fast, they fail to consider local and global variations. These um-modeled variations may result in large dissimilarity values between two histograms that are perceived to be small.
-
-EMD is a natural and intuitive metric. Descriptively, if the histograms are interpreted as two different ways of piling up a certain amount of sand, the EMD is the minimal cost of turning one pile to other. EMD is the minimal total ground distance travelled, weighted by the amount of sand moved (called flow). When used to compare histograms with the same overall mass, EMD is a metric.
+Generally speaking, the distance between two histograms is a special case of the well-known \emph{transportation problem}, a.k.a the Monge-Kantorovich problem \cite{rachev1985monge} defined below (Definition \ref{def:transportation_problem}). Accordingly, EMD is based on the solution to the transportation problem, for which efficient algorithms are available. 
 
 \begin{definition}
-Given two histograms $f_1(i), f_2(i)$, a ground distance $d_{ij} \geq 0$ and a flow $g_{ij} \geq 0$ (from bin $i$ to bin $j$). EMD is defined as follows:
+\label{def:transportation_problem}
+Given several \emph{suppliers} and \emph{consumers}. Each supplier, $P_i$, having a given amount of goods $p_i$, and each consumer, $Q_j$, having a given amount of demand, $q_j$. For each supplier-consumer pair, the cost of transporting a single unit of goods is given, $d_{ij}$. The transportation problem is then to find the a least expensive flow of goods from supplier to consumer that satisfies the consumer's demand, i.e., finding the flow $f_{ij}$ between $P_i$ and $Q_j$ which minimizes:
 \begin{equation}
-EMD(f_1,f_2)=\min{\frac{\sum_{i,j} g_{ij}d_{ij}}{\sum_{i,j} g_{ij}}}
-\end{equation} 
-such that $\sum_{j} g_{ij} \leq f_1(i)$, $\sum_{i} g_{ij} \leq f_2(i)$, $\sum_{i,j} g_{ij}=min\left(\sum_{i} f_1(i), \sum_{i} f_2(i)\right)$
+COST(P,Q,F)=\sum\limits_{i=1}^{m} \sum\limits_{j=1}^{n} d_{ij}f_{ij} 
+\end{equation}
+subject to the following constrains:
+\begin{equation}
+f_{ij} \geq 0, 1\leq i \leq m, 1\leq j \leq n 
+\end{equation}
+\begin{equation}
+\sum\limits_{j=1}^{n} f_{ij} \leq p_i, \forall 1\leq i \leq m
+\end{equation}
+\begin{equation}
+\sum\limits_{i=1}^{m} f_{ij} \leq q_j, \forall 1\leq j \leq n
+\end{equation}
+\begin{equation}
+\sum\limits_{i=1}^{m} \sum\limits_{j=1}^{n} f_{ij} = \min\left( \sum\limits_{j=1}^{n} f_{ij} \leq p_i, \sum\limits_{i=1}^{m} f_{ij} \leq q_i \right)
+\end{equation}
 \end{definition}
 
+In the case where the total amount of goods equals the total amount of goods demanded, the solution is a complete one-to-one correspondence. i.e. given a matching function $pi:Q \rightarrow F$,
+\begin{equation}
+ COST(Q,F)=\min_{\pi:Q \rightarrow F} \sum_{p_i \in P} D(p_i,\pi(p_i))
+\end{equation} 
+
+Once the general transportation problem solved, and optimal flow $f$ was found, EMD is defined as the cost normalized by the total flow. A formal definition of EMD metric is given as follows:
+
+\begin{definition}
+Given two histograms $h, g$, a ground distance $d_{ij} \geq 0$ and a flow $f_{ij} \geq 0$ (from bin $h_i$ to bin $g_j$). EMD is defined as follows:
+\begin{equation}
+EMD(h,g)=\min{\frac{\sum_{i,j} f_{ij}d_{ij}}{\sum_{i,j} g_{ij}}}
+\end{equation} 
+such that $\sum_{j} f_{ij} \leq h(i)$, $\sum_{i} f_{ij} \leq g_i$, $\sum_{i,j} f_{ij}=min\left(\sum_{i} h_i, \sum_{i} g_i\right)$
+\end{definition}
+
+EMD is a natural and intuitive metric. Descriptively, if the histograms are interpreted as two different ways of piling up a certain amount of sand, the EMD is the minimal cost of turning one pile to other. EMD is the minimal total ground distance traveled, weighted by the amount of sand moved (called flow). When used to compare histograms with the same overall mass, EMD is a metric.
+
 As seen in previous sections, Both features used in this thesis produces histograms. The implementation used in this work for the SC produces a feature vector with a constant total mass. In this case, EMD is a true metric and thus it is the the best fit for our needs.
+
+EMD was used by Saabne in \cite{[]} for off-line handwriting recognition. However, for the best of our knowledge, this is the first use of EMD in the on-line handwriting recognition. {TODO: give more examples of usages, be more specific about the handwriting recognition field.} 
 
 The major hurdle to using EMD is its $O\left( {{N^3}\log N} \right)$ computational complexity (for an N-bin histogram). The complexity is magnified when the task is to search for similar shapes (nearest neighbors) in a large database. In this case, a linear scan of the database would require computing a comparison of superpolynomial complexity for each database member against the query shape. Hierarchical search methods, pruning, or the triangle inequality may be employed, yet query times are still linear in the worst case, and individual comparisons maintain their high complexity regardless.\cite{grauman2004fast}.
 
 In the next subsection, we will discuss an EMD embedding technique which spares the linear scan of the entire database and greatly reduce the computation effort in approximating the EMD distance between two objects.
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -438,25 +466,54 @@ In the next subsection, we will discuss an EMD embedding technique which spares 
 
 \section{Nearest Neighbors Retrieval}
 
-Mention the following:
+\underline{Mind Map:}
+\begin{enumerate}
+\item problem definition.  \cite{hetland2009basic}
+\item The L-p norm has an advantages and drawback.
+\begin {itemize}
+\item calculates fast and it is a norm
+\item bin-ton-bin correspondence thus do not handle local deformations
+\end {itemize} 
+\item complicated dissimilarity function has also advantages and drawbacks.
+\begin {itemize}
+\item they are better at capturing the dissimilarity.
+\item But are very expensive to calculate.
+\item and also are not norms, thus fast retrieval data-structures can't be used.
+\end {itemize} 
+\item pruning and indexing can be used to spare calculations. \cite{chen2005similarity}
+\begin {itemize}
+\item what is pruning and what properties are needed for it.
+\item what is indexing and what properties are needed.
+\item Why it is not good for us.
+\end {itemize}
+\item EMD embedding
+\begin {itemize}
+\item Embedding by Indyk. (what is the exact setup, what are the bounds)
+\item Krishnan 
+\item Approximate Embedding by Shirdhonkar. (what is the exact setup, what are the bounds)
+\end {itemize}
+\item fast retrieval algorithms on normed spaces
+\begin {itemize}
+\item give an introduction, mentiond kdtree, Rtree and LSH (each one with its advantages and drawbacks)
+\item kd-tree.
+\end {itemize}
+\item compare SC and MAD and angular, contour results under the embedding.
+\end{enumerate}
+
+Answer the following:
 \begin{itemize}
-\item The importance of the triangular equality in indexing.
-\item Mention performance.
-\item fast retrieval and indexing techniques (section). lower bounding and kd-tree.
-\item what is the difference between lower bounding and indexing. see \cite{chen2005similarity}.
-\item Why do work on the feature vector and not on the trajectory sequence.
-\item why don't we use the euclidean norm in the feature space?
-\item Implementation Details.
-\item see \cite{hetland2009basic} for a good introduction to similarity search
-\item do we need a normed space to do indexing and pruning?
+\item How is the classification is done - mention that the system recieves a stroke and it goes over all the stages
+\item A list of candidates is retrieved by the kdtree, then to be more precise we use a combination of the Constrained DTW metric and the distance of the sample and the candidate.
+\item mention the alternatives - using different combination (we can afford using heavy tools since we have small candidate number)
+\item we return the best 3 candidates.
 \end{itemize}
 
 As been said before, an important question is how to build a data-structure that quickly identifies the objects that are closest to a query object (the nearest neighbor search problem).
 
-For the user convience and for the completness, first we would like to give the definition of \emph{normed vector space}.
+For the reader convenience and for the sake of completeness, first we would like to give the definition of \emph{normed vector space}.
 
 \begin{definition}
-Given a vector space $D$ over field $F$ the pair $(D,\|\cdot\|)$ is a \emph{normed space}, if for all $x,y\in D$ and $\alpha \in F$ the following conditions hold:
+Given a vector space $D$ over a field $F$ the pair $\left(D,\|\cdot\|\right)$ is a \emph{normed space}, if for all $x,y\in D$ and $\alpha \in F$ the following conditions hold:
 \begin{itemize}
 \item $\|x\|=0 \Leftrightarrow x=0$
 \item $\|x-y\| \geq|\|x\|-\|y\||$
@@ -464,18 +521,14 @@ Given a vector space $D$ over field $F$ the pair $(D,\|\cdot\|)$ is a \emph{norm
 \end{itemize}
 \end{definition}
 
-Using normed spaces such as $L_p norm$ to solve the dissimilarity measure problem has the advantage that in order to solve the nearest neighbor problem, one can use data structures, such as kd-trees and R-trees, which are specifically designed for points living in the normed space. Such data structures provide mechanisms for answering the NN-query that are orders of magnitude faster than linear scan of the database. However, the quality of the dissimilarity measure of such norms is not always satisfactory \cite{indyk2003fast}.
+Using normed spaces such as $L_p-norm$ to solve the dissimilarity measure problem has the advantage that in order to solve the nearest neighbor problem, one can use data structures, such as kd-trees and R-trees, which are specifically designed for points living in the normed space. Such data structures provide mechanisms for answering the NN-query that are orders of magnitude faster than linear scan of the database. However, the quality of the dissimilarity measure of such norms is not always satisfactory \cite{indyk2003fast}.
 
 On one hand, we would like to use advanced similarity measure technique that corresponds to the human intuition. These distance measure techniques are usually require high complexity time and also are not metrics. On the other hand, we need to be able efficiently compute the distance measure between two objects and also not have to search linearly the entire database in-order to get the most similar objects in the sample set.
 
-In this chapter we will consider some embedding techniques that allow us to get the best of the both world. It will allow us to approximate 
-
-Being not a metric prevent us to perform indexing and pruning.
-
-that not always always metrics, we would like to tra
+In this chapter we will discuss the usage of pruning and indexing techniques and consider the advantages and drawbacks. We will also consider an embedding techniques that allows us to get the best of the both fast similarity measure calculation and use the advantages of the normed space. It will allow us to approximate the EMD distance between two histograms, and since the embedding is into an $L_1$ normed space, efficient object retrieval data structures can be used. 
 
 
-Indexing is any form of preprocessing of the data set designed to facilitate efficient retrieval.
+\subsection {Appendix - Indexing and Pruning Techniques}
 
 {\color{blue}Index structures are structures built over the given data set in order to speed up queries. The time cost involved in building the index is amortized over the series of queries, and is usually ignored when considering search cost. The main goal, then, of an index method is to enable efficient search, either asymptotically or simply in real wall-clock time.\cite{hetland2009basic}}
 
@@ -483,8 +536,6 @@ Indexing is any form of preprocessing of the data set designed to facilitate eff
 Under the distance function formalism, several query types may be formulated. In the following I focus on one of the basic kinds, so-called range queries, where all objects that fall within a given distance of the sample are returned. In other words, for a distance function $dist$, a query object $q$, and a
 search radius $r$, objects x for which $dist(q, x) \leq r$ are returned. Another type of query is the nearest neighbors query (returning the nearest object, or the k nearest objects)
 It can be argued that range queries are fundamental, and virtually all published metric indexing methods support them. \cite{hetland2009basic}}.
-
-
 
 {\color{blue}The idea of using triangle inequality to remove false candidates is illustrated. A distance function dist defined on a data space D satisfies triangle inequality, if and only if 
 \begin{equation}
@@ -495,26 +546,40 @@ By rewriting inequality 2.9, $dist(Q,S) \geq dist(Q,R) - dist(R,S)$ can be deriv
 
 \subsection{Approximating EMD using Embedding}
 
-Various approximation algorithms have been proposed to speed up the computation of EMD. Indyk and Thaper, in \cite{indyk2003fast}, has suggested an embedding technique in which the un-normed EMD metric is embedded into a normed space, so that the distance between the two images is comparable to the distance between the two points which represent the embedding of the two images. Embedding time complexity is $O(Nd log{\Delta}$, where $N$ is the feature set size, $d$ is the feature space dimension and $\Delta$ is the diameter of the union if the two feature sets.
+\begin{itemize}
+\item What is the distance functions between bins that is used in the EMD embedding?
+\item is the embedding by Indyk assumes that the number of bins in the two histograms are equal?
+\end{itemize}
+
+Various approximation algorithms have been proposed to speed up the computation of EMD \emph{TODO: add refernces}. Indyk and Thaper, in \cite{indyk2003fast}, has suggested an embedding technique in which the un-normed EMD metric is embedded into a normed space, so that the distance between the two images is comparable to the distance between the two points which represent the embedding of the two images. Embedding time complexity is $O(Nd log{\Delta}$, where $N$ is the feature set size, $d$ is the feature space dimension and $\Delta$ is the diameter of the union if the two feature sets.
 
 The embedding of EMD provides a way to map weighted point sets $A$ and $B$ from the metric space into the normed space $L_1$, such that the $L_1$ distance between the resulting embedded vectors is comparable to the EMD distance between $A$ and $B$. The motivation of doing so is that the working with normed space is desirable to enable fast approximate Nearest Neighbors (NN) search techniques such as LSH and kdTree. 
 
 A brief description of the embedding technique proposed by Indyk:
-{\color{blue}The embedding of EMD given in \cite{indyk2003fast} provides a way to map weighted point sets A and B from the metric space into the normed space L1, such that the L1 distance between the resulting embedded vectors is comparable to the EMD distance
-between A and B themselves. Working in a normed space is desirable since fast approximate NN search techniques such as
-LSH require it. The general idea of the embedding is to compute and concatenate several weighted histograms of decreasing
-resolution for a given point set. Formally, given two point sets A and B, each of cardinality n, and each containing points in
-$R^d$: impose grids $G_i$, $-1 \leq i \leq log(\Delta)$, on the space $R^d$, with grid $G_i$ having side length $2^i$, and $\Delta$ equal to the diameter of $A \bigcup B$. Each grid is translated by a vector chosen randomly from $[0, \Delta]^d$. To embed point set A, for each $G_i$ create vector $v_i$ with one coordinate per grid cell, where each coordinate counts the number of points in the corresponding cell, i.e., each $v_i$ forms a histogram of A. The embedding of A is then the concatenated vector of the $v_i$'s, scaled by the side lengths:
-$f(A) = [v_{-1}(A), v_0(A), 2v_1(A), . . . , 2^iv_i(A), . . .]$. The distortion of the embedding has an upper bound of $O(log \Delta))$ . See \cite{indyk2003fast} for details. The distortion $C$ of a metric embedding $f$ describes how much information loss the embedding induces: $\frac{1}{C}EMD(A,B) \leq \|f(A) - f(B)\|_{L_1} \leq EMD(A,B).$ }
+{\color{blue}The embedding of EMD given in \cite{indyk2003fast} provides a way to map weighted point sets A and B from the metric space into the normed space L1, such that the L1 distance between the resulting embedded vectors is comparable to the EMD distance between A and B themselves. Working in a normed space is desirable since fast approximate NN search techniques such as LSH require it. The general idea of the embedding is to compute and concatenate several weighted histograms of decreasing resolution for a given point set. Formally, given two point sets A and B, each of cardinality n, and each containing points in $R^d$: impose grids $G_i$, $-1 \leq i \leq log(\Delta)$, on the space $R^d$, with grid $G_i$ having side length $2^i$, and $\Delta$ equal to the diameter of $A \bigcup B$. Each grid is translated by a vector chosen randomly from $[0, \Delta]^d$. To embed point set A, for each $G_i$ create vector $v_i$ with one coordinate per grid cell, where each coordinate counts the number of points in the corresponding cell, i.e., each $v_i$ forms a histogram of A. The embedding of A is then the concatenated vector of the $v_i$'s, scaled by the side lengths:
+$f(A) = [v_{-1}(A), v_0(A), 2v_1(A), . . . , 2^iv_i(A), . . .]$. The distortion of the embedding has an upper bound of $O(log \Delta))$ . See \cite{indyk2003fast} for details. The distortion $C$ of a metric embedding $f$ describes how much information loss the embedding induces: $\frac{1}{C}EMD(A,B) \leq \|f(A) - f(B)\|_{L_1} \leq EMD(A,B).$}
+
+In the original work on EMD, the authors provided more general definition of EMD which does nor assume $|P|=|Q|$. However, Indyk did not consider this generalization, since in such case EMD does not form a metric.
 
 A work conducted by Shirdhonkar and Jacobs in \cite{shirdhonkar2008approximate} has proposed a method for approximating the EMD between two low dimensional histograms using  the weighted wavelet coefficients of the difference histogram. The approximation is done by transforming the histograms to $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. They have proven the ratio of EMD to wavelet EMD is bounded by constants. The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity.
 
 \emph{give more details about the work done by Shirdhonkar. What are the estimates for the bound?. What coefficient was used and why? Is the approximation technique described by Shirdhonkar and Jacobs is applicable for different mass histograms? see works that referenced Shirdhonkar and Jacobs.}
 
+In our framework, sub-strokes classification is done by finding a stored letter sample that is maximally similar to the shape of the sub-stroke.
+
+For a given sub-stroke, we need to find the most perceptually close object in the sample set. Since our samples space is in $L_1$ we use NN classification method.
+
+{\color{blue}To reduce the search space,we apply a series of filters in a hierarchical manner. The earlier filters perform light processing on a large number of candi- dates, and the later filters perform heavy processing on a small number of candidates. In the first filter, global fea- tures and delayed strokes patterns are used to reduce can- didate word-part models. In the second filter, local features are used to guide a dynamic time warping (DTW) classifi- cation. The resulting k top ranked candidates are sent for shape-context based classifier, which determines the recog- nized word-part. In this work, we have modified the classic DTW to enable different costs for the different operations and control their behavior\cite{saabni2009hierarchical}}
+
+{\color{blue}There are drawbacks to using the simple positional feature for shape matching with approximate EMD.Though straight forward to embed, it can be a brittle feature, and in order to achieve scale or translation invariance this feature demand preprocessing stage on all shapes. \cite{grauman2004fast}}
 
 \subsection{kd-tree}
 
 {\color{blue}Normed space is required for fast approximate NN search techniques such as LSH.} \emph{is that tree also for kdtree}
+Example of how to write:
+{\color{blue}One of the simplest classifiers we can use is the Nearest Neighbour classifier. This takes a test point in vector form, and finds the Euclidean distance between this and the vector representation of each training example. The training example closest to the test point is termed its Nearest Neighbour. Since this example is in some sense the one most similar to our test point, it makes sense to allocate its class label to the test point. This exploits the 'smoothness' assumption that points near each other are likely to have the same class.}
+
+\subsection{Implementation Details and Discussion}
 
 \section{Clustering}
 \begin{itemize}
@@ -538,6 +603,9 @@ Answer the following:
 \item what package we had used to try different DR techniques?
 \item why did we combine LDA and PCA?
 \end{itemize}
+
+
+{\color{blue} Thus, instead of attaching a raw, full-dimensional shape context feature to each sampled object point, we use PCA to find a low-dimensional subspace based on a large sample of the shape context histogram. This sample is drawn from the database of contours on which we wish to apply our method. PCA yields the set of bases that define a low-dimensional "shape context manifold" All contours (database and novel queries alike) are then projected onto the subspace, and the approximate EMD embedding is performed in the domain of small number of their subspace.\cite{grauman2004fast}}
 
 {\color{blue}When performing analysis of complex data one of the major problems stems from the number of variables involved. Analysis with a large number of variables generally requires a large amount of memory and computation power or a classification algorithm which overfits the training sample and generalizes poorly to new samples. Feature extraction is a general term for methods of constructing combinations of the variables to get around these problems while still describing the data with sufficient accuracy. (Word base line detection in handwritten text recognition systems -- Kamil R. Aida-zade and Jamaladdin Z. Hasanov)}
 
@@ -583,41 +651,9 @@ Why we have used both and what give us every method and how we did join them tog
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-\section{Nearest Neighbor Classifier}
-
-In our framework, sub-strokes classification is done by finding a stored letter sample that is maximally similar to the shape of the sub-stroke.
-
-For a given sub-stroke, we need to find the most perceptually close object in the sample set. Since our samples space is in $L_1$ we use NN classification method.
-
-Mention that sub-stroke passes all the processes of preprocessing, feature extraction and classification, embedding, and then using kdtree the list of $N$ objects in the sample set is retrieved. [beware of the dimensionality reduction.]
-For each candidate a scoring is given to simulate the extend of resemblance between the sub-stroke and each sample. The scoring is based on the manhattan distance between the sample and the substroke and the Restricted DTW.   
-
-{\color{blue}To reduce the search space,we apply a series of filters in a hierarchicalmanner. The earlier filters perform light processing on a large number of candi- dates, and the later filters perform heavy processing on a small number of candidates. In the first filter, global fea- tures and delayed strokes patterns are used to reduce can- didate word-part models. In the second filter, local features are used to guide a dynamic time warping (DTW) classifi- cation. The resulting k top ranked candidates are sent for shape-context based classifier, which determines the recog- nized word-part. In this work, we have modified the classic DTW to enable different costs for the different operations and control their behavior\cite{saabni2009hierarchical}}
-
-\subsection{Kd-tree}
-
-Example of how to write:
-{\color{blue}One of the simplest classifiers we can use is the Nearest Neighbour classifier. This takes a test point in vector form, and finds the Euclidean distance between this and the vector representation of each training example. The training example closest to the test point is termed its Nearest Neighbour. Since this example is in some sense the one most similar to our test point, it makes sense to allocate its class label to the test point. This exploits the 'smoothness' assumption that points near each other are likely to have the same class.}
-
-
-Answer the following:
-\begin{itemize}
-\item How is the classification is done - mention that the system recieves a stroke and it goes over all the stages
-\item A list of candidates is retrieved by the kdtree, then to be more precise we use a combination of the Constrained DTW metric and the distance of the sample and the candidate.
-\item mention the alternatives - using different combination (we can afford using heavy tools since we have small candidate number)
-\item we return the best 3 candidates.
-\end{itemize}
-
-\subsection{Implementation Details and Discussion}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage{}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
  
 \section{Candidates Scoring}
 
- 
+\subsection{Data Time Warping}
+\emph{Copy and paste from methods.docx} 
 \end{document}
