@@ -50,9 +50,9 @@ It is a classification of each unknown object into one of a finite set of catego
 \item state the general problem definition of classification. [3-4 sentences]
 \item talk about pattern classification [2 sentences]
 \item talk about the different types and approaches of letters classification [1 paragraph]
-\item Talk about the different classification techniques that is common in handwriting recognition such as NN, HMM, neural networks, basyian classification, and linear classification or discrimination.
+\item Talk about the different classification techniques that is common in handwriting recognition such as NN, HMM, neural networks, basyian classification, and linear classification or discrimination. (use the oaoer named  "Survey on Multiclass Classification Methods)
 \item for general overview see M. P.-H. Wu, "Handwritten character Recognition. Thesis"
-\item explain why did we choose to use NN rather than HMM.
+\item explain why did we choose to use NN rather than HMM, neural network, SVN.
 \item Are there more classification techniques we may should have considered.
 \end{itemize}
 
@@ -452,6 +452,8 @@ such that $\sum_{j} f_{ij} \leq h(i)$, $\sum_{i} f_{ij} \leq g_i$, $\sum_{i,j} f
 
 EMD is a natural and intuitive metric. Descriptively, if the histograms are interpreted as two different ways of piling up a certain amount of sand, the EMD is the minimal cost of turning one pile to other. EMD is the minimal total ground distance traveled, weighted by the amount of sand moved (called flow). When used to compare histograms with the same overall mass, EMD is a metric.
 
+{EMD being a transportation problem, can also be modeled as a network flow problem in graph theory. The two histograms are represented by a single graph with a vertex for each bun and a graph distance as the edge weights. The two histogram vertices act as sources abs siinks respectively with bin content as values. Computing EMD is now an uncapacitated minimum cost flow problem and can be solved by Orlin's algorithm in $O(N^3 logN)$\cite{}}
+
 As seen in previous sections, Both features used in this thesis produces histograms. The implementation used in this work for the SC produces a feature vector with a constant total mass. In this case, EMD is a true metric and thus it is the the best fit for our needs.
 
 EMD was used by Saabne in \cite{[]} for off-line handwriting recognition. However, for the best of our knowledge, this is the first use of EMD in the on-line handwriting recognition. {TODO: give more examples of usages, be more specific about the handwriting recognition field.} 
@@ -489,7 +491,7 @@ In the next subsection, we will discuss an EMD embedding technique which spares 
 \item EMD embedding
 \begin {itemize}
 \item Embedding by Indyk. (what is the exact setup, what are the bounds)
-\item Krishnan 
+\item Krishnan paper - what does he bring to the discussion? 
 \item Approximate Embedding by Shirdhonkar. (what is the exact setup, what are the bounds)
 \end {itemize}
 \item fast retrieval algorithms on normed spaces
@@ -546,11 +548,6 @@ By rewriting inequality 2.9, $dist(Q,S) \geq dist(Q,R) - dist(R,S)$ can be deriv
 
 \subsection{Approximating EMD using Embedding}
 
-\begin{itemize}
-\item What is the distance functions between bins that is used in the EMD embedding?
-\item is the embedding by Indyk assumes that the number of bins in the two histograms are equal?
-\end{itemize}
-
 Various approximation algorithms have been proposed to speed up the computation of EMD \emph{TODO: add refernces}. Indyk and Thaper, in \cite{indyk2003fast}, has suggested an embedding technique in which the un-normed EMD metric is embedded into a normed space, so that the distance between the two images is comparable to the distance between the two points which represent the embedding of the two images. Embedding time complexity is $O(Nd log{\Delta}$, where $N$ is the feature set size, $d$ is the feature space dimension and $\Delta$ is the diameter of the union if the two feature sets.
 
 The embedding of EMD provides a way to map weighted point sets $A$ and $B$ from the metric space into the normed space $L_1$, such that the $L_1$ distance between the resulting embedded vectors is comparable to the EMD distance between $A$ and $B$. The motivation of doing so is that the working with normed space is desirable to enable fast approximate Nearest Neighbors (NN) search techniques such as LSH and kdTree. 
@@ -559,9 +556,9 @@ A brief description of the embedding technique proposed by Indyk:
 {\color{blue}The embedding of EMD given in \cite{indyk2003fast} provides a way to map weighted point sets A and B from the metric space into the normed space L1, such that the L1 distance between the resulting embedded vectors is comparable to the EMD distance between A and B themselves. Working in a normed space is desirable since fast approximate NN search techniques such as LSH require it. The general idea of the embedding is to compute and concatenate several weighted histograms of decreasing resolution for a given point set. Formally, given two point sets A and B, each of cardinality n, and each containing points in $R^d$: impose grids $G_i$, $-1 \leq i \leq log(\Delta)$, on the space $R^d$, with grid $G_i$ having side length $2^i$, and $\Delta$ equal to the diameter of $A \bigcup B$. Each grid is translated by a vector chosen randomly from $[0, \Delta]^d$. To embed point set A, for each $G_i$ create vector $v_i$ with one coordinate per grid cell, where each coordinate counts the number of points in the corresponding cell, i.e., each $v_i$ forms a histogram of A. The embedding of A is then the concatenated vector of the $v_i$'s, scaled by the side lengths:
 $f(A) = [v_{-1}(A), v_0(A), 2v_1(A), . . . , 2^iv_i(A), . . .]$. The distortion of the embedding has an upper bound of $O(log \Delta))$ . See \cite{indyk2003fast} for details. The distortion $C$ of a metric embedding $f$ describes how much information loss the embedding induces: $\frac{1}{C}EMD(A,B) \leq \|f(A) - f(B)\|_{L_1} \leq EMD(A,B).$}
 
-In the original work on EMD, the authors provided more general definition of EMD which does nor assume $|P|=|Q|$. However, Indyk did not consider this generalization, since in such case EMD does not form a metric.
+In the original work on EMD, the authors provided more general definition of EMD which does nor assume $|P|=|Q|$. However, Indyk did not consider this generalization, since in such case EMD does not form a metric. Indyk and Thaper do not prove this for individual random embeddings, and also do not estimate the constants that bound the ratio of the norm to EMD.
 
-A work conducted by Shirdhonkar and Jacobs in \cite{shirdhonkar2008approximate} has proposed a method for approximating the EMD between two low dimensional histograms using  the weighted wavelet coefficients of the difference histogram. The approximation is done by transforming the histograms to $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. They have proven the ratio of EMD to wavelet EMD is bounded by constants. The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity.
+A work conducted by Shirdhonkar and Jacobs in \cite{shirdhonkar2008approximate} has proposed a method for approximating the EMD between two low dimensional histograms using the weighted wavelet coefficients of the difference histogram. The approximation is done by transforming the histograms to $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. They have proven the ratio of EMD to wavelet EMD is bounded by constants. The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity.
 
 \emph{give more details about the work done by Shirdhonkar. What are the estimates for the bound?. What coefficient was used and why? Is the approximation technique described by Shirdhonkar and Jacobs is applicable for different mass histograms? see works that referenced Shirdhonkar and Jacobs.}
 
@@ -573,13 +570,56 @@ For a given sub-stroke, we need to find the most perceptually close object in th
 
 {\color{blue}There are drawbacks to using the simple positional feature for shape matching with approximate EMD.Though straight forward to embed, it can be a brittle feature, and in order to achieve scale or translation invariance this feature demand preprocessing stage on all shapes. \cite{grauman2004fast}}
 
-\subsection{kd-tree}
+\subsection{Nearest Neighbors search}
 
-{\color{blue}Normed space is required for fast approximate NN search techniques such as LSH.} \emph{is that tree also for kdtree}
-Example of how to write:
-{\color{blue}One of the simplest classifiers we can use is the Nearest Neighbour classifier. This takes a test point in vector form, and finds the Euclidean distance between this and the vector representation of each training example. The training example closest to the test point is termed its Nearest Neighbour. Since this example is in some sense the one most similar to our test point, it makes sense to allocate its class label to the test point. This exploits the 'smoothness' assumption that points near each other are likely to have the same class.}
+\underline{Mind Map}
+\begin{enumerate}
+\item Introduction - What is ANN?
+\item How Expensive is the exact NN? What is the motivation to use ANN?
+\item How good is the approximation?
+\item pruning and indexing - from the thesis.
+\item kd-tree -  is it an ANN or exact data-structure? what is the approximation parameter? is it only for the Euclidean norm? norm or metric?
+\item In case of general metric space branch and bound approach is known under the name of metric trees. Particular examples include vp-tree and BK-tree.
+\item note that LSH require only a metric space.
 
-\subsection{Implementation Details and Discussion}
+\end{enumerate}
+
+After performing dimensionality reduction techniques on the letters samples, the samples are used to create a kdtree data structure to facilitate fast nearest neighbor retrieval.
+
+In the \emph{k Nearest Neighbor} (k-NN) problem a set of data points in d-dimensional space is given and for a query point q, the nearest or generally k nearest points of P to q can be reported efficiently. The distance between two points can be defined in many ways as was details in section \ref{[]}.
+ algorithm is a very basic common approach for implementing the pattern classification. However, the retrieval of the exact k-Nearest Neighbors for a given query object $q$ and a database of sample set $S$ suffers from bad performance that is mainly caused by two factors. The first, is the total numbers of samples in the data and the other is the dimensionality of objects in the data (known as the \emph{curse of dimensionality}). Computing exact nearest neighbors in dimensions much higher than 8 seems to be a very difficult task. However, the first issue has much smaller impact on the speed of the nearest neighbor retrieval and can be healed easily by using dimensionality reduction techniques. however, the first, i.e. the size of the sample data, is crucial. \\
+
+The simplest solution to the NN problem is to linearly go over the entire sample set and keep track of the best k best nominates so far. The running time of this algorithm in $O(Nd)$ where $N$ is the cardinality of sample set and d is the dimensionality of the sample set. While looking in the entire database for the kNN is not permissible for most applications. The only advantage of this approach is that it requires no extra space, beyond the amount of the memory needed for keeping the sample set.
+
+Many methods were proposed to solve the kNN problem that are significantly better than a brute-force computation the distances of the entire database. However, computing nearest neighbors approximately, can to achieve significantly faster with a relatively small actual errors. \emph{Approximate nearest neighbor} (ANN) techniques allows the user to specify a maximum approximation error bound, thus enabling the user to control the trade-off between accuracy and running time. It is usually done by preprocessing the data points and into a data-structure. \\
+
+ANN methods such as k-d trees and Locality Sensitive Hashing (LSH) have successfully applied on variety of fast similarity retrieval problems. Unfortunately, the key assumption in these procedures is that objects in the dataset lie in a metric space. As mentioned in chapter \ref{}, this assumption is not valid for many similarity measure techniques. The disadvantage of the ANN is that a large portion of these techniques requires the classified objects to reside inside a normed space. Kd-tree requires a more specific $L_p$ metric space to operate in. 
+
+\emph{TODO: give a small introduction on LSH in 1 or two sentences}
+
+
+The advantage of LSH is that it operates way better than kdtree in a high dimensional space. However, the strength of kdtree is that it can be used as an exact NN technique. While the the worst case scenario complexity is $O(N)$, the expected complexity is $O(log N)$ 
+
+\subsubsection{kd tree}
+\underline{Mind Map}
+\begin{enumerate}
+\item a short introduction to kdtree
+\item what is the complexity of building and searching in kdtree.
+\item what flavour of kdtree did we use?
+\item what is the approximation parameters of the kdtree.
+\item who usually use this method? In what area/disciplines?
+\item why did we chose kdtree and not LSH. 
+\item in how much did it boost our performance when we used kdtree than id we had used exhaustive search?
+\item mention that we use Matlab library kdtree implementation and talk about the bucket size. 
+ \end{enumerate} 
+
+{\color{blue}A kd-tree is a data structure for storing a finite set of points from a k-dimensional space. It was examined in detail by J Bentley. Recently S Omohundro has recommended it in a survey of possible techniques to increase the speed of neural network learning [Omohundro,1987]}
+
+k dimensional tree (kd-tree), a special case of binary space partitioning trees, was proposed by Bentley in \cite{bentley1975multidimensional}. It aims at solving the problem of searching kNN in a large set of multi-dimensional points by first building a data structure based on the set of reference points. Then, given a query object, it extract the kNN using this structure.
+
+{\color{blue}Every non-leaf node can be thought of as implicitly generating a splitting hyperplane that divides the space into two parts, known as half-spaces. Points to the left of this hyperplane are represented by the left subtree of that node and points right of the hyperplane are represented by the right subtree. The hyperplane direction is chosen in the following way: every node in the tree is associated with one of the k-dimensions, with the hyperplane perpendicular to that dimension's axis. So, for example, if for a particular split the "x" axis is chosen, all points in the subtree with a smaller "x" value than the node will appear in the left subtree and all points with larger "x" value will be in the right subtree. In such a case, the hyperplane would be set by the x-value of the point, and its normal would be the unit x-axis -- wikipedia kdtree}
+
+
 
 \section{Clustering}
 \begin{itemize}
@@ -652,7 +692,7 @@ Why we have used both and what give us every method and how we did join them tog
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
  
-\section{Candidates Scoring}
+\section{Letters Classification and Candidates Scoring}
 
 \subsection{Data Time Warping}
 \emph{Copy and paste from methods.docx} 
