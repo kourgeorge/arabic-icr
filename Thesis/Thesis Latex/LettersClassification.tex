@@ -6,7 +6,6 @@
 \usepackage[T1]{fontenc}
 \usepackage[latin9]{inputenc}
 \usepackage[a4paper]{geometry}
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
 \setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
 \setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
 \setlength{\parskip}{\medskipamount}
@@ -21,6 +20,16 @@
 \usepackage{nomencl}
 \usepackage{amsthm}
 \usepackage{bbold}
+
+\usepackage{etoolbox}
+\newtoggle{edit-mode}
+%\togglefalse{edit-mode}  
+\toggletrue{edit-mode}
+\iftoggle{edit-mode}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
+}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+}
 
 \makenomenclature
 
@@ -574,6 +583,7 @@ For a given sub-stroke, we need to find the most perceptually close object in th
 
 \underline{Mind Map}
 \begin{enumerate}
+\item Introduction - What is NN?
 \item Introduction - What is ANN?
 \item How Expensive is the exact NN? What is the motivation to use ANN?
 \item How good is the approximation?
@@ -581,11 +591,12 @@ For a given sub-stroke, we need to find the most perceptually close object in th
 \item kd-tree -  is it an ANN or exact data-structure? what is the approximation parameter? is it only for the Euclidean norm? norm or metric?
 \item In case of general metric space branch and bound approach is known under the name of metric trees. Particular examples include vp-tree and BK-tree.
 \item note that LSH require only a metric space.
-
 \end{enumerate}
 
-After performing dimensionality reduction techniques on the letters samples, the samples are used to create a kdtree data structure to facilitate fast nearest neighbor retrieval.
+As stated at the preface to this chapter, many classification techniques can be used in order to recognizr handwritten text. Each classification method is based on some rational and has its advantages and drawbacks. In this thesis we decided to use the Nearest Neighbor classifier. The main advantage of the NN classifier is it very intuitive and achieves good results. As well as it behaves under different number of samples for each class.
 
+In this section we will give a brief overview about NN techniques and describe briefly the kdtree data structure.
+ 
 In the \emph{k Nearest Neighbor} (k-NN) problem a set of data points in d-dimensional space is given and for a query point q, the nearest or generally k nearest points of P to q can be reported efficiently. The distance between two points can be defined in many ways as was details in section \ref{[]}.
  algorithm is a very basic common approach for implementing the pattern classification. However, the retrieval of the exact k-Nearest Neighbors for a given query object $q$ and a database of sample set $S$ suffers from bad performance that is mainly caused by two factors. The first, is the total numbers of samples in the data and the other is the dimensionality of objects in the data (known as the \emph{curse of dimensionality}). Computing exact nearest neighbors in dimensions much higher than 8 seems to be a very difficult task. However, the first issue has much smaller impact on the speed of the nearest neighbor retrieval and can be healed easily by using dimensionality reduction techniques. however, the first, i.e. the size of the sample data, is crucial. \\
 
@@ -597,37 +608,63 @@ ANN methods such as k-d trees and Locality Sensitive Hashing (LSH) have successf
 
 \emph{TODO: give a small introduction on LSH in 1 or two sentences}
 
-
 The advantage of LSH is that it operates way better than kdtree in a high dimensional space. However, the strength of kdtree is that it can be used as an exact NN technique. While the the worst case scenario complexity is $O(N)$, the expected complexity is $O(log N)$ 
 
+In this work, kdtree was the best choice we could think of and which its properties was the most suitable for our need since the dimensionality of the data was not height. After reducing the dimensionality of the samples,they are used to create a kdtree data structure.
+
 \subsubsection{kd tree}
-\underline{Mind Map}
-\begin{enumerate}
-\item a short introduction to kdtree
-\item what is the complexity of building and searching in kdtree.
-\item what flavour of kdtree did we use?
-\item what is the approximation parameters of the kdtree.
-\item who usually use this method? In what area/disciplines?
-\item why did we chose kdtree and not LSH. 
-\item in how much did it boost our performance when we used kdtree than id we had used exhaustive search?
-\item mention that we use Matlab library kdtree implementation and talk about the bucket size. 
- \end{enumerate} 
 
-{\color{blue}A kd-tree is a data structure for storing a finite set of points from a k-dimensional space. It was examined in detail by J Bentley. Recently S Omohundro has recommended it in a survey of possible techniques to increase the speed of neural network learning [Omohundro,1987]}
+\iftoggle{edit-mode}{\marginpar{A short introduction to kdtree}}\\ 
+kd-tree, a special case of binary space partitioning trees, is a data structure for storing a finite set of points from a k-dimensional space. It was proposed by Bentley in \cite{bentley1975multidimensional}. It aims at solving the problem of searching kNN in a large set of multi-dimensional points by first building a data structure based on the set of reference points. Then, given a query object, it extract the kNN using this structure.
 
-k dimensional tree (kd-tree), a special case of binary space partitioning trees, was proposed by Bentley in \cite{bentley1975multidimensional}. It aims at solving the problem of searching kNN in a large set of multi-dimensional points by first building a data structure based on the set of reference points. Then, given a query object, it extract the kNN using this structure.
+\iftoggle{edit-mode}{\marginpar{How it works, how the data is saved and extracted}}\\ 
+The kdtree is formed as follows: Every point is either branch node or is contained in a leaf node. Every point node in the tree is associated with one of the k-dimensions and can be though of an hyperplane that divides the space into two half spaces in that dimension. Points to the left of this hyperplane are represented by the left subtree of that node and points right of the hyperplane are represented by the right subtree. Since we would like the partition of the subspace to be as equal as possible, the selection of the point to function as a branch node in every level has a great impact on the balance of the tree. The selection can be done in many ways, the most common way is to find the medial point of a number of points in the subtree. The number of points in a leaf node is also customizable and is mostly affected by the cardinality of the points in the database and k. Since, in most application the k is predefined. 
 
-{\color{blue}Every non-leaf node can be thought of as implicitly generating a splitting hyperplane that divides the space into two parts, known as half-spaces. Points to the left of this hyperplane are represented by the left subtree of that node and points right of the hyperplane are represented by the right subtree. The hyperplane direction is chosen in the following way: every node in the tree is associated with one of the k-dimensions, with the hyperplane perpendicular to that dimension's axis. So, for example, if for a particular split the "x" axis is chosen, all points in the subtree with a smaller "x" value than the node will appear in the left subtree and all points with larger "x" value will be in the right subtree. In such a case, the hyperplane would be set by the x-value of the point, and its normal would be the unit x-axis -- wikipedia kdtree}
+\iftoggle{edit-mode}{\marginpar{How the NN are found?}}\\
+The approximation of the kNN using kdtree is done by initially finding the leaf node which contain the query point. although most it is mostly probable the nearest neighbors are contained in the leaf node, it does not necessarily contain the kNN of the query point. In the approximate version of the NN retrieval, the algorithm can halt here and return the NN of a the target point using exhaustive search on the node contained in the leaf node. However, the exact kNN version of kdtree may require the algorithm to recursively explore the other child node and look for near neighbors in the all other branches that possibly contain a closer solution to the so far found points. Exact details of the algorithm can be found in \cite{bentley1975multidimensional}.
+ 
+\iftoggle{edit-mode}{\marginpar{Expected time complexity}}\\
+The construction time of the kdtree is O($d N log N$). We can afford this high complexity of the construction since the this process is done in a off-line manner and theoretically will be executed mostly several times. However, this tax pays off when it it comes to the enhancement we achieve in the NN search time complexity. The impractically observed average time is $O(log N)$. The worst case scenario the running time is $O(N^{d^2})$ when d is the dimensionality of the sample elements.
 
+\iftoggle{edit-mode}{\marginpar{Why we chose kdtree and not LSH.}}\\ 
+kdtree is mostly used for solving the kNN problem and the range problem, i.e. given a range the algorithm should return all the object in the given range. We have preferred to use kdtree is over LSH. The reason is that since the dimensionality of the resulted samples after dimensionality reduction is low as seen in chapter \ref{[]} and we are able to use kdtree for retriving the exact kNN. kdtree is sensitive to the curse of dimensionality, which do not appear in our reduced data. 
 
+\iftoggle{edit-mode}{\marginpar{Mention the matlab library and the parameters we used.}}\\ 
+In our implementation, the built-in Matlab wrapper was used for kdtree available in the statistical toolbox and introduced in Matlab R2013B \emph{[TODO: add reference]}. The implementation can be used with different parameters such as the distance measure and the cardinality of the lead node. And it do not provide the approximate version of kdtree, only the exact one. We empirically found that the following parameters are the best for our needs: $L_1$ metric, since the EMD embedding is into the $L_1$ space and the bucket size is 50. 
 
-\section{Clustering}
+\iftoggle{edit-mode}{\marginpar{Open Issues}}\\
 \begin{itemize}
-\item Talk about the clustering process.
-\item try to implement the number of clusters recommendation system.
-\subsection{L1 K-medoids}
-\end{itemize}
+\item Can we use Matlab for both approximate and exact NN? If yes, what  
+\end{itemize} 
 
+\section{Clustering based Sample set Redistribution}
+
+\iftoggle{edit-mode}{\marginpar{Motivation}}\\  
+On the one hand a large and verified sample set is crucial for every learning algorithm, in particular, it is important in the handwritten pattern classification because of the variety of styles between people in their handwriting. On the other hand, a large sample set can harm the performance of the NN based recognition system, and even harm the accuracy of the recognition because of outliers.  
+As can be seen in the section, for some letters positions many samples were collected. And for other letters smaller set of samples were collected. On the one hand, we would like to maintain the underlying letters distribution since the distribution of our sample set has a high correlation to the real world letter distribution. On the other hand, as we have mentioned before, a non proportional sample size for some letters may harm our recognition process.
+
+\iftoggle{edit-mode}{\marginpar{Introduction}}\\
+Cluster analysis is a common approach used in both supervised and unsupervised learning. It aims to partition a a set of objects  into groups in such a way that objects in the same group (called a cluster) are more similar (in some sense or another) to each other than to those in other groups.
+Clustering has two main uses; the first is deriving a reduced representation of the full data set. the second use is deducing new insights into the structure of the data.
+Since a cluster is a notion that cannot be precisely defined, thus there is no objectively correct clustering and this is the reason there are so many clustering algorithms.
+There are many clustering models. By models we mean the basic concept on which the clustering is based upon. The most prominent models are the \emph{Connectivity models}. In this group we can find the hierarchical clustering. Another widely used set of models is the \emph{Centroids models} which contain such as well known k-means algorithm. Cluster analysis is used for various goals. In non-supervised learning, when the class label are not available, this technique enable the classification system to impose classes on the sample set. In the supervised learning, it can be used to impose a hierarchy on the sample set and by doing so improving the classification performance and accuracy. 
+
+
+\iftoggle{edit-mode}{\marginpar{What type of clustering did we use, and why. How does L1 K-medoids}}\\
+The problem of disproportional number of samples per letter class we solved by using the clustering k-medoids algorithm. the k-medoids algorithm aims to break up the dataset into k clusters. A medoid is a representative object of a cluster whose average dissimilarity to all the objects in the cluster is minimal. The k-medoids algorithm finds the k medoids of a dataset. 
+k-medoids can work with an arbitrary matrix of distances between data points. In our case the distance function is $L_1$. 
+Our decision to use the k-medoids algorithm rather than the common k-means algorithm is derived from obtain a digest of the dataset. Thus the returned $k$ objects by the k-medoids algorithm will function as the representatives of the samples in a given class. 
+
+\iftoggle{edit-mode}{\marginpar{Short description of the k-medoids algorithm}}\\
+k-medoids operates as follows: first it selects $k$ objects in random, named $M$ of the in datapoints and associate each datapoint to the closest object in $M$. Then, for each element $m$ in $M$ and for each object $o$ in the data set, swap $m$ and $o$ and compute the the total cost of of the configuration, and select the configuration, with the lowest cost. Repeat the mentioned until the is no change in the set $M$. \emph{TODO: fix that flabby description.}  
+
+
+\iftoggle{edit-mode}{\marginpar{How did we determine the number of clusters per each letter, and the number of elements in each cluster.}}\\
+As mentioned before, the number of sample instances per class may greatly affect the classification result. Thus, we would like that the number of samples of each class will be distributed correspondingly to the apriory probability of the appearance of the letter in a given text. Since the letters were taken from the same database as the test set, it could have achieved optimistic results since the lexicon is the same lexicon of ~930 Tunisian cities. Thus the redistribution of letters according there apriori probability to the general Arabic text probability. We pretend to to be context free, thus this step is necessary. In addition to the fact the we have achieved very disproportion of class representative in the sample set.     
+
+\iftoggle{edit-mode}{\marginpar{How did affect our results.}}\\  
+On the one hand, as claimed above, leaving the original distribution may result in a too good results since it will distributed according the the letters aproiri propability appearence. On the other hand the classification results may be hurt because of outliers that affect the NN algorithm. Here we would like to show classification results of before and after samples redistribution. In the following table we show the results of the test we have conducted as follows: We have created a test set of letters and reported the percentage of the recognition rate.
+ 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -642,6 +679,7 @@ Answer the following:
 \item why did we have choosen to use this DR although we are working in $L_1$ and PCA and LDA word in $L_2$?
 \item what package we had used to try different DR techniques?
 \item why did we combine LDA and PCA?
+\item what were the initial dimensionality of the data before applying the DR? and what is was after applying the DR?
 \end{itemize}
 
 
