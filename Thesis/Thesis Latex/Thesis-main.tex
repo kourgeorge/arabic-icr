@@ -6,7 +6,6 @@
 \usepackage[T1]{fontenc}
 \usepackage[latin9]{inputenc}
 \usepackage[a4paper]{geometry}
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
 \setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
 \setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
 \setlength{\parskip}{\medskipamount}
@@ -37,6 +36,16 @@
 \newtheorem{example}{Example}[section]
 \theoremstyle{remark}
 \newtheorem{remark}{Remark}
+
+\usepackage{etoolbox}
+\newtoggle{edit-mode}
+\togglefalse{edit-mode}  
+%\toggletrue{edit-mode}
+\iftoggle{edit-mode}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
+}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+}
 
 % the following is useful when we have the old nomencl.sty package
 \providecommand{\printnomenclature}{\printglossary}

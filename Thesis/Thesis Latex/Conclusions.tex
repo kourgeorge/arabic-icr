@@ -1,0 +1,41 @@
+%%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+%%% Do not edit unless you really know what you are doing.
+%\documentclass[twoside,english]{report}
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
+%\setcounter{secnumdepth}{3}
+%\setcounter{tocdepth}{3}
+%\usepackage[active]{srcltx}
+%\usepackage{verbatim}
+%\usepackage{graphicx}
+%\usepackage{setspace}
+%\usepackage[numbers]{natbib}
+%\doublespacing
+%
+%\makeatletter
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+%\providecommand{\LyX}{L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
+%%% Because html converters don't know tabularnewline
+%\providecommand{\tabularnewline}{\\}
+%
+%\makeatother
+%
+%\usepackage{babel}
+%\begin{document}
+
+\chapter{Conclusions}
+In this thesis we have proposed and implemented a system to recognize Arabic online handwriting script. Our approach successfully tackled many inherent difficulties in recognizing Arabic script such as segmentation of word parts, non-horizontal writing style, position-depended letter shaping and large word-part dictionary which has been overcome upon by combining both the analytic and the heuristic approach. We compared the Shape context to the MAD descriptor and showed that the MAD descriptor attained higher recognition rate. A novel online segmentation technique was introduced and used in the analytic phase. The Linear EMD embedding technique was used as a metric in the classification algorithms and showed promising results in measuring letters and word parts grasped dissimilarity. A contemporary composition of PCA and LDA, based on the method previously proposed in [18], was applied in the system and achieved qualitative dimensionality reduction. This approach can be used to overcome the "curse of dimensionality" in other fields of pattern recognition. We have integrated fast data retrieval methods to boost the performance of the system. The system demonstrated superior high recognition precision and low response time.
+The system has several limitation and assumptions that are not always true in the field of Arabic handwriting; first, the system does not regard additional strokes, which can be used to improve the classification results; second, it assumes that letters cannot be written in more than one stroke which is a very reasonable assumption however not always true. Our future work will focus on waiving these limitations. Also we plan to test this approach on other cursive handwriting styles of languages other than Arabic. 
+
+
+\section{Future Directions}
+In future direction we would like to rid of all the limitation mentioned in the limitation section.
+We have several directions we would like to develop. In this work we did not consider the additional strokes written and we tried to recognize only the main body of the written text. In future work we would like to be able to recognize the whole letter and use the additional strokes to be able to identify the exact letter written.
+The following enhancement will be introduced to the process in a future work: 1. Since the embedding is done to the L1 space, we will try to use L1 dimensionality reduction techniques such as L1-PCA and L1-LDA. 2. We can add Metric Learning techniques such as LMNN to improve our recognition rate. 3. In this work all shapes that belong to the same letter are ascribed to the same cluster although it might look totally different, in our future work we will create more that cluster to the same letter to represent the main shapes that are common to describe a letter.[??] 4. The use of more advanced clustering techniques to reduce the number of samples in the training set and which will accelerate the classification process.
+Also, we are planning to develop a word completion algorithm based on our ongoing recognition technique. The word completion feature is actually  will suggest the user to automatically complete the word the user has intended to write, based on the first letters written by him. 
+We also plan to connect a word parts or words database to the recognition system, which will certainly improve the recognition rate dramatically. However it will limit the recognized word/word parts to the dictionary.
+
+
+
+%\end{document}

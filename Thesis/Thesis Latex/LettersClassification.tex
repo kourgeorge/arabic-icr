@@ -49,6 +49,8 @@
 \begin{document}
 \printnomenclature{}
 
+\tableofcontents{}
+
 \chapter{Letters Classifier}
 
 {\color{blue}Online handwriting recognition is one of the very complex and challenging problems [1][2][3] because of variability on size, writing style of hand-printed characters , and duplicate pixels caused by a hesitation in writing or interpolate non-adjacent consecutive pixels caused by fast writing. \cite{verma2004feature}}
@@ -612,103 +614,115 @@ The advantage of LSH is that it operates way better than kdtree in a high dimens
 
 In this work, kdtree was the best choice we could think of and which its properties was the most suitable for our need since the dimensionality of the data was not height. After reducing the dimensionality of the samples,they are used to create a kdtree data structure.
 
-\subsubsection{kd tree}
+\subsubsection{kd-tree}
 
-\iftoggle{edit-mode}{\marginpar{A short introduction to kdtree}}\\ 
+\iftoggle{edit-mode}{\hspace{0pt}\hspace{0pt}\marginpar{A short introduction to kdtree}}{} 
 kd-tree, a special case of binary space partitioning trees, is a data structure for storing a finite set of points from a k-dimensional space. It was proposed by Bentley in \cite{bentley1975multidimensional}. It aims at solving the problem of searching kNN in a large set of multi-dimensional points by first building a data structure based on the set of reference points. Then, given a query object, it extract the kNN using this structure.
 
-\iftoggle{edit-mode}{\marginpar{How it works, how the data is saved and extracted}}\\ 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{How it works, how the data is saved and extracted}}{} 
 The kdtree is formed as follows: Every point is either branch node or is contained in a leaf node. Every point node in the tree is associated with one of the k-dimensions and can be though of an hyperplane that divides the space into two half spaces in that dimension. Points to the left of this hyperplane are represented by the left subtree of that node and points right of the hyperplane are represented by the right subtree. Since we would like the partition of the subspace to be as equal as possible, the selection of the point to function as a branch node in every level has a great impact on the balance of the tree. The selection can be done in many ways, the most common way is to find the medial point of a number of points in the subtree. The number of points in a leaf node is also customizable and is mostly affected by the cardinality of the points in the database and k. Since, in most application the k is predefined. 
 
-\iftoggle{edit-mode}{\marginpar{How the NN are found?}}\\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{How the NN are found?}}{}
 The approximation of the kNN using kdtree is done by initially finding the leaf node which contain the query point. although most it is mostly probable the nearest neighbors are contained in the leaf node, it does not necessarily contain the kNN of the query point. In the approximate version of the NN retrieval, the algorithm can halt here and return the NN of a the target point using exhaustive search on the node contained in the leaf node. However, the exact kNN version of kdtree may require the algorithm to recursively explore the other child node and look for near neighbors in the all other branches that possibly contain a closer solution to the so far found points. Exact details of the algorithm can be found in \cite{bentley1975multidimensional}.
  
-\iftoggle{edit-mode}{\marginpar{Expected time complexity}}\\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Expected time complexity}}{}
 The construction time of the kdtree is O($d N log N$). We can afford this high complexity of the construction since the this process is done in a off-line manner and theoretically will be executed mostly several times. However, this tax pays off when it it comes to the enhancement we achieve in the NN search time complexity. The impractically observed average time is $O(log N)$. The worst case scenario the running time is $O(N^{d^2})$ when d is the dimensionality of the sample elements.
 
-\iftoggle{edit-mode}{\marginpar{Why we chose kdtree and not LSH.}}\\ 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why we chose kdtree and not LSH.}}{} 
 kdtree is mostly used for solving the kNN problem and the range problem, i.e. given a range the algorithm should return all the object in the given range. We have preferred to use kdtree is over LSH. The reason is that since the dimensionality of the resulted samples after dimensionality reduction is low as seen in chapter \ref{[]} and we are able to use kdtree for retriving the exact kNN. kdtree is sensitive to the curse of dimensionality, which do not appear in our reduced data. 
 
-\iftoggle{edit-mode}{\marginpar{Mention the matlab library and the parameters we used.}}\\ 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Mention the matlab library and the parameters we used.}}{} 
 In our implementation, the built-in Matlab wrapper was used for kdtree available in the statistical toolbox and introduced in Matlab R2013B \emph{[TODO: add reference]}. The implementation can be used with different parameters such as the distance measure and the cardinality of the lead node. And it do not provide the approximate version of kdtree, only the exact one. We empirically found that the following parameters are the best for our needs: $L_1$ metric, since the EMD embedding is into the $L_1$ space and the bucket size is 50. 
 
-\iftoggle{edit-mode}{\marginpar{Open Issues}}\\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Open Issues}}{}
 \begin{itemize}
 \item Can we use Matlab for both approximate and exact NN? If yes, what  
 \end{itemize} 
 
-\section{Clustering based Sample set Redistribution}
+\section{Clustering-based Sample set Redistribution}
 
-\iftoggle{edit-mode}{\marginpar{Motivation}}\\  
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}  
 On the one hand a large and verified sample set is crucial for every learning algorithm, in particular, it is important in the handwritten pattern classification because of the variety of styles between people in their handwriting. On the other hand, a large sample set can harm the performance of the NN based recognition system, and even harm the accuracy of the recognition because of outliers.  
 As can be seen in the section, for some letters positions many samples were collected. And for other letters smaller set of samples were collected. On the one hand, we would like to maintain the underlying letters distribution since the distribution of our sample set has a high correlation to the real world letter distribution. On the other hand, as we have mentioned before, a non proportional sample size for some letters may harm our recognition process.
 
-\iftoggle{edit-mode}{\marginpar{Introduction}}\\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
 Cluster analysis is a common approach used in both supervised and unsupervised learning. It aims to partition a a set of objects  into groups in such a way that objects in the same group (called a cluster) are more similar (in some sense or another) to each other than to those in other groups.
 Clustering has two main uses; the first is deriving a reduced representation of the full data set. the second use is deducing new insights into the structure of the data.
 Since a cluster is a notion that cannot be precisely defined, thus there is no objectively correct clustering and this is the reason there are so many clustering algorithms.
 There are many clustering models. By models we mean the basic concept on which the clustering is based upon. The most prominent models are the \emph{Connectivity models}. In this group we can find the hierarchical clustering. Another widely used set of models is the \emph{Centroids models} which contain such as well known k-means algorithm. Cluster analysis is used for various goals. In non-supervised learning, when the class label are not available, this technique enable the classification system to impose classes on the sample set. In the supervised learning, it can be used to impose a hierarchy on the sample set and by doing so improving the classification performance and accuracy. 
 
 
-\iftoggle{edit-mode}{\marginpar{What type of clustering did we use, and why. How does L1 K-medoids}}\\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{What type of clustering did we use, and why. How does L1 K-medoids}}{}
 The problem of disproportional number of samples per letter class we solved by using the clustering k-medoids algorithm. the k-medoids algorithm aims to break up the dataset into k clusters. A medoid is a representative object of a cluster whose average dissimilarity to all the objects in the cluster is minimal. The k-medoids algorithm finds the k medoids of a dataset. 
 k-medoids can work with an arbitrary matrix of distances between data points. In our case the distance function is $L_1$. 
 Our decision to use the k-medoids algorithm rather than the common k-means algorithm is derived from obtain a digest of the dataset. Thus the returned $k$ objects by the k-medoids algorithm will function as the representatives of the samples in a given class. 
 
-\iftoggle{edit-mode}{\marginpar{Short description of the k-medoids algorithm}}\\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Short description of the k-medoids algorithm}}{}
 k-medoids operates as follows: first it selects $k$ objects in random, named $M$ of the in datapoints and associate each datapoint to the closest object in $M$. Then, for each element $m$ in $M$ and for each object $o$ in the data set, swap $m$ and $o$ and compute the the total cost of of the configuration, and select the configuration, with the lowest cost. Repeat the mentioned until the is no change in the set $M$. \emph{TODO: fix that flabby description.}  
 
 
-\iftoggle{edit-mode}{\marginpar{How did we determine the number of clusters per each letter, and the number of elements in each cluster.}}\\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{When it is applied? How did we determine the number of clusters per each letter, and the number of elements in each cluster.}}{}
 As mentioned before, the number of sample instances per class may greatly affect the classification result. Thus, we would like that the number of samples of each class will be distributed correspondingly to the apriory probability of the appearance of the letter in a given text. Since the letters were taken from the same database as the test set, it could have achieved optimistic results since the lexicon is the same lexicon of ~930 Tunisian cities. Thus the redistribution of letters according there apriori probability to the general Arabic text probability. We pretend to to be context free, thus this step is necessary. In addition to the fact the we have achieved very disproportion of class representative in the sample set.     
 
-\iftoggle{edit-mode}{\marginpar{How did affect our results.}}\\  
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{How did affect our results.}}{}  
 On the one hand, as claimed above, leaving the original distribution may result in a too good results since it will distributed according the the letters aproiri propability appearence. On the other hand the classification results may be hurt because of outliers that affect the NN algorithm. Here we would like to show classification results of before and after samples redistribution. In the following table we show the results of the test we have conducted as follows: We have created a test set of letters and reported the percentage of the recognition rate.
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Features Transformation and Dimensionality Reduction}
+\section{Dimensionality Reduction}
 
-Answer the following:
-\begin{itemize}
-\item what is DR and what is its important properties?
-\item why do we need DR?
-\item what type of DR are there - kernel based, bla bla bla?
-\item why did we have choosen to use this DR although we are working in $L_1$ and PCA and LDA word in $L_2$?
-\item what package we had used to try different DR techniques?
-\item why did we combine LDA and PCA?
-\item what were the initial dimensionality of the data before applying the DR? and what is was after applying the DR?
-\end{itemize}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{General Introduction to DR. Why we do need DR technique}}{}
+Embedding the feature vectors into the wavelet domain a major problem stems from the embedded vector length. SC feature vectors are in $R^{40 \times 60}$. Embedding this vector into the wavelet domain produces a vector in $R^{[]}$. Working with vectors in this length is complex for three reasons:
+\begin{enumerate}
+\item Analysis with a large number of variables generally requires a large amount of memory and computation power, which may be impractical for on-line classification systems. 
+\item Many NN methods such as kdtree is impractical when the dimensionality of the data objects is large.
+\item The classification algorithm is more likely to overfits the training sample and generalizes poorly to new samples \cite{aida2009word}.
+\end{enumerate}
+Generally speaking, this phenomenon is wide spread in data analysis and was given the name, \emph{the curse of dimensionality}. In any pattern recognition domain or data analysis problem large dimensional data can emerge in different stages in the learning and classification process. The dimensionality of the data may be large in the first place. Features calculated on the data may be impractically large. Other data manipulation techniques such as the embedding used in this work my produce large dimensionality vectors. High-dimensional datasets present many mathematical challenges.\\
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{What is DR and what techniques are there}}{}
+Dimensionality Reduction is a process of reducing the number of random variables taken into consideration in the learning and classification of Data. Ideally, the reduced representation should have a dimensionality that corresponds to the intrinsic dimensionality of the data \cite{van2009dimensionality}. Reducing the dimensionality of the features vectors would not only simplify and rapid the learning and classification task but rather boosts the classification accuracy. In this work we have chosen to use two techniques applied in sequential manner in order to obtain the most efficient and linearly discriminative components, \emph{Principle Component Analysis} (PCA) and \emph{Linear Discrimination Analysis} (LDA) rechnique.\\ 
 
-{\color{blue} Thus, instead of attaching a raw, full-dimensional shape context feature to each sampled object point, we use PCA to find a low-dimensional subspace based on a large sample of the shape context histogram. This sample is drawn from the database of contours on which we wish to apply our method. PCA yields the set of bases that define a low-dimensional "shape context manifold" All contours (database and novel queries alike) are then projected onto the subspace, and the approximate EMD embedding is performed in the domain of small number of their subspace.\cite{grauman2004fast}}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Attempts to solve this problem of the large vectors of the embedding}}{}
+In our case, the dimensionality problem emerged after embedding the feature vectors into the wavelet domain to rapidly calculate the EMD distance between to feature vectors. The main reason was that kdtree is very sensitives to high dimensional data. To do so we could take several approaches, the first is to use a modified embedding technique that produces a smaller vectors such as in explained in \cite{[]}. However,it would result in a less accurate embedding, and a non metric space. \\
 
-{\color{blue}When performing analysis of complex data one of the major problems stems from the number of variables involved. Analysis with a large number of variables generally requires a large amount of memory and computation power or a classification algorithm which overfits the training sample and generalizes poorly to new samples. Feature extraction is a general term for methods of constructing combinations of the variables to get around these problems while still describing the data with sufficient accuracy. (Word base line detection in handwritten text recognition systems -- Kamil R. Aida-zade and Jamaladdin Z. Hasanov)}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{DR motivation}}{}
+The underlying motivation and belief that the external world data can be represented in a small number of relevant features from a large amounts of sensory data is based on the following:
+A friendly smile or a menacing glare can be discerned in an instant and described by a few well chosen words. On the other hand, the digital representations of these images may consist of hundreds or
+thousands of pixels. Clearly, there are much more compact representations of images, sounds, and text than their native
+digital formats.
 
-Feature transformation is a group of methods that create new features (predictor variables). The methods are useful for dimension reduction when the transformed features have a descriptive power that is more easily ordered than the original features. There are 2 main approaches for this task. One is \emph{feature selection} and the other is \emph{feature transformation}. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Mathematical Definition}}{}
+In Mathematical terms, the Dimensionality process can be defined as follows: given a the original p-dimensional random variable $x \in R^p$, find a lower dimensional representation of it, $s \in R^k$ with $k \leq p$ that captures the content of the original data. The reduced dimensionality $p$ is chosen to be as small as possible, but =yet sufficiently large to guarantee that the output $s$ vector provide a faithful representation of the input vector $x$. Dimensionality reduction techniques can be classified into linear and non-linear. Linear Dimensionality Reduction is Based on a linear projection of the data assuming the data lives close to a lower dimensional linear subspace. Namely, each of the components in vector $s$ is a linear combination of the components in vector $x$, formally:
+\begin{equation}
+s=Wx
+\end{equation}
+where $W_{k \times p}$ is the linear transformation.\\
+In some cases linear dimensionality reduction on which linear dimensionality reduction do poorly. A more powerful approach is required to provide the mapping from the high dimensional space to the low dimensional space. In such cases, non-linear techniques is usually been exploit. However, the drawback of such technique is concealed in its generality which may cause overfit the sample set and in the same moment do not really capture the underlying coordinate system. Frequently used non-linear technique include \emph{Kernel PCA}, \emph{Isomap} and \emph{Locally-linear embedding} \emph{TODO: add references}.
 
-Dimensionality Reduction is a process of reducing the number of random variables taken into consideration in the learning and classification of Data. Ideally, the reduced representation should have a dimensionality that corresponds to the intrinsic dimensionality of the data. Reducing the dimensionality of the features vectors would not only simplify and rapid the learning and classification task but rather boosts the classification accuracy.  Feature transformation technique is much more suitable to be implemented in our approach. In this work we have chosen to use two techniques applied in sequential manner in order to obtain the most efficient and linearly discriminative components, \emph{Principle Component Analysis} (PCA) and \emph{Linear Discrimination Analysis} (LDA) Technique. 
-
-\subsection{Principle Component Analysis}
-PCA was invented in 1901 by Karl Pearson. It is a linear technique for dimensionality reduction, which means that it performs dimensionality reduction by embedding the data into a linear subspace of lower dimensionality. Although there exist various techniques to do so, PCA is by far the most popular (unsupervised) linear technique. PCA is an orthogonal linear transformation that transforms the data to a new coordinate system such that the greatest variance by any projection of the data comes to lie on the first coordinate (names the first principal component), the second greatest variance on the second coordinate, and so on. Each principal component is a linear combination of the original variables. All the principal components are orthogonal to each other, so there is no redundant information. The principal components as a whole form an orthogonal basis for the space of the data.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Principle Component Analysis}}{}
+PCA was invented in 1901 by Karl Pearson. It is a linear technique for dimensionality reduction. Although there exist various techniques to do so, PCA is by far the most popular (unsupervised) linear technique. PCA is an orthogonal linear transformation that transforms the data to a new coordinate system such that the greatest variance by any projection of the data comes to lie on the first coordinate (names the first principal component), the second greatest variance on the second coordinate, and so on. Clearly, all the principal components are orthogonal to each other, so there is no redundant information. The principal components as a whole form an orthogonal basis for the space of the data.
 The full set of principal components is as large as the original set of variables. But taking the first few principal components will preserve most of the information in the data, and reduces the data dimensions.
 
-\subsection{Linear Discriminant Analysis}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Linear Discriminant Analysis}}{}
 PCA is an unsupervised technique and as such does not include label information of the data. The following example demonstrates the problem drawback: Imagine 2 cigar like clusters in 2 dimensions, one cigar has $y = 1$ and the other $y = -1$. The cigars are positioned in parallel and very closely together, such that the variance in the total data-set, ignoring the labels, is in the direction of the cigars. For classification, this would be a terrible projection, because all labels get evenly mixed and we destroy the useful information. A much more useful projection is orthogonal to the cigars, i.e. in the direction of least overall variance, which would perfectly separate the data-cases.
-
 LDA is closely related to PCA in that they both look for linear combination of variables which best explain the data. LDA explicitly attempts to model the difference between the classes of data. In this method, variability among the feature vectors of the same class is minimized and the variability among the feature vectors of different classes is maximized.
+The LDA performs dimensionality reduction while preserving as much of the class discriminatory information as possible. Without going into the math, in order to find a good projection vector, we need to define a measure of separation between the projections. The solution proposed by Fisher is to maximize a function that represents the difference between the means, normalized by a measure of the within-class scatter. 
+The drawback of using LDA is that it assumes that the distribution of samples in each class is Gaussian and that we cannot prove that the handwritten letters are distributes in a Gaussian manner.
 
-The LDA performs dimensionality reduction while preserving as much of the class discriminatory information as possible. Without going into the math, in order to find a good projection vector, we need to define a measure of separation between the projections. The solution proposed by Fisher is to maximize a function that represents the difference between the means, normalized by a measure of the within-class scatter.
-
-Although, LDA assumes that the distribution of samples in each class is Gaussian and that we cannot prove that the handwritten letters are distributes in a Gaussian manner, we selected LDA as 
-
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why we use both LDA and PCA}}{}
 Even though LDA is preferred in many application of dimension reduction, it does not always outperform PCA. In order to optimize discrimination performance in a more generative way, a hybrid dimension reduction model combining PCA and LDA is used in this work. 
 
-\subsection{Implementation Details and Discussion}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Flow order reasoning}}{}
+Grauman et al. in \cite{grauman2004fast} used PCA to find a low-dimensional subspace based on a large sample of the shape context histogram. PCA yields the set of bases that define a low-dimensional "shape context manifold". Only then the approximate EMD embedding is performed. However, we have chosen to perform the stages in a different order. First approximate EMD embedding is performed on the feature vectors and only afterwards dimensionality reduction procedure is applied to reduce the dimensionality of the sparse embedded vectors. The reason we selected to perform the stages in this order is that if we were to apply the order suggested by Grauman, we would result in a large sparse vectors constructed by the embedding process.\\
+  
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{PCA and LDA work in the $L_1$ space!}}{}
+The Basic form of PCA is defined over the $L_2$ space. However, the dimensionality reduced data in vectors embedded into the $L_1$ norm space. As previously mentioned, the embedding is into the $L_1$ norm. Although $L_1$ PCA techniques were examined in the literature \cite{kwak2008principal}, we decided to use the $L_2$ PCA, given that $L_2$ finely estimate $L_1$. The same can be said for the LDA, it optimization function assumes data in the $L_1$ normed space.\\
 
-In this system, we use a flavor the dimensionality reduction process can be outlines as follows: the pre-processed feature matrix $M$ projected into subspace $S_1$ using PCA and then into the subspace $S2$ using LDA. In the PCA stage, the largest $t$ eigenvalues are selected to create the PCA projection matrix $W_{PCA}$. $t$ is the number of eigenvalues which guarantee energy E is greater than 0.99. The data preservation value is calculates as seen in Equation \ref{eq:dr_energy} where ${\lambda _i}$ is the ith eigenvalue
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Implementation - combination of PCA and LDA}}{}
+In this system, the dimensionality reduction process can be outlines as follows: the pre-processed feature matrix $M$ projected into subspace $S_1$ using PCA and then into the subspace $S2$ using LDA. In the PCA stage, the largest $t$ eigenvalues are selected to create the PCA projection matrix $W_{PCA}$. $t$ is the number of eigenvalues which guarantee energy E is greater than 0.99. The data preservation value is calculates as seen in Equation \ref{eq:dr_energy} where ${\lambda _i}$ is the $i^{th}$ eigenvalue.\\
 
 \begin{equation}
 E = {{\sum\limits_{i = 1}^t {{\lambda _i}} } \mathord{\left/
@@ -720,10 +734,13 @@ E = {{\sum\limits_{i = 1}^t {{\lambda _i}} } \mathord{\left/
 The dimensionality of $W_{PCA}$ is much smaller that the dimensionality of $M$. At the second phase LDA is used to project $W_{PCA}$ to $W_{PCA+LDA}$.  The dimension of subspace $S_2$ is smaller than the subspace $S_1$ by 1.
 Why we have used both and what give us every method and how we did join them together to get the most out of both.
 
-\emph{Why we have used both and what give us every method and how we did join them together to get the most out of both.}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Results - The before and after dimensions  and both in recognition and segmentation rates}}{}
 
-\emph{ Talk about other Dimensionality reduction techniques such as LMNN and show results.}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Other tested alternatives}}{}
 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The DR package}}{}
+\emph{Matlab Toolbox for Dimensionality Reduction} described in \cite{van2007introduction} was used as Matlab wrapper for the dimensionality reduction techniques used in this work. A well written survey on Dimensionality Reduction techniques can found in \cite{fodor2002survey}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -731,7 +748,17 @@ Why we have used both and what give us every method and how we did join them tog
 
  
 \section{Letters Classification and Candidates Scoring}
+\underline{Mind Map}
+
+\begin{enumerate}
+\item 
+\item A query sequence like the sample set pass the entire process mentioned below. 
+\end{enumerate}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The DR package}}{}
+dsa
 
 \subsection{Data Time Warping}
 \emph{Copy and paste from methods.docx} 
+
 \end{document}
