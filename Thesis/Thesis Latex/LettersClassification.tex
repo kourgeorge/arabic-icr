@@ -1,56 +1,56 @@
-%%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-%%% Do not edit unless you really know what you are doing.
-%\documentclass[12pt,english]{report}
-%\usepackage{mathptmx}
-%\renewcommand{\familydefault}{\rmdefault}
-%\usepackage[T1]{fontenc}
-%\usepackage[latin9]{inputenc}
-%\usepackage[a4paper]{geometry}
-%\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-%\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-%\setlength{\parskip}{\medskipamount}
-%\setlength{\parindent}{0pt}
-%\usepackage{verbatim}
-%\usepackage{pdfpages}
-%\usepackage{graphicx}
-%\usepackage{subfig} %% This package has to be here
-%\usepackage{setspace}
-%\usepackage{arabtex}
-%\usepackage[numbers]{natbib}
-%\usepackage{nomencl}
-%\usepackage{amsthm}
-%\usepackage{bbold}
-%\usepackage{amsmath}
-%
-%\usepackage{etoolbox}
-%\newtoggle{edit-mode}
-%%\togglefalse{edit-mode}  
-%\toggletrue{edit-mode}
-%\iftoggle{edit-mode}{
-%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
-%}{
-%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
-%}
-%
-%\makenomenclature
-%
-%% Theorem Styles
-%\newtheorem{theorem}{Theorem}[section]
-%\newtheorem{lemma}[theorem]{Lemma}
-%\newtheorem{proposition}[theorem]{Proposition}
-%\newtheorem{corollary}[theorem]{Corollary}
-%% Definition Styles
-%\theoremstyle{definition}
-%\newtheorem{definition}{Definition}[section]
-%\newtheorem{example}{Example}[section]
-%\theoremstyle{remark}
-%\newtheorem{remark}{Remark}
-%
-%
-%\begin{document}
-%\printnomenclature{}
-%
-%\tableofcontents{}
+%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[12pt,english]{report}
+\usepackage{mathptmx}
+\renewcommand{\familydefault}{\rmdefault}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[a4paper]{geometry}
+\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{verbatim}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\usepackage{subfig} %% This package has to be here
+\usepackage{setspace}
+\usepackage{arabtex}
+\usepackage[numbers]{natbib}
+\usepackage{nomencl}
+\usepackage{amsthm}
+\usepackage{bbold}
+\usepackage{amsmath}
+
+\usepackage{etoolbox}
+\newtoggle{edit-mode}
+%\togglefalse{edit-mode}  
+\toggletrue{edit-mode}
+\iftoggle{edit-mode}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
+}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+}
+
+\makenomenclature
+
+% Theorem Styles
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+% Definition Styles
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+
+\begin{document}
+\printnomenclature{}
+
+\tableofcontents{}
 
 \chapter{Letters Classifier}
 
@@ -329,44 +329,63 @@ Answer the following question:
 
 \section{Similarity Measure}
 
-In this chapter we will discuss methods that were used in this work to asses the similarity measure between two handwritten curves. Identically, these method are usually used to compute dissimilarity between vectors in the features space. The dissimilarity degree between a feature of one shape to another feature of other shape often reveals how similar the two shapes are. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why do we need it in our work.}}{}
+In this chapter we will discuss the various methods used in this work to asses the similarity measure between two handwritten curves or between vectors in the features space. Typically, the dissimilarity degree between a feature of one shape to another feature of other shape often reveals how similar the two shapes are.\\
 
-Given two data inputs or feature vectors, we aim to define a quantitative measure of their dissimilarity with the intent of approximating perceptual resemblance between them. The task of mathematically capturing the human perceptual shape differences is not an easy task. A good similarity measure should be able to cope with various types of discrepancy, such as shifting, noise and scaling. Such variations can be easily handled by a human. Time shifting may be caused by different sampling rate, and noise may be introduced by sensor failures, errors in detection techniques, and disturbance signals \cite{chen2005similarity}. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Properties of a good dissimilarity measure.}}{}
+A good similarity measure should be able to cope with various types of discrepancy, such as shifting, noise and scaling. Such variations can be easily handled by a human. Time shifting may be caused by different sampling rate, and noise may be introduced by sensor failures, errors in detection techniques, and disturbance signals \cite{chen2005similarity}.\\ 
 
-The similarity measure is needed to answer the following query: 
-Given a objects database DB and a query object q, find all objects in DB that are perceptively similar to q. Thus, it has a direct and crucial affect on the matching quality of the classification results. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Generalize!}}{}
+Given two data elements, the goal is to define a quantitative measure of their dissimilarity with the intent of approximating perceptual resemblance between them. The task of mathematically capturing the human perceptual shape differences is not an easy. Generally, similarity measures techniques can be classified into two main categories: similarity measure on raw data representations and similarity measure in other representations, such as feature vectors.\\
 
-\emph{show a picture from the DTW or from the thesis that demonstrates the problem with similarity measure.}
-
-The similarity measure is formalized as a so-called distance function. 
-
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Formal definition - distance function}}{}
+The similarity measure is formalized as a so-called \emph{distance function}. 
 \begin{definition}
-Given a space $D$, as defined in section \ref{[]}. For any two data elements $x,y \in D$, a \emph{distance function}, dist, on $D$ is defined as:
+Given a data space $D$. For any two data elements $x,y \in D$, a \emph{distance function} $d$, on $D$ is defined as:
 \begin{equation}
-dist: D \times D \longrightarrow \mathbb{R}
+d: D \times D \longrightarrow \mathbb{R}
 \end{equation}
 where $\mathbb{R}$ is the real data set and $dist$ has the following properties:
 \begin{itemize}
-\item $dist(x,y)=0 \Leftrightarrow x=y$ (reflexivity)
-\item $dist(x,y) = dist(y,x)$ (symmetry)
+\item $d(x,y)=0 \Leftrightarrow x=y$ (reflexivity)
+\item $d(x,y) = d(y,x)$ (symmetry)
 \end{itemize}
-The pair $(D,dist)$ is called a distance space.
+The pair $(D,d)$ is called a distance space.
 \end{definition}
-
 The distance function depends on the application and the data representation and needs to be carefully designed to fit the problem domain. Significant amount of research has been carried out on similarity measure functions, both in distance functions and their efficient evaluation. 
 Much of the previous research was done on similarity search over time series and distributions. 
 
-Under the definition of a distance function, a formal definition of the query mentioned earlier ,namely the \emph{range query}, can be given as follows: 
-For a given distance function $dist$, a query object $q$ and a search radius $r$, return all sample objects that fall within $r$ distant from $q$, i.e. $dist(q,x) \leq r$. See figure  \ref{fig:range_query}.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Queries types.}}{}
+In general, similarity-based search can be classified into two types: \emph{range queries} and \emph{k-nearest neighbor queries}. It can be argued that range queries are fundamental, and virtually all published metric indexing methods support them \cite{hetland2009basic}. See figure \ref{fig:range_query}.
+Under the definition of a distance function, a formal definition of the query is given as follows: 
+\begin{definition}
+Given a data space $D$, a distance function $d$ defined on $D$, a query object $q$ and a range parameter $r \geq 0$. \textbf{Range query} returns all the data objects in $D$ that are within a distance $r$ from the query object $q$.
+\begin{equation}
+Range(q,r,D,d)=\{o \in D | d(q,o) \leq r \}
+\end{equation} 
+\end{definition}
+Other types of queries are discussed in the literature, most notably the \emph{nearest neighbors query}, is defined as follows: 
+\begin{definition}
+Given a data space $D$, a distance function $d$ defined on $D$, a query object $q$ and a range parameter $r \geq 0$. \textbf{kNN query} returns the k closest objects in $D$ to the query object $q$.
+\begin{equation}
+k-NN(q,D,d)=\{A \subseteq D | \forall a \in A, b \in D \setminus A: dist(q,a) \leq dist(q,b) \wedge |A|=k \}
+\end{equation} 
+\end{definition}
 
-Other types of queries are discussed in the literature, most notably the \emph{nearest neighbors query}, which "" returning all the closest sample (or k samples) objects to the query object. It can be argued that range queries are fundamental, and virtually all published metric indexing methods support them \cite{hetland2009basic}.
-
-\begin{figure}
+\begin{figure}[h!]
 \centering
 \includegraphics[width=0.7\textwidth]{./figures/range_query}       
 \caption{Visualization of a range query in two-dimensional Euclidean space. The small circles are objects in the data set, while the filled dots are returned as a result of the query with sample object $q$ and search radius $r$}
 \label{fig:range_query}
-\end{figure}
+\end{figure} 
+
+\emph{show a picture from the DTW or from the thesis that demonstrates the problem with similarity measure.} 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Example - The Euclidean distance}}{}
+Euclidean distance is the most basic distance function, it is very common and easy to compute. However, Euclidean distance is insufficient for capturing the actual distances in a given space. For example, taxi drivers in Manhattan should measure distance not in terms of the length of the straight line to their destination, but in terms of the Manhattan distance, which takes into account that streets are either orthogonal or parallel to each other. The Euclidean and the Manhattan distances, namely $L_1$ and $L_2$ respectively, are special cases of the $L_p$ distance which is sometimes referred to as Minkowski distance. 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Stroke sequences}}{}
+In the following, we will restrict our discussion to sequences that represent pen strokes. As defined in chapter \ref{[]} we represent pen strokes as a sequence of points in the 2-D space.
 
 \begin{definition}
 $L_p$-norm: Given two sequences $R$ and $S$ of the same length $N$, the $L_p$ norm distance between $R$ and $S$ is:
@@ -375,17 +394,15 @@ L_p-norm(R,S)=\sqrt[p]{\sum\limits_{i=1}^N d(r_i,s_i)^p}
 \end{equation}
 Where $d(r_i,s_i)$ is the distance function between $r_i$ and $s_i$. 
 \end{definition}
-$L_1-norm$ is called the \emph{Manhattan distance} or \emph{city block distance}, $L_2-norm$ is known as the \emph{Euclidean distance}.
 
 $d(r_i,s_i)$ is also a matter of choice. However, in most cases it is defined as the $L_2-norm$, i.e. 
 \begin{equation}
 d(r_i,s_i)=\sqrt[2]{({r_{i_x}-s_{i_x}})^2+({r_{i_y}-s_{i_y}})^2}
 \end{equation}
 
-Euclidean distance is the most basic distance function, it is easy to compute and the computation cost is linear in the sequence length.
+ However, the Euclidean distance has some disadvantages in regards to curve sequences. First, it requires the two sequences to be of the same length. Second, it does not support local shifting. Local shifting occurs when one point of one sequence is shifted  to match an element of the another sequence (even when the two matched elements appear in different positions in the sequences). It is important when the compared sequences have similar shape but are out of phase. It is called "local", because not all of the points of one sequence need to be shifted in the same factor and direction to match the other sequence. By contrast, in "global" shifting, all the points are shifted along the same direction by a fixed shifting factor. Generally, local time shifting cannot be handled by $L_p-norm$, because it requires the $i^{th}$ element of query sequence be aligned with the $i^{th}$ element of the data sequence \cite{chen2005similarity}.
 
-However, the Euclidean distance has some disadvantages in regards to curve sequences. First, it requires the two sequences to be of the same length. Second, it does not support local shifting. 
-Local shifting occurs when one point of one sequence is shifted  to match an element of the another sequence (even when the two matched elements appear in different positions in the sequences). It is important when the compared sequences have similar shape but are out of phase. It is called "local", because not all of the points of one sequence need to be shifted in the same factor and direction to match the other sequence. By contrast, in "global" shifting, all the points are shifted along the same direction by a fixed shifting factor. Generally, local time shifting cannot be handled by $L_p-norm$, because it requires the $i^{th}$ element of query sequence be aligned with the $i^{th}$ element of the data sequence \cite{chen2005similarity}. 
+  
 The Euclidean distance function is a \emph{metric}. A formal definition of a metric is given below. (Defenition \ref{def:metric})
 
 \begin{definition}
@@ -754,13 +771,29 @@ Why we have used both and what give us every method and how we did join them tog
  
 \section{Letters Classification and Candidates Scoring}
 \underline{Mind Map}
-
 \begin{enumerate}
 \item A query sequence like the sample set pass the entire process mentioned below. 
+\item In this stage the triangular equality is not needed, it was proven that the human intuition do not subjected to the triangular inequality.
+\item why do we use DTW and not the exact EMD instead?
+\item On what data form do we run the DTW? and why we do it in this specific stage.
+\item generalize the metric definition used in the DTW. 
 \end{enumerate}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The DR package}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{mention the various pruning and indexing techniques.}}{}
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{literature}}{}
+Embedding the data samples into the wavelet domain and using NN techniques aimed to avoid the costly classifier to be invoked on each and every data sample. The usage of kd-tree enable us to find the most similar object in sub-linear time complexity, and allow the costly and more accurate classifier to measure the perceptively similar object to be better calculated.
+
+ 
+ has a the main goal to avoid performing heavy calculation  
+
+Many approaches were proposed to avoid costly calculations by using a pruning and Indexing to weakly  
+
+
+At this stage the N sample objects are nominated by the NN classifier. In our case, we have chosen set $N=10$. 
+All the information about the candidates is available, namely, the original letter stroke, the normalized stroke, the feature vector and the embedded vector. In this stage the system needs to select the best 3 candidates to give the segmentation system. 
+
+The N candidates that are delivered may have the same labeling.
 
 \subsection{Data Time Warping}
 \emph{Dynamic time warping} (DTW) is an algorithm for measuring similarity between two time serieses. The method is to find an optimal alignment between two given sequences. Intuitively, the sequences are warped in a non-linear fashion to match each other. DTW solves the discrepancy between intuition and calculated distance by achieving the optimal alignment between sample points of two times sequences. Restrictions can be imposed on the matching technique to improve the matching results and the algorithm's time complexity. The only restriction placed on the data sequences is that they should be sampled at equidistant points in time which can be easily achieved by re-sampling. A na\"{\i}ve approach to calculate the distance between two time serieses can be to resample one of the serieses and to compute the distance sample by sample, the problem with this technique is that it does not yield intuitive results as it might match samples that do not correspond well. See figure \ref{fig:dtw_dequence_demo}.
@@ -834,4 +867,4 @@ FastDTW, proposed by Stan Salvador and Philip Chan, approximate DTW in a linear 
 Ratanamahatana and Kough have shown the following fact about DTW in their work in \cite{ratanamahatana2005three}: Comparing sequences of different lengths and re-interpolating them to equal length produce no statistically significant difference in accuracy or precision/recall.  
 Although in our work we do make re-interpolating of sequences to compare equilength sequences.
 
-%\end{document}
+\end{document}
