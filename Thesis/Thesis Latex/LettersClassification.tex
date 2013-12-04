@@ -330,113 +330,139 @@ Answer the following question:
 \section{Similarity Measure}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why do we need it in our work.}}{}
-In this chapter we will discuss the various methods used in this work to asses the similarity measure between two handwritten curves or between vectors in the features space. Typically, the dissimilarity degree between a feature of one shape to another feature of other shape often reveals how similar the two shapes are.\\
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Properties of a good dissimilarity measure.}}{}
-A good similarity measure should be able to cope with various types of discrepancy, such as shifting, noise and scaling. Such variations can be easily handled by a human. Time shifting may be caused by different sampling rate, and noise may be introduced by sensor failures, errors in detection techniques, and disturbance signals \cite{chen2005similarity}.\\ 
+In this chapter we will discuss the various methods used in this work to asses the similarity measure between two handwritten curves, two the feature vectors or two vectors in the wavelet domain. We argue that the dissimilarity degree between a feature of one shape to another feature of other shape often reveals how similar the two shapes are. Later, in this work, we will show that also two vectors in the wavelet domain reveals the measure of dissimilarities between the corresponding handwritten trajectories.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Generalize!}}{}
-Given two data elements, the goal is to define a quantitative measure of their dissimilarity with the intent of approximating perceptual resemblance between them. The task of mathematically capturing the human perceptual shape differences is not an easy. Generally, similarity measures techniques can be classified into two main categories: similarity measure on raw data representations and similarity measure in other representations, such as feature vectors.\\
+Given two data elements, the goal is to define a quantitative measure of their dissimilarity with the intent of approximating perceptual resemblance between them. The task of mathematically capturing the human perceptual shape differences is not an easy. Generally, similarity measures techniques can be classified into two main categories: similarity measure on raw data representations and similarity measure in other representations.\cite{chen2005similarity}\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Formal definition - distance function}}{}
 The similarity measure is formalized as a so-called \emph{distance function}. 
 \begin{definition}
-Given a data space $D$. For any two data elements $x,y \in D$, a \emph{distance function} $d$, on $D$ is defined as:
+Given a data space $D$. For any two data elements $x,y \in D$, a \emph{distance function} $dist$, on $D$ is defined as:
 \begin{equation}
-d: D \times D \longrightarrow \mathbb{R}
+dist: D \times D \longrightarrow \mathbb{R}
 \end{equation}
 where $\mathbb{R}$ is the real data set and $dist$ has the following properties:
 \begin{itemize}
-\item $d(x,y)=0 \Leftrightarrow x=y$ (reflexivity)
-\item $d(x,y) = d(y,x)$ (symmetry)
+\item $dist(x,y)=0 \Leftrightarrow x=y$ (reflexivity)
+\item $dist(x,y) = dist(y,x)$ (symmetry)
 \end{itemize}
-The pair $(D,d)$ is called a distance space.
+The pair $(D,dist)$ is called a distance space.
 \end{definition}
-The distance function depends on the application and the data representation and needs to be carefully designed to fit the problem domain. Significant amount of research has been carried out on similarity measure functions, both in distance functions and their efficient evaluation. 
-Much of the previous research was done on similarity search over time series and distributions. 
+The distance function depends on the application and the data representation and needs to be carefully designed to fit the problem domain. Significant amount of research has been carried out on similarity measure functions, both in distance functions and their efficient evaluation. Much of the previous research was done on similarity search over time series and distributions. \\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Properties of a good dissimilarity measure.}}{}
+A good similarity measure should be able to cope with various types of discrepancy, such as shifting, noise and scaling. Such variations can be easily handled by a human. Time shifting may be caused by different sampling rate. Noise may be introduced by sensor failures. errors in detection techniques or disturbance signals \cite{chen2005similarity}.\\ 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Queries types.}}{}
-In general, similarity-based search can be classified into two types: \emph{range queries} and \emph{k-nearest neighbor queries}. It can be argued that range queries are fundamental, and virtually all published metric indexing methods support them \cite{hetland2009basic}. See figure \ref{fig:range_query}.
+In general, similarity-based search can be classified into two types: \emph{range queries} and \emph{k-nearest neighbor queries}. It can be argued that range queries are fundamental, and virtually all published metric indexing methods support them \cite{hetland2009basic}. 
 Under the definition of a distance function, a formal definition of the query is given as follows: 
 \begin{definition}
-Given a data space $D$, a distance function $d$ defined on $D$, a query object $q$ and a range parameter $r \geq 0$. \textbf{Range query} returns all the data objects in $D$ that are within a distance $r$ from the query object $q$.
+Given a data space $D$, a distance function $dist$ defined on $D$, a query object $q$ and a range parameter $r \geq 0$. \textbf{Range query} returns all the data objects in $D$ that are within a distance $r$ from the query object $q$.
 \begin{equation}
-Range(q,r,D,d)=\{o \in D | d(q,o) \leq r \}
-\end{equation} 
-\end{definition}
-Other types of queries are discussed in the literature, most notably the \emph{nearest neighbors query}, is defined as follows: 
-\begin{definition}
-Given a data space $D$, a distance function $d$ defined on $D$, a query object $q$ and a range parameter $r \geq 0$. \textbf{kNN query} returns the k closest objects in $D$ to the query object $q$.
-\begin{equation}
-k-NN(q,D,d)=\{A \subseteq D | \forall a \in A, b \in D \setminus A: dist(q,a) \leq dist(q,b) \wedge |A|=k \}
+Range(q,r,D,dist)=\{o \in D | dist(q,o) \leq r \}
 \end{equation} 
 \end{definition}
 
+\begin{definition}
+Given a data space $D$, a distance function $dist$ defined on $D$, a query object $q$ and a range parameter $r \geq 0$. \textbf{kNN query} returns the k closest objects in $D$ to the query object $q$.
+\begin{equation}
+k-NN(q,D,dist)=\{A \subseteq D | \forall a \in A, b \in D \setminus A: dist(q,a) \leq dist(q,b) \wedge |A|=k \}
+\end{equation} 
+\end{definition}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Example - The Euclidean distance}}{}
+Euclidean distance is the most basic distance function, it is very common and easy to compute. However, Euclidean distance is insufficient for capturing the actual distances in a given space. For example, taxi drivers in Manhattan should measure distance not in terms of the length of the straight line to their destination, but in terms of the Manhattan distance, which takes into account that streets are either orthogonal or parallel to each other. The Euclidean and the Manhattan distances, are special cases of the  defined below Minkowski distance.\\
+
 \begin{figure}[h!]
-\centering
-\includegraphics[width=0.7\textwidth]{./figures/range_query}       
-\caption{Visualization of a range query in two-dimensional Euclidean space. The small circles are objects in the data set, while the filled dots are returned as a result of the query with sample object $q$ and search radius $r$}
-\label{fig:range_query}
-\end{figure} 
+	\centering
+        \subfloat[]{
+            \label{fig:range_query}
+            \includegraphics[width=0.5\textwidth]{./figures/range_query}
+        }
+        \subfloat[]{
+           \label{fig:knn_query}
+           \includegraphics[width=0.5\textwidth]{./figures/knn_query}
+        }        
+    \caption{Visualization of a range and k-nn queries in two-dimensional Euclidean space.}
+   \label{fig:similarity_query_types}
+\end{figure}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Different Math Constructs}}{}
+In this work we have encountered three types of mathematical constructs that we needed to determine their distance functions. In order to avoid confusion and to be precise, here we mention them and emphasize the differences between them.
+The first construct is the \textbf{vector} of a given $N$ dimensions over $R$, the field of real numbers. In this case $d$ is merely the distance between two real numbers, i.e $|a-b|$, and $dist$ is the distance between two vectors. The Minkowski distance mentioned earlier is an example of a $dist$ function over this construct.
+The second construct is the \textbf{matrix}, which we will view as vector of vectors. Unlike the second case, here the dimensions of the matrix is given and all the elements are of the same dimensions. $d$, in this case, is defined as the distance between two basic vectors, namely, the distance between two rows vectors and $dist$ is the distances between two matrices.
+The third is construct is the \textbf{stroke trajectory}. This construct is defined as an arbitrary length sequence of points in the $2-D$ space. In this case, to calculate the distance between two elements of this construct we need to define the distance function between any two points in the $2-D$ space, $d$, and then to define the distance between two sequences, $dist$. Note that two different sequences may have different number of elements.\\
 
 \emph{show a picture from the DTW or from the thesis that demonstrates the problem with similarity measure.} 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Example - The Euclidean distance}}{}
-Euclidean distance is the most basic distance function, it is very common and easy to compute. However, Euclidean distance is insufficient for capturing the actual distances in a given space. For example, taxi drivers in Manhattan should measure distance not in terms of the length of the straight line to their destination, but in terms of the Manhattan distance, which takes into account that streets are either orthogonal or parallel to each other. The Euclidean and the Manhattan distances, namely $L_1$ and $L_2$ respectively, are special cases of the $L_p$ distance which is sometimes referred to as Minkowski distance. 
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Stroke sequences}}{}
-In the following, we will restrict our discussion to sequences that represent pen strokes. As defined in chapter \ref{[]} we represent pen strokes as a sequence of points in the 2-D space.
+For instance, let us define the Minkowski distance on the three structures mentioned above.
 
 \begin{definition}
-$L_p$-norm: Given two sequences $R$ and $S$ of the same length $N$, the $L_p$ norm distance between $R$ and $S$ is:
+The Minkowski distance of order p between two vectors $v$ and $u$ of the same length $N$ is defined as follows:
 \begin{equation}
-L_p-norm(R,S)=\sqrt[p]{\sum\limits_{i=1}^N d(r_i,s_i)^p}
+Minkowski_p(u,v)=\sqrt[p]{\sum\limits_{i=1}^N |u_i-v_i|^p}
 \end{equation}
-Where $d(r_i,s_i)$ is the distance function between $r_i$ and $s_i$. 
 \end{definition}
 
-$d(r_i,s_i)$ is also a matter of choice. However, in most cases it is defined as the $L_2-norm$, i.e. 
+\begin{definition}
+The Minkowski distance of order p between two metrices $A$ and $B$, $A,B \in R{m \times n}$ is defined as follows:
 \begin{equation}
-d(r_i,s_i)=\sqrt[2]{({r_{i_x}-s_{i_x}})^2+({r_{i_y}-s_{i_y}})^2}
+Minkowski_p(A,B)=\sqrt[p]{\sum\limits_{i=1}^N d(A_i,B_i)^p}
 \end{equation}
+where $A_i$ and $B_i$ are the row vectors of the matrices $A$ and $B$ respectively.
+\end{definition}
 
- However, the Euclidean distance has some disadvantages in regards to curve sequences. First, it requires the two sequences to be of the same length. Second, it does not support local shifting. Local shifting occurs when one point of one sequence is shifted  to match an element of the another sequence (even when the two matched elements appear in different positions in the sequences). It is important when the compared sequences have similar shape but are out of phase. It is called "local", because not all of the points of one sequence need to be shifted in the same factor and direction to match the other sequence. By contrast, in "global" shifting, all the points are shifted along the same direction by a fixed shifting factor. Generally, local time shifting cannot be handled by $L_p-norm$, because it requires the $i^{th}$ element of query sequence be aligned with the $i^{th}$ element of the data sequence \cite{chen2005similarity}.
+\begin{definition}
+The Minkowski distance of order p between two stroke trajectories $R$ and $S$ of the same length $N$ is defined as follows:
+\begin{equation}
+Minkowski_p(R,S)=\sqrt[p]{\sum\limits_{i=1}^N d(r_i,s_i)^p}
+\end{equation}
+Where $d(r_i,s_i)$ is the distance function between the planar points $r_i$ and $s_i$. 
+\end{definition}
 
-  
-The Euclidean distance function is a \emph{metric}. A formal definition of a metric is given below. (Defenition \ref{def:metric})
+$d(r_i,s_i)$ is also a matter of choice. However, in most cases it is defined as the Euclidean distance, i.e. 
+\begin{equation}
+d(r_i,s_i)=\sqrt[2]{({r_{i,x}-s_{i,x}})^2+({r_{i,y}-s_{i,y}})^2}
+\end{equation}
+Where $r_{i,x}$ denote the x-axis of the point $r_i$.\\
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Drawbacks of the Minkowski distance}}{}
+In regards to stroke trajectories, the Minkowski distance has several disadvantages. First, it requires the two sequences to be of the same length. Second, it does not support local shifting. Local shifting occurs when one point of one sequence is shifted to match an element of the other sequence (even when the two matched elements appear in different positions in the sequences). It is important when the compared sequences have similar shape but are out of phase. It is called "local", because not all of the points of one sequence need to be shifted in the same factor and direction to match the other sequence. By contrast, in "global" shifting, all the points are shifted along the same direction by a fixed shifting factor. Generally, local time shifting cannot be handled by Minkowski distance, because it requires the $i^{th}$ element of query sequence be aligned with the $i^{th}$ element of the data sequence \cite{chen2005similarity}.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Metric Definition}}{}
+The Minkowski distance function is a \emph{metric}. A formal definition of a metric follows. (Defenition \ref{def:metric})
 \begin{definition}
 Given a data space $D$. A distance function $dist$ is a \emph{metric} if for all $x,y,z \in D$, the following two additional conditions hold:
 \begin{itemize}
 \item $dist(x,y)=0 \Leftrightarrow x=y$ (reflexivity)
 \item $dist(x,z) \leq dist(x,y) + dist(y,z)$ (triangle inequality) 
 \end{itemize}
-In this case, the pair $(D,dist)$ is called \emph{metric space}.
+$dist$ is a metric. In this case, the pair $(D,dist)$ is called \emph{metric space}.
 \label{def:metric}
 \end{definition}
 
-Mathematically, metric spaces are a generalization of Euclidean space, keeping some of its well-known geometric properties. These convenient properties allow us to achieve more efficient data structures and search algorithms. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Metric spaces}}{}
+Mathematically, metric spaces are a generalization of Euclidean space, keeping some of its well-known geometric properties. These convenient properties allow us to achieve more efficient data structures and search algorithms.\\ 
 
-The most important property of a metric function is triangle inequality since most of the indexing structures assume that the underlying distance functions follow triangle inequality. One way of interpreting triangularity is that the concept of overlap becomes meaningful for naturally defined regions such as metric balls. If we're allowed to violate triangularity, two seemingly non-overlapping balls could still share objects. See figure \ref{fig:non_triangular_space} \cite{chen2005similarity}.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Efficiency and Triangularity}}{}
+Besides the importance of qualitatively capturing the similarity between two objects, retrieval efficiency is another aspect related to distance functions. The execution time is of a query mainly affected by the number of distance function computations. The triangularity can be interperted is that if we were allowed to violate triangularity, two seemingly non-overlapping balls could still share objects. See figure \ref{fig:non_triangular_space} \cite{chen2005similarity}. The triangle inequality is a property that facilitate fast retrieval by using indexing and lower bounding. This aspect will be discussed in details in section \ref{[]}.\\
 
-A second aspect related to similarity-based retrieval is how to improve retrieval efficiency. The execution time is of a query mainly affected by the number of distance computations. The triangularity property facilitate fast retrieval by using indexing and lower bounding. This aspect will be discussed in details in section \ref{[]}.
-
-The idea of using triangle inequality for Indexing will be discussed in the next chapter.
-
-\begin{figure}
+\begin{figure}[h!]
 \centering
 \includegraphics[width=0.7\textwidth]{./figures/non_triangular_space}       
 \caption{Illustration of a non-triangular space. Two regions defined as balls (everything within a distance rx and ry of x and y, respectively) seemingly don't overlap, as d(x, y) > rx + ry. Even so, there may be objects (such as z) that are found in both regions}
 \label{fig:non_triangular_space}
 \end{figure}
 
-{\color{blue}Distance functions have been proposed for different application, such as Dynamic Time Warping [12, 118, 57, 52], Longest Common Subsequences [13, 108], Edit distance. 
-Dynamic Time Warping (DTW), which will be described in details in section \ref{[]}, can handle sequences with different lengths and local time shifting, but it does not follow triangle inequality, which is one of important properties of a metric distance function. Furthermore, Euclidean distance and DTW are sensitive to noise, thus, they are not suitable for data that contain noise. Longest Common Subsequence (LCSS) is proposed to handle possible noise that may appear in data; however, it ignores the various gaps in between similar subsequences, which leads to inaccuracies. \cite{chen2005similarity}.}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{distance measure techniques}}{}
+To overcome the drawbacks in the basic Minkowski distance,  many distance functions have been proposed in the literature for various application. Here we mention few that are used mostly in Handwriting recognition applications: \emph{Data Time Warping} (DTW) [12, 118, 57, 52], \emph{Earth Mover's Distance} (EMD), \emph{Longest Common Subsequences} (LCSS) [13, 108] and \emph{Edit distance}.
+Some of the above mentioned methods do not follow the triangle inequality which is one of important properties of a metric distance function, while are not sensitive to noise. Other methods are sensitive to noise but do follow the triangle equality. Other methods capture well the perceptual similarity between sequences while others can be embedded to into a metric space. \cite{chen2005similarity}.
 
-Indexing techniques of measure functions is not fast enough to our approach strict requirements. Thus we still need to use the euclidean space and integrating sub-linear search technique to achieve the needed performance and also we can't afford performing the computations the similarity measures mentioned above even if the number of computation is sub-linear. Thus we have taken a different approach and used embedding technique to facilitate using 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Indexing and Lower Bounding }}{}
+Indexing techniques of measure functions is not fast enough for our application which has a strict responsiveness requirements. Thus we still need to use the euclidean space and integrating sub-linear search technique to achieve the needed performance and also we can't afford performing the computations the similarity measures mentioned above even if the number of computation is sub-linear. Thus we have taken a different approach and used embedding technique to facilitate using 
 
 \subsection{The Earth Movers Distance}
-
 \emph{Earth Movers Distance} (EMD), introduced by Rubner et al. in \cite{rubner2000earth}, is a measure of the dissimilarity between two histograms. It has experimentally verified to capture well perceptual notion of a difference between images \cite{grauman2004fast}, since, Images are usually represented using multidimensional histograms. In fact, it is widely used in content-based image retrieval to compute distances between the color histograms of two digital images \emph{TODO: and citation}. 
 
 Histogram based descriptors, such as shape context, are usually compared using bin-wise dissimilarity measure like $L_2$ norm or the $\chi^2$ statistic. While these measures can be computed very fast, since they measure dissimilarities between the content of corresponding bins of the two histograms, they usually fail to consider local and global variations. These um-modeled variations may result in large dissimilarity values between two histograms that are perceived to be small.
@@ -589,7 +615,8 @@ In the original work on EMD, the authors provided more general definition of EMD
 
 A work conducted by Shirdhonkar and Jacobs in \cite{shirdhonkar2008approximate} has proposed a method for approximating the EMD between two low dimensional histograms using the weighted wavelet coefficients of the difference histogram. The approximation is done by transforming the histograms to $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. They have proven the ratio of EMD to wavelet EMD is bounded by constants. The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity.
 
-\emph{give more details about the work done by Shirdhonkar. What are the estimates for the bound?. What coefficient was used and why? Is the approximation technique described by Shirdhonkar and Jacobs is applicable for different mass histograms? see works that referenced Shirdhonkar and Jacobs.}
+\emph{give more details about the work done by Shirdhonkar. What are the estimates for the bound?. What coefficient was used and why? Is the approximation technique described by Shirdhonkar and Jacobs is applicable for different mass histograms? see works that referenced Shirdhonkar and Jacobs. We saw that the they embedd the difference histogram into the $L_1$ space and then calculate its norm, which approximate the EMD. Why it is correct to embed each vector to the $L_1$ space and then calculate the differences?
+i.e. $EMD(A,B)=WEMD(|A-B|_1)=|WEMD(A)-WEMD(B)|_1$ }
 
 In our framework, sub-strokes classification is done by finding a stored letter sample that is maximally similar to the shape of the sub-stroke.
 
@@ -759,7 +786,6 @@ Why we have used both and what give us every method and how we did join them tog
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Results - The before and after dimensions  and both in recognition and segmentation rates}}{}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Other tested alternatives}}{}
-
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The DR package}}{}
 \emph{Matlab Toolbox for Dimensionality Reduction} described in \cite{van2007introduction} was used as Matlab wrapper for the dimensionality reduction techniques used in this work. A well written survey on Dimensionality Reduction techniques can found in \cite{fodor2002survey}.
