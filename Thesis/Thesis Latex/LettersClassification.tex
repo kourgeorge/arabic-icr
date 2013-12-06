@@ -54,19 +54,70 @@
 
 \chapter{Letters Classifier}
 
-{\color{blue}On-line handwriting recognition is one of the very complex and challenging problems [1][2][3] because of variability on size, writing style of hand-printed characters , and duplicate pixels caused by a hesitation in writing or interpolate non-adjacent consecutive pixels caused by fast writing. \cite{verma2004feature}}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Goal}}{}
+In this chapter we will discuss the classification engine implemented in our system. Correct and precise classification is a fundamental part of any \emph{Optical character recognition} (OCR) system.\\
 
-It is a classification of each unknown object into one of a finite set of categories or classes. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{significance of the handwriting recognition - general}}{}
+On-line handwriting recognition is one of the very complex and challenging problems in the pattern recognition field due to the variability of writing styles, cursive writing, text size differences and sampling issues caused by duplicate samples resulted from hesitate writers as well as non-adjacent consecutive samples caused by fast writers \cite{verma2004feature}.\\
 
-\begin{itemize}
-\item state the general problem definition of classification. [3-4 sentences]
-\item talk about pattern classification [2 sentences]
-\item talk about the different types and approaches of letters classification [1 paragraph]
-\item Talk about the different classification techniques that is common in handwriting recognition such as NN, HMM, neural networks, basyian classification, and linear classification or discrimination. (use the oaoer named  "Survey on Multiclass Classification Methods)
-\item for general overview see M. P.-H. Wu, "Handwritten character Recognition. Thesis"
-\item explain why did we choose to use NN rather than HMM, neural network, SVN.
-\item Are there more classification techniques we may should have considered.
-\end{itemize}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning problem.}}{}
+In \emph{supervised learning}, classification is the problem of identifying to which of a set of classes a new observation belongs. It is done on the basis of a training set of data containing instances for which the their class membership is known as can be seen in figure \ref{fig:machine_learning_diagram}.
+Formally, the learning problem is defined as follows:
+\begin{definition}
+Given a domain space $X$, target space $Y$ and a training set $S=\{(x_i,y_i)\}_{i=1}^{m}$ where $x_1,x_2,..,x_n\in X$ and $y_1,y_2,...,y_n \in Y$. Let us assume that there is an unknown target function $f$ for which $f : X\rightarrow Y$. A Learning algorithm $A$ produces hypothesis function $h$ based on $S$ such that $h~f$, i.e. an approximation for the target function $f$. $h \in H$, the hypotheses set. 
+\end{definition}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{./figures/machine_learning_diagram}       
+\caption{A learning algorithm scheme}
+\label{fig:machine_learning_diagram}
+\end{figure}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Types of learning problems.}}{}
+The are mainly three types of learning: supervised, unsupervised learning and reinforcement learning.
+In the supervised learning, as seen above, a set of classified samples is given. In the unsupervised learning case, unlabeled data is given and the goal is to find a hidden structure in it. The reinforcement learning is a type of learning inspired by behaviorist psychology, concerned with how software agents ought to take actions in an environment so as to maximize some notion of cumulative reward. The handwriting recognition in most of it's implementation is a supervised learning problem.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Types of learning problems.}}{}
+Many supervised learning approaches and algorithms were proposed to solve the classification problem. Decision trees, artificial neural networks, support vector machines, Bayesian networks and metric learning are few well-known learning techniques. A review on the supervised classification algorithms is given by Mohamed Aly in \cite{aly2005survey}.The role of the machine learning specialist is to identify the type of the learning problem and meet the needs of the problem by stitching the best solution for solving the given  classification problem. The classification process is usually contains preprocessing tasks to facilitate the classification process. These preliminary steps include normalization, noise removal, feature extraction , dimensionality reduction, etc.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Scoring based classification}}{}
+In many learning machine application, especially those having a large number of classes, the classifier, returns a set of potential candidate classes or even specific samples in the. In these cases, for each candidate class, the classifier usually gives a scoring that can be used by a later part in the classification process (e.g. in the post processing). Such approach is taken for objects classification in our system. sample set that are closely resembles a given unknown sample. This approach can be used for both supervised and unsupervised learning domain. In the supervised learning case since the classification of the returned samples is known, the hypothesis function, classifies the inputed sample based of candidate labels.\\
+
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Classification techniques in HW recognition}}{}
+Different approaches were taken to solve the text recognition problem. Each has it's advantages and drawbacks, and each is suitable for a certain system requirements and implementation.
+\emph{see M. P.-H. Wu, "Handwritten character Recognition. Thesis"}
+\\ 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HMM - An introduction}}{}
+There is a vast amount of studies done in the field of handwriting recognition field that use \emph{hidden Markov models} (HMM) \cite{pechwitz2003hmm, khorsheed2003recognising, al2007combination, benouareth2008arabic, mahmoud2008recognition, shu1996line}. 
+HMM is an extension of the discrete-state Markov process. Letters, words and sentences can be modeled using HMM and using the solution of the learning problem, letter words and sentences can be identified.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HMM technical details}}{}
+For the benefit of the reader unfamiliar with this approach, here we would like to give an abbreviated introduction to HMM based text recognition. \emph{For technical information take use \cite{kadous2002temporal, shu1996line}}.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HMM - disadvantages}}{}
+While having many advantages, there are some drawback of using HMM, Kondous has pointed out in his Ph.D Thesis \cite{kadous2002temporal}. First, it makes powerful assumption about the data that may not necessarily true. One example is the Markovian assumption, i.e. that the transition probabilities depend only on the current state. Second, there is no specific way to determine the number of states, thus intelligent guesses and try and error are usually employed. Furthermore, the states and transitions depend on the class being learned. For example, is there any reason why the words "dog" and "butterfly" would have similar states and transitions? Third, HMM requires a very large amount of data for its training.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Neural Networks - an introduction}}{}
+Artificial neural network is also a widely used technique for letters recognition. 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why did we use the NN as a classifier}}{}
+For the disadvantages for HMM and NN techniques mentioned above and ,the intuitive and simplicity of the and for my personal interest in similarity measure techniques that can be integrated classifier, we have chosen to use Nearest Neighbor classifier classification. 
+
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Classification techniques for HW recognition}}{}
+
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{importance of the letters classification}}{}
+Talk about the importance of letters classification in the process of handwriting recognition.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Letter classification is not enough for on-line text recognition}}{}
+Although the importance of being able to recognize letter strokes, in order to be able to correctly recognize handwritten text, especially in an on-line manner much work is needed to solve other issues such as correct segmentation and fast classification. 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Other approaches for text recognition}}{}
+what other techniques used for recognizing online Arabic text other than stroke level classification?
 
 
 In the on-line Arabic text recognition, these categories could be a whole word, word-parts, letter or even strokes. The problem that makes the recognition of on-line handwriting recognition difficult is variation of shapes of the characters resulting from writing habits, styles, and the social and educational level of the writer.\\
@@ -74,22 +125,25 @@ In the on-line Arabic text recognition, these categories could be a whole word, 
 
 In this chapter we will describe a fast letters classifier. As mentioned in the overview in chapter \ref{[]}, our goal is to perform strokes segmentation and letters recognition while the stroke is being written. Thus, the performance of the of the classification process is a critical part.  
 
-This stage produces a list of candidate characters for an input sequence and the letter position this sequence. The  
-      
-Our classifier contains 4 distinct databases, one for each position. The figure below describes the process through until it reaches its final position in the corresponding database.
+This stage produces a list of candidate characters for an input sequence and the letter position this sequence. Our classifier contains 4 distinct databases, one for each position. The figure below describes the process through until it reaches its final position in the corresponding database.
 
 Each Recognition process contains two parts, the learning from samples system and the object classification system. .....\\
 In section \ref{sec:letters_learning} we describe our Letters learning process and in \ref{sec:substrokes_classification} we describe our classifier. 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \section{Letters Learning}
 \label{sec:letters_learning}
 
-\emph{ TODO: show a diagram of the letters learning system}
+\emph{TODO: show a diagram of the letters learning system}
 
 \section{Sub-strokes Classification}
 \label{sec:substrokes_classification}
 
-\emph{ TODO: show a diagram of the letters learning system}
+\emph{TODO: show a diagram of the letters learning system}
 
 {\color{blue}
 The process of online handwriting recognition can be broken down into a few general steps:
@@ -98,9 +152,9 @@ feature extraction and
 classification.
 The purpose of preprocessing is to discard irrelevant information in the input data, that can negatively affect the recognition.[3] This concerns speed and accuracy. Preprocessing usually consists of binarization, normalization, sampling, smoothing and denoising.[4] The second step is feature extraction. Out of the two- or more-dimensional vector field received from the preprocessing algorithms, higher dimensional data is extracted. The purpose of this step is to highlight important information for the recognition model. This data may include information like pen pressure, velocity or the changes of writing direction. The last big step is classification. In this step various models are used to map the extracted features to different classes and thus identifying the characters or words the features represent. [http://en.wikipedia.org/wiki/Handwriting\_recognition]}
 
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Samples Preprocessing}
 
@@ -243,7 +297,7 @@ Answer the following:
 \item Discussion - Is combining several feature extraction technique is recommended?
 \item Results - show the difference between MAD and SC.
 \end{itemize}
-
+the feature extraction plays an important role in the overall process of handwriting recognition.
 Feature extraction is certainly one of the important parts of any pattern classification system. It aims is to cull informative parameters for learning and recognition of patterns.  Most classification methods require that patterns be represented in a fixed dimensional feature space that is often incompatible with input data. Poor feature extraction and selection will always result in a poor system performance, regardless of the ingeniousness of the learning and classification algorithms \cite{parizeau2001character}.\\
 
 Feature extraction is commonly used in pattern recognition. While its goal is same in all fields, feature extraction methods operate differently in different domains. For instance, in the image retrieval field, the input data (i.e. the image) is too large and suspected to be redundant. In this case, feature extraction techniques are used to reduce the representation of the input data into a compact representation set of features. However, In the shape recognition domain, the input data is compact and feature extraction techniques are used to transform it into feature vectors, which are usually referred to as shape descriptors. Shape descriptors offer discriminative characterization to capture the perceptual dissimilarity between two shapes. Unlike in the first case, the raw quantity of data contained in feature vector usually exceeds the amount of data in the input data.\\
@@ -287,7 +341,7 @@ The bins are normally taken to be uniform log-polar space making the descriptor 
 \centering
 \subfloat[]{
     \label{fig:shape_context_offline}
-    \includegraphics[width=0.27\textwidth]{./figures/shape_context_offline}
+    \includegraphics[width=0.5\textwidth]{./figures/shape_context_offline}
 }
 \subfloat[]{
 	\label{fig:shape_context_online}
@@ -455,14 +509,19 @@ Besides the importance of qualitatively capturing the similarity between two obj
 \label{fig:non_triangular_space}
 \end{figure}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{distance measure techniques}}{}
-To overcome the drawbacks in the basic Minkowski distance,  many distance functions have been proposed in the literature for various application. Here we mention few that are used mostly in Handwriting recognition applications: \emph{Data Time Warping} (DTW) [12, 118, 57, 52], \emph{Earth Mover's Distance} (EMD), \emph{Longest Common Subsequences} (LCSS) [13, 108] and \emph{Edit distance}.
-Some of the above mentioned methods do not follow the triangle inequality which is one of important properties of a metric distance function, while are not sensitive to noise. Other methods are sensitive to noise but do follow the triangle equality. Other methods capture well the perceptual similarity between sequences while others can be embedded to into a metric space. \cite{chen2005similarity}.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Mention distance measure techniques}}{}
+To overcome the drawbacks in the basic Minkowski distance, many distance functions have been proposed in the literature for various application. Here we mention few that are used mostly in Handwriting recognition applications: \emph{Data Time Warping} (DTW) [12, 118, 57, 52], \emph{Earth Mover's Distance} (EMD), \emph{Longest Common Subsequences} (LCSS) [13, 108] and \emph{Edit distance}.
+Some of the above mentioned methods do not follow the triangle inequality which is one of important properties of a metric distance function, while are not sensitive to noise. Other methods are sensitive to noise but do follow the triangle equality. Other methods capture well the perceptual similarity between sequences while others can be embedded to into a metric space. Clearly, every distance function has a different time and space complexity. Each application should pick and choose the most suitable distance function it, \cite{chen2005similarity}.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Indexing and Lower Bounding }}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Indexing and Lower Bounding}}{}
 Indexing techniques of measure functions is not fast enough for our application which has a strict responsiveness requirements. Thus we still need to use the euclidean space and integrating sub-linear search technique to achieve the needed performance and also we can't afford performing the computations the similarity measures mentioned above even if the number of computation is sub-linear. Thus we have taken a different approach and used embedding technique to facilitate using 
 
 \subsection{The Earth Movers Distance}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{What requirement do we need from our distance function - why did we choose EMD.}}{}
+
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction to EMD}}{}
 \emph{Earth Movers Distance} (EMD), introduced by Rubner et al. in \cite{rubner2000earth}, is a measure of the dissimilarity between two histograms. It has experimentally verified to capture well perceptual notion of a difference between images \cite{grauman2004fast}, since, Images are usually represented using multidimensional histograms. In fact, it is widely used in content-based image retrieval to compute distances between the color histograms of two digital images \emph{TODO: and citation}. 
 
 Histogram based descriptors, such as shape context, are usually compared using bin-wise dissimilarity measure like $L_2$ norm or the $\chi^2$ statistic. While these measures can be computed very fast, since they measure dissimilarities between the content of corresponding bins of the two histograms, they usually fail to consider local and global variations. These um-modeled variations may result in large dissimilarity values between two histograms that are perceived to be small.
@@ -893,4 +952,6 @@ FastDTW, proposed by Stan Salvador and Philip Chan, approximate DTW in a linear 
 Ratanamahatana and Kough have shown the following fact about DTW in their work in \cite{ratanamahatana2005three}: Comparing sequences of different lengths and re-interpolating them to equal length produce no statistically significant difference in accuracy or precision/recall.  
 Although in our work we do make re-interpolating of sequences to compare equilength sequences.
 
+\bibliographystyle{plainnat}
+\bibliography{references}
 \end{document}
