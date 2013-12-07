@@ -54,70 +54,19 @@
 
 \chapter{Letters Classifier}
 
+\section{Introduction}
+
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Goal}}{}
-In this chapter we will discuss the classification engine implemented in our system. Correct and precise classification is a fundamental part of any \emph{Optical character recognition} (OCR) system.\\
+In this chapter we will discuss theoretical aspect as well as implementation details of the classification engine implemented in our system.\\ 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{significance of the handwriting recognition - general}}{}
-On-line handwriting recognition is one of the very complex and challenging problems in the pattern recognition field due to the variability of writing styles, cursive writing, text size differences and sampling issues caused by duplicate samples resulted from hesitate writers as well as non-adjacent consecutive samples caused by fast writers \cite{verma2004feature}.\\
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning problem.}}{}
-In \emph{supervised learning}, classification is the problem of identifying to which of a set of classes a new observation belongs. It is done on the basis of a training set of data containing instances for which the their class membership is known as can be seen in figure \ref{fig:machine_learning_diagram}.
-Formally, the learning problem is defined as follows:
-\begin{definition}
-Given a domain space $X$, target space $Y$ and a training set $S=\{(x_i,y_i)\}_{i=1}^{m}$ where $x_1,x_2,..,x_n\in X$ and $y_1,y_2,...,y_n \in Y$. Let us assume that there is an unknown target function $f$ for which $f : X\rightarrow Y$. A Learning algorithm $A$ produces hypothesis function $h$ based on $S$ such that $h~f$, i.e. an approximation for the target function $f$. $h \in H$, the hypotheses set. 
-\end{definition}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth]{./figures/machine_learning_diagram}       
-\caption{A learning algorithm scheme}
-\label{fig:machine_learning_diagram}
-\end{figure}
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Types of learning problems.}}{}
-The are mainly three types of learning: supervised, unsupervised learning and reinforcement learning.
-In the supervised learning, as seen above, a set of classified samples is given. In the unsupervised learning case, unlabeled data is given and the goal is to find a hidden structure in it. The reinforcement learning is a type of learning inspired by behaviorist psychology, concerned with how software agents ought to take actions in an environment so as to maximize some notion of cumulative reward. The handwriting recognition in most of it's implementation is a supervised learning problem.\\
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Types of learning problems.}}{}
-Many supervised learning approaches and algorithms were proposed to solve the classification problem. Decision trees, artificial neural networks, support vector machines, Bayesian networks and metric learning are few well-known learning techniques. A review on the supervised classification algorithms is given by Mohamed Aly in \cite{aly2005survey}.The role of the machine learning specialist is to identify the type of the learning problem and meet the needs of the problem by stitching the best solution for solving the given  classification problem. The classification process is usually contains preprocessing tasks to facilitate the classification process. These preliminary steps include normalization, noise removal, feature extraction , dimensionality reduction, etc.\\
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Scoring based classification}}{}
-In many learning machine application, especially those having a large number of classes, the classifier, returns a set of potential candidate classes or even specific samples in the. In these cases, for each candidate class, the classifier usually gives a scoring that can be used by a later part in the classification process (e.g. in the post processing). Such approach is taken for objects classification in our system. sample set that are closely resembles a given unknown sample. This approach can be used for both supervised and unsupervised learning domain. In the supervised learning case since the classification of the returned samples is known, the hypothesis function, classifies the inputed sample based of candidate labels.\\
-
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Classification techniques in HW recognition}}{}
-Different approaches were taken to solve the text recognition problem. Each has it's advantages and drawbacks, and each is suitable for a certain system requirements and implementation.
-\emph{see M. P.-H. Wu, "Handwritten character Recognition. Thesis"}
-\\ 
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HMM - An introduction}}{}
-There is a vast amount of studies done in the field of handwriting recognition field that use \emph{hidden Markov models} (HMM) \cite{pechwitz2003hmm, khorsheed2003recognising, al2007combination, benouareth2008arabic, mahmoud2008recognition, shu1996line}. 
-HMM is an extension of the discrete-state Markov process. Letters, words and sentences can be modeled using HMM and using the solution of the learning problem, letter words and sentences can be identified.\\
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HMM technical details}}{}
-For the benefit of the reader unfamiliar with this approach, here we would like to give an abbreviated introduction to HMM based text recognition. \emph{For technical information take use \cite{kadous2002temporal, shu1996line}}.\\
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HMM - disadvantages}}{}
-While having many advantages, there are some drawback of using HMM, Kondous has pointed out in his Ph.D Thesis \cite{kadous2002temporal}. First, it makes powerful assumption about the data that may not necessarily true. One example is the Markovian assumption, i.e. that the transition probabilities depend only on the current state. Second, there is no specific way to determine the number of states, thus intelligent guesses and try and error are usually employed. Furthermore, the states and transitions depend on the class being learned. For example, is there any reason why the words "dog" and "butterfly" would have similar states and transitions? Third, HMM requires a very large amount of data for its training.\\
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Neural Networks - an introduction}}{}
-Artificial neural network is also a widely used technique for letters recognition. 
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why did we use the NN as a classifier}}{}
-For the disadvantages for HMM and NN techniques mentioned above and ,the intuitive and simplicity of the and for my personal interest in similarity measure techniques that can be integrated classifier, we have chosen to use Nearest Neighbor classifier classification. 
-
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Classification techniques for HW recognition}}{}
-
+On-line handwriting recognition is one of the very complex and challenging problems in the pattern recognition field due to the variability of writing styles, cursive writing, text size differences and sampling issues caused by duplicate samples resulted from hesitate writers as well as non-adjacent consecutive samples caused by fast writers \cite{verma2004feature}. Correct and precise classification is a fundamental part of any \emph{Optical character recognition} (OCR) system.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{importance of the letters classification}}{}
 Talk about the importance of letters classification in the process of handwriting recognition.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Letter classification is not enough for on-line text recognition}}{}
-Although the importance of being able to recognize letter strokes, in order to be able to correctly recognize handwritten text, especially in an on-line manner much work is needed to solve other issues such as correct segmentation and fast classification. 
-
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Other approaches for text recognition}}{}
-what other techniques used for recognizing online Arabic text other than stroke level classification?
+what other techniques used for recognizing on-line Arabic text other than stroke level classification?
 
 
 In the on-line Arabic text recognition, these categories could be a whole word, word-parts, letter or even strokes. The problem that makes the recognition of on-line handwriting recognition difficult is variation of shapes of the characters resulting from writing habits, styles, and the social and educational level of the writer.\\
@@ -129,6 +78,73 @@ This stage produces a list of candidate characters for an input sequence and the
 
 Each Recognition process contains two parts, the learning from samples system and the object classification system. .....\\
 In section \ref{sec:letters_learning} we describe our Letters learning process and in \ref{sec:substrokes_classification} we describe our classifier. 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Letter classification is not enough for on-line text recognition}}{}
+Although the importance of being able to recognize letter strokes, in order to be able to correctly recognize handwritten text, especially in an on-line manner much work is needed to solve other issues such as correct segmentation and fast classification. 
+
+%We will start our discussion by giving the required background to pattern recognition, in general, and to the handwritten text recognition field in particular.\\
+
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Types of learning problems.}}{}
+%Machine learning is a branch in computer science of getting computers to act without being explicitly programmed. 
+%The are mainly three types of learning: supervised, unsupervised and reinforcement learning.
+%In the supervised learning, as seen above, a set of classified samples is given. In the unsupervised learning case, unlabeled data is given and the goal is to find a hidden structure in it. The reinforcement learning is a type of learning inspired by behaviorist psychology, concerned with how software agents ought to take actions in an environment so as to maximize some notion of cumulative reward. The handwriting recognition in most of it's implementation is a supervised learning problem.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning problem.}}{}
+In \emph{supervised learning}, classification is the problem of identifying to which of a set of classes a new observation belongs. It is done on the basis of a training set of data containing instances for which the their class membership is known.
+Formally, the supervised learning problem is defined as follows:
+\begin{definition}
+Given a domain space $X$, a target space $Y$ and a training set $S=\{(x_i,y_i)\}_{i=1}^{m}$ where $x_1,x_2,..,x_n\in X$ and $y_1,y_2,...,y_n \in Y$. Let us assume that there is an unknown target function $f$ for which $f : X\rightarrow Y$. A Learning algorithm $A$ produces hypothesis function $h$ based on $S$ such that $h \approx f$, i.e. the function $h$ is an approximation for the target function $f$ and $h \in H$, the hypotheses set. 
+\end{definition}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{./figures/machine_learning_diagram}       
+\caption{A learning algorithm scheme}
+\label{fig:machine_learning_diagram}
+\end{figure}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Types of approaches in the supervised Learning.}}{}
+%In machine learning, pattern recognition is the assignment of a label to a given input value. 
+Many supervised learning approaches and algorithms were proposed to solve the classification problem. Decision trees, artificial neural networks, support vector machines, Bayesian networks and nearest neighbor are few well-known learning techniques. A review on the supervised classification algorithms is given by Mohamed Aly in \cite{aly2005survey}.The role of the machine learning specialist is to identify the type of the learning problem and meet the needs of the problem by stitching the best solution for it. The classification process is usually contains several steps. These preliminary steps include normalization, noise removal, feature extraction, dimensionality reduction, etc. emph{[fix]}\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Classification techniques in HW recognition}}{}
+Different approaches were considered to solve the text recognition problem. Each has it's advantages and drawbacks, and each is suitable for a certain system requirements and implementation.
+The classification algorithm used in the recognition process is the most central stage. All the preprocessing stages prepare the data for the classification stage. The classification stage may be composed of more than a single stage.  
+In the following, we will mention the few most common approaches commonly used for letters classification and discuss their advantages and drawbacks.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HMM - An introduction}}{}
+Unlike in the off-line case, on-line handwriting can be viewed as temporal series, therefore many pattern recognition techniques from the temporal information field were adopted for handwriting recognition. One example is the  \emph{hidden Markov models} (HMM). HMM is an extension of the discrete-state Markov process. \emph{TODO: give some more information about the theory of HMM}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HMM for online handwriting recognition}}{}
+There is a vast amount of studies done in the field of handwriting recognition field that use HMM \cite{pechwitz2003hmm, khorsheed2003recognising, al2007combination, benouareth2008arabic, mahmoud2008recognition, shu1996line}. 
+Letters, words and sentences can be modeled using HMM and using the solution of the learning problem, letter words and sentences can be identified. Reader unfamiliar with this approach, a good introduction on using HMM for time serieses classification in general and text recognition in particular can be found \cite{kadous2002temporal, shu1996line}.\\ 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HMM - disadvantages}}{}
+While having many advantages, there are some drawback of using HMM, Kondous has pointed out in his Ph.D Thesis \cite{kadous2002temporal}. First, it makes powerful assumption about the data that may not necessarily true. One example is the Markovian assumption, i.e. that the transition probabilities depend only on the current state. Second, there is no specific way to determine the number of states, thus intelligent guesses and try and error are usually employed. Furthermore, the states and transitions depend on the class being learned. For example, is there any reason why the words "dog" and "butterfly" would have similar states and transitions? Third, HMM requires a very large amount of data for its training.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Artificial Neural Networks - an introduction}}{}
+Artificial neural network is also a widely used technique for letters recognition. It is a generalization of linear discrimination.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{ANN - drawbacks}}{}
+
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{k-NN classifier in general}}{}
+The k-nearest neighbors algorithm (k-NN) is a well-known classification technique in supervised learning. It predicts the query objects class memberships based on the k closest training examples. The k-nearest neighbor algorithm is one of the simplest of all machine learning algorithms: an object is classified by a majority vote of its neighbors, with the object being assigned to the class most common amongst its k nearest neighbors (k is a positive integer, typically small). If $k=1$, then the object is simply assigned to the class of that single nearest neighbor. In many cases the notion of similarity between sample object is obvious, however in many other interesting cases the distance between objects cannot be easily defined.
+Beside its simplicity, k-NN has some major advantages. First, k-NN is a good learning method for complex target functions. Second, it is easy to implement. Third, arbitrary objects similarity function can be applied easily.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Advantages and Downside of the k-NN classifier}}{}
+k-NN algorithm has dome drawbacks that reader needs to note. k-NN needs a large data set in-order to achieve high classification accuracy. Another drawback is that it is very sensitive to data errors and can be easily fooled by outliers.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Scoring-based NN classification}}{}
+Several machine learning problems, especially those having a large number of classes, the classifier, returns a set of potential candidate classes or even specific samples in the. In these cases, for each candidate class, the classifier usually gives a scoring that can be used by a later part in the classification process (e.g. in the post processing). Such approach is taken for objects classification in our system. sample set that are closely resembles a given unknown sample. This approach can be used for both supervised and unsupervised learning domain. In the supervised learning case since the classification of the returned samples is known, the hypothesis function, classifies the inputed sample based of candidate labels.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why did we use the NN as a classifier}}{}
+For the disadvantages for HMM and NN techniques mentioned above and ,the intuitive and simplicity of the and for my personal interest in similarity measure techniques that can be integrated classifier, we have chosen to use Nearest Neighbor classifier classification.\\ 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{literature Review}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -633,7 +649,7 @@ Given a vector space $D$ over a field $F$ the pair $\left(D,\|\cdot\|\right)$ is
 \begin{itemize}
 \item $\|x\|=0 \Leftrightarrow x=0$
 \item $\|x-y\| \geq|\|x\|-\|y\||$
-\item $\|\alpha x\|=|\alpha\|x\|$
+\item $\|\alpha x\|=|\alpha|\|x\|$
 \end{itemize}
 \end{definition}
 
@@ -818,10 +834,10 @@ The full set of principal components is as large as the original set of variable
 PCA is an unsupervised technique and as such does not include label information of the data. The following example demonstrates the problem drawback: Imagine 2 cigar like clusters in 2 dimensions, one cigar has $y = 1$ and the other $y = -1$. The cigars are positioned in parallel and very closely together, such that the variance in the total data-set, ignoring the labels, is in the direction of the cigars. For classification, this would be a terrible projection, because all labels get evenly mixed and we destroy the useful information. A much more useful projection is orthogonal to the cigars, i.e. in the direction of least overall variance, which would perfectly separate the data-cases.
 LDA is closely related to PCA in that they both look for linear combination of variables which best explain the data. LDA explicitly attempts to model the difference between the classes of data. In this method, variability among the feature vectors of the same class is minimized and the variability among the feature vectors of different classes is maximized.
 The LDA performs dimensionality reduction while preserving as much of the class discriminatory information as possible. Without going into the math, in order to find a good projection vector, we need to define a measure of separation between the projections. The solution proposed by Fisher is to maximize a function that represents the difference between the means, normalized by a measure of the within-class scatter. 
-The drawback of using LDA is that it assumes that the distribution of samples in each class is Gaussian and that we cannot prove that the handwritten letters are distributes in a Gaussian manner.
+The drawback of using LDA is that it assumes that the distribution of samples in each class is Gaussian and that we cannot prove that the handwritten letters are distributes in a Gaussian manner.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why we use both LDA and PCA}}{}
-Even though LDA is preferred in many application of dimension reduction, it does not always outperform PCA. In order to optimize discrimination performance in a more generative way, a hybrid dimension reduction model combining PCA and LDA is used in this work. 
+Even though LDA is preferred in many application of dimension reduction, it does not always outperform PCA. In order to optimize discrimination performance in a more generative way, a hybrid dimension reduction model combining PCA and LDA is used in this work.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Flow order reasoning}}{}
 Grauman et al. in \cite{grauman2004fast} used PCA to find a low-dimensional subspace based on a large sample of the shape context histogram. PCA yields the set of bases that define a low-dimensional "shape context manifold". Only then the approximate EMD embedding is performed. However, we have chosen to perform the stages in a different order. First approximate EMD embedding is performed on the feature vectors and only afterwards dimensionality reduction procedure is applied to reduce the dimensionality of the sparse embedded vectors. The reason we selected to perform the stages in this order is that if we were to apply the order suggested by Grauman, we would result in a large sparse vectors constructed by the embedding process.\\
