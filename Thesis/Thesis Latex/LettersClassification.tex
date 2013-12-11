@@ -52,35 +52,29 @@
 
 \tableofcontents{}
 
-\chapter{Letters Classifier}
+\chapter{Handwritten Character Recognition}
 
 \section{Introduction}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Goal}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Abstract}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{significance of the handwriting recognition - general}}{}
+On-line handwriting recognition is one of the very complex and challenging problems in the pattern recognition field due to the variability of writing styles, cursive writing, text size differences and sampling issues caused by duplicate samples resulted from hesitate writers as well as non-adjacent consecutive samples caused by fast writers \cite{verma2004feature}. The problem that makes the recognition of on-line handwriting recognition difficult is variation of shapes of the characters resulting from writing habits, styles, and the social and educational level of the writer.
+Correct and precise classification is a fundamental part of any \emph{Optical character recognition} (OCR) system.
 In this chapter we will discuss theoretical aspect as well as implementation details of the classification engine implemented in our system.\\ 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{significance of the handwriting recognition - general}}{}
-On-line handwriting recognition is one of the very complex and challenging problems in the pattern recognition field due to the variability of writing styles, cursive writing, text size differences and sampling issues caused by duplicate samples resulted from hesitate writers as well as non-adjacent consecutive samples caused by fast writers \cite{verma2004feature}. Correct and precise classification is a fundamental part of any \emph{Optical character recognition} (OCR) system.\\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Input-output}}{}
+Given a stroke sequence, and a position as an input parameter to the classifier, it produces a list of candidate samples from the sample set which are most similar to the given sequence, with a scoring attached to each candidate. Thus, actually, the classifier contains four databases. On for each letter position. This partitioning of the samples to four database, clearly, improve the classification power and the accuracy of the classification and scoring.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{importance of the letters classification}}{}
-Talk about the importance of letters classification in the process of handwriting recognition.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Performance}}{}
+The performance of the on-line classifier is a crucial property of the 
+needed classifier since, as mentioned in the overview in chapter \ref{[]}, the goal of the system is to perform strokes segmentation and letters recognition while the stroke is being written.\\ 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Other approaches for text recognition}}{}
-what other techniques used for recognizing on-line Arabic text other than stroke level classification?
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{constructs classification}}{}
+In the on-line text recognition, the classification can be done in several levels. The Recognition system can be built to classify an entire words, Word-parts, letters or even strokes. In this work we chose to work with strokes, since it represent the most basic element a writer can produce after the point, and it contains in most cases a single letter or more.\\
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Talk in general about the technique we use - mention each stage in general}}{}
+Text Recognition can be broken down into three main stages: \emph{preprocessing}, \emph{feature extraction} and \emph{classification}. The preprocessing stage usually consists of normalization, re-sampling, noise elimination and smoothing steps to give the a uniform structure and avoid irrelevant information that can negatively affect the recognition. In the feature extraction stage, important information in the data is highlighted and represented as vectors in the feature space which is used by the classifier. The last important step is classification, which identify the class for which the sample belong.\\
 
-In the on-line Arabic text recognition, these categories could be a whole word, word-parts, letter or even strokes. The problem that makes the recognition of on-line handwriting recognition difficult is variation of shapes of the characters resulting from writing habits, styles, and the social and educational level of the writer.\\
- 
-
-In this chapter we will describe a fast letters classifier. As mentioned in the overview in chapter \ref{[]}, our goal is to perform strokes segmentation and letters recognition while the stroke is being written. Thus, the performance of the of the classification process is a critical part.  
-
-This stage produces a list of candidate characters for an input sequence and the letter position this sequence. Our classifier contains 4 distinct databases, one for each position. The figure below describes the process through until it reaches its final position in the corresponding database.
-
-Each Recognition process contains two parts, the learning from samples system and the object classification system. .....\\
-In section \ref{sec:letters_learning} we describe our Letters learning process and in \ref{sec:substrokes_classification} we describe our classifier. 
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Letter classification is not enough for on-line text recognition}}{}
-Although the importance of being able to recognize letter strokes, in order to be able to correctly recognize handwritten text, especially in an on-line manner much work is needed to solve other issues such as correct segmentation and fast classification. 
 
 %We will start our discussion by giving the required background to pattern recognition, in general, and to the handwritten text recognition field in particular.\\
 
@@ -123,7 +117,7 @@ Letters, words and sentences can be modeled using HMM and using the solution of 
 While having many advantages, there are some drawback of using HMM, Kondous has pointed out in his Ph.D Thesis \cite{kadous2002temporal}. First, it makes powerful assumption about the data that may not necessarily true. One example is the Markovian assumption, i.e. that the transition probabilities depend only on the current state. Second, there is no specific way to determine the number of states, thus intelligent guesses and try and error are usually employed. Furthermore, the states and transitions depend on the class being learned. For example, is there any reason why the words "dog" and "butterfly" would have similar states and transitions? Third, HMM requires a very large amount of data for its training.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Artificial Neural Networks - an introduction}}{}
-Artificial neural network is also a widely used technique for letters recognition. It is a generalization of linear discrimination.
+Artificial neural network is also a widely used technique for letters recognition. It is a generalization of linear discrimination. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{ANN - drawbacks}}{}
 
@@ -139,34 +133,12 @@ k-NN algorithm has dome drawbacks that reader needs to note. k-NN needs a large 
 Several machine learning problems, especially those having a large number of classes, the classifier, returns a set of potential candidate classes or even specific samples in the. In these cases, for each candidate class, the classifier usually gives a scoring that can be used by a later part in the classification process (e.g. in the post processing). Such approach is taken for objects classification in our system. sample set that are closely resembles a given unknown sample. This approach can be used for both supervised and unsupervised learning domain. In the supervised learning case since the classification of the returned samples is known, the hypothesis function, classifies the inputed sample based of candidate labels.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why did we use the NN as a classifier}}{}
-For the disadvantages for HMM and NN techniques mentioned above and ,the intuitive and simplicity of the and for my personal interest in similarity measure techniques that can be integrated classifier, we have chosen to use Nearest Neighbor classifier classification.\\ 
+For the disadvantages for HMM and NN techniques mentioned above and the intuitive and simplicity of the and for my personal interest in similarity measure techniques that can be integrated classifier, we have chosen to use Nearest Neighbor classifier classification.\\ 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage{}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{literature Review}
+\emph{TODO: show a diagram of the letters learning process}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage{}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\emph{TODO: show a diagram of substrokes clasgmssification process.}
 
-
-\section{Letters Learning}
-\label{sec:letters_learning}
-
-\emph{TODO: show a diagram of the letters learning system}
-
-\section{Sub-strokes Classification}
-\label{sec:substrokes_classification}
-
-\emph{TODO: show a diagram of the letters learning system}
-
-{\color{blue}
-The process of online handwriting recognition can be broken down into a few general steps:
-preprocessing,
-feature extraction and
-classification.
-The purpose of preprocessing is to discard irrelevant information in the input data, that can negatively affect the recognition.[3] This concerns speed and accuracy. Preprocessing usually consists of binarization, normalization, sampling, smoothing and denoising.[4] The second step is feature extraction. Out of the two- or more-dimensional vector field received from the preprocessing algorithms, higher dimensional data is extracted. The purpose of this step is to highlight important information for the recognition model. This data may include information like pen pressure, velocity or the changes of writing direction. The last big step is classification. In this step various models are used to map the extracted features to different classes and thus identifying the characters or words the features represent. [http://en.wikipedia.org/wiki/Handwriting\_recognition]}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -677,6 +649,7 @@ By rewriting inequality 2.9, $dist(Q,S) \geq dist(Q,R) - dist(R,S)$ can be deriv
 
 
 \subsection{Approximating EMD using Embedding}
+\label{sec:approximating_emd_using_embedding}
 
 Various approximation algorithms have been proposed to speed up the computation of EMD \emph{TODO: add refernces}. Indyk and Thaper, in \cite{indyk2003fast}, has suggested an embedding technique in which the un-normed EMD metric is embedded into a normed space, so that the distance between the two images is comparable to the distance between the two points which represent the embedding of the two images. Embedding time complexity is $O(Nd log{\Delta}$, where $N$ is the feature set size, $d$ is the feature space dimension and $\Delta$ is the diameter of the union if the two feature sets.
 
@@ -702,6 +675,7 @@ For a given sub-stroke, we need to find the most perceptually close object in th
 {\color{blue}There are drawbacks to using the simple positional feature for shape matching with approximate EMD.Though straight forward to embed, it can be a brittle feature, and in order to achieve scale or translation invariance this feature demand preprocessing stage on all shapes. \cite{grauman2004fast}}
 
 \subsection{Nearest Neighbors search}
+\label{sec:nearest_neighbors_search}
 
 \underline{Mind Map}
 \begin{enumerate}
@@ -797,70 +771,90 @@ On the one hand, as claimed above, leaving the original distribution may result 
 
 \section{Dimensionality Reduction}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{General Introduction to DR. Why we do need DR technique}}{}
-Embedding the feature vectors into the wavelet domain a major problem stems from the embedded vector length. SC feature vectors are in $R^{40 \times 60}$. Embedding this vector into the wavelet domain produces a vector in $R^{[]}$. Working with vectors in this length is complex for three reasons:
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{What is DR and what techniques are there}}{}
+Dimensionality Reduction is a process of reducing the number of random variables taken into consideration in the learning and classification of Data. Ideally, the reduced representation should have a dimensionality that corresponds to the intrinsic dimensionality of the data \cite{van2009dimensionality}. Reducing the dimensionality of the features vectors would not only simplify and rapid the learning and classification task but rather boosts the classification accuracy. In this work we have chosen to use two techniques applied in sequential manner in order to obtain the most efficient and linearly discriminative components, \emph{Principle Component Analysis} (PCA) and \emph{Linear Discrimination Analysis} (LDA) technique.
+High dimensional data present many mathematical challenges and practical complications:
 \begin{enumerate}
 \item Analysis with a large number of variables generally requires a large amount of memory and computation power, which may be impractical for on-line classification systems. 
 \item Many NN methods such as kdtree is impractical when the dimensionality of the data objects is large.
 \item The classification algorithm is more likely to overfits the training sample and generalizes poorly to new samples \cite{aida2009word}.
 \end{enumerate}
-Generally speaking, this phenomenon is wide spread in data analysis and was given the name, \emph{the curse of dimensionality}. In any pattern recognition domain or data analysis problem large dimensional data can emerge in different stages in the learning and classification process. The dimensionality of the data may be large in the first place. Features calculated on the data may be impractically large. Other data manipulation techniques such as the embedding used in this work my produce large dimensionality vectors. High-dimensional datasets present many mathematical challenges.\\
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{What is DR and what techniques are there}}{}
-Dimensionality Reduction is a process of reducing the number of random variables taken into consideration in the learning and classification of Data. Ideally, the reduced representation should have a dimensionality that corresponds to the intrinsic dimensionality of the data \cite{van2009dimensionality}. Reducing the dimensionality of the features vectors would not only simplify and rapid the learning and classification task but rather boosts the classification accuracy. In this work we have chosen to use two techniques applied in sequential manner in order to obtain the most efficient and linearly discriminative components, \emph{Principle Component Analysis} (PCA) and \emph{Linear Discrimination Analysis} (LDA) technique.\\ 
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Attempts to solve this problem of the large vectors of the embedding}}{}
-In our case, the dimensionality problem emerged after embedding the feature vectors into the wavelet domain to rapidly calculate the EMD distance between to feature vectors. The main reason was that kdtree is very sensitives to high dimensional data. To do so we could take several approaches, the first is to use a modified embedding technique that produces a smaller vectors such as in explained in \cite{[]}. However,it would result in a less accurate embedding, and a non metric space. \\
+Generally speaking, this phenomenon is widespread in data analysis and was given the name, \emph{the curse of dimensionality}. In many pattern recognition applications, the problem of high dimensional data can arise in different stages of the learning and classification process; the dimensionality of the data may be large in the first place; features calculated on the data may be impractically large or other data manipulation processes, such as the embedding used in this work, may produce large dimensional vectors. \\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{DR motivation}}{}
 The underlying motivation and belief that the external world data can be represented in a small number of relevant features from a large amounts of sensory data is based on the following:
-A friendly smile or a menacing glare can be discerned in an instant and described by a few well chosen words. On the other hand, the digital representations of these images may consist of hundreds or
-thousands of pixels. Clearly, there are much more compact representations of images, sounds, and text than their native
-digital formats.
+A friendly smile or a menacing glare can be discerned in an instant and described by a few well chosen words. On the other hand, the digital representations of these images may consist of hundreds or thousands of pixels. Clearly, there are much more compact representations of images, sounds, and text than their native digital formats.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why we do need DR technique}}{}
+The need for dimensionality reduction in this work emerged from the sparse vectors produces by the EMD embedding of the feature vectors into the wavelet domain procedure described in section \ref{sec:approximating_emd_using_embedding}. The embedded vectors the process produces are in $R^{3946}$. The main reason for employing dimensionality reduction techniques was that the kdtree is very sensitives to high dimensional data. Other alternatives to overcome this problem can be employed; the first is to use a modified embedding technique that produces a smaller vectors such as in explained in \cite{[]}. However,it would result in a less accurate embedding, and a non metric space; other options was to use k-NN data-structure that performs well with high dimensional data such as LSH \cite{[]}, however ...  \\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Mathematical Definition}}{}
-In Mathematical terms, the Dimensionality process can be defined as follows: given a the original p-dimensional random variable $x \in R^p$, find a lower dimensional representation of it, $s \in R^k$ with $k \leq p$ that captures the content of the original data. The reduced dimensionality $p$ is chosen to be as small as possible, but =yet sufficiently large to guarantee that the output $s$ vector provide a faithful representation of the input vector $x$. Dimensionality reduction techniques can be classified into linear and non-linear. Linear Dimensionality Reduction is Based on a linear projection of the data assuming the data lives close to a lower dimensional linear subspace. Namely, each of the components in vector $s$ is a linear combination of the components in vector $x$, formally:
+In Mathematical terms, the Dimensionality process can be defined as follows: given a the original p-dimensional random variable $x \in R^p$, find a lower dimensional representation of it, $s \in R^k$ with $k \leq p$ that captures the content of the original data. The reduced dimensionality $p$ is chosen to be as small as possible, but yet sufficiently large to guarantee that the output vector $s$ provide a faithful representation of the input vector $x$. Dimensionality reduction techniques can be classified into linear and non-linear. Linear dimensionality reduction is based on a linear projection of the data assuming the data lives close to a lower dimensional linear subspace. Namely, each of the components in the vector $s$ is a linear combination of the components in the vector $x$, formally:
 \begin{equation}
 s=Wx
 \end{equation}
 where $W_{k \times p}$ is the linear transformation.\\
-In some cases linear dimensionality reduction on which linear dimensionality reduction do poorly. A more powerful approach is required to provide the mapping from the high dimensional space to the low dimensional space. In such cases, non-linear techniques is usually been exploit. However, the drawback of such technique is concealed in its generality which may cause overfit the sample set and in the same moment do not really capture the underlying coordinate system. Frequently used non-linear technique include \emph{Kernel PCA}, \emph{Isomap} and \emph{Locally-linear embedding} \emph{TODO: add references}.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Principle Component Analysis}}{}
-PCA was invented in 1901 by Karl Pearson. It is a linear technique for dimensionality reduction. Although there exist various techniques to do so, PCA is by far the most popular (unsupervised) linear technique. PCA is an orthogonal linear transformation that transforms the data to a new coordinate system such that the greatest variance by any projection of the data comes to lie on the first coordinate (names the first principal component), the second greatest variance on the second coordinate, and so on. Clearly, all the principal components are orthogonal to each other, so there is no redundant information. The principal components as a whole form an orthogonal basis for the space of the data.
-The full set of principal components is as large as the original set of variables. But taking the first few principal components will preserve most of the information in the data, and reduces the data dimensions.
+In some cases linear dimensionality reduction techniques perform poorly. A more powerful approach is required to provide the mapping from the high dimensional space to the low dimensional space. In such cases, non-linear techniques is usually been exploit. Yet, the drawback of such technique is concealed in its generality which may overfit the sample set and not really capture the underlying coordinate system. Frequently used non-linear technique include \emph{Kernel PCA}, \emph{Isomap} and \emph{Locally-linear embedding} \emph{TODO: add references}.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Linear Discriminant Analysis}}{}
-PCA is an unsupervised technique and as such does not include label information of the data. The following example demonstrates the problem drawback: Imagine 2 cigar like clusters in 2 dimensions, one cigar has $y = 1$ and the other $y = -1$. The cigars are positioned in parallel and very closely together, such that the variance in the total data-set, ignoring the labels, is in the direction of the cigars. For classification, this would be a terrible projection, because all labels get evenly mixed and we destroy the useful information. A much more useful projection is orthogonal to the cigars, i.e. in the direction of least overall variance, which would perfectly separate the data-cases.
-LDA is closely related to PCA in that they both look for linear combination of variables which best explain the data. LDA explicitly attempts to model the difference between the classes of data. In this method, variability among the feature vectors of the same class is minimized and the variability among the feature vectors of different classes is maximized.
-The LDA performs dimensionality reduction while preserving as much of the class discriminatory information as possible. Without going into the math, in order to find a good projection vector, we need to define a measure of separation between the projections. The solution proposed by Fisher is to maximize a function that represents the difference between the means, normalized by a measure of the within-class scatter. 
-The drawback of using LDA is that it assumes that the distribution of samples in each class is Gaussian and that we cannot prove that the handwritten letters are distributes in a Gaussian manner.\\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{PCA}}{}
+\emph{Principle Component Analysis} (PCA) is a linear technique for dimensionality reduction that was invented in 1901 by Karl Pearson. Although there are many linear dimensionality reduction techniques, PCA is by far the most popular. PCA is unsupervised in the sense that the labeling of the data do not effect the determination of the transformation function. PCA is the simplest of the true eigenvector-based multivariate analyses. It produces an orthogonal linear transformation that transforms the data to a new coordinate system such that the greatest variance by any projection of the data comes to lie on the first coordinate (the first principal component), the second greatest variance on the second coordinate, and so on (as seen in figure \ref{fig:pca_demo}). The principal components as a whole form an orthogonal basis for the space of the projected data. Given a multivariate dataset visualized as a set of coordinates in a high-dimensional data space, PCA obtains the "shadow" of that dataset when viewed from its most informative viewpoints by projecting the dataset into a lower-dimensional space. This is done by using only the first few principal components.\\
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{./figures/pca_demo}       
+\caption{PCA visual demonstration. The first PCA (PCA1) and the secondary PCA (PCA2).}
+\label{fig:pca_demo}
+\end{figure}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{PCA formulation}}{}
+In computational terms the principal components are found by calculating the eigenvectors and eigenvalues of the data covariance matrix $\sigma$. This process is equivalent to finding the axis system in which the co-variance matrix is diagonal. The eigenvector with the largest eigenvalue is the direction of greatest variation, the one with the second largest eigenvalue is the (orthogonal) direction with the next highest variation and so on. The eigenvalues represent the distribution of the source data's energy among each of the eigenvectors, where the eigenvectors form a basis for the data. 
+
+The cumulative energy content $g$ for the $j^{th}$ eigenvector is the sum of the energy content across all of the eigenvalues from 1 through $j$:
+\begin{equation}
+g[j]=\sum_{k=1}^{j}\lambda_k; j=1,...,dim(\Sigma)
+\end{equation}
+The \emph{data preservation rate} value is calculates as seen in Equation \ref{eq:dr_energy} where ${\lambda _i}$ is the $i^{th}$ eigenvalue.
+
+\begin{equation}
+E[L] = \frac{g[L]}{g[p]}
+\label{eq:dr_energy} 
+\end{equation} 
+
+The goal is to choose a value of L as small as possible while achieving a reasonably high value of $g$ on a percentage basis. i.e. given a a threshold $d$, usually larger than 0.9, $L$ is the smallest value that achieves: $E[L] \geq d$
+
+
+
+
+
+
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{LDA}}{}
+The major drawback of PCA is that it is an unsupervised technique and as such does not include label information of the data. The following example demonstrates the problem in using PCA: Imagine two cigar like clusters in two dimensions, one cigar has $y = 1$ and the other $y = -1$. The cigars are positioned in parallel and very closely together, such that the variance in the total data-set, ignoring the labels, is in the direction of the cigars. For classification, this would be a terrible projection, because all labels get evenly mixed, as can be seen in figure \ref{fig:cigarettes_data}. A much more useful projection is orthogonal to the cigars, i.e. in the direction of least overall variance, which would perfectly separate the data-cases.
+{Linear discriminant analysis} (LDA) is a linear dimensionality reduction technique overcome this problem. LDA is a supervised technique in the sense that it explicitly attempts to model the difference between the classes of data, i.e. based on the samples labeling. In this method, variability among the feature vectors of the same class is minimized and the variability among the feature vectors of different classes is maximized. LDA performs dimensionality reduction while preserving as much of the class discriminatory information as possible. Without going into the math, in order to find a good projection vector, we need to define a measure of separation between the projections. The solution proposed by Fisher is to maximize a function that represents the difference between the means, normalized by a measure of the within-class scatter. LDA has three main drawbacks; the first is that it assumes that the data resides in $L_2$; second, LDA assumes that the distribution of the samples in each class is Gaussian, which is not necessarily true for our samples; third; it is much slower to calculate compared to PCA.\\
+
+\begin{figure}
+\centering
+\includegraphics[width=0.3\textwidth]{./figures/cigarettes_data}       
+\caption{A cigarettes like samples data spread. In this case PCA performs badly.}
+\label{fig:cigarettes_data}
+\end{figure}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why we use both LDA and PCA}}{}
 Even though LDA is preferred in many application of dimension reduction, it does not always outperform PCA. In order to optimize discrimination performance in a more generative way, a hybrid dimension reduction model combining PCA and LDA is used in this work.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Flow order reasoning}}{}
-Grauman et al. in \cite{grauman2004fast} used PCA to find a low-dimensional subspace based on a large sample of the shape context histogram. PCA yields the set of bases that define a low-dimensional "shape context manifold". Only then the approximate EMD embedding is performed. However, we have chosen to perform the stages in a different order. First approximate EMD embedding is performed on the feature vectors and only afterwards dimensionality reduction procedure is applied to reduce the dimensionality of the sparse embedded vectors. The reason we selected to perform the stages in this order is that if we were to apply the order suggested by Grauman, we would result in a large sparse vectors constructed by the embedding process.\\
+Grauman et al. in \cite{grauman2004fast} used PCA to find a low-dimensional subspace based on a large sample of the shape context histogram. PCA yields the set of bases that define a low-dimensional "shape context manifold". Only then the approximate EMD embedding is performed. However, we have chosen to perform the stages in a different order. First approximate EMD embedding is performed on the feature vectors, and only then, dimensionality reduction procedure is applied to reduce the dimensionality of the sparse embedded vectors. The reason we have chosen to perform the stages in this order is that if we were to apply the order suggested by Grauman, we would still result in a large sparse vectors constructed by the embedding process.\\
   
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{PCA and LDA work in the $L_1$ space!}}{}
-The Basic form of PCA is defined over the $L_2$ space. However, the dimensionality reduced data in vectors embedded into the $L_1$ norm space. As previously mentioned, the embedding is into the $L_1$ norm. Although $L_1$ PCA techniques were examined in the literature \cite{kwak2008principal}, we decided to use the $L_2$ PCA, given that $L_2$ finely estimate $L_1$. The same can be said for the LDA, it optimization function assumes data in the $L_1$ normed space.\\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Usage of PCA in the $L_1$ space.}}{}
+The basic form of PCA is defined over the $L_2$ space. However, the data that is embedded to the wavelet domain was proved to approximate EMD in the $L_1$ space (namely $L_1$-PCA). Although $L_1$-PCA techniques were examined in the literature \cite{kwak2008principal}, we decided to use the basic form of PCA, given that $L_2$ finely estimate $L_1$.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Implementation - combination of PCA and LDA}}{}
-In this system, the dimensionality reduction process can be outlines as follows: the pre-processed feature matrix $M$ projected into subspace $S_1$ using PCA and then into the subspace $S2$ using LDA. In the PCA stage, the largest $t$ eigenvalues are selected to create the PCA projection matrix $W_{PCA}$. $t$ is the number of eigenvalues which guarantee energy E is greater than 0.99. The data preservation value is calculates as seen in Equation \ref{eq:dr_energy} where ${\lambda _i}$ is the $i^{th}$ eigenvalue.\\
+In the proposed system, we wanted to exploits the strengthens of both PCA and LDA techniques. We achieved this goal by the dimensionality reduction process be outlined as follows: Given a data matrix $M$ (its rows contain embedded vectors) is projected into subspace $S_1$ using PCA and then into the subspace $S_2$ using LDA. In the PCA stage, the number of principal components, denoted as $t$, that were used to in the projection to the subspace $S_1$, were determinined by the energy function $g$ defined earlier and the parameter $d=0.99$. 
 
-\begin{equation}
-E = {{\sum\limits_{i = 1}^t {{\lambda _i}} } \mathord{\left/
- {\vphantom {{\sum\limits_{i = 1}^t {{\lambda _i}} } {\sum\limits_{i = 1}^{\dim \left( S \right)} {{\lambda _i}} }}} \right.
- \kern-\nulldelimiterspace} {\sum\limits_{i = 1}^{\dim \left( S \right)} {{\lambda _i}} }}
-\label{eq:dr_energy}
-\end{equation}
+The dimensionality of $W_{PCA}$ is much smaller that the dimensionality of $M$. At the second phase LDA is used to project $W_{PCA}$ to $W_{PCA+LDA}$.  The dimension of subspace $S_2$ is smaller than the subspace $S_1$ by 1.\\
 
-The dimensionality of $W_{PCA}$ is much smaller that the dimensionality of $M$. At the second phase LDA is used to project $W_{PCA}$ to $W_{PCA+LDA}$.  The dimension of subspace $S_2$ is smaller than the subspace $S_1$ by 1.
-Why we have used both and what give us every method and how we did join them together to get the most out of both.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Results - The before and after dimensions  and both in recognition and segmentation rates}}{}
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Other tested alternatives}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Show the table of actual results for each letter position}}{}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The DR package}}{}
 \emph{Matlab Toolbox for Dimensionality Reduction} described in \cite{van2007introduction} was used as Matlab wrapper for the dimensionality reduction techniques used in this work. A well written survey on Dimensionality Reduction techniques can found in \cite{fodor2002survey}.
@@ -869,7 +863,6 @@ Why we have used both and what give us every method and how we did join them tog
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
- 
 \section{Letters Classification and Candidates Scoring}
 \underline{Mind Map}
 \begin{enumerate}
@@ -902,7 +895,7 @@ The N candidates that are delivered may have the same labeling.
 \begin{figure}[h!] 
 \centering
 \includegraphics[width=1\textwidth]{./figures/dtw_dequence_demo}      
-\caption{The right scheme shows sample-by-sample na\"{\i}ve alignment after resampling and in the left scheme the alignment was performed using DTW }
+\caption{The right scheme shows sample-by-sample na\"{\i}ve alignment after re-sampling and in the left scheme the alignment was performed using DTW }
 \label{fig:dtw_dequence_demo}
 \end{figure}
 
@@ -920,7 +913,7 @@ Dist\left( W \right) = \sum\limits_{k = 1}^K {Dist\left( {{i_k},{j_k}} \right)}
 \end{equation}
 $Dist\left( {{i_k},{j_k}} \right)$ is the distance of the two data point indexes (one from X and the other from Y) in the $k^{th}$ element of the warping path.  
 \end{definition}
-The warping path which has the minimal   associated with alignment is the optimal warping path which we have previously denoted by $W$.\\
+The warping path which has the minimal associated with alignment is the optimal warping path which we have previously denoted by $W$.\\
 
 Using dynamic programing approach, DTW yields the optimal warping path by constructing the \emph{accumulated distance matrix}. We will denote this matrix by the letter $D$ , where $D\left( {i,j} \right)$ is the minimum distance warping path that can be constructed from the two time serieses $X = \left( {{x_1},{x_2},...,{x_i}} \right)$ and $Y = \left( {{y_1},{y_2},...,{y_j}} \right)$. Wherefore the value in $D\left( {\left| X \right|,\left| Y \right|} \right)$ will contain the minimum-distance warping path between $X$ and $Y$.\\
 
