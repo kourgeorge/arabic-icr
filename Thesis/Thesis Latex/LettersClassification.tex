@@ -564,6 +564,78 @@ The major hurdle to using EMD is its $O\left( {{N^3}\log N} \right)$ computation
 
 In the next subsection, we will discuss an EMD embedding technique which spares the linear scan of the entire database and greatly reduce the computation effort in approximating the EMD distance between two objects.
 
+\subsection{Data Time Warping}
+\emph{Dynamic time warping} (DTW) is an algorithm for measuring similarity between two time serieses. The method is to find an optimal alignment between two given sequences. Intuitively, the sequences are warped in a non-linear fashion to match each other. DTW solves the discrepancy between intuition and calculated distance by achieving the optimal alignment between sample points of two times sequences. Restrictions can be imposed on the matching technique to improve the matching results and the algorithm's time complexity. The only restriction placed on the data sequences is that they should be sampled at equidistant points in time which can be easily achieved by re-sampling. A na\"{\i}ve approach to calculate the distance between two time serieses can be to resample one of the serieses and to compute the distance sample by sample, the problem with this technique is that it does not yield intuitive results as it might match samples that do not correspond well. See figure \ref{fig:dtw_dequence_demo}.
+
+\begin{figure}[h!] 
+\centering
+\includegraphics[width=1\textwidth]{./figures/dtw_dequence_demo}      
+\caption{The right scheme shows sample-by-sample na\"{\i}ve alignment after re-sampling and in the left scheme the alignment was performed using DTW }
+\label{fig:dtw_dequence_demo}
+\end{figure}
+
+\begin{definition}
+Given two time serieses, $X = \left( {{x_1},{x_2},...,{x_{\left| X \right|}}} \right)$ and $Y = \left( {{y_1},{y_2},...,{y_{\left| Y \right|}}} \right)$, DTW yields an optimal warping path $W = \left( {{w_1},{w_2},...,{w_{\left| W \right|}}} \right)$,  where ${w_k} = \left( {i,j} \right) \in \left[ {1:\left| X \right|} \right] \times \left[ {1:\left| Y \right|} \right]$ for $k \in \left[ {1:\left| W \right|} \right]$ which satisfies the two following: 
+\begin{enumerate}
+\item Start and End point constrain: ${w_1} = \left( {1,1} \right)$ and ${w_{\left| W \right|}} = \left( {\left| X \right|,\left| Y \right|} \right)$. 
+\item Time preservation of the points: for each two points in W, ${w_m} = \left( {{i_m},{j_m}} \right)$, ${w_n} = \left( {{i_n},{j_n}} \right)$ and $m < n$ the following holds: ${i_m} \le {i_n}$ and ${j_m} \le {j_n}$.
+\item Local continuity constrain: ${w_{k + 1}} - {w_k} \in \left\{ {\left( {1,1} \right),\left( {1,0} \right),\left( {0,1} \right)} \right\}$
+The Distance of the warping path is defined as follows: 
+\end{enumerate}	 
+The Distance of the warping path is defined as follows: 
+\begin{equation}
+Dist\left( W \right) = \sum\limits_{k = 1}^K {Dist\left( {{i_k},{j_k}} \right)}
+\end{equation}
+$Dist\left( {{i_k},{j_k}} \right)$ is the distance of the two data point indexes (one from X and the other from Y) in the $k^{th}$ element of the warping path.  
+\end{definition}
+The warping path which has the minimal associated with alignment is the optimal warping path which we have previously denoted by $W$.\\
+
+Using dynamic programing approach, DTW yields the optimal warping path by constructing the \emph{accumulated distance matrix}. We will denote this matrix by the letter $D$ , where $D\left( {i,j} \right)$ is the minimum distance warping path that can be constructed from the two time serieses $X = \left( {{x_1},{x_2},...,{x_i}} \right)$ and $Y = \left( {{y_1},{y_2},...,{y_j}} \right)$. Wherefore the value in $D\left( {\left| X \right|,\left| Y \right|} \right)$ will contain the minimum-distance warping path between $X$ and $Y$.\\
+
+The accumulated distance matrix is calculated as follows: 
+\begin{align}
+\begin{matrix}
+D\left( {0,0} \right) = 0  \cr 
+D\left( {i,1} \right) = D(i - 1,1) + Dist\left( {i,1} \right)  \cr 
+D\left( {1,j} \right) = D(1,j - 1) + Dist\left( {1,j} \right)  \cr 
+\end{matrix} 
+\end{align}
+
+\begin{equation}
+D\left( {i,j} \right) = \min \left\{ \begin{matrix}
+  D\left( {i,j - 1} \right) \hfill \cr 
+  D\left( {i - 1,j} \right) \hfill \cr 
+  D\left( {i - 1,j - 1} \right) \hfill \cr \end{matrix}  \right\} + Dist\left( {{x_i},{y_j}} \right)
+\end{equation}
+
+Once matrix $D$ is calculated the optimal warping path $W$ is retrieved by backtracking the matrix $D$ from the point $D\left( {\left| X \right|,\left| Y \right|} \right)$ to the point $D\left( {1,1} \right)$ following the greedy strategy of looking for the direction from which the current distance is taken.
+It is easy to note that the time and space complexity of DTW is $O\left( {MN} \right)$ \cite{rath2003word,senin2008dynamic,salvador2007toward}. 
+
+\subsubsection{DTW Speedup}
+One drawback of DTW is its quadratic time and space complexity, thus, many speedup methods have evolved. These methods can be fall in three categories:
+\begin{enumerate}
+\item Constrains: Limiting the amount of calculated cells in the cost matrix.
+\item Data Abstraction: Running the DTW on an abstract representation of the data.
+\item Lower Bounding: Reducing the times DTW need to run when clustering and classifying time serieses.
+\end{enumerate}
+Constrains: The most popular two constrains on DTW are the Sakoe-Chuba Band and he Itakura parallelogram, which are shown in figure 2. The grayed out area is the cells of the cost matrix that are filled by the DTW algorithm for each constrain. The warping path is looked for in the constrain window. The width of the window is specified by a parameter. By using such constrains the speedup factor is a constant and the DTW complexity is still $O\left( {MN} \right)$ (where M and N are the time serieses lengths). Note that if the warping path is does not reside in the constrain window, it will not be found by DTW, thus, such method is usually used when the warping path is expected to be in the constrain window.
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth]{./figures/dtw_sukoe_chuba}       
+\caption{Cost matrix constrains: Sukoe-Chuba Band (left) and the Itakura Parallelogram (right).}
+\label{fig:dtw_sukoe_chuba}
+\end{figure}
+
+Data Abstraction: Speedup using data abstraction is performed by running DTW on a reduced presentation of the data thus reducing the cell numbers that need to be computed. The warp path is calculated on the reduced resolution matrix and mapped back to the original (full) cost matrix. 
+Lower bounding: Searching the most similar time series in the database given a template time series can be done more efficiently using lower bound functions than using DTW to compare the template to every series in the database. A lower-bounding is cheap and approximate. However, it underestimates the actual cost determined by DTW. It is used to avoid comparing serieses by DTW when the lower-bounding estimate indicates that the time series is worse match than the current best match.
+
+FastDTW, proposed by Stan Salvador and Philip Chan, approximate DTW in a linear time using multilevel approach that recursively projects a warping path from the coarser resolution to the current resolution and refines it. This approach is an order of magnitude faster than DTW, and also compliments existing indexing methods that speedup time series similarity search and classification \cite{salvador2007toward}. 
+
+Ratanamahatana and Kough have shown the following fact about DTW in their work in \cite{ratanamahatana2005three}: Comparing sequences of different lengths and re-interpolating them to equal length produce no statistically significant difference in accuracy or precision/recall.  
+Although in our work we do make re-interpolating of sequences to compare equilength sequences.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -738,10 +810,11 @@ In our implementation, the built-in Matlab wrapper was used for kdtree available
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Clustering-based Sample set Redistribution}
+\label{sec:csr}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}  
 On the one hand a large and verified sample set is crucial for every learning algorithm, in particular, it is important in the handwritten pattern classification because of the variety of styles between people in their handwriting. On the other hand, a large sample set can harm the performance of the NN based recognition system, and even harm the accuracy of the recognition because of outliers.  
-As can be seen in the section, for some letters positions many samples were collected. And for other letters smaller set of samples were collected. On the one hand, we would like to maintain the underlying letters distribution since the distribution of our sample set has a high correlation to the real world letter distribution. On the other hand, as we have mentioned before, a non proportional sample size for some letters may harm our recognition process.
+As can be seen in section \ref{[]}, for some letters positions many samples were collected. And for other letters smaller set of samples were collected. On the one hand, we would like to maintain the underlying letters distribution since the distribution of our sample set has a high correlation to the real world letter distribution. On the other hand, as we have mentioned before, a non proportional sample size for some letters may harm our recognition process.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
 Cluster analysis is a common approach used in both supervised and unsupervised learning. It aims to partition a a set of objects  into groups in such a way that objects in the same group (called a cluster) are more similar (in some sense or another) to each other than to those in other groups.
@@ -770,23 +843,26 @@ On the one hand, as claimed above, leaving the original distribution may result 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Dimensionality Reduction}
+\label{sec:dr}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{What is DR and what techniques are there}}{}
-Dimensionality Reduction is a process of reducing the number of random variables taken into consideration in the learning and classification of Data. Ideally, the reduced representation should have a dimensionality that corresponds to the intrinsic dimensionality of the data \cite{van2009dimensionality}. Reducing the dimensionality of the features vectors would not only simplify and rapid the learning and classification task but rather boosts the classification accuracy. In this work we have chosen to use two techniques applied in sequential manner in order to obtain the most efficient and linearly discriminative components, \emph{Principle Component Analysis} (PCA) and \emph{Linear Discrimination Analysis} (LDA) technique.
-High dimensional data present many mathematical challenges and practical complications:
+\emph{Dimensionality Reduction} is a process of reducing the number of random variables taken into consideration in the learning and classification of data. It is a very important process in machine learning since it facilitates classification, efficient storing and visualization of high-dimensional data. The undesired properties of high-dimensional spaces of high-dimensional data present many mathematical challenges and practical complications \cite{van2009dimensionality}. Here we enumerate several:
 \begin{enumerate}
-\item Analysis with a large number of variables generally requires a large amount of memory and computation power, which may be impractical for on-line classification systems. 
-\item Many NN methods such as kdtree is impractical when the dimensionality of the data objects is large.
+\item Analysis of high-dimensional data generally requires a large amount of memory and computation power, which may be impractical for some classification systems and oppressive in most cases. 
+\item Many NN methods such as kd-tree are impractical when the dimensionality of the data objects is large.
 \item The classification algorithm is more likely to overfits the training sample and generalizes poorly to new samples \cite{aida2009word}.
 \end{enumerate}
-Generally speaking, this phenomenon is widespread in data analysis and was given the name, \emph{the curse of dimensionality}. In many pattern recognition applications, the problem of high dimensional data can arise in different stages of the learning and classification process; the dimensionality of the data may be large in the first place; features calculated on the data may be impractically large or other data manipulation processes, such as the embedding used in this work, may produce large dimensional vectors. \\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{data Intrinsic dimensionality}}{}
+Ideally, the reduced representation should have a dimensionality that corresponds to the intrinsic dimensionality of the data \cite{van2009dimensionality}.
+The intrinsic dimensionality of data is the minimum number of parameters needed to account for the observed properties of the data.\\ 
+%Reducing the dimensionality of the features vectors would not only simplify and rapid the learning and classification task but rather boosts the classification accuracy. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{DR motivation}}{}
-The underlying motivation and belief that the external world data can be represented in a small number of relevant features from a large amounts of sensory data is based on the following:
-A friendly smile or a menacing glare can be discerned in an instant and described by a few well chosen words. On the other hand, the digital representations of these images may consist of hundreds or thousands of pixels. Clearly, there are much more compact representations of images, sounds, and text than their native digital formats.\\
+The underlying motivation and belief that the external world data can be represented in a small number of relevant features is based on the following observation: The human brain can instantaneously and precisely recognize an observed apple, smile or a handwritten letter. However, a digital representations of these images may consist of hundreds or thousands of pixels. Clearly, there are much more compact representations of images, sounds, and even text than their native digital formats. Many recently proposed dimensionality reduction techniques are based on the intuition that data lies on or near a complex low-dimensional manifold that is embedded in the high-dimensional space.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why we do need DR technique}}{}
-The need for dimensionality reduction in this work emerged from the sparse vectors produces by the EMD embedding of the feature vectors into the wavelet domain procedure described in section \ref{sec:approximating_emd_using_embedding}. The embedded vectors the process produces are in $R^{3946}$. The main reason for employing dimensionality reduction techniques was that the kdtree is very sensitives to high dimensional data. Other alternatives to overcome this problem can be employed; the first is to use a modified embedding technique that produces a smaller vectors such as in explained in \cite{[]}. However,it would result in a less accurate embedding, and a non metric space; other options was to use k-NN data-structure that performs well with high dimensional data such as LSH \cite{[]}, however ...  \\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The curse of dimensionality}}{}
+The high dimensional data phenomenon is widespread in data analysis and was given the name \emph{the curse of dimensionality}. In many pattern recognition applications, the problem of high dimensional data can arise in different stages of the learning and classification process; 1. the dimensionality of the data may be large in the first place; 2. features calculated on the data may be impractically large; 3. other manipulations performed on the data, such as the embedding used in this work, may produce large dimensional vectors. \\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Mathematical Definition}}{}
 In Mathematical terms, the Dimensionality process can be defined as follows: given a the original p-dimensional random variable $x \in R^p$, find a lower dimensional representation of it, $s \in R^k$ with $k \leq p$ that captures the content of the original data. The reduced dimensionality $p$ is chosen to be as small as possible, but yet sufficiently large to guarantee that the output vector $s$ provide a faithful representation of the input vector $x$. Dimensionality reduction techniques can be classified into linear and non-linear. Linear dimensionality reduction is based on a linear projection of the data assuming the data lives close to a lower dimensional linear subspace. Namely, each of the components in the vector $s$ is a linear combination of the components in the vector $x$, formally:
@@ -795,10 +871,18 @@ s=Wx
 \end{equation}
 where $W_{k \times p}$ is the linear transformation.\\
 
-In some cases linear dimensionality reduction techniques perform poorly. A more powerful approach is required to provide the mapping from the high dimensional space to the low dimensional space. In such cases, non-linear techniques is usually been exploit. Yet, the drawback of such technique is concealed in its generality which may overfit the sample set and not really capture the underlying coordinate system. Frequently used non-linear technique include \emph{Kernel PCA}, \emph{Isomap} and \emph{Locally-linear embedding} \emph{TODO: add references}.\\
+\emph{Principal component analysis} (PCA), \emph{linear discrimination analysis} (LDA) are traditional linear dimensionality reduction techniques.\\
+
+In some cases, linear dimensionality reduction techniques perform poorly. A more powerful approach is required to provide the mapping from the high dimensional space to the low dimensional space. In such cases, non-linear techniques is usually been exploit. Yet, the drawback of such technique is concealed in its generality which may overfit the sample set and not really capture the underlying coordinate system. Frequently used non-linear technique include \emph{Kernel PCA}, \emph{Isomap} and \emph{Locally-linear embedding}. \emph{TODO: add references}.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why we do need DR?}}{}
+The need for dimensionality reduction in this work emerged from the sparse vectors produces by the EMD embedding of the feature vectors into the wavelet domain procedure described in section \ref{sec:approximating_emd_using_embedding}. The embedded vectors the process produces are in $R^{3946}$. The main reason for employing dimensionality reduction techniques was that the kdtree is very sensitives to high dimensional data. Other alternatives to overcome this problem can be employed; the first is to use a modified embedding technique that produces a smaller vectors such as in explained in \cite{[]}. However,it would result in a less accurate embedding, and a non metric space; other options was to use k-NN data-structure that performs well with high dimensional data such as LSH \cite{[]}, however ...  \\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{What DR we use?}}{}
+In this thesis we have chosen to work only with linear dimensionality reduction techniques. PCA and LDA applied sequentially in order to obtain the most efficient and linearly discriminative information.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{PCA}}{}
-\emph{Principle Component Analysis} (PCA) is a linear technique for dimensionality reduction that was invented in 1901 by Karl Pearson. Although there are many linear dimensionality reduction techniques, PCA is by far the most popular. PCA is unsupervised in the sense that the labeling of the data do not effect the determination of the transformation function. PCA is the simplest of the true eigenvector-based multivariate analyses. It produces an orthogonal linear transformation that transforms the data to a new coordinate system such that the greatest variance by any projection of the data comes to lie on the first coordinate (the first principal component), the second greatest variance on the second coordinate, and so on (as seen in figure \ref{fig:pca_demo}). The principal components as a whole form an orthogonal basis for the space of the projected data. Given a multivariate dataset visualized as a set of coordinates in a high-dimensional data space, PCA obtains the "shadow" of that dataset when viewed from its most informative viewpoints by projecting the dataset into a lower-dimensional space. This is done by using only the first few principal components.\\
+\emph{Principle Component Analysis} (PCA) was invented in 1901 by Karl Pearson. Although there are many linear dimensionality reduction techniques, PCA is by far the most popular. PCA is unsupervised in the sense that the labeling of the data do not effect the determination of the transformation function. It produces an orthogonal linear transformation that transforms the data to a new coordinate system such that the greatest variance by any projection of the data comes to lie on the first coordinate (the first principal component), the second greatest variance on the second coordinate, and so on (as seen in figure \ref{fig:pca_demo}). The principal components as a whole form an orthogonal basis for the space of the projected data. Given a multivariate dataset visualized as a set of coordinates in a high-dimensional data space, PCA obtains the "shadow" of that dataset when viewed from its most informative viewpoints by projecting the dataset into a lower-dimensional space. This is done by using only the first few principal components.\\
 
 \begin{figure}
 \centering
@@ -808,30 +892,28 @@ In some cases linear dimensionality reduction techniques perform poorly. A more 
 \end{figure}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{PCA formulation}}{}
-In computational terms the principal components are found by calculating the eigenvectors and eigenvalues of the data covariance matrix $\sigma$. This process is equivalent to finding the axis system in which the co-variance matrix is diagonal. The eigenvector with the largest eigenvalue is the direction of greatest variation, the one with the second largest eigenvalue is the (orthogonal) direction with the next highest variation and so on. The eigenvalues represent the distribution of the source data's energy among each of the eigenvectors, where the eigenvectors form a basis for the data. 
+In computational terms the principal components are found by calculating the eigenvectors and eigenvalues of the data covariance matrix. This process is equivalent to finding the axis system in which the co-variance matrix is diagonal. The eigenvector with the largest eigenvalue is the direction of greatest variation, the one with the second largest eigenvalue is the (orthogonal) direction with the next highest variation and so on. The eigenvalues represent the distribution of the source data's energy among each of the eigenvectors, where the eigenvectors form a basis for the data. 
 
-The cumulative energy content $g$ for the $j^{th}$ eigenvector is the sum of the energy content across all of the eigenvalues from 1 through $j$:
+The representation content $g$ for the $j^{th}$ eigenvector is the sum of the energy content across all of the eigenvalues $\lambda_k$ from 1 through $j$ :
 \begin{equation}
-g[j]=\sum_{k=1}^{j}\lambda_k; j=1,...,dim(\Sigma)
+g[j]=\sum_{k=1}^{j}\lambda_k; j=1,...,d
 \end{equation}
-The \emph{data preservation rate} value is calculates as seen in Equation \ref{eq:dr_energy} where ${\lambda _i}$ is the $i^{th}$ eigenvalue.
+When $d$ here denote the dimensionality of the original data.
+
+The \emph{data preservation rate} value (E) is calculates as seen in Equation \ref{eq:dr_energy}. 
 
 \begin{equation}
-E[L] = \frac{g[L]}{g[p]}
+E[L] = \frac{g[L]}{g[d]}
 \label{eq:dr_energy} 
 \end{equation} 
 
-The goal is to choose a value of L as small as possible while achieving a reasonably high value of $g$ on a percentage basis. i.e. given a a threshold $d$, usually larger than 0.9, $L$ is the smallest value that achieves: $E[L] \geq d$
-
-
-
-
-
-
+The goal is to choose a value of $L$ as small as possible while achieving a reasonably high value of $E[L]$, i.e. given a a threshold $e$, usually larger than 0.9, $L$ is the smallest value that achieves: $E[L] \geq e$\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{LDA}}{}
-The major drawback of PCA is that it is an unsupervised technique and as such does not include label information of the data. The following example demonstrates the problem in using PCA: Imagine two cigar like clusters in two dimensions, one cigar has $y = 1$ and the other $y = -1$. The cigars are positioned in parallel and very closely together, such that the variance in the total data-set, ignoring the labels, is in the direction of the cigars. For classification, this would be a terrible projection, because all labels get evenly mixed, as can be seen in figure \ref{fig:cigarettes_data}. A much more useful projection is orthogonal to the cigars, i.e. in the direction of least overall variance, which would perfectly separate the data-cases.
-{Linear discriminant analysis} (LDA) is a linear dimensionality reduction technique overcome this problem. LDA is a supervised technique in the sense that it explicitly attempts to model the difference between the classes of data, i.e. based on the samples labeling. In this method, variability among the feature vectors of the same class is minimized and the variability among the feature vectors of different classes is maximized. LDA performs dimensionality reduction while preserving as much of the class discriminatory information as possible. Without going into the math, in order to find a good projection vector, we need to define a measure of separation between the projections. The solution proposed by Fisher is to maximize a function that represents the difference between the means, normalized by a measure of the within-class scatter. LDA has three main drawbacks; the first is that it assumes that the data resides in $L_2$; second, LDA assumes that the distribution of the samples in each class is Gaussian, which is not necessarily true for our samples; third; it is much slower to calculate compared to PCA.\\
+The major drawback of PCA is that it is an unsupervised technique and as such does not use label information of the data. The following example demonstrates the problem in using PCA: in figure \ref{fig:cigarettes_data}, two cigar like clusters in two dimensions, one cigar has $y = a$ and the other $y = b$. The cigars are positioned in parallel and very closely together, such that the variance in the total data-set, ignoring the labels, is in the direction of the cigars. For classification, this would be a terrible projection, because all labels get evenly mixed. A much more useful projection is orthogonal to the cigars, i.e. in the direction of least overall variance, which would perfectly separate the data-cases.
+In this case, LDA overcomes this problem. LDA is a supervised technique in the sense that it explicitly attempts to model the difference between the classes of data based on the samples labeling. In this method, variability among the feature vectors of the same class is minimized and the variability among the feature vectors of different classes is maximized. LDA performs dimensionality reduction while preserving as much of the class discriminatory information as possible. Without going into the math, in order to find a good projection vector, we need to define a measure of separation between the projections. The solution proposed by Fisher is to maximize a function that represents the difference between the means, normalized by a measure of the within-class scatter. LDA has three main drawbacks; the first is that it assumes that the data resides in $L_2$; second, LDA assumes that the distribution of the samples in each class is Gaussian which is not necessarily true for our samples; third, it is much slower to calculate compared to PCA.\\
+
+\emph{TODO: LDA demo image.}\\
 
 \begin{figure}
 \centering
@@ -840,21 +922,43 @@ The major drawback of PCA is that it is an unsupervised technique and as such do
 \label{fig:cigarettes_data}
 \end{figure}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why we use both LDA and PCA}}{}
-Even though LDA is preferred in many application of dimension reduction, it does not always outperform PCA. In order to optimize discrimination performance in a more generative way, a hybrid dimension reduction model combining PCA and LDA is used in this work.\\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why we use both LDA and PCA?}}{}
+Even though LDA is preferred in many application, it does not always outperform PCA. In order to optimize discrimination performance in a more generative way, a hybrid dimension reduction model combining PCA and LDA is used in this work.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Flow order reasoning}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{When to perform the DR?}}{}
 Grauman et al. in \cite{grauman2004fast} used PCA to find a low-dimensional subspace based on a large sample of the shape context histogram. PCA yields the set of bases that define a low-dimensional "shape context manifold". Only then the approximate EMD embedding is performed. However, we have chosen to perform the stages in a different order. First approximate EMD embedding is performed on the feature vectors, and only then, dimensionality reduction procedure is applied to reduce the dimensionality of the sparse embedded vectors. The reason we have chosen to perform the stages in this order is that if we were to apply the order suggested by Grauman, we would still result in a large sparse vectors constructed by the embedding process.\\
   
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Usage of PCA in the $L_1$ space.}}{}
 The basic form of PCA is defined over the $L_2$ space. However, the data that is embedded to the wavelet domain was proved to approximate EMD in the $L_1$ space (namely $L_1$-PCA). Although $L_1$-PCA techniques were examined in the literature \cite{kwak2008principal}, we decided to use the basic form of PCA, given that $L_2$ finely estimate $L_1$.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Implementation - combination of PCA and LDA}}{}
-In the proposed system, we wanted to exploits the strengthens of both PCA and LDA techniques. We achieved this goal by the dimensionality reduction process be outlined as follows: Given a data matrix $M$ (its rows contain embedded vectors) is projected into subspace $S_1$ using PCA and then into the subspace $S_2$ using LDA. In the PCA stage, the number of principal components, denoted as $t$, that were used to in the projection to the subspace $S_1$, were determinined by the energy function $g$ defined earlier and the parameter $d=0.99$. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Implementation: PCA --> clustering --> LDA}}{}
+In the proposed system, we wanted to exploit the strengthens of both PCA and LDA techniques using the dimensionality reduction process which is outlined as follows: The samples are projected to a subspace $S_1$ using PCA and then $S_2$ using LDA. In the PCA stage, the number of principal components taken into consideration where the minimal to achieve data preservation rate of 9\%, i.e. $d=0.99$. Several letters in the Arabic script may have different number of common forms to scribe the letter. These shapes may be very different perceptually, see example in figure \ref{[]}. Thus, applying LDA on all the letters samples as if they belong to same class, may badly affect the the LDA efficiency, since it tries to find the projection that cluster the data the best way possible and different shapes are classified in the same class it may harm the process. To overcome this problem we have done the following preprocessing steps: each letter class, namely (letter, position) was clustered into 4 clusters using $L_1$-k-medoids algorithm. Each cluster received a different class label. This new labeling was used by the LDA algorithm.
+The table below shows the dimensions of the original data, the dimensionality of the space $S_1$ after running PCA and the space $S_2$ after performing LDA on the resulted vectors.  More information on the $L_1$-k-medoids algorithm is given in section \ref{sec:csr}.
 
-The dimensionality of $W_{PCA}$ is much smaller that the dimensionality of $M$. At the second phase LDA is used to project $W_{PCA}$ to $W_{PCA+LDA}$.  The dimension of subspace $S_2$ is smaller than the subspace $S_1$ by 1.\\
+In the PCA stage the target numbers of dimensions were determined according to the data preservation rate d=0.99 (i.e. 99\%). 
+\emph{Intrinsic dimensionality estimation} methods are usually used in order to estimate the intrinsic dimensionality of a data. In this work, in order to determine the target number of dimensions we have used \emph{maximum likelihood estimator} (MLE) \cite{levina2004maximum}. 
+The maximum likelihood estimator can be described, in high level, as follows: it estimates the number of data-points covered by a hypersphere with a growing radius r. The maximum likelihood estimator models the number of
+data-points inside the hypersphere as a Poisson process. In the Poisson process, the rate of the process $\lambda(t)$ at intrinsic dimensionality d is expressed as
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Show the table of actual results for each letter position}}{}
+The table below shows the dimensionality of the data after PCA and after LDA.  
+\begin{table}[h]
+\caption{SSA Performance}
+\begin{tabular}{ | c | c | c | c | c |}
+\hline
+Letter position & Number of samples & Original dimensionality & After PCA & After LDA\\
+\hline                 
+  Iso & 1372 & 3946 & 29 & 7 \\ 
+  \hline
+  Ini & 1405 & 3946 & 39 & 9 \\ 
+  \hline
+  Mid & 1196 & 3946 & 36 & 8 \\ 
+  \hline
+  Fin & 1629 & 3946 & 27 & 7 \\ 
+  \hline
+\end{tabular}
+\centering
+\label{table:ss_algorithms_results} 
+\end{table}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The DR package}}{}
 \emph{Matlab Toolbox for Dimensionality Reduction} described in \cite{van2007introduction} was used as Matlab wrapper for the dimensionality reduction techniques used in this work. A well written survey on Dimensionality Reduction techniques can found in \cite{fodor2002survey}.
@@ -889,77 +993,7 @@ All the information about the candidates is available, namely, the original lett
 
 The N candidates that are delivered may have the same labeling.
 
-\subsection{Data Time Warping}
-\emph{Dynamic time warping} (DTW) is an algorithm for measuring similarity between two time serieses. The method is to find an optimal alignment between two given sequences. Intuitively, the sequences are warped in a non-linear fashion to match each other. DTW solves the discrepancy between intuition and calculated distance by achieving the optimal alignment between sample points of two times sequences. Restrictions can be imposed on the matching technique to improve the matching results and the algorithm's time complexity. The only restriction placed on the data sequences is that they should be sampled at equidistant points in time which can be easily achieved by re-sampling. A na\"{\i}ve approach to calculate the distance between two time serieses can be to resample one of the serieses and to compute the distance sample by sample, the problem with this technique is that it does not yield intuitive results as it might match samples that do not correspond well. See figure \ref{fig:dtw_dequence_demo}.
 
-\begin{figure}[h!] 
-\centering
-\includegraphics[width=1\textwidth]{./figures/dtw_dequence_demo}      
-\caption{The right scheme shows sample-by-sample na\"{\i}ve alignment after re-sampling and in the left scheme the alignment was performed using DTW }
-\label{fig:dtw_dequence_demo}
-\end{figure}
-
-\begin{definition}
-Given two time serieses, $X = \left( {{x_1},{x_2},...,{x_{\left| X \right|}}} \right)$ and $Y = \left( {{y_1},{y_2},...,{y_{\left| Y \right|}}} \right)$, DTW yields an optimal warping path $W = \left( {{w_1},{w_2},...,{w_{\left| W \right|}}} \right)$,  where ${w_k} = \left( {i,j} \right) \in \left[ {1:\left| X \right|} \right] \times \left[ {1:\left| Y \right|} \right]$ for $k \in \left[ {1:\left| W \right|} \right]$ which satisfies the two following: 
-\begin{enumerate}
-\item Start and End point constrain: ${w_1} = \left( {1,1} \right)$ and ${w_{\left| W \right|}} = \left( {\left| X \right|,\left| Y \right|} \right)$. 
-\item Time preservation of the points: for each two points in W, ${w_m} = \left( {{i_m},{j_m}} \right)$, ${w_n} = \left( {{i_n},{j_n}} \right)$ and $m < n$ the following holds: ${i_m} \le {i_n}$ and ${j_m} \le {j_n}$.
-\item Local continuity constrain: ${w_{k + 1}} - {w_k} \in \left\{ {\left( {1,1} \right),\left( {1,0} \right),\left( {0,1} \right)} \right\}$
-The Distance of the warping path is defined as follows: 
-\end{enumerate}	 
-The Distance of the warping path is defined as follows: 
-\begin{equation}
-Dist\left( W \right) = \sum\limits_{k = 1}^K {Dist\left( {{i_k},{j_k}} \right)}
-\end{equation}
-$Dist\left( {{i_k},{j_k}} \right)$ is the distance of the two data point indexes (one from X and the other from Y) in the $k^{th}$ element of the warping path.  
-\end{definition}
-The warping path which has the minimal associated with alignment is the optimal warping path which we have previously denoted by $W$.\\
-
-Using dynamic programing approach, DTW yields the optimal warping path by constructing the \emph{accumulated distance matrix}. We will denote this matrix by the letter $D$ , where $D\left( {i,j} \right)$ is the minimum distance warping path that can be constructed from the two time serieses $X = \left( {{x_1},{x_2},...,{x_i}} \right)$ and $Y = \left( {{y_1},{y_2},...,{y_j}} \right)$. Wherefore the value in $D\left( {\left| X \right|,\left| Y \right|} \right)$ will contain the minimum-distance warping path between $X$ and $Y$.\\
-
-The accumulated distance matrix is calculated as follows: 
-\begin{align}
-\begin{matrix}
-D\left( {0,0} \right) = 0  \cr 
-D\left( {i,1} \right) = D(i - 1,1) + Dist\left( {i,1} \right)  \cr 
-D\left( {1,j} \right) = D(1,j - 1) + Dist\left( {1,j} \right)  \cr 
-\end{matrix} 
-\end{align}
-
-\begin{equation}
-D\left( {i,j} \right) = \min \left\{ \begin{matrix}
-  D\left( {i,j - 1} \right) \hfill \cr 
-  D\left( {i - 1,j} \right) \hfill \cr 
-  D\left( {i - 1,j - 1} \right) \hfill \cr \end{matrix}  \right\} + Dist\left( {{x_i},{y_j}} \right)
-\end{equation}
-
-Once matrix $D$ is calculated the optimal warping path $W$ is retrieved by backtracking the matrix $D$ from the point $D\left( {\left| X \right|,\left| Y \right|} \right)$ to the point $D\left( {1,1} \right)$ following the greedy strategy of looking for the direction from which the current distance is taken.
-It is easy to note that the time and space complexity of DTW is $O\left( {MN} \right)$ \cite{rath2003word,senin2008dynamic,salvador2007toward}. 
-
-\subsubsection{DTW Speedup}
-One drawback of DTW is its quadratic time and space complexity, thus, many speedup methods have evolved. These methods can be fall in three categories:
-\begin{enumerate}
-\item Constrains: Limiting the amount of calculated cells in the cost matrix.
-\item Data Abstraction: Running the DTW on an abstract representation of the data.
-\item Lower Bounding: Reducing the times DTW need to run when clustering and classifying time serieses.
-\end{enumerate}
-Constrains: The most popular two constrains on DTW are the Sakoe-Chuba Band and he Itakura parallelogram, which are shown in figure 2. The grayed out area is the cells of the cost matrix that are filled by the DTW algorithm for each constrain. The warping path is looked for in the constrain window. The width of the window is specified by a parameter. By using such constrains the speedup factor is a constant and the DTW complexity is still $O\left( {MN} \right)$ (where M and N are the time serieses lengths). Note that if the warping path is does not reside in the constrain window, it will not be found by DTW, thus, such method is usually used when the warping path is expected to be in the constrain window.
-
-
-\begin{figure}
-\centering
-\includegraphics[width=0.7\textwidth]{./figures/dtw_sukoe_chuba}       
-\caption{Cost matrix constrains: Sukoe-Chuba Band (left) and the Itakura Parallelogram (right).}
-\label{fig:dtw_sukoe_chuba}
-\end{figure}
-
-Data Abstraction: Speedup using data abstraction is performed by running DTW on a reduced presentation of the data thus reducing the cell numbers that need to be computed. The warp path is calculated on the reduced resolution matrix and mapped back to the original (full) cost matrix. 
-Lower bounding: Searching the most similar time series in the database given a template time series can be done more efficiently using lower bound functions than using DTW to compare the template to every series in the database. A lower-bounding is cheap and approximate. However, it underestimates the actual cost determined by DTW. It is used to avoid comparing serieses by DTW when the lower-bounding estimate indicates that the time series is worse match than the current best match.
-
-FastDTW, proposed by Stan Salvador and Philip Chan, approximate DTW in a linear time using multilevel approach that recursively projects a warping path from the coarser resolution to the current resolution and refines it. This approach is an order of magnitude faster than DTW, and also compliments existing indexing methods that speedup time series similarity search and classification \cite{salvador2007toward}. 
-
-Ratanamahatana and Kough have shown the following fact about DTW in their work in \cite{ratanamahatana2005three}: Comparing sequences of different lengths and re-interpolating them to equal length produce no statistically significant difference in accuracy or precision/recall.  
-Although in our work we do make re-interpolating of sequences to compare equilength sequences.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
