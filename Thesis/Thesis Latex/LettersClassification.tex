@@ -52,14 +52,14 @@
 
 \tableofcontents{}
 
-\chapter{Handwritten Character Recognition}
+\chapter{Handwritten Arabic Recognition}
 
 \section{Introduction}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Significance of the handwriting recognition - general}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Complexity of the Arabic handwriting recognition}}{}
 On-line handwriting recognition is one of the very complex and challenging problems in the pattern recognition field due to the variability of writing styles, cursive writing, text size differences and sampling issues caused by duplicate samples resulted from hesitate writers as well as non-adjacent consecutive samples caused by fast writers \cite{verma2004feature}. The problem that makes the recognition of on-line handwriting recognition difficult is variation of shapes of the characters resulting from writing habits, styles, and the social and educational level of the writer.
-Correct and precise classification is a fundamental part of any \emph{Optical character recognition} (OCR) system.
-In this chapter we will discuss theoretical aspect as well as implementation details of the classification engine implemented in our system.\\ 
+%Correct and precise classification is a fundamental part of any \emph{Optical character recognition} (OCR) system.
+In this chapter we will discuss theoretical aspect as well as implementation details of the classification engine implemented in our system. \emph{TODO: fix this paragraph}\\ 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Input-output}}{}
 Given a stroke sequence, and a position as an input parameter to the classifier, it produces a list of candidate samples from the sample set which are most similar to the given sequence, with a scoring attached to each candidate. Thus, actually, the classifier contains four databases. On for each letter position. This partitioning of the samples to four database, clearly, improve the classification power and the accuracy of the classification and scoring.\\
@@ -95,9 +95,17 @@ Given a domain space $X$, a target space $Y$ and a training set $S=\{(x_i,y_i)\}
 \label{fig:machine_learning_diagram}
 \end{figure}
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The classification problem}}{}
+In many cases, the learning problem is actually a classification problem. For any given classification problem, there is an intuitive belief that there exist a space to which the samples can be transformed and in which can be portioned into regions that represent categories. Accordingly, the problem of classification is basically the problem of portioning the sample space into regions. Having done that, classifying a new unlabeled observation is done by determining the partition it belongs to. Ideally, one would like to arrange this partitioning so that none of the decisions is ever wrong. When this cannot be done, one would like to minimize the probability of error \cite{duda1973pattern}.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{What we actually try to do? and How?}}{}
+Since no such partition on the raw data space is known. We try to find the mentioned space in the feature space and to approximate the mentioned partitioning.
+ \emph{TODO: describe what each step do in a high level.}
+
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Types of approaches in the supervised Learning.}}{}
 %In machine learning, pattern recognition is the assignment of a label to a given input value. 
 Many supervised learning approaches and algorithms were proposed to solve the classification problem. Decision trees, artificial neural networks, support vector machines, Bayesian networks and nearest neighbor are few well-known learning techniques. A review on the supervised classification algorithms is given by Mohamed Aly in \cite{aly2005survey}.The role of the machine learning specialist is to identify the type of the learning problem and meet the needs of the problem by stitching the best solution for it. The classification process is usually contains several steps. These preliminary steps include normalization, noise removal, feature extraction, dimensionality reduction, etc. emph{[fix]}\\
+
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Classification techniques in HW recognition}}{}
 Different approaches were considered to solve the text recognition problem. Each has it's advantages and drawbacks, and each is suitable for a certain system requirements and implementation.
@@ -275,6 +283,8 @@ Answer the following:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Features Extraction}
+\label{sec:feature_extraction}
+
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
 Feature extraction is certainly one of the important parts of any pattern classification system and plays an important role in the overall process of handwriting recognition. It aims is to cull informative parameters for learning and recognition of patterns.  Most classification methods require that patterns be represented in a fixed dimensional feature space that is often incompatible with input data. Poor feature extraction and selection will always result in a poor system performance, regardless of the ingeniousness of the learning and classification algorithms \cite{parizeau2001character}.\\
 
@@ -327,7 +337,7 @@ The bins are normally taken to be uniform log-polar space making the descriptor 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{MAD}}{}
 The other shape descriptor used in this thesis is the Multi Angular Descriptor (MAD).
 MAD was proposed by Saabni in \cite{saabni2013multi}. It captures the angular view to multi resolution rings in different heights. The shape is treated as a two dimensional set of points and the different rings are upper view points from rings around the shape centroid with different sizes and heights. To enables scale and translation invariance, the sizes and heights of these rings are calculated using the diameter and centroid of the shape.
-Formally, let $S$ be a shape and Let $C$ and $D$ be the centroid and the diameter of the shape respectively. Let $P = \{p_i\}_{i = 1}^l$ a set of $l$ point taken uniformly from the extracted contour of $S$. Given a view point $V_j$ from a given ring with height $h$ over the shape, the angle, obtained by connecting the point ${p_i} \in P$ with each point   and the plain of the shape is a rich description of the shape from this view point. Let $R$ be a ring with the radius $r$ and the center $C$ positioned above the shape $S$ with the height $h$. Let $V = \{V_i\}_{i = 1}^n$ be a set of $n$ viewpoints lying uniformly on the ring $R$ and $\alpha(V_{ij})$ to be the angle between the segment $\overline {{V_i}{p_j}}$ and the plain contains the shape $S$. The vector $Ve{c_i} = \left\{ {\alpha \left( {{V_{ij}}} \right)} \right\}_{j = 1}^l$ can be seen as watching the shape $S$ from one upper view point $V_i$. Illustration can be seen in Figure 7.
+Formally, let $S$ be a shape and Let $C$ and $D$ be the centroid and the diameter of the shape respectively. Let $P = \{p_i\}_{i = 1}^l$ a set of $l$ point taken uniformly from the extracted contour of $S$. Given a view point $V_j$ from a given ring with height $h$ over the shape, the angle, obtained by connecting the point ${p_i} \in P$ with each point   and the plain of the shape is a rich description of the shape from this view point. Let $R$ be a ring with the radius $r$ and the center $C$ positioned above the shape $S$ with the height $h$. Let $V = \{V_i\}_{i = 1}^n$ be a set of $n$ viewpoints lying uniformly on the ring $R$ and $\alpha(V_{ij})$ to be the angle between the segment $\overline {{V_i}{p_j}}$ and the plain contains the shape $S$. The vector $Ve{c_i} = \left\{ {\alpha \left( {{V_{ij}}} \right)} \right\}_{j = 1}^l$ can be seen as watching the shape $S$ from one upper view point $V_i$. Illustration can be seen in Figure \ref{fig:mad_demo}.\\
 
 \begin{figure}
 \centering
@@ -336,7 +346,10 @@ Formally, let $S$ be a shape and Let $C$ and $D$ be the centroid and the diamete
 \label{fig:mad_demo}
 \end{figure}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{P2 - Results}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Results - Asses the quality of separation in the features space}}{}
+In order to evaluate the quality of the features we asses the quality of classification. Since as can be seen the coming chapters, our classification is based on Neasrest Neighbors classification, after considering several quality evaluation methods, we selected the following. \emph{TODO: give more information on clusters validation techniques.}
+The evaluation is done as follows: First we initialized a scoring parameter to 0, i.e., $s=0$. Then, for each sample in the sample set, the closest three candidates are extracted and ordered by their vicinity to the sample element. The distance function that is used here is the Euclidean distance. Let us denote the correct sample labeling by $a$ and the labeling of the candidates by $\alpha, \beta, \gamma$ respectively. If $\alpha=a$ then we do $s=s+3$. If $\beta=a$ then we do $s=s+2$. If $\gamma=a$ we perform $s=s+1$.
+The scoring is then calculated as follows: $S=\frac{s}{6N}$, where the $N$ is the size of the sample set.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -344,11 +357,17 @@ Formally, let $S$ be a shape and Let $C$ and $D$ be the centroid and the diamete
 
 \section{Similarity Measure}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why do we need it in our work.}}{}
-In this chapter we will discuss the various methods used in this work to asses the similarity measure between two handwritten curves, feature vectors or vectors in the wavelet domain. We argue that the dissimilarity degree between a feature of one shape to another feature of other shape often reveals how similar the two shapes are. Later, in this work, we will show that also two vectors in the wavelet domain reveals the measure of dissimilarities between the corresponding handwritten trajectories.\\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why do we need this?}}{}
+In this chapter we will discuss the various methods used in this work to asses the similarity between the different types of mathematical constructs, such as 2-D sequences that represent a handwritten curves, feature space vectors and wavelets domain coefficient vectors.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The importance of being able to asses the similarity between 2 strokes.}}{}
+We remind the reader that our ultimate goal is to obtain a fast and precise method to determine the dissimilarity between any given handwritten strokes. By precise we mean that it should be as close as possible to the human intuition. Finding the dissimilarity between two strokes based on the raw data representation is difficult and computationally expensive. To overcome this hardship, feature extraction methods were considered, as described in the section \ref{sec:feature_extraction}, which transform the original data into the feature space. The transformation is done by extracting descriptive and expressive information from the raw data representation. In the feature space the samples are represented compactly and two given feature vectors can be compared using an effective distance function. A desired feature extraction technique should maintain that the similarity degree between two objects in the feature space should reveals how similar the two shapes really are, and to do so inexpensively. Given the ability to correctly asses the similarity between two objects, the classification of a sample object is simply the label of its closest neighbor.
+
+%Later, in this work, we will show that also two vectors in that describe the coefficient of wavelet domain reveals the measure of dissimilarities between the corresponding handwritten trajectories.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Generalize!}}{}
-Given two data elements, the goal is to define a quantitative measure of their dissimilarity with the intent of approximating perceptual resemblance between them. The task of mathematically capturing the human perceptual shape differences is not an easy task. Generally, similarity measures techniques can be classified into two main categories: similarity measure on raw data representations and similarity measure in other representations.\cite{chen2005similarity}\\
+%Given two data elements, as mentioned, the goal is to define a quantitative measure of their dissimilarity with the intent of approximating perceptual resemblance between them. 
+The task of mathematically capturing the human perceptual shape differences is not an easy task. Generally, similarity measures techniques can be applied on the raw data representations or on other representations of the data, such as on the feature vectors \cite{chen2005similarity}.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Formal definition - distance function}}{}
 The similarity measure is formalized as a so-called \emph{distance function}. 
@@ -357,7 +376,7 @@ Given a data space $D$. For any two data elements $x,y \in D$, a \emph{distance 
 \begin{equation}
 dist: D \times D \longrightarrow \mathbb{R}
 \end{equation}
-where $\mathbb{R}$ is the real data set and $dist$ has the following properties:
+where $dist$ has the following properties:
 \begin{itemize}
 \item $dist(x,y)=0 \Leftrightarrow x=y$ (reflexivity)
 \item $dist(x,y) = dist(y,x)$ (symmetry)
@@ -479,12 +498,12 @@ Indexing techniques of measure functions is not fast enough for our application 
 
 \subsection{The Earth Movers Distance}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{What requirement do we need from our distance function - why did we choose EMD.}}{}
 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction to EMD}}{}
 \emph{Earth Movers Distance} (EMD), introduced by Rubner et al. in \cite{rubner2000earth}, is a measure of the dissimilarity between two histograms. It has experimentally verified to capture well perceptual notion of a difference between images \cite{grauman2004fast}, since, Images are usually represented using multidimensional histograms. In fact, it is widely used in content-based image retrieval to compute distances between the color histograms of two digital images \emph{TODO: and citation}. 
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{What requirement do we need from our distance function - why did we choose EMD.}}{}
 Histogram based descriptors, such as shape context, are usually compared using bin-wise dissimilarity measure like $L_2$ norm or the $\chi^2$ statistic. While these measures can be computed very fast, since they measure dissimilarities between the content of corresponding bins of the two histograms, they usually fail to consider local and global variations. These um-modeled variations may result in large dissimilarity values between two histograms that are perceived to be small.
 
 Generally speaking, the distance between two histograms is a special case of the well-known \emph{transportation problem}, a.k.a the Monge-Kantorovich problem \cite{rachev1985monge} defined below (Definition \ref{def:transportation_problem}). Accordingly, EMD is based on the solution to the transportation problem, for which efficient algorithms are available. 
@@ -617,7 +636,7 @@ Although in our work we do make re-interpolating of sequences to compare equilen
 
 %\underline{Mind Map:}
 %\begin{enumerate}
-%\item problem definition.  \cite{hetland2009basic}
+
 %\item The L-p norm has an advantages and drawback.
 %\begin {itemize}
 %\item calculates fast and it is a norm
@@ -658,7 +677,7 @@ Although in our work we do make re-interpolating of sequences to compare equilen
 %\end{itemize}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Problem definition - k-NN queries}}{}
-Similarity search is a mode of information retrieval where the query is a sample object, and the desired result is a set of objects deemed to be similar - in some sense - to the query. An important question is how to build a data-structure that quickly identifies the objects that are closest to a query object.
+Similarity search is a type of information retrieval where the query is a sample object, and the desired result is a set of objects deemed to be similar - in some sense - to the query. An important question is how to build a data-structure that quickly identifies the objects that are closest to a query object.
 
 {\color{blue}
 Under the distance function formalism, several query types may be formulated. In the following I focus on one of the basic kinds, so-called range queries, where all objects that fall within a given distance of the sample are returned. In other words, for a distance function $dist$, a query object $q$, and a
@@ -702,9 +721,6 @@ By rewriting inequality 2.9, $dist(Q,S) \geq dist(Q,R) - dist(R,S)$ can be deriv
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction to the section.}}{}
 In this section we will discuss the usage indexing techniques and consider their advantages and drawbacks. We will also consider an embedding techniques that allows us to get the best of the both fast similarity measure calculation and use the advantages of the normed space. It will allow us to approximate the EMD distance between two histograms, and since the embedding is into an $L_1$ normed space, efficient object retrieval data structures can be used. 
-
-
-
 
 \subsection{Approximating EMD using Embedding}
 \label{sec:approximating_emd_using_embedding}
@@ -764,7 +780,7 @@ ANN methods such as k-d trees and Locality Sensitive Hashing (LSH) have successf
 
 \emph{TODO: give a small introduction on LSH in 1 or two sentences}
 
-The advantage of LSH is that it operates way better than kdtree in a high dimensional space. However, the strength of kdtree is that it can be used as an exact NN technique. While the the worst case scenario complexity is $O(N)$, the expected complexity is $O(log N)$ 
+The advantage of LSH is that it operates better than kdtree in a high dimensional space. However, the strength of kdtree is that it can be used as an exact NN technique. While the the worst case scenario complexity is $O(N)$, the expected complexity is $O(log N)$ 
 
 In this work, kdtree was the best choice we could think of and which its properties was the most suitable for our need since the dimensionality of the data was not height. After reducing the dimensionality of the samples,they are used to create a kdtree data structure.
 
@@ -840,7 +856,6 @@ Second, the classification algorithm is more likely to overfit the training samp
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{data Intrinsic dimensionality}}{}
 Ideally, the reduced representation should have a dimensionality that corresponds to the intrinsic dimensionality of the data \cite{van2009dimensionality}.
 The intrinsic dimensionality of data is the minimum number of parameters needed to account for the observed properties of the data.\\ 
-%Reducing the dimensionality of the features vectors would not only simplify and rapid the learning and classification task but rather boosts the classification accuracy. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The underlying belief}}{}
 The belief underlying the existence of a compact representation of the external world data is based on the observation that the human brain can instantaneously and precisely recognize an observed apple, smile or a handwritten letter within a short route of neural computations. However, a digital representations of these images may consist of hundreds or thousands of pixels. Thus, clearly, there are much more compact representations of images, sounds, and even text than their native digital formats. Many recently proposed dimensionality reduction techniques are based on the intuition that data lies on or near a complex low-dimensional manifold that is embedded in the high-dimensional space.\\
@@ -859,13 +874,13 @@ where $W_{k \times p}$ is the linear transformation.\\
 \emph{Principal component analysis} (PCA) and \emph{linear discrimination analysis} (LDA) are traditional linear dimensionality reduction techniques.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Non-Linear DR}}{}
-In some cases, linear dimensionality reduction techniques perform poorly. A more powerful approach is required to provide the mapping from the high dimensional space to the low dimensional space. In such cases, non-linear techniques is usually been exploit. Yet, the drawback of such technique is concealed in its generality which may overfit the sample set and not really capture the underlying coordinate system. Frequently used non-linear technique include \emph{Kernel PCA}, \emph{Isometric Feature Mapping} (ISOMAP) and \emph{Locally-linear embedding} (LLE).\\
+In some cases, linear dimensionality reduction techniques perform poorly and a more powerful approach is required to provide the mapping from the high dimensional space to the low dimensional space. In such cases, non-linear techniques is are used. Yet, the drawback of such technique is concealed in its generality which may cause overfitting the sample set and not really capture the true underlying coordinate system. Commonly used non-linear technique include \emph{Kernel PCA}, \emph{Isometric Feature Mapping} (ISOMAP) and \emph{Locally-linear embedding} (LLE).\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why we do need DR?}}{}
-The need for employing dimensionality reduction in this work emerged from the sparse vectors produces by the EMD embedding of the feature vectors into the wavelet domain procedure which was described in section \ref{sec:approximating_emd_using_embedding}. This process produced vectors in $R^{3946}$. The wish to employ kdtree, which is very sensitive to high dimensional data, was the most influential factor for using dimensionality reduction. Other options was to use k-NN data-structure that performs well with high dimensional data such as LSH \cite{gionis1999similarity}. However, it would be less accurate.\\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why do we need DR?}}{}
+The need for employing dimensionality reduction in this work emerged from the sparse vectors produces by the EMD embedding of the feature vectors into the wavelet domain procedure which was described in section \ref{sec:approximating_emd_using_embedding}. This process produced vectors in $R^{3946}$. The wish to employ k-d trees, which is very sensitive to high dimensional data, was the main reason for using dimensionality reduction. An alternative was to use a k-NN data-structure that performs well with high dimensional data such as LSH \cite{gionis1999similarity}. However, it would be less accurate since LSH is an approximate NN search method, unlike k-d tree which finds the exact k-NN samples.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{What DR we use?}}{}
-In this thesis we have chosen to work only with linear dimensionality reduction techniques. PCA and LDA were applied sequentially in order to obtain the most efficient and linearly discriminative information.\\
+In this thesis we have chosen to work only with linear dimensionality reduction techniques. PCA and LDA were applied sequentially in order to obtain linearly discriminative information in an efficient manner.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{PCA}}{}
 \emph{Principle Component Analysis} (PCA) was invented in 1901 by Karl Pearson. Although there are many linear dimensionality reduction techniques, PCA is by far the most popular. PCA is unsupervised in the sense that the labeling of the data do not effect the determination of the transformation function. It produces an orthogonal linear transformation that transforms the data to a new coordinate system such that the greatest variance by any projection of the data comes to lie on the first coordinate (the first principal component), the second greatest variance on the second coordinate, and so on (as seen in figure \ref{fig:pca_demo}). The principal components as a whole form an orthogonal basis for the space of the projected data. Given a multivariate dataset visualized as a set of coordinates in a high-dimensional data space, PCA obtains the "shadow" of that dataset when viewed from its most informative viewpoints by projecting the dataset into a lower-dimensional space. This is done by using only the first few principal components.\\
@@ -893,7 +908,7 @@ The goal is to find the smallest possible value of $L$ that achieves $E[L]$ valu
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{LDA}}{}
 The major drawback of PCA is that it is an unsupervised technique and as such does not use label information of the data. The following example, given by Welling in \cite{welling2005fisher}, demonstrates the problem in using PCA: in figure \ref{fig:cigarettes_data}, we see two cigar like clusters. The samples in the upper cigar are classified as $y=1$ and the samples in the other cigar are classified as $y=-1$. The cigars are parallel and very close to each other. The variance of the entire sample set, disregarding the labels, is in the direction of the cigars. Projecting the sample set on the principal component, in this case, would be terribly mix the samples. Clearly, a better projection would be orthogonal to the cigars, namely in the direction of least overall variance, which would perfectly separate the two classes.
-LDA, a descendant of the original Fisher-LDA that was proposed by Fisher in \cite{fisher1936use}, overcomes this problem. Unlike PCA, LDA is a supervised technique, i.e., it explicitly attempts to model the difference between classes of data based on the samples labeling. In this method, variability among the feature vectors of the same class is minimized and the variability among the feature vectors of different classes is maximized. LDA performs dimensionality reduction while preserving as much of the class discriminatory information as possible. Without going into the math, in order to find a good projection vector, we need to define a measure of separation between the projections. The solution proposed by Fisher is to maximize a function that represents the difference between the means, normalized by a measure of the within-class scatter. LDA has three main drawbacks; the first is that it assumes that the data resides in $L_2$; second, LDA assumes that the distribution of the samples in each class is Gaussian which is not necessarily true for our samples; third, it is much slower to calculate compared to PCA.\\
+LDA, a descendant of the original Fisher-LDA that was proposed by Fisher in \cite{fisher1936use}, overcomes this problem. Unlike PCA, LDA is a supervised technique, i.e., it explicitly attempts to model the difference between classes of data based on the samples labeling. In this method, variability among the feature vectors of the same class is minimized and the variability among the feature vectors of different classes is maximized. LDA performs dimensionality reduction while preserving as much of the class discriminatory information as possible. A brief tutorial on LDA is given in \cite{balakrishnama1998linear}. Without going into the math, in order to find a good projection vector, we need to define a measure of separation between the projections. The solution proposed by Fisher is to maximize a function that represents the difference between the means, normalized by a measure of the within-class scatter. LDA has three main drawbacks; the first is that it assumes that the data resides in $L_2$; second, LDA assumes that the distribution of the samples in each class is Gaussian which is not necessarily true for our samples; third, it is much slower to calculate compared to PCA.\\
 
 \emph{TODO: LDA demo image.}\\
 
@@ -930,7 +945,7 @@ English  & Form 1 & Form 2 & Form 3\\
   \hline
   H(Fin) &  & & \\ 
   \hline
-  H(Mid) & & &  \\ 
+  H(Mid) &  & &  \\ 
   \hline
   NY(Fin) &  &  & \\ 
   \hline
