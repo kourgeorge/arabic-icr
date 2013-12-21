@@ -357,19 +357,16 @@ The scoring is then calculated as follows: $S=\frac{s}{6N}$, where the $N$ is th
 
 \section{Similarity Measure}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why do we need this?}}{}
-In this chapter we will discuss the various methods used in this work to asses the similarity between the different types of mathematical constructs, such as 2-D sequences that represent a handwritten curves, feature space vectors and wavelets domain coefficient vectors.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
+In this chapter we will discuss the various methods used in this work to asses the similarity between data samples. Given two data elements, the goal is to define a quantitative measure of their similarity with the intent of approximating perceptual resemblance between them. The task of mathematically capturing the human perceptual differences between two observed objects is not an easy task. Generally, similarity measures techniques can be applied on the raw data representations or on other representations of the data, such as on the feature vectors \cite{chen2005similarity}.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The importance of being able to asses the similarity between 2 strokes.}}{}
-We remind the reader that our ultimate goal is to obtain a fast and precise method to determine the dissimilarity between any given handwritten strokes. By precise we mean that it should be as close as possible to the human intuition. Finding the dissimilarity between two strokes based on the raw data representation is difficult and computationally expensive. To overcome this hardship, feature extraction methods were considered, as described in the section \ref{sec:feature_extraction}, which transform the original data into the feature space. The transformation is done by extracting descriptive and expressive information from the raw data representation. In the feature space the samples are represented compactly and two given feature vectors can be compared using an effective distance function. A desired feature extraction technique should maintain that the similarity degree between two objects in the feature space should reveals how similar the two shapes really are, and to do so inexpensively. Given the ability to correctly asses the similarity between two objects, the classification of a sample object is simply the label of its closest neighbor.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Similarity measure on raw data vs. on the feature space}}{}
+We remind the reader that our ultimate goal is to obtain a fast and precise method to determine the dissimilarity between any given handwritten strokes. By precise we mean that it should be as close as possible to the human intuition. Finding the dissimilarity between two strokes based on the raw data representation is difficult and computationally expensive. To overcome this hardship, feature extraction methods were considered, as described in the section \ref{sec:feature_extraction}, which transform the original data into the feature space. The transformation is done by extracting descriptive and expressive information from the raw data representation. In the feature space the samples are represented compactly and two given feature vectors can be compared using an effective distance function. A desired feature extraction technique should maintain that the similarity degree between two objects in the feature space should reveals their similarity in the real world, and to do so inexpensively. Equipped with a method to correctly asses the similarity between two objects, the classification of a sample object is simply the label of its closest neighbor in the sample set.\\
 
 %Later, in this work, we will show that also two vectors in that describe the coefficient of wavelet domain reveals the measure of dissimilarities between the corresponding handwritten trajectories.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Generalize!}}{}
-%Given two data elements, as mentioned, the goal is to define a quantitative measure of their dissimilarity with the intent of approximating perceptual resemblance between them. 
-The task of mathematically capturing the human perceptual shape differences is not an easy task. Generally, similarity measures techniques can be applied on the raw data representations or on other representations of the data, such as on the feature vectors \cite{chen2005similarity}.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Formal definition - distance function}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Distance function formal definition}}{}
 The similarity measure is formalized as a so-called \emph{distance function}. 
 \begin{definition}
 Given a data space $D$. For any two data elements $x,y \in D$, a \emph{distance function} $dist$, on $D$ is defined as:
@@ -381,91 +378,79 @@ where $dist$ has the following properties:
 \item $dist(x,y)=0 \Leftrightarrow x=y$ (reflexivity)
 \item $dist(x,y) = dist(y,x)$ (symmetry)
 \end{itemize}
-The pair $(D,dist)$ is called a distance space.
+The pair $(D,dist)$ is called a \emph{distance space}.
 \end{definition}
-The distance function depends on the application and the data representation and needs to be carefully designed to fit the problem domain. Significant amount of research has been carried out on similarity measure functions, both in distance functions and their efficient evaluation. Much of the previous research was done on similarity search over time series and distributions. \\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Distance function selection}}{}
+The distance function should be selected to best suit the  application and the data representation it handles. It needs to be carefully designed to fit the problem domain. Significant amount of research has been carried out on similarity measure functions, both in distance functions and their efficient evaluation.\\ 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Previous research}}{}
+Much of the previous research was done on similarity measure of time series and distributions. In this research, despite the fact the we do not consider the temporal information of the written stroke, amongst the other, we use a distance function that was originally designed for time serieses.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Properties of a good dissimilarity measure.}}{}
-A good similarity measure should be able to cope with various types of discrepancy, such as shifting, noise and scaling. Such variations can be easily handled by a human. Time shifting may be caused by different sampling rate. Noise may be introduced by sensor failures. errors in detection techniques or disturbance signals \cite{chen2005similarity}.\\ 
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Queries types.}}{}
-In general, similarity-based search can be classified into two types: \emph{range queries} and \emph{k-nearest neighbor queries}. It can be argued that range queries are fundamental, and virtually all published metric indexing methods support them \cite{hetland2009basic}. 
-Under the definition of a distance function, a formal definition of the query is given as follows: 
-\begin{definition}
-Given a data space $D$, a distance function $dist$ defined on $D$, a query object $q$ and a range parameter $r \geq 0$. \textbf{Range query} returns all the data objects in $D$ that are within a distance $r$ from the query object $q$.
-\begin{equation}
-Range(q,r,D,dist)=\{o \in D | dist(q,o) \leq r \}
-\end{equation} 
-\end{definition}
-
-\begin{definition}
-Given a data space $D$, a distance function $dist$ defined on $D$, a query object $q$ and a range parameter $r \geq 0$. \textbf{kNN query} returns the k closest objects in $D$ to the query object $q$.
-\begin{equation}
-k-NN(q,D,dist)=\{A \subseteq D | \forall a \in A, b \in D \setminus A: dist(q,a) \leq dist(q,b) \wedge |A|=k \}
-\end{equation} 
-\end{definition}
+A good similarity measure should be able to cope with various types of discrepancy which can be easily handled by a human such as shifting, noise and scaling. Time shifting may be caused by different sampling rate and noise may be introduced by sensor failures \cite{chen2005similarity}.\\ 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Example - The Euclidean distance}}{}
-Euclidean distance is the most basic distance function, it is very common and easy to compute. However, Euclidean distance is insufficient for capturing the actual distances in a given space. For example, taxi drivers in Manhattan should measure distance not in terms of the length of the straight line to their destination, but in terms of the Manhattan distance, which takes into account that streets are either orthogonal or parallel to each other. The Euclidean and the Manhattan distances, are special cases of the  defined below Minkowski distance.\\
+Euclidean distance is the most basic distance function, it is very common and easy to compute. However, Euclidean distance is insufficient for capturing the actual distances in a given space. For example, taxi drivers in Manhattan should measure distance not in terms of the length of the straight line to their destination, but in terms of the Manhattan distance, which takes into account that streets are either orthogonal or parallel to each other. The Euclidean and the Manhattan distances, are special cases of the Minkowski distance.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Different Math Constructs}}{}
+In the course of this work, we encountered mainly three types of mathematical constructs which their distance functions were needed to be defined.
+The distance between two objects with a relatively complex mathematical construct are usually defined based on the distance function of its basic elements. For example, the distance between two vectors, will be defined using the distance function of two numbers. Henceforth, $d$ is used to denote the basic distance function and $dist$ will be used to denote the distance function of the complex construct. In the following we will use the Minkowski distance to demonstrate our intention. \\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Vectors}}{}
+The first construct is the \textbf{vector} of the same length $N$ over $R$, the field of real numbers. Given two such vectors $u$ and $v$ the Minkowski distance between them is given as follows:
+
+\begin{equation}
+dist(u,v)=Minkowski_p(u,v)=\sqrt[p]{\sum\limits_{i=1}^N d(u_i,v_i)^p}=\sqrt[p]{\sum\limits_{i=1}^N |u_i-v_i|^p}
+\end{equation}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Matrices}}{}
+The second construct is the \textbf{matrix}, which we will view as vector of vectors. $d$, in this case, is defined as the distance between two vectors, namely, the distance between two rows vectors and $dist$ is the distances between two matrices. For instance, given two matrices $A,B \in \mathbb{R}^{m \times n}$
+
+\begin{equation}
+dist(A,B) = Minkowski_p(A,B)=\sqrt[p]{\sum\limits_{i=1}^N d(A_i,B_i)^p}
+\end{equation}
+where $A_i$ and $B_i$ are the row vectors of the matrices $A$ and $B$ respectively.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Stroke trajectory}}{}
+The third is construct is the \textbf{stroke trajectory}. This construct is defined as an arbitrary length sequence of points in the $2-D$ space. To calculate the distance between two elements of this construct we need to define the distance function between any two points in the $2-D$ space, namely $d$, and then to define the distance between two sequences, $dist$. Note that general two different sequences may have different number of elements. However, the definition below of the Minkowski distance is given for two equi-length sequences, since, as we will discuss in the next paragraph, the Minkowski distance function does not support different length sequences.
+
+\begin{equation}
+dist(R,S)=Minkowski_p(R,S)=\sqrt[p]{\sum\limits_{i=1}^N d(r_i,s_i)^p}
+\end{equation}
+where $d(r_i,s_i)$ is the distance function between the planar points $r_i$ and $s_i$. 
+
+$d(r_i,s_i)$, as said before, is a matter of choice. However, in most cases it is defined as the Euclidean distance, i.e. 
+\begin{equation}
+d(r_i,s_i)=\sqrt[2]{({r_{i,x}-s_{i,x}})^2+({r_{i,y}-s_{i,y}})^2}
+\end{equation}
+where $r_{i,x}$ denote the x-axis of the point $r_i$.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Histograms and distributions}}{}
+Additional constructs which are mentioned later are \textbf{histograms} and \textbf{distributions}. A histogram is a special case of a vector. The cells of a histogram are usually referred to as bins and their content is usually and integer number. A histogram can be one dimensional or multi-dimensional. Abundantly, the comparison between two histograms is performed between equi-length histograms.
+Another special case is the distribution. In this work the distributions are discrete. The unique thing about distributions is that the overall weight, i.e. the total content of its bins, of two compared distribution is constant. \\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Drawbacks of the Minkowski distance}}{}
+In regards to stroke trajectories, the Minkowski distance has several disadvantages. First, it requires the two sequences to be of the same length. One could add padding zeros to the shorter sequence to overcome this problem, however, it would  severely harm  the similarity measure. Think about the case of the same sequence with two different scaling. Second, it does not support local shifting. Local shifting occurs when one point of one sequence is shifted to match an element of the other sequence (even when the two matched elements appear in different positions in the sequences). It is important when the compared sequences have similar shape but are out of phase. It is called "local", because not all of the points of one sequence need to be shifted in the same factor and direction to match the other sequence. By contrast, in "global" shifting, all the points are shifted along the same direction by a fixed shifting factor. Generally, local time shifting cannot be handled by Minkowski distance, because it requires the $i^{th}$ element of query sequence be aligned with the $i^{th}$ element of the data sequence \cite{chen2005similarity}.\\
 
 \begin{figure}[h!]
 	\centering
         \subfloat[]{
-            \label{fig:range_query}
-            \includegraphics[width=0.5\textwidth]{./figures/range_query}
+            \label{fig:euclidean_distance_time_series}
+            \includegraphics[width=0.5\textwidth]{./figures/euclidean_distance_time_series}
         }
         \subfloat[]{
-           \label{fig:knn_query}
-           \includegraphics[width=0.5\textwidth]{./figures/knn_query}
+           \label{fig:dtw_distance_time_series}
+           \includegraphics[width=0.5\textwidth]{./figures/dtw_distance_time_series}
         }        
-    \caption{Visualization of a range and k-nn queries in two-dimensional Euclidean space.}
-   \label{fig:similarity_query_types}
+    \caption{The distance between two relatively similar time serieses. Using the Euclidean distance as demonstrated in (a), the distance is $Minkowski_{2}(R,S)=8.68$. Using Data Time Warping as seen in (b), the distance is $DTW(R,S)=2.48$.}
+   \label{fig:time_serieses_distance_demo}
 \end{figure}
+ 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Different Math Constructs}}{}
-In this work we have encountered three types of mathematical constructs that we needed to determine their distance functions. In order to avoid confusion and to be precise, here we mention them and emphasize the differences between them.
-The first construct is the \textbf{vector} of a given $N$ dimensions over $R$, the field of real numbers. In this case $d$ is merely the distance between two real numbers, i.e $|a-b|$, and $dist$ is the distance between two vectors. The Minkowski distance mentioned earlier is an example of a $dist$ function over this construct.
-The second construct is the \textbf{matrix}, which we will view as vector of vectors. Unlike the second case, here the dimensions of the matrix is given and all the elements are of the same dimensions. $d$, in this case, is defined as the distance between two basic vectors, namely, the distance between two rows vectors and $dist$ is the distances between two matrices.
-The third is construct is the \textbf{stroke trajectory}. This construct is defined as an arbitrary length sequence of points in the $2-D$ space. In this case, to calculate the distance between two elements of this construct we need to define the distance function between any two points in the $2-D$ space, $d$, and then to define the distance between two sequences, $dist$. Note that two different sequences may have different number of elements.\\
-
-\emph{show a picture from the DTW or from the thesis that demonstrates the problem with similarity measure.} 
-
-For instance, let us define the Minkowski distance on the three structures mentioned above.
-
-\begin{definition}
-The Minkowski distance of order p between two vectors $v$ and $u$ of the same length $N$ is defined as follows:
-\begin{equation}
-Minkowski_p(u,v)=\sqrt[p]{\sum\limits_{i=1}^N |u_i-v_i|^p}
-\end{equation}
-\end{definition}
-
-\begin{definition}
-The Minkowski distance of order p between two metrices $A$ and $B$, $A,B \in R{m \times n}$ is defined as follows:
-\begin{equation}
-Minkowski_p(A,B)=\sqrt[p]{\sum\limits_{i=1}^N d(A_i,B_i)^p}
-\end{equation}
-where $A_i$ and $B_i$ are the row vectors of the matrices $A$ and $B$ respectively.
-\end{definition}
-
-\begin{definition}
-The Minkowski distance of order p between two stroke trajectories $R$ and $S$ of the same length $N$ is defined as follows:
-\begin{equation}
-Minkowski_p(R,S)=\sqrt[p]{\sum\limits_{i=1}^N d(r_i,s_i)^p}
-\end{equation}
-Where $d(r_i,s_i)$ is the distance function between the planar points $r_i$ and $s_i$. 
-\end{definition}
-
-$d(r_i,s_i)$ is also a matter of choice. However, in most cases it is defined as the Euclidean distance, i.e. 
-\begin{equation}
-d(r_i,s_i)=\sqrt[2]{({r_{i,x}-s_{i,x}})^2+({r_{i,y}-s_{i,y}})^2}
-\end{equation}
-Where $r_{i,x}$ denote the x-axis of the point $r_i$.\\
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Drawbacks of the Minkowski distance}}{}
-In regards to stroke trajectories, the Minkowski distance has several disadvantages. First, it requires the two sequences to be of the same length. Second, it does not support local shifting. Local shifting occurs when one point of one sequence is shifted to match an element of the other sequence (even when the two matched elements appear in different positions in the sequences). It is important when the compared sequences have similar shape but are out of phase. It is called "local", because not all of the points of one sequence need to be shifted in the same factor and direction to match the other sequence. By contrast, in "global" shifting, all the points are shifted along the same direction by a fixed shifting factor. Generally, local time shifting cannot be handled by Minkowski distance, because it requires the $i^{th}$ element of query sequence be aligned with the $i^{th}$ element of the data sequence \cite{chen2005similarity}.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Metric Definition}}{}
-The Minkowski distance function is a \emph{metric}. A formal definition of a metric follows. (Defenition \ref{def:metric})
+The Minkowski distance function is a \emph{metric}. A formal definition of a metric follows. (Definition \ref{def:metric})
 \begin{definition}
 Given a data space $D$. A distance function $dist$ is a \emph{metric} if for all $x,y,z \in D$, the following two additional conditions hold:
 \begin{itemize}
@@ -480,39 +465,42 @@ $dist$ is a metric. In this case, the pair $(D,dist)$ is called \emph{metric spa
 Mathematically, metric spaces are a generalization of Euclidean space, keeping some of its well-known geometric properties. These convenient properties allow us to achieve more efficient data structures and search algorithms.\\ 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Efficiency and Triangularity}}{}
-Besides the importance of qualitatively capturing the similarity between two objects, retrieval efficiency is another aspect related to distance functions. The execution time is of a query mainly affected by the number of distance function computations. The triangularity can be interperted is that if we were allowed to violate triangularity, two seemingly non-overlapping balls could still share objects. See figure \ref{fig:non_triangular_space} \cite{chen2005similarity}. The triangle inequality is a property that facilitate fast retrieval by using indexing and lower bounding. This aspect will be discussed in details in section \ref{[]}.\\
+Besides the importance of qualitatively capturing the similarity between two objects, similarity search efficiency is another aspect related to distance functions. The execution time is of a query mainly affected by the number of distance function computations. The triangle inequality is a property that facilitate fast retrieval by using indexing and lower bounding \cite{chen2005similarity}. Efficient Similarity search techniques will be discussed in details in section \ref{sec:nearest_neighbor_retrieval}.\\
 
-\begin{figure}[h!]
-\centering
-\includegraphics[width=0.7\textwidth]{./figures/non_triangular_space}       
-\caption{Illustration of a non-triangular space. Two regions defined as balls (everything within a distance rx and ry of x and y, respectively) seemingly don't overlap, as d(x, y) > rx + ry. Even so, there may be objects (such as z) that are found in both regions}
-\label{fig:non_triangular_space}
-\end{figure}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Advanced distance measure techniques}}{}
+To overcome the drawbacks in the basic Minkowski distance, many distance functions have been proposed in the literature for various application. Here we mention few that are used mostly in handwriting recognition applications and time series patterns: \emph{Data Time Warping} (DTW), \emph{Earth Mover's Distance} (EMD), \emph{Longest Common Subsequences} (LCSS) and \emph{Edit distance}.
+Each method has its strengthens and weaknesses. Some of these methods do not follow the triangle inequality while are not sensitive to noise. Other methods capture well the perceptual similarity between sequences while others can be embedded to into a metric space. Clearly, every distance function has a different time and space complexity. Each application should pick and choose the most suitable distance function for it.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Mention distance measure techniques}}{}
-To overcome the drawbacks in the basic Minkowski distance, many distance functions have been proposed in the literature for various application. Here we mention few that are used mostly in Handwriting recognition applications: \emph{Data Time Warping} (DTW) [12, 118, 57, 52], \emph{Earth Mover's Distance} (EMD), \emph{Longest Common Subsequences} (LCSS) [13, 108] and \emph{Edit distance}.
-Some of the above mentioned methods do not follow the triangle inequality which is one of important properties of a metric distance function, while are not sensitive to noise. Other methods are sensitive to noise but do follow the triangle equality. Other methods capture well the perceptual similarity between sequences while others can be embedded to into a metric space. Clearly, every distance function has a different time and space complexity. Each application should pick and choose the most suitable distance function it, \cite{chen2005similarity}.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Indexing and Lower Bounding}}{}
-Indexing techniques of measure functions is not fast enough for our application which has a strict responsiveness requirements. Thus we still need to use the euclidean space and integrating sub-linear search technique to achieve the needed performance and also we can't afford performing the computations the similarity measures mentioned above even if the number of computation is sub-linear. Thus we have taken a different approach and used embedding technique to facilitate using 
+In the following two subsections (\ref{subsec:emd} and \ref{subsec:dtw}) we will explain in details two similarity measure functions used in the thesis, the \emph{Earth mover's distance} and the \emph{Data time Warping}. 
 
 \subsection{The Earth Movers Distance}
-
-
+\label{subsec:emd}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction to EMD}}{}
-\emph{Earth Movers Distance} (EMD), introduced by Rubner et al. in \cite{rubner2000earth}, is a measure of the dissimilarity between two histograms. It has experimentally verified to capture well perceptual notion of a difference between images \cite{grauman2004fast}, since, Images are usually represented using multidimensional histograms. In fact, it is widely used in content-based image retrieval to compute distances between the color histograms of two digital images \emph{TODO: and citation}. 
+\emph{Earth Movers Distance} (EMD), introduced by Rubner et al. in \cite{rubner2000earth}, is a measure of the dissimilarity between two histograms. It has experimentally verified to capture well perceptual notion of a difference between images \cite{grauman2004fast}. It is widely used in content-based image retrieval to compute distances between the color histograms of two digital images \emph{TODO: and citation}.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{What requirement do we need from our distance function - why did we choose EMD.}}{}
-Histogram based descriptors, such as shape context, are usually compared using bin-wise dissimilarity measure like $L_2$ norm or the $\chi^2$ statistic. While these measures can be computed very fast, since they measure dissimilarities between the content of corresponding bins of the two histograms, they usually fail to consider local and global variations. These um-modeled variations may result in large dissimilarity values between two histograms that are perceived to be small.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Binwise based measures}}{}
+Histogram based descriptors, such as shape context, are usually compared using bin-wise dissimilarity measure such as the Minkowski distance (Formerly defined) or the $\chi^2$ statistic as defined below.\\
+ 
+\begin{definition}
+Given two histograms $H=\{h_i\}$ and $K=\{k_i\}$ the following is defined as the $\chi^2$ statistic 
+\begin{equation}
+dist_{\chi^2}(H,K)=\sum_{i} \frac{(h_i - m_i)^2}{m_i}
+\end{equation}
+where $m_i=\frac{h_i+k_i}{2}$
+\end{definition}
 
-Generally speaking, the distance between two histograms is a special case of the well-known \emph{transportation problem}, a.k.a the Monge-Kantorovich problem \cite{rachev1985monge} defined below (Definition \ref{def:transportation_problem}). Accordingly, EMD is based on the solution to the transportation problem, for which efficient algorithms are available. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Drawback of binwise based measures}}{}
+While these measures can be computed very fast, since they measure dissimilarities between the content of corresponding bins of the two histograms and do not use information across bins, they usually fail to consider local and global variations. These um-modeled variations may result in large dissimilarity values between two histograms that are perceived to be small.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The transportation problem}}{}
+Generally speaking, the distance between two histograms is a special case of the well-known \emph{transportation problem}, a.k.a the Monge-Kantorovich problem \cite{rachev1985monge} defined below (Definition \ref{def:transportation_problem}). Accordingly, EMD is based on the solution to the transportation problem, for which efficient algorithms are available. \\
 
 \begin{definition}
 \label{def:transportation_problem}
 Given several \emph{suppliers} and \emph{consumers}. Each supplier, $P_i$, having a given amount of goods $p_i$, and each consumer, $Q_j$, having a given amount of demand, $q_j$. For each supplier-consumer pair, the cost of transporting a single unit of goods is given, $d_{ij}$. The transportation problem is then to find the a least expensive flow of goods from supplier to consumer that satisfies the consumer's demand, i.e., finding the flow $f_{ij}$ between $P_i$ and $Q_j$ which minimizes:
 \begin{equation}
-COST(P,Q,F)=\sum\limits_{i=1}^{m} \sum\limits_{j=1}^{n} d_{ij}f_{ij} 
+COST(P,Q,F)=\sum_{i,j} d_{ij}f_{ij} 
 \end{equation}
 subject to the following constrains:
 \begin{equation}
@@ -525,38 +513,41 @@ f_{ij} \geq 0, 1\leq i \leq m, 1\leq j \leq n
 \sum\limits_{i=1}^{m} f_{ij} \leq q_j, \forall 1\leq j \leq n
 \end{equation}
 \begin{equation}
-\sum\limits_{i=1}^{m} \sum\limits_{j=1}^{n} f_{ij} = \min\left( \sum\limits_{j=1}^{n} f_{ij} \leq p_i, \sum\limits_{i=1}^{m} f_{ij} \leq q_i \right)
+\sum\limits_{i,j} f_{ij} = \min\left( \sum\limits_{j=1}^{n} f_{ij} \leq p_i, \sum\limits_{i=1}^{m} f_{ij} \leq q_i \right)
 \end{equation}
 \end{definition}
 
-In the case where the total amount of goods equals the total amount of goods demanded, the solution is a complete one-to-one correspondence. i.e. given a matching function $pi:Q \rightarrow F$,
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Same weights special case}}{}
+%In the special case where the total amount of goods the suppliers can provide equal the total amount of goods demanded, the solution is a complete one-to-one correspondence. i.e. given a matching function $F:P \rightarrow Q$,
+%\begin{equation}
+% COST(P,Q)=\min_{\pi:P \rightarrow Q} \sum_{i \in P } d_{i,\pi(i)}
+%\end{equation} 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD definition}}{}
+Once the general transportation problem solved, and optimal flow $f$ was found, EMD is defined as the cost normalized by the total flow, namely the total weight of the smaller histogram. which is done in order to avoid favoring smaller histograms. i.e.:
 \begin{equation}
- COST(Q,F)=\min_{\pi:Q \rightarrow F} \sum_{p_i \in P} D(p_i,\pi(p_i))
+EMD(P,Q)=\min\limits_{f} {\frac{\sum_{i,j} f_{ij}d_{ij}}{\sum_{i,j} f_{ij}}}
 \end{equation} 
 
-Once the general transportation problem solved, and optimal flow $f$ was found, EMD is defined as the cost normalized by the total flow. A formal definition of EMD metric is given as follows:
+EMD is a natural and intuitive metric. Descriptively, if the histograms are interpreted as two different ways of piling up a certain amount of sand, the EMD is the minimal cost of turning one pile to other. EMD is the minimal total ground distance traveled, weighted by the amount of sand moved (called flow). When used to compare histograms with the same overall mass, namely distributions, EMD is a metric.\\
 
-\begin{definition}
-Given two histograms $h, g$, a ground distance $d_{ij} \geq 0$ and a flow $f_{ij} \geq 0$ (from bin $h_i$ to bin $g_j$). EMD is defined as follows:
-\begin{equation}
-EMD(h,g)=\min{\frac{\sum_{i,j} f_{ij}d_{ij}}{\sum_{i,j} g_{ij}}}
-\end{equation} 
-such that $\sum_{j} f_{ij} \leq h(i)$, $\sum_{i} f_{ij} \leq g_i$, $\sum_{i,j} f_{ij}=min\left(\sum_{i} h_i, \sum_{i} g_i\right)$
-\end{definition}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD modeling as flow in graph}}{}
+{\color{blue}EMD being a transportation problem, can also be modeled as a network flow problem in graph theory. The two histograms are represented by a single graph with a vertex for each bun and a graph distance as the edge weights. The two histogram vertices act as sources abs siinks respectively with bin content as values. Computing EMD is now an uncapacitated minimum cost flow problem and can be solved by Orlin's algorithm in $O(N^3 logN)$\cite{[]}}\\
 
-EMD is a natural and intuitive metric. Descriptively, if the histograms are interpreted as two different ways of piling up a certain amount of sand, the EMD is the minimal cost of turning one pile to other. EMD is the minimal total ground distance traveled, weighted by the amount of sand moved (called flow). When used to compare histograms with the same overall mass, EMD is a metric.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD modeling as flow in graph}}{}
+As seen in previous sections, Both features used in this thesis produces histograms. The implementation used in this work for the SC produces a feature vector with a constant total mass. In this case, EMD is a true metric and thus it is the the best fit for our needs.\\
 
-{EMD being a transportation problem, can also be modeled as a network flow problem in graph theory. The two histograms are represented by a single graph with a vertex for each bun and a graph distance as the edge weights. The two histogram vertices act as sources abs siinks respectively with bin content as values. Computing EMD is now an uncapacitated minimum cost flow problem and can be solved by Orlin's algorithm in $O(N^3 logN)$\cite{}}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD in handwriting recognition}}{}
+EMD was used by Saabne in \cite{[]} for off-line handwriting recognition. However, for the best of our knowledge, this is the first use of EMD in the on-line handwriting recognition.\\
 
-As seen in previous sections, Both features used in this thesis produces histograms. The implementation used in this work for the SC produces a feature vector with a constant total mass. In this case, EMD is a true metric and thus it is the the best fit for our needs.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD drawback}}{}
+The major hurdle to using EMD is its $O\left( {{N^3}\log N} \right)$ computational complexity (for an N-bin histogram). The complexity is magnified when the task is to search for similar shapes (nearest neighbors) in a large database. In this case, a linear scan of the database would require computing a comparison of superpolynomial complexity for each database member against the query shape. Hierarchical search methods, pruning, or the triangle inequality may be employed, yet query times are still linear in the worst case, and individual comparisons maintain their high complexity regardless \cite{grauman2004fast}.\\
 
-EMD was used by Saabne in \cite{[]} for off-line handwriting recognition. However, for the best of our knowledge, this is the first use of EMD in the on-line handwriting recognition. {TODO: give more examples of usages, be more specific about the handwriting recognition field.} 
-
-The major hurdle to using EMD is its $O\left( {{N^3}\log N} \right)$ computational complexity (for an N-bin histogram). The complexity is magnified when the task is to search for similar shapes (nearest neighbors) in a large database. In this case, a linear scan of the database would require computing a comparison of superpolynomial complexity for each database member against the query shape. Hierarchical search methods, pruning, or the triangle inequality may be employed, yet query times are still linear in the worst case, and individual comparisons maintain their high complexity regardless \cite{grauman2004fast}.
-
-In the next subsection, we will discuss an EMD embedding technique which spares the linear scan of the entire database and greatly reduce the computation effort in approximating the EMD distance between two objects.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{}}{}
+In the next subsection, we will discuss an EMD embedding technique which greatly reduce the computation effort in approximating the EMD distance between two objects and also we will discuss indexing techniques that spares the linear scan of the entire database and \\
 
 \subsection{Data Time Warping}
+\label{subsec:dtw}
 \emph{Dynamic time warping} (DTW) is an algorithm for measuring similarity between two time serieses. The method is to find an optimal alignment between two given sequences. Intuitively, the sequences are warped in a non-linear fashion to match each other. DTW solves the discrepancy between intuition and calculated distance by achieving the optimal alignment between sample points of two times sequences. Restrictions can be imposed on the matching technique to improve the matching results and the algorithm's time complexity. The only restriction placed on the data sequences is that they should be sampled at equidistant points in time which can be easily achieved by re-sampling. A na\"{\i}ve approach to calculate the distance between two time serieses can be to resample one of the serieses and to compute the distance sample by sample, the problem with this technique is that it does not yield intuitive results as it might match samples that do not correspond well. See figure \ref{fig:dtw_dequence_demo}.
 
 \begin{figure}[h!] 
@@ -628,11 +619,17 @@ FastDTW, proposed by Stan Salvador and Philip Chan, approximate DTW in a linear 
 Ratanamahatana and Kough have shown the following fact about DTW in their work in \cite{ratanamahatana2005three}: Comparing sequences of different lengths and re-interpolating them to equal length produce no statistically significant difference in accuracy or precision/recall.  
 Although in our work we do make re-interpolating of sequences to compare equilength sequences.
 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{How DTW is used}}{}
+How come we use a temporal technique for our handwriting recognition? How is it used, for vectors? matrices? why is it good? 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Nearest Neighbors Retrieval}
+\label{sec:nearest_neighbor_retrieval}
 
 %\underline{Mind Map:}
 %\begin{enumerate}
@@ -676,14 +673,40 @@ Although in our work we do make re-interpolating of sequences to compare equilen
 %\item we return the best 3 candidates.
 %\end{itemize}
 
+
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Problem definition - k-NN queries}}{}
 Similarity search is a type of information retrieval where the query is a sample object, and the desired result is a set of objects deemed to be similar - in some sense - to the query. An important question is how to build a data-structure that quickly identifies the objects that are closest to a query object.
 
-{\color{blue}
-Under the distance function formalism, several query types may be formulated. In the following I focus on one of the basic kinds, so-called range queries, where all objects that fall within a given distance of the sample are returned. In other words, for a distance function $dist$, a query object $q$, and a
-search radius $r$, objects x for which $dist(q, x) \leq r$ are returned. Another type of query is the nearest neighbors query (returning the nearest object, or the k nearest objects)
-It can be argued that range queries are fundamental, and virtually all published metric indexing methods support them. \cite{hetland2009basic}}.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Similarity search query types}}{}
+Similarity measure techniques is used to facilitate similarity-based search. In general, similarity-based search can be classified into two types: \emph{range queries} and \emph{k-nearest neighbor queries}. It can be argued that range queries are fundamental, and almost all published metric methods support them \cite{hetland2009basic}. 
+Under the definition of a distance function, a formal definition of the query is given as follows: 
+\begin{definition}
+Given a data space $D$, a distance function $dist$ defined on $D$, a query object $q$ and a range parameter $r \geq 0$. \textbf{Range query} returns all the data objects in $D$ that are within a distance $r$ from the query object $q$.
+\begin{equation}
+Range(q,r,D,dist)=\{o \in D | dist(q,o) \leq r \}
+\end{equation} 
+\end{definition}
 
+\begin{definition}
+Given a data space $D$, a distance function $dist$ defined on $D$, a query object $q$ and a range parameter $r \geq 0$. \textbf{kNN query} returns the k closest objects in $D$ to the query object $q$.
+\begin{equation}
+k-NN(q,D,dist)=\{A \subseteq D | \forall a \in A, b \in D \setminus A: dist(q,a) \leq dist(q,b) \wedge |A|=k \}
+\end{equation} 
+\end{definition}
+
+\begin{figure}[h!]
+	\centering
+        \subfloat[]{
+            \label{fig:range_query}
+            \includegraphics[width=0.5\textwidth]{./figures/range_query}
+        }
+        \subfloat[]{
+           \label{fig:knn_query}
+           \includegraphics[width=0.5\textwidth]{./figures/knn_query}
+        }        
+    \caption{Visualization of a range and k-nn queries in two-dimensional Euclidean space.}
+   \label{fig:similarity_query_types}
+\end{figure}
 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Metric Space}}{}
@@ -721,6 +744,10 @@ By rewriting inequality 2.9, $dist(Q,S) \geq dist(Q,R) - dist(R,S)$ can be deriv
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction to the section.}}{}
 In this section we will discuss the usage indexing techniques and consider their advantages and drawbacks. We will also consider an embedding techniques that allows us to get the best of the both fast similarity measure calculation and use the advantages of the normed space. It will allow us to approximate the EMD distance between two histograms, and since the embedding is into an $L_1$ normed space, efficient object retrieval data structures can be used. 
+
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Indexing and Lower Bounding}}{}
+Indexing techniques of measure functions is not fast enough for our application which has a strict responsiveness requirements. Thus we still need to use the euclidean space and integrating sub-linear search technique to achieve the needed performance and also we can't afford performing the computations the similarity measures mentioned above even if the number of computation is sub-linear. Thus we have taken a different approach and used embedding technique to facilitate using. 
 
 \subsection{Approximating EMD using Embedding}
 \label{sec:approximating_emd_using_embedding}
@@ -793,13 +820,13 @@ k-d tree, a special case of binary space partitioning trees, is a data structure
 The k-d tree is formed as follows: Every point is either branch node or is contained in a leaf node. Every point node in the tree is associated with one of the k-dimensions and can be though of an hyperplane that divides the space into two half spaces in that dimension. Points to the left of this hyperplane are represented by the left subtree of that node and points right of the hyperplane are represented by the right subtree. Since we would like the partition of the subspace to be as equal as possible, the selection of the point to function as a branch node in every level has a great impact on the balance of the tree. The selection can be done in many ways, the most common way is to find the medial point of a number of points in the subtree. The number of points in a leaf node is also customizable and is mostly affected by the cardinality of the points in the database and k. Since, in most application the k is predefined. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{How the NN are found?}}{}
-The approximation of the kNN using kdtree is done by initially finding the leaf node which contain the query point. although most it is mostly probable the nearest neighbors are contained in the leaf node, it does not necessarily contain the kNN of the query point. In the approximate version of the NN retrieval, the algorithm can halt here and return the NN of a the target point using exhaustive search on the node contained in the leaf node. However, the exact kNN version of k-d tree may require the algorithm to recursively explore the other child node and look for near neighbors in the all other branches that possibly contain a closer solution to the so far found points. Exact details of the algorithm can be found in \cite{bentley1975multidimensional}.
+The approximation of the k-NN using k-d tree is done by initially finding the leaf node which contain the query point. although most it is mostly probable the nearest neighbors are contained in the leaf node, it does not necessarily contain the kNN of the query point. In the approximate version of the NN retrieval, the algorithm can halt here and return the NN of a the target point using exhaustive search on the node contained in the leaf node. However, the exact kNN version of k-d tree may require the algorithm to recursively explore the other child node and look for near neighbors in the all other branches that possibly contain a closer solution to the so far found points. Exact details of the algorithm can be found in \cite{bentley1975multidimensional}.
  
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Expected time complexity}}{}
-The construction time of the kdtree is O($d N log N$). We can afford this high complexity of the construction since the this process is done in a off-line manner and theoretically will be executed mostly several times. However, this tax pays off when it it comes to the enhancement we achieve in the NN search time complexity. The impractically observed average time is $O(log N)$. The worst case scenario the running time is $O(N^{d^2})$ when d is the dimensionality of the sample elements.
+The construction time of the k-d tree is O($d N log N$). We can afford this high complexity of the construction since the this process is done in a off-line manner and theoretically will be executed mostly several times. However, this tax pays off when it it comes to the enhancement we achieve in the NN search time complexity. The impractically observed average time is $O(log N)$. The worst case scenario the running time is $O(N^{d^2})$ when d is the dimensionality of the sample elements.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why we chose kdtree and not LSH.}}{} 
-kdtree is mostly used for solving the kNN problem and the range problem, i.e. given a range the algorithm should return all the object in the given range. We have preferred to use kdtree is over LSH. The reason is that since the dimensionality of the resulted samples after dimensionality reduction is low as seen in chapter \ref{[]} and we are able to use kdtree for retriving the exact kNN. kdtree is sensitive to the curse of dimensionality, which do not appear in our reduced data. 
+kdtree is mostly used for solving the k-NN problem and the range problem, i.e. given a range the algorithm should return all the object in the given range. We have preferred to use kdtree is over LSH. The reason is that since the dimensionality of the resulted samples after dimensionality reduction is low as seen in chapter \ref{[]} and we are able to use kdtree for retriving the exact kNN. kdtree is sensitive to the curse of dimensionality, which do not appear in our reduced data. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Mention the matlab library and the parameters we used.}}{} 
 In our implementation, the built-in Matlab wrapper was used for kdtree available in the statistical toolbox and introduced in Matlab R2013B \emph{[TODO: add reference]}. The implementation can be used with different parameters such as the distance measure and the cardinality of the lead node. And it do not provide the approximate version of kdtree, only the exact one. We empirically found that the following parameters are the best for our needs: $L_1$ metric, since the EMD embedding is into the $L_1$ space and the bucket size is 50. 
@@ -817,30 +844,29 @@ In our implementation, the built-in Matlab wrapper was used for kdtree available
 \label{sec:csr}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}  
-On the one hand a large and verified sample set is crucial for every learning algorithm, in particular, it is important in the handwritten pattern classification because of the variety of styles between people in their handwriting. On the other hand, a large sample set can harm the performance of the NN based recognition system, and even harm the accuracy of the recognition because of outliers.  
-As can be seen in section \ref{[]}, for some letters positions many samples were collected. And for other letters smaller set of samples were collected. On the one hand, we would like to maintain the underlying letters distribution since the distribution of our sample set has a high correlation to the real world letter distribution. On the other hand, as we have mentioned before, a non proportional sample size for some letters may harm our recognition process.
+On the one hand a large and verified sample set is crucial for every learning algorithm, in particular, it is important in the handwritten pattern classification because of the variety of styles between people in their handwriting. On the other hand, a large sample set can harm the performance of the NN based recognition system, and even harm the accuracy of the recognition because of outliers. 
+As can be seen in section \ref{[]}, for some letters positions many samples were collected. And for other letters smaller set of samples were collected. On the one hand, we would like to maintain the underlying letters distribution since the distribution of our sample set has a high correlation to the real world letter distribution. On the other hand, as we have mentioned before, a non proportional sample size for some letters may harm our recognition process.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
 Cluster analysis is a common approach used in both supervised and unsupervised learning. It aims to partition a a set of objects  into groups in such a way that objects in the same group (called a cluster) are more similar (in some sense or another) to each other than to those in other groups.
 Clustering has two main uses; the first is deriving a reduced representation of the full data set. the second use is deducing new insights into the structure of the data.
 Since a cluster is a notion that cannot be precisely defined, thus there is no objectively correct clustering and this is the reason there are so many clustering algorithms.
-There are many clustering models. By models we mean the basic concept on which the clustering is based upon. The most prominent models are the \emph{Connectivity models}. In this group we can find the hierarchical clustering. Another widely used set of models is the \emph{Centroids models} which contain such as well known k-means algorithm. Cluster analysis is used for various goals. In non-supervised learning, when the class label are not available, this technique enable the classification system to impose classes on the sample set. In the supervised learning, it can be used to impose a hierarchy on the sample set and by doing so improving the classification performance and accuracy. 
-
+There are many clustering models. By models we mean the basic concept on which the clustering is based upon. The most prominent models are the \emph{Connectivity models}. In this group we can find the hierarchical clustering. Another widely used set of models is the \emph{Centroids models} which contain such as well known k-means algorithm. Cluster analysis is used for various goals. In non-supervised learning, when the class label are not available, this technique enable the classification system to impose classes on the sample set. In the supervised learning, it can be used to impose a hierarchy on the sample set and by doing so improving the classification performance and accuracy.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{What type of clustering did we use, and why. How does L1 K-medoids}}{}
 The problem of disproportional number of samples per letter class we solved by using the clustering k-medoids algorithm. the k-medoids algorithm aims to break up the dataset into k clusters. A medoid is a representative object of a cluster whose average dissimilarity to all the objects in the cluster is minimal. The k-medoids algorithm finds the k medoids of a dataset. 
 k-medoids can work with an arbitrary matrix of distances between data points. In our case the distance function is $L_1$. 
-Our decision to use the k-medoids algorithm rather than the common k-means algorithm is derived from obtain a digest of the dataset. Thus the returned $k$ objects by the k-medoids algorithm will function as the representatives of the samples in a given class. 
+Our decision to use the k-medoids algorithm rather than the common k-means algorithm is derived from obtain a digest of the dataset. Thus the returned $k$ objects by the k-medoids algorithm will function as the representatives of the samples in a given class.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Short description of the k-medoids algorithm}}{}
-k-medoids operates as follows: first it selects $k$ objects in random, named $M$ of the in datapoints and associate each datapoint to the closest object in $M$. Then, for each element $m$ in $M$ and for each object $o$ in the data set, swap $m$ and $o$ and compute the the total cost of of the configuration, and select the configuration, with the lowest cost. Repeat the mentioned until the is no change in the set $M$. \emph{TODO: fix that flabby description.}  
+k-medoids operates as follows: first it selects $k$ objects in random, named $M$ of the in datapoints and associate each datapoint to the closest object in $M$. Then, for each element $m$ in $M$ and for each object $o$ in the data set, swap $m$ and $o$ and compute the the total cost of of the configuration, and select the configuration, with the lowest cost. Repeat the mentioned until the is no change in the set $M$. \emph{TODO: fix this flabby description.} \\ 
 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{When it is applied? How did we determine the number of clusters per each letter, and the number of elements in each cluster.}}{}
-As mentioned before, the number of sample instances per class may greatly affect the classification result. Thus, we would like that the number of samples of each class will be distributed correspondingly to the apriory probability of the appearance of the letter in a given text. Since the letters were taken from the same database as the test set, it could have achieved optimistic results since the lexicon is the same lexicon of ~930 Tunisian cities. Thus the redistribution of letters according there apriori probability to the general Arabic text probability. We pretend to to be context free, thus this step is necessary. In addition to the fact the we have achieved very disproportion of class representative in the sample set.     
+As mentioned before, the number of sample instances per class may greatly affect the classification result. Thus, we would like that the number of samples of each class will be distributed correspondingly to the apriory probability of the appearance of the letter in a given text. Since the letters were taken from the same database as the test set, it could have achieved optimistic results since the lexicon is the same lexicon of ~930 Tunisian cities. Thus the redistribution of letters according there apriori probability to the general Arabic text probability. We pretend to to be context free, thus this step is necessary. In addition to the fact the we have achieved very disproportion of class representative in the sample set. \\    
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{How did affect our results.}}{}  
-On the one hand, as claimed above, leaving the original distribution may result in a too good results since it will distributed according the the letters aproiri probability appearance. On the other hand the classification results may be hurt because of outliers that affect the NN algorithm. Here we would like to show classification results of before and after samples redistribution. In the following table we show the results of the test we have conducted as follows: We have created a test set of letters and reported the percentage of the recognition rate.
+On the one hand, as claimed above, leaving the original distribution may result in a too good results since it will distributed according the the letters aproiri probability appearance. On the other hand the classification results may be hurt because of outliers that affect the NN algorithm. Here we would like to show classification results of before and after samples redistribution. In the following table we show the results of the test we have conducted as follows: We have created a test set of letters and reported the percentage of the recognition rate.\\
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -874,7 +900,7 @@ where $W_{k \times p}$ is the linear transformation.\\
 \emph{Principal component analysis} (PCA) and \emph{linear discrimination analysis} (LDA) are traditional linear dimensionality reduction techniques.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Non-Linear DR}}{}
-In some cases, linear dimensionality reduction techniques perform poorly and a more powerful approach is required to provide the mapping from the high dimensional space to the low dimensional space. In such cases, non-linear techniques is are used. Yet, the drawback of such technique is concealed in its generality which may cause overfitting the sample set and not really capture the true underlying coordinate system. Commonly used non-linear technique include \emph{Kernel PCA}, \emph{Isometric Feature Mapping} (ISOMAP) and \emph{Locally-linear embedding} (LLE).\\
+In some cases, linear dimensionality reduction techniques perform poorly and a more powerful approach is required to provide the mapping from the high dimensional space to the low dimensional space. In such cases, non-linear techniques is are used. Yet, the drawback of such technique is concealed in its generality which may cause over-fitting the sample set and not really capture the true underlying coordinate system. Commonly used non-linear technique include \emph{Kernel PCA}, \emph{Isometric Feature Mapping} (ISOMAP) and \emph{Locally-linear embedding} (LLE).\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why do we need DR?}}{}
 The need for employing dimensionality reduction in this work emerged from the sparse vectors produces by the EMD embedding of the feature vectors into the wavelet domain procedure which was described in section \ref{sec:approximating_emd_using_embedding}. This process produced vectors in $R^{3946}$. The wish to employ k-d trees, which is very sensitive to high dimensional data, was the main reason for using dimensionality reduction. An alternative was to use a k-NN data-structure that performs well with high dimensional data such as LSH \cite{gionis1999similarity}. However, it would be less accurate since LSH is an approximate NN search method, unlike k-d tree which finds the exact k-NN samples.\\
