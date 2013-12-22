@@ -433,22 +433,6 @@ Another special case is the distribution. In this work the distributions are dis
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Drawbacks of the Minkowski distance}}{}
 In regards to stroke trajectories, the Minkowski distance has several disadvantages. First, it requires the two sequences to be of the same length. One could add padding zeros to the shorter sequence to overcome this problem, however, it would  severely harm  the similarity measure. Think about the case of the same sequence with two different scaling. Second, it does not support local shifting. Local shifting occurs when one point of one sequence is shifted to match an element of the other sequence (even when the two matched elements appear in different positions in the sequences). It is important when the compared sequences have similar shape but are out of phase. It is called "local", because not all of the points of one sequence need to be shifted in the same factor and direction to match the other sequence. By contrast, in "global" shifting, all the points are shifted along the same direction by a fixed shifting factor. Generally, local time shifting cannot be handled by Minkowski distance, because it requires the $i^{th}$ element of query sequence be aligned with the $i^{th}$ element of the data sequence \cite{chen2005similarity}.\\
 
-\begin{figure}[h!]
-	\centering
-        \subfloat[]{
-            \label{fig:euclidean_distance_time_series}
-            \includegraphics[width=0.5\textwidth]{./figures/euclidean_distance_time_series}
-        }
-        \subfloat[]{
-           \label{fig:dtw_distance_time_series}
-           \includegraphics[width=0.5\textwidth]{./figures/dtw_distance_time_series}
-        }        
-    \caption{The distance between two relatively similar time serieses. Using the Euclidean distance as demonstrated in (a), the distance is $Minkowski_{2}(R,S)=8.68$. Using Data Time Warping as seen in (b), the distance is $DTW(R,S)=2.48$.}
-   \label{fig:time_serieses_distance_demo}
-\end{figure}
- 
-
-
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Metric Definition}}{}
 The Minkowski distance function is a \emph{metric}. A formal definition of a metric follows. (Definition \ref{def:metric})
 \begin{definition}
@@ -471,13 +455,27 @@ Besides the importance of qualitatively capturing the similarity between two obj
 To overcome the drawbacks in the basic Minkowski distance, many distance functions have been proposed in the literature for various application. Here we mention few that are used mostly in handwriting recognition applications and time series patterns: \emph{Data Time Warping} (DTW), \emph{Earth Mover's Distance} (EMD), \emph{Longest Common Subsequences} (LCSS) and \emph{Edit distance}.
 Each method has its strengthens and weaknesses. Some of these methods do not follow the triangle inequality while are not sensitive to noise. Other methods capture well the perceptual similarity between sequences while others can be embedded to into a metric space. Clearly, every distance function has a different time and space complexity. Each application should pick and choose the most suitable distance function for it.\\
 
+\begin{figure}
+	\centering
+        \subfloat[]{
+            \label{fig:euclidean_distance_time_series}
+            \includegraphics[width=0.5\textwidth]{./figures/euclidean_distance_time_series}
+        }
+        \subfloat[]{
+           \label{fig:dtw_distance_time_series}
+           \includegraphics[width=0.5\textwidth]{./figures/dtw_distance_time_series}
+        }        
+    \caption{The distance between two relatively similar time serieses. Using the Euclidean distance as demonstrated in (a), the distance is $Minkowski_{2}(R,S)=8.68$. Using Data Time Warping as seen in (b), the distance is $DTW(R,S)=2.48$.}
+   \label{fig:time_serieses_distance_demo}
+\end{figure}
+
 In the following two subsections (\ref{subsec:emd} and \ref{subsec:dtw}) we will explain in details two similarity measure functions used in the thesis, the \emph{Earth mover's distance} and the \emph{Data time Warping}. 
 
-\subsection{The Earth Movers Distance}
+\subsection{The Earth Mover's Distance}
 \label{subsec:emd}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction to EMD}}{}
-\emph{Earth Movers Distance} (EMD), introduced by Rubner et al. in \cite{rubner2000earth}, is a measure of the dissimilarity between two histograms. It has experimentally verified to capture well perceptual notion of a difference between images \cite{grauman2004fast}. It is widely used in content-based image retrieval to compute distances between the color histograms of two digital images \emph{TODO: and citation}.\\
+The \emph{Earth Mover's Distance} (EMD), introduced by Rubner et al. in \cite{rubner2000earth}, is a measure of the dissimilarity between two histograms. It has experimentally verified to capture well perceptual notion of a difference between images \cite{grauman2004fast}. It is commonly used in content-based image retrieval to compute distances between the color histograms of two digital images \emph{TODO: and citation}.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Binwise based measures}}{}
 Histogram based descriptors, such as shape context, are usually compared using bin-wise dissimilarity measure such as the Minkowski distance (Formerly defined) or the $\chi^2$ statistic as defined below.\\
@@ -531,8 +529,8 @@ EMD(P,Q)=\min\limits_{f} {\frac{\sum_{i,j} f_{ij}d_{ij}}{\sum_{i,j} f_{ij}}}
 
 EMD is a natural and intuitive metric. Descriptively, if the histograms are interpreted as two different ways of piling up a certain amount of sand, the EMD is the minimal cost of turning one pile to other. EMD is the minimal total ground distance traveled, weighted by the amount of sand moved (called flow). When used to compare histograms with the same overall mass, namely distributions, EMD is a metric.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD modeling as flow in graph}}{}
-{\color{blue}EMD being a transportation problem, can also be modeled as a network flow problem in graph theory. The two histograms are represented by a single graph with a vertex for each bun and a graph distance as the edge weights. The two histogram vertices act as sources abs siinks respectively with bin content as values. Computing EMD is now an uncapacitated minimum cost flow problem and can be solved by Orlin's algorithm in $O(N^3 logN)$\cite{[]}}\\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD modeling as flow in graph and complexity}}{}
+EMD, being a transportation problem, can also be modeled as a network flow problem in graph theory. The two compared histograms are represented by a bipartite graph in which each bin is represented as a vertex and its content as the vertex value. An edge connects each bin in the left graph to every bin in the left graph. The edge's weight equals to the ground distance between the two bins. The vertices in the left side graph act as sources and the vertices in the right side as sinks. Computing EMD is now the \emph{uncapacitated minimum cost flow} problem and can be solved using Orlin's algorithm in $O(N^3 logN)$ for N-bins histograms \cite{shirdhonkar2008approximate}.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD modeling as flow in graph}}{}
 As seen in previous sections, Both features used in this thesis produces histograms. The implementation used in this work for the SC produces a feature vector with a constant total mass. In this case, EMD is a true metric and thus it is the the best fit for our needs.\\
@@ -541,14 +539,19 @@ As seen in previous sections, Both features used in this thesis produces histogr
 EMD was used by Saabne in \cite{[]} for off-line handwriting recognition. However, for the best of our knowledge, this is the first use of EMD in the on-line handwriting recognition.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD drawback}}{}
-The major hurdle to using EMD is its $O\left( {{N^3}\log N} \right)$ computational complexity (for an N-bin histogram). The complexity is magnified when the task is to search for similar shapes (nearest neighbors) in a large database. In this case, a linear scan of the database would require computing a comparison of superpolynomial complexity for each database member against the query shape. Hierarchical search methods, pruning, or the triangle inequality may be employed, yet query times are still linear in the worst case, and individual comparisons maintain their high complexity regardless \cite{grauman2004fast}.\\
+The major hurdle to using EMD is its $O\left( {{N^3}\log N} \right)$ computational complexity (for an N-bin histogram). The complexity is magnified when the task is to search for similar shapes (nearest neighbors) in a large database. In this case, a linear scan of the database would require computing a comparison of superpolynomial complexity for each database member against the query shape \cite{grauman2004fast}.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{}}{}
-In the next subsection, we will discuss an EMD embedding technique which greatly reduce the computation effort in approximating the EMD distance between two objects and also we will discuss indexing techniques that spares the linear scan of the entire database and \\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Next... Embedding}}{}
+In section \ref{subsec:approximating_emd_using_embedding}, we will discuss an EMD embedding technique which greatly reduces the computation effort in approximating the EMD distance between two objects and also facilitates the application of indexing which spares the linear scan of the entire database.\\
 
 \subsection{Data Time Warping}
 \label{subsec:dtw}
-\emph{Dynamic time warping} (DTW) is an algorithm for measuring similarity between two time serieses. The method is to find an optimal alignment between two given sequences. Intuitively, the sequences are warped in a non-linear fashion to match each other. DTW solves the discrepancy between intuition and calculated distance by achieving the optimal alignment between sample points of two times sequences. Restrictions can be imposed on the matching technique to improve the matching results and the algorithm's time complexity. The only restriction placed on the data sequences is that they should be sampled at equidistant points in time which can be easily achieved by re-sampling. A na\"{\i}ve approach to calculate the distance between two time serieses can be to resample one of the serieses and to compute the distance sample by sample, the problem with this technique is that it does not yield intuitive results as it might match samples that do not correspond well. See figure \ref{fig:dtw_dequence_demo}.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
+\emph{Dynamic time warping} (DTW) is an algorithm for measuring similarity between two time serieses. The method is to find an optimal alignment between two given sequences. Intuitively, the sequences are warped in a non-linear fashion to match each other. DTW solves the discrepancy between intuition and calculated distance by achieving the optimal alignment between sample points of two times sequences.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Drawback of naive comparison}}{}
+A na\"{\i}ve approach to calculate the distance between two time serieses can be to resample one of the serieses and to compute the distance sample by sample, the problem with this technique is that it does not yield intuitive results as it might match samples that do not correspond well. See figure \ref{fig:dtw_dequence_demo}.\\
 
 \begin{figure}[h!] 
 \centering
@@ -556,6 +559,9 @@ In the next subsection, we will discuss an EMD embedding technique which greatly
 \caption{The right scheme shows sample-by-sample na\"{\i}ve alignment after re-sampling and in the left scheme the alignment was performed using DTW }
 \label{fig:dtw_dequence_demo}
 \end{figure}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Is it really required?}}{}
+Restrictions can be imposed on the matching technique to improve the matching results and the algorithm's time complexity. The only restriction placed on the data sequences is that they should be sampled at equidistant points in time which can be easily achieved by re-sampling.\\ 
 
 \begin{definition}
 Given two time serieses, $X = \left( {{x_1},{x_2},...,{x_{\left| X \right|}}} \right)$ and $Y = \left( {{y_1},{y_2},...,{y_{\left| Y \right|}}} \right)$, DTW yields an optimal warping path $W = \left( {{w_1},{w_2},...,{w_{\left| W \right|}}} \right)$,  where ${w_k} = \left( {i,j} \right) \in \left[ {1:\left| X \right|} \right] \times \left[ {1:\left| Y \right|} \right]$ for $k \in \left[ {1:\left| W \right|} \right]$ which satisfies the two following: 
@@ -750,7 +756,7 @@ In this section we will discuss the usage indexing techniques and consider their
 Indexing techniques of measure functions is not fast enough for our application which has a strict responsiveness requirements. Thus we still need to use the euclidean space and integrating sub-linear search technique to achieve the needed performance and also we can't afford performing the computations the similarity measures mentioned above even if the number of computation is sub-linear. Thus we have taken a different approach and used embedding technique to facilitate using. 
 
 \subsection{Approximating EMD using Embedding}
-\label{sec:approximating_emd_using_embedding}
+\label{subsec:approximating_emd_using_embedding}
 
 Various approximation algorithms have been proposed to speed up the computation of EMD \emph{TODO: add refernces}. Indyk and Thaper, in \cite{indyk2003fast}, has suggested an embedding technique in which the un-normed EMD metric is embedded into a normed space, so that the distance between the two images is comparable to the distance between the two points which represent the embedding of the two images. Embedding time complexity is $O(Nd log{\Delta}$, where $N$ is the feature set size, $d$ is the feature space dimension and $\Delta$ is the diameter of the union if the two feature sets.
 
@@ -853,7 +859,7 @@ Clustering has two main uses; the first is deriving a reduced representation of 
 Since a cluster is a notion that cannot be precisely defined, thus there is no objectively correct clustering and this is the reason there are so many clustering algorithms.
 There are many clustering models. By models we mean the basic concept on which the clustering is based upon. The most prominent models are the \emph{Connectivity models}. In this group we can find the hierarchical clustering. Another widely used set of models is the \emph{Centroids models} which contain such as well known k-means algorithm. Cluster analysis is used for various goals. In non-supervised learning, when the class label are not available, this technique enable the classification system to impose classes on the sample set. In the supervised learning, it can be used to impose a hierarchy on the sample set and by doing so improving the classification performance and accuracy.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{What type of clustering did we use, and why. How does L1 K-medoids}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{What type of clustering did we use, and why. $L_1$ K-medoids}}{}
 The problem of disproportional number of samples per letter class we solved by using the clustering k-medoids algorithm. the k-medoids algorithm aims to break up the dataset into k clusters. A medoid is a representative object of a cluster whose average dissimilarity to all the objects in the cluster is minimal. The k-medoids algorithm finds the k medoids of a dataset. 
 k-medoids can work with an arbitrary matrix of distances between data points. In our case the distance function is $L_1$. 
 Our decision to use the k-medoids algorithm rather than the common k-means algorithm is derived from obtain a digest of the dataset. Thus the returned $k$ objects by the k-medoids algorithm will function as the representatives of the samples in a given class.\\
@@ -903,7 +909,7 @@ where $W_{k \times p}$ is the linear transformation.\\
 In some cases, linear dimensionality reduction techniques perform poorly and a more powerful approach is required to provide the mapping from the high dimensional space to the low dimensional space. In such cases, non-linear techniques is are used. Yet, the drawback of such technique is concealed in its generality which may cause over-fitting the sample set and not really capture the true underlying coordinate system. Commonly used non-linear technique include \emph{Kernel PCA}, \emph{Isometric Feature Mapping} (ISOMAP) and \emph{Locally-linear embedding} (LLE).\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why do we need DR?}}{}
-The need for employing dimensionality reduction in this work emerged from the sparse vectors produces by the EMD embedding of the feature vectors into the wavelet domain procedure which was described in section \ref{sec:approximating_emd_using_embedding}. This process produced vectors in $R^{3946}$. The wish to employ k-d trees, which is very sensitive to high dimensional data, was the main reason for using dimensionality reduction. An alternative was to use a k-NN data-structure that performs well with high dimensional data such as LSH \cite{gionis1999similarity}. However, it would be less accurate since LSH is an approximate NN search method, unlike k-d tree which finds the exact k-NN samples.\\
+The need for employing dimensionality reduction in this work emerged from the sparse vectors produces by the EMD embedding of the feature vectors into the wavelet domain procedure which was described in section \ref{subsec:approximating_emd_using_embedding}. This process produced vectors in $R^{3946}$. The wish to employ k-d trees, which is very sensitive to high dimensional data, was the main reason for using dimensionality reduction. An alternative was to use a k-NN data-structure that performs well with high dimensional data such as LSH \cite{gionis1999similarity}. However, it would be less accurate since LSH is an approximate NN search method, unlike k-d tree which finds the exact k-NN samples.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{What DR we use?}}{}
 In this thesis we have chosen to work only with linear dimensionality reduction techniques. PCA and LDA were applied sequentially in order to obtain linearly discriminative information in an efficient manner.\\
