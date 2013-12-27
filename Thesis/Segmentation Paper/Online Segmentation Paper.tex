@@ -120,15 +120,13 @@ The proposed segmentation approach employs both rules-based and recognition-base
 
 We rely of the assumption that the main body of a letter is contained entirely in a single stroke, i.e. no letter span over multiple strokes. This assumption is valid for the majority of written letters in most handwriting styles.\\ 
 
-The proposed technique describes a general concept of ongoing strokes segmentation. The decoupling between the different components and sub-components in the system enables different alternatives techniques to be integrated easily.\\ 
-
-The main objective of this work is to maximize the correct segmentation rate while maintaining low complexity and high performance of the system. Maximizing the recognition rate is a secondary objective.\\ 
+The proposed technique describes a general concept of ongoing strokes segmentation. The decoupling between the different components and sub-components in the system enables different alternatives techniques to be integrated easily. The main objective of this work is to maximize the correct segmentation rate while maintaining low complexity and high performance of the system. Maximizing the recognition rate is a secondary objective.\\ 
 
 Below, a digest of the three main stages of our approach:\\ 
 
-\textbf{Stage 1.} \emph{Candidate points} (CPs) are points of interest that are identified as potential segmentation points. In this stage, CPs are nominated while the strokes are being scribed and the sub-strokes that are imposed by these CPs are scored by a Arabic letter classification system which will described in a paper in the near future. The scoring represent the resemblance of the sub-stroke to a candidate letter. This stage is activated continuously after while the stroke is being written.\\
+\textbf{Stage 1.}  \emph{Candidate points} (CPs) are points of interest that are identified as potential segmentation points. In this stage, CPs are nominated while the strokes are being scribed and the sub-strokes that are imposed by these CPs are scored by a Arabic letter classification system which will described in a paper in the near future. The scoring represent the resemblance of the sub-stroke to a candidate letter. This stage is activated continuously after while the stroke is being written.\\
 
-\textbf{Stage 2.} The CPs are investigated and invalid candidate points are filtered out. Then, a scoring correction process is performed to adjust the scoring of the sub-strokes using several rules-based methods.\\
+\textbf{Stage 2.} The CPs are examined and invalid candidate points are filtered out. Then, a scoring correction process is performed to adjust the scoring of the sub-strokes using several rules-based methods.\\
 
 \textbf{Stage 3.} Using the scoring of the sub-strokes, several proposed heuristic algorithms are employed to select the final set of segmentation points.\\
 
