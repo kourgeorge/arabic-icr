@@ -44,6 +44,8 @@
 \theoremstyle{remark}
 \newtheorem{remark}{Remark}
 
+\usepackage[linesnumbered]{algorithm2e}
+
 \begin{document}
 \printnomenclature{}
 
@@ -471,7 +473,7 @@ In the following two subsections (\ref{subsec:emd} and \ref{subsec:dtw}) we will
 The \emph{Earth Mover's Distance} (EMD), introduced by Rubner et al. in \cite{rubner2000earth}, is a measure of the dissimilarity between histograms. It was experimentally verified to capture well the perceptual notion of a difference between images. It is commonly used in content-based image retrieval to compute distances between the color histograms of two digital images \cite{grauman2004fast}.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Binwise based measures}}{}
-Histogram based descriptors, such as shape context, are in many cases compared using a bin-wise dissimilarity measure such as the Minkowski distance (as defined in Equation \ref{eq:minkowski}) or the $\chi^2$ statistic as defined below.\\
+Histogram based descriptors, such as SC, are in many cases compared using a bin-wise dissimilarity techniques such as the Minkowski distance (as defined in Equation \ref{eq:minkowski}) or the $\chi^2$ statistic as defined below.\\
  
 \begin{definition}
 Given two histograms $H=\{h_i\}_{i=1}^{\ell}$ and $K=\{k_i\}_{i=1}^{\ell}$ the following is defined as the $\chi^2$ statistic: 
@@ -485,7 +487,7 @@ where $m_i=\frac{h_i+k_i}{2}$.
 Bin-wise dissimilarity measures can be computed very fast due to the fact that they measure dissimilarities between the content of corresponding bins of the two histograms and discard information across bins. However, they usually fail to consider local and global variations. These variations, which would be perceived as minor by a human, may result in a large dissimilarity values between two histograms.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The transportation problem}}{}
-Generally speaking, the distance between two histograms is a special case of the well-known \emph{transportation problem}, a.k.a the Monge-Kantorovich problem \cite{rachev1985monge} defined below (Definition \ref{def:transportation_problem}). Accordingly, EMD is based on the solution to the transportation problem, for which efficient algorithms are available. \\
+Generally speaking, the distance between two histograms can be viewed as a special case of the well-known \emph{transportation problem}, a.k.a the Monge-Kantorovich problem \cite{rachev1985monge} defined below (Definition \ref{def:transportation_problem}). Accordingly, EMD is based on the solution to the transportation problem, for which efficient algorithms are available. \\
 
 \begin{definition}
 \label{def:transportation_problem}
@@ -526,16 +528,16 @@ As seen in previous sections, both CS and MAD produce histograms. The implementa
 EMD was used by Saabne in \cite{saabni2013efficient} to measure similarity between shapes for recognizing and searching Arabic words. However, for the best of our knowledge, this is the first use of EMD for on-line handwriting recognition.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD drawback}}{}
-The major hurdle to using EMD is its $O\left( {{N^3}\log N} \right)$ computational complexity (for an N-bin histogram). The complexity is magnified when the task is to search for similar shapes (nearest neighbors) in a large database. In this case, a linear scan of the database would require computing a comparison of superpolynomial complexity for each database member against the query shape \cite{grauman2004fast}.\\
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Next... Embedding}}{}
-In Section \ref{subsec:approximating_emd_using_embedding}, we will discuss an EMD embedding technique which greatly reduces the computation effort in approximating the EMD distance between two objects and also facilitates the application of indexing which spares the linear scan of the entire database.\\
+The major hurdle to using EMD is its $O\left( {{N^3}\log N} \right)$ computational complexity (for an $N$-bin histogram). The complexity is magnified when the task is to search for similar shapes (nearest neighbors) in a large database. In this case, a linear scan of the database would require computing a comparison of superpolynomial complexity for each database member against the query shape \cite{grauman2004fast}. In Section \ref{subsec:approximating_emd_using_embedding}, we will discuss an EMD embedding technique which greatly reduces the computation effort in approximating the EMD distance between two objects and also facilitates the application of indexing which spares the linear scan of the entire database.\\
 
 \subsection{Data Time Warping}
 \label{subsec:dtw}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
-\emph{Dynamic time warping} (DTW) is an algorithm for measuring similarity between two time series. It finds an optimal alignment between two given sequences. Intuitively, the sequences are warped in a non-linear fashion to match each other. DTW solves the discrepancy between intuition and calculated distance by achieving the optimal alignment between sample points of two times sequences. See Figure \ref{fig:dtw_dequence_demo}.\\
+\emph{Dynamic time warping} (DTW) is an algorithm for finding the optimal alignment between two time series. Intuitively, the sequences are warped in a non-linear fashion to match each other. See Figure \ref{fig:dtw_dequence_demo}. It was developed originally for speech recognition\\ 
+
+
+DTW is used for solving the discrepancy between intuition and calculated distance using the alignment between the two sequences. It is done by accumulating the distance of the alignment path, i.e., summing the distance between every two corresponding points on the warping path. 
 
 \begin{figure}[h!] 
 \centering
@@ -570,42 +572,41 @@ Using a dynamic programing approach, DTW yields the optimal warping path by cons
 $D(i,j)$ is the minimum distance warping path that can be constructed from the two time series $X = \left( {{x_1},{x_2},...,{x_i}} \right)$ and $Y = \left( {{y_1},{y_2},...,{y_j}} \right)$. \\
 
 The accumulated distance matrix is calculated as follows: 
-\begin{align}
-\begin{matrix}
-D(0,0) = 0  \cr 
-D(i,1) = d( i,1)  \cr 
-D(1,j) = d(1,j)  \cr 
-\end{matrix} 
-\end{align}
+\begin{algorithm}
+$D(1,1) = 0$\;
+\For{$i\leftarrow 2$ \KwTo $n$}{
+	$D(i,1) = d(x_i,y_1)$\;
+}
+\For{$i\leftarrow 2$ \KwTo $m$}{
+	$D(1,j) = d(x_1,y_j)$\;
+}
+\For{$i\leftarrow 2$ \KwTo $n$}{
+	\For{$j\leftarrow 2$ \KwTo $m$}{
+		$D(i,j) = d(x_i,y_j) + \min {\left\{D(i,j - 1),D(i - 1,j),D(i - 1,j - 1)\right\}}$\;
+	}
+}
+\caption{Accumulated distance matrix ($D$) construction}
+\label{alg:adm_dtw}
+\end{algorithm}
 
-\begin{equation}
-D(i,j) = \min \left\{ \begin{matrix}
-  D(i,j - 1) \hfill \cr 
-  D(i - 1,j) \hfill \cr 
-  D(i - 1,j - 1) \hfill \cr \end{matrix}\right\} + d(i,j)
-\end{equation}
 
 Therefore, the value in $D(m,n)$ contains the minimum-distance warping path between $X$ and $Y$.
 The optimal warping path $W$ is retrieved by backtracking the matrix $D$ from the point $D(m,n)$ to the point $D(1,1)$ following the greedy strategy of looking for the direction from which the current distance is taken \cite{senin2008dynamic}.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{DTW usages}}{}
-\emph{TODO: write about DTW usages in the literature. see \cite{keogh2005exact}}.
-
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{stroke trajectories similarity measure using DTW and DTW usages in the literature}}{}
-Handwritten strokes can be seen as temporal sequences in the planar space. Nevertheless, in on-line handwriting recognition, usually the exact temporal information is discarded and re-sampled to obtain equidistant sampling. However, unlike off-line handwriting recognition, the ordering information of the samples is kept. As such, DTW is an intuitive method for calculating the correspondence between two strokes. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{stroke trajectories similarity measure using DTW}}{}
+Handwritten strokes can be seen as temporal sequences in the planar space. In the on-line handwriting recognition, the exact temporal information is discarded in most cases by resampling the strokes to obtain equidistant sampling. However, unlike off-line handwriting recognition, the ordering information of the samples is kept. As such, DTW is an intuitive method for calculating the correspondence between two strokes. 
 It have been proved relatively efficient and effective for shape matching of handwritten words. DTW was used in \cite{rath2003word, rath2003indexing, moghaddam2009application} to calculate the similarity between handwritten script in historical documents. Saabne has used DTW for key-word searching in \cite{saabni2011fast, saabni2008keyword}. \\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{DTW Speedup}}{}
-One drawback of DTW is its quadratic time and space complexity , i.e., $O(MN)$ where M and N are the time series lengths. Thus, several speedup methods have evolved. These methods fall into the following categories:
+One drawback of DTW is its quadratic time and space complexity, i.e., $O(mn)$ where $m$ and $n$ are the time series lengths. Therefore, several speedup methods have evolved. These methods fall into the following categories:
 \begin{enumerate}
-\item Constraints: Limiting the amount of calculated cells in the accumulated distance matrix.
+\item Constraints Enforcing: Limiting the amount of calculated cells in the accumulated distance matrix.
 \item Data Abstraction: Running the DTW algorithm on an abstract representation of the data.
 \item Pruning: Reducing the times DTW needs to run when determining similarity of time series.
 \end{enumerate}
 
-\paragraph{Constraints:} 
-Two constraints on DTW are the Sakoe-Chuba Band \cite{sakoe1978dynamic} and he Itakura parallelogram \cite{itakura1975minimum} (Figure \ref{fig:dtw_dequence_demo}). The grayed out area is the cells of the cost matrix that are filled by the DTW algorithm for each constraint. The warping path is looked for in the constraint window. The width of the window is specified by a parameter. By using such constraints the speedup factor is a constant and the DTW complexity is still quadratic. Note that if the warping path is does not reside in the constraint window, it will not be found by DTW, thus, such method is usually used when the warping path is expected to be in the constrain window.
+\paragraph{Constraints Enforcing:} 
+In some cases DTW tends to create an unrealistic correspondence between time-series features by aligning short features from one of the series to the long features on the second time series. To avoid this undesired phenomenon, constrains can be imposed on the possible correspondence between several consecutive points on the warping path. Two such constraints are the Sakoe-Chuba Band \cite{sakoe1978dynamic} and he Itakura parallelogram \cite{itakura1975minimum} (Figure \ref{fig:dtw_dequence_demo}). The grayed out area is the cells of the $D$ matrix that are filled by the DTW algorithm for each constraint. The warping path is looked for in the constraint window. The width of the window is specified by a parameter. Note that such constrains limit the amount of calculation needed for computing DTW, however, the speedup factor is a constant and the DTW complexity remains quadratic. Furthermore, if the warping path is does not reside in the constraint window, it will not be found by DTW, thus, such method is usually used when the warping path is expected to be in the constrain window.
 
 \begin{figure}
 \centering
@@ -617,8 +618,6 @@ Two constraints on DTW are the Sakoe-Chuba Band \cite{sakoe1978dynamic} and he I
 \paragraph{Data Abstraction:} Speedup using data abstraction is performed by running DTW on a reduced presentation of the data thus reducing the cell numbers that need to be computed. The warp path is calculated on the reduced resolution matrix and mapped back to the original (full) cost matrix. \emph{FastDTW} which was proposed in \cite{salvador2007toward} is an example of such approach. 
  
 \paragraph{Pruning:} Searching the most similar time series in the database given a template time series can be done more efficiently using lower bound functions than using DTW to compare the template to every series in the database. A lower-bounding is cheap and approximate. However, it underestimates the actual cost determined by DTW. It is used to avoid comparing series by DTW when the lower-bounding estimate indicates that the time series is worse match than the current best match \cite{rath2003word} (lower bounding benefits will be discussed in more details in Section \ref{subsec:lower_bounding_indexing}).\\
-
-%Ratanamahatana and Kough have shown the following fact about DTW in their work in \cite{ratanamahatana2005three}: Comparing sequences of different lengths and re-interpolating them to equal length produce no statistically significant difference in accuracy or precision/recall.  
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{How DTW is used in this work?}}{}
 In this work, DTW is used for candidates scoring (described in chapter \ref{sec:candidates_scoring}) rather than similar samples spotting. Actually, nearest neighbors are found among the entire dataset based on the EMD metric. Next, DTW is employed for measuring the similarity between the test sample and its nearest neighbors
@@ -664,7 +663,7 @@ In this work, DTW is used for candidates scoring (described in chapter \ref{sec:
 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction - problem definition}}{}
-Similarity search is a type of information retrieval where the query is a sample object and the desired result is a set of objects deemed to be similar - in some sense - to the query. An important question is how to build a data-structure that quickly identifies the objects that are closest to a query object.\\
+Similarity search is a type of information retrieval where the query is a sample object and the desired result is a set of objects deemed to be similar, in some aspect, to the query. An important question is how to build a data-structure that quickly identifies the objects that are closest to a query object.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Similarity search query types - from similarity measure to similarity search}}{}
 Similarity measure techniques is used to facilitate similarity-based search. In general, similarity-based search can be classified into two types: \emph{range queries} and \emph{k-nearest neighbor queries} \cite{hetland2009basic}. 
@@ -683,7 +682,7 @@ Given a data space $D$, a distance function $dist$ defined on $D$, a query objec
 \begin{equation}
 k-NN(q,D,dist)=\{A \subseteq D | \forall a \in A, b \in D \setminus A: dist(q,a) \leq dist(q,b) \wedge |A|=k \}
 \end{equation}
-\label{def:knn} 
+\label{def:knn_query} 
 \end{definition}
 
 \begin{figure}[h!]
@@ -700,8 +699,15 @@ k-NN(q,D,dist)=\{A \subseteq D | \forall a \in A, b \in D \setminus A: dist(q,a)
    \label{fig:similarity_query_types}
 \end{figure}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{}}{}
-In the previous section we have discussed several similarity measure techniques, and 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The two problems}}{}
+Two problems one must solve in order to achieve a fast similarity search technique.
+\begin{itemize}
+\item The slow similarity measure problem
+\item The linear scan problem
+\end{itemize}
+As can be seen from Definition \ref{def:range_query} and Definition \ref{def:knn_query} to answer the queries mentioned, one needs to scan the entire sample set. 
+The two mentioned problems can be solved by Lower bounding and indexing and embedding.
+
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{$L_p-norm$ advantage and drawbacks}}{}
 Using normed spaces (definition \ref{def:norm}) such as $L_p-norm$ (definition \ref{lp_norm}) to solve the dissimilarity measure problem has the advantage that in order to solve the similarity search problem, one can use data structures which are specifically designed for points living in the normed space, such as k-d trees and R-trees. these data structures provide mechanisms for answering the NN-query in an orders of magnitude faster than linear scan of the database. However, the quality of the dissimilarity measure of such norms is not always satisfactory \cite{indyk2003fast}.\\
@@ -751,8 +757,9 @@ In this following two subsection (\ref{} and \ref{}) we will discuss the usage i
 In subsection \ref{} 
 We will also consider an embedding techniques that allows us to get the best of the both fast similarity measure calculation and use the advantages of the normed space. It will allow us to approximate the EMD distance between two histograms, and since the embedding is into an $L_1$ normed space, efficient object retrieval data structures can be used.\\
 
-\subsection{Lower bounding and Indexing}
-\label{subsec:lower_bounding_indexing}
+\subsection{Lower bounding}
+\label{subsec:lower_bounding}
+
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction to the section.}}{}
 
 
@@ -768,6 +775,9 @@ Indexing techniques of measure functions is not fast enough for our application 
 \forall Q,R,S \in D, dist(Q,S)+dist(R,S) \geq dist(Q,R)
 \end{equation}
 By rewriting inequality 2.9, $dist(Q,S) \geq dist(Q,R) - dist(R,S)$ can be derived. If $dist(Q,R)$ and $dist(R,S)$ are known, $dist(Q,R) - dist(R,S)$ can be treated as a lower bound distance of dist(Q,S). If the current query range is $r$ and $dist(Q,R)-dist(S,R)> r$, the computation of dist(Q,S) can be saved since S does not belong to the answer set. This is the basic principle that most of distance-based indexing structures follow.\cite{chen2005similarity}}
+
+\subsection{Indexing}
+\label{subsec:indexing}
 
 \subsection{Approximating EMD using Embedding}
 \label{subsec:approximating_emd_using_embedding}
