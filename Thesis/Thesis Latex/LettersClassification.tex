@@ -354,18 +354,14 @@ The scoring is then calculated as follows: $S=\frac{s}{6N}$, where the $N$ is th
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Similarity Measure}
-\label{sec:similarity_measure}
+\section{Similarity Measures}
+\label{sec:similarity_measures}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
 Given two visual data elements, the task of mathematically capturing the human perceptual similarity is predominantly challenging. Similarity measure algorithms aim to quantitatively approximate the perceptual resemblance between data elements. In this chapter, we overview and discuss the different aspects of similarity measure evaluation techniques and present two approaches used in this work.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Intuition}}{}
 The classification technique we use is based on nearest neighbors retrieval, namely, the labeling of a query object is determined by considering the labels of its closest neighbors. Thus, the ability to correctly and efficiently determine the perceptual distance between two given handwritten strokes is  substantial. Evaluating the dissimilarity between two strokes based on the raw data representation is difficult and computationally expensive. To overcome this hardship, feature extraction methods are used, as described in Section \ref{sec:feature_extraction}, to map the original data into the feature space. The transformation is done by extracting descriptive and expressive information from the raw data representation. In the feature space the samples are represented compactly and two given feature vectors can be compared using an effective distance function. A desired feature extraction technique should facilitate assessing the similarity degree between two objects by maintaining that the distance between them in the feature space reveals their similarity in the real world, and to do so inexpensively. \\
-
-
-%Later, in this work, we will show that also two vectors in that describe the coefficient of wavelet domain reveals the measure of dissimilarities between the corresponding handwritten trajectories.\\
-
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Distance function formal definition}}{}
 The similarity measure is formalized as a \emph{distance function}. 
@@ -444,7 +440,7 @@ Given a data space $D$, a distance function $dist$ is a \textbf{metric} if in ad
 \end{definition}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Efficiency and Triangularity}}{}
-Besides the importance of qualitatively capturing the similarity between two objects, similarity search efficiency is another aspect related to distance functions. The execution time of a query mainly affected by the number of distance function computations. The triangle inequality is a property that facilitate fast retrieval by using indexing and lower bounding \cite{chen2005similarity}. Efficient Similarity search techniques will be discussed in details in Section \ref{sec:similarity_search}.\\
+Besides the importance of qualitatively capturing the similarity between two objects (i.e., effectiveness), similarity search efficiency is another aspect related to distance functions. The execution time of a query mainly affected by the number of distance function computations. The triangle inequality is a property that facilitate fast retrieval by using indexing and lower bounding \cite{chen2005similarity}. Efficient Similarity search techniques will be discussed in details in Section \ref{sec:similarity_search}.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Advanced distance measure techniques}}{}
 To overcome the drawbacks of the basic Minkowski distance, many distance functions have been proposed in the literature for various application. Here we mention a few that are used mostly in handwriting recognition applications and time series patterns: \emph{Data Time Warping} (DTW), \emph{Earth Mover's Distance} (EMD), \emph{Longest Common Subsequences} (LCSS) and \emph{Edit distance}. Each method has its strengthens and weaknesses. Each application should choose the similarity function that best fit its needs.\\
@@ -630,36 +626,17 @@ In this work, DTW is used for candidates scoring (described in chapter \ref{sec:
 \section{Similarity Search}
 \label{sec:similarity_search}
 
-%\underline{Mind Map:}
-%\begin{enumerate}
-
-%\item pruning and indexing can be used to spare calculations. \cite{chen2005similarity}
-%\begin {itemize}
-%\item what is pruning and what properties are needed for it.
-%\item what is indexing and what properties are needed.
-%\item Why it is not good for us.
-%\end {itemize}
-%\item EMD embedding
-%\begin {itemize}
-%\item Embedding by Indyk. (what is the exact setup, what are the bounds)
-%\item Krishnan paper - what does he bring to the discussion? 
-%\item Approximate Embedding by Shirdhonkar. (what is the exact setup, what are the bounds)
-%\end {itemize}
-%\item fast retrieval algorithms on normed spaces
-%\begin {itemize}
-%\item give an introduction, mentiond kdtree, Rtree and LSH (each one with its advantages and drawbacks)
-%\item k-d tree.
-%\end {itemize}
-%\item compare SC and MAD and angular, contour results under the embedding.
-%\end{enumerate}
-%
-%Answer the following:
-%\begin{itemize}
-%\item How is the classification is done - mention that the system receives a stroke and it goes over all the stages
-%\item A list of candidates is retrieved by the kdtree, then to be more precise we use a combination of the Constrained DTW metric and the distance of the sample and the candidate.
-%\item mention the alternatives - using different combination (we can afford using heavy tools since we have small candidate number)
-%\item we return the best 3 candidates.
-%\end{itemize}
+\underline{Mind Map:}
+\begin{enumerate}
+\item Introduction: what is similarity search and what type of queries are there. [Done]
+\item The problems encountered: 1. linear scan. 2. expensive similarity techniques. [Done]
+\item Simple solution to problematic metrics using Pruning by Lower bounding of metrics (still linearly scan the data). (not good enough) [Done]
+\item Indexing: What is indexing? What properties does it require from the distance function? Does the TE is required?
+\item What types of indexing techniques are there?Rtree, LSH and k-d tree pro's and con's. A section about k-d tree.
+\item EMD indexing using embedding to $L_1$ space, the two approaches and why did we select one of them.
+\item Our solution: using the embedding and k-d tree to get the approximate candidates (Saabne's paper)
+\item Resources: The basic principles of metric indexing \cite{hetland2009basic}, chen2005similarity \cite{chen2005similarity}, Approximate Embedding by Shirdhonkar, Embedding by Indyk.
+\end{enumerate}
 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction - problem definition}}{}
@@ -699,73 +676,141 @@ k-NN(q,D,dist)=\{A \subseteq D | \forall a \in A, b \in D \setminus A: dist(q,a)
    \label{fig:similarity_query_types}
 \end{figure}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The two problems}}{}
-Two problems one must solve in order to achieve a fast similarity search technique.
-\begin{itemize}
-\item The slow similarity measure problem
-\item The linear scan problem
-\end{itemize}
-As can be seen from Definition \ref{def:range_query} and Definition \ref{def:knn_query} to answer the queries mentioned, one needs to scan the entire sample set. 
-The two mentioned problems can be solved by Lower bounding and indexing and embedding.
+
+%%%%%%%%%%%%%----------------------------------------%%%%%%%%%%%%%%
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The problem}}{}
+Two major hurdles need to be overcame to achieve a fast similarity search technique. First, it is the expensive time consumption of calculating similarity between given two sample objects. Advanced similarity measure technique that reasonably correspond to the human intuition as were discussed is Section \ref{sec:similarity_measures} are costly. The second issue is the need to scan linearly the entire dataset in order to obtain the nearest samples for a given query object. 
+%
+%{\color{blue}It is obvious that even the most qualitatively effective similarity search method is useless, 
+%if it is not efficient. In order to keep the similarity search efficient as much as possible, there
+%is a need for development of search methods minimizing the overall search costs.
+%The most objective definition of search costs can be determined as the computer
+%time needed to evaluate a query. In case of metric search, the methods should
+%minimize two major components of the overall search costs - the computation
+%costs (CC) and the I/O costs (or disk access costs). The computation costs
+%represent the number of distance computations needed for a query evaluation.
+%The I/O costs are related to the volume of data needed to be transfered from a
+%secondary memory during a query evaluation.}
+
+It is clear that the magnitude of the dataset depends on the type of data it holds, for example, a dataset containing a letters samples is much smaller than a database that contains word part samples and thus the motivation for techniques that avoid scan of the entire database increase. For Example, searching for similar word shapes for a given query word in the English lexicon using DTW may take more than few hours on an average personal computer \cite{saabni2013efficient}. However, even for a letters based recognition, a comprehensive letters recognition database will probably have hundreds or even thousands of samples. \\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Possible Solutions}}{}
+Therefore, to workout the fast retrieval problem, the two mentioned problem need to be solved by reducing the number of the costly similarity function calculations. This can be attacked from two directions. The first is by using a cheap similarity measure function to approximate (lower bound) the quantity of similarity between given two sample shapes, and filtering out candidates that their approximated similarity is larger than a preset threshold. The other direction is by discarding entire portion of the dataset which are assured that are distant enough (i.e., their similarity is assured to be relatively large) from the the given query object. Such techniques  are called \emph{Metric Indexing} and usually require the metric to maintain several conditions. Indexing techniques will be discussed in Section \ref{}. \\
+
+%{\color{blue} Therefore, to reduce time needed for searching (matching) a shape within
+%a large lexicon, it is desirable to make as few as possible
+%distance calculations to candidates, where, sub-linear size is
+%preferable. This option is not feasible with non-metric spaces,
+%such as many existing similarity functions, including DTW
+%and others. \cite{saabni2013efficient}}\\
+
+\subsection{Distance function approximation}
+\label{subsec:distance_function_approximation}
+In order to improve upon the linear scan, we must somehow infer that an object x can be included in, or excluded from, the search result without calculating $d(q, x)$. The way to go is to find a cheap way of approximating the distance. In order to avoid wrongfully including or excluding objects, we need an approximation with certain properties. The approximated distance must either overestimate or underestimate the actual distance, and must do so consistently. For example, if the distance function $\check d$ consistently yields lower values than the actual distance function $d$ (over the same set of objects). Assuming that $\check d$ needs less effort to be calculated, a considerable speedup will be obtained by using the following algorithm for finding the nearest neighbor for a given query object $q$ \cite{keogh2005exact}.
+
+\begin{algorithm}
+$best\_so\_far = \infty$\;
+\For{every sequence $x$ in database}{
+	\If{$\check{d}(q,x) < best\_so\_far$}{
+		$dist = d(q,x)$\;
+	}
+	\If{$dist < best\_so\_far$}{
+		$best\_so\_far = dist$\;
+		$nearest\_neighbor = x$\;
+	}
+}
+\caption{An algorithm that uses a lower bounding distance measure to speed up the sequential scan search for the query q}
+\label{alg:lower_bound}
+\end{algorithm}
+Although, both lower and upper bounding measures can be exploited to avoid running the expensive $d$ calculation, lower bounding appears to be more useful as it can be safely used to exclude far candidates (as seen in Algorithm \ref{alg:lower_bound}).
+
+The more the approximation is accurate the less the actual distance function $d$ will be invoked. However, there will normally be a tradeoff between approximation quality and cost of computation. The lower bounding is usually performed by the so called \emph{metric mapping} techniques which are discussed in \cite{hetland2009basic}.
+
+\subsection{Metric Indexing}
+\label{subsec:metric_indexing}
+Note that distance function approximation techniques alone cannot avoid linearly scanning the entire dataset in a search for the nearest neighbors of an object. 
+
+{\color{blue}In order to search in a metric dataset efficiently (i.e. quickly), the dataset has to be preprocessed (or indexed) so that a data structure, a metric index, is built and used for query processing. Indexing technique organize, by partition or/and clustering the dataset among equivalence classes of objects such that each class include objects sharing a common distance property, e.g. it consists of objects sufficiently close to each other). The resulted datastructure is called \emph{metric index}. Each equivalence class Ei
+is spatially bounded by a region in the metric space
+(e.g. by a hyper-sphere) spatially covering all the objects in the particular class.
+The distance function, as the only tool used for partitioning, must satisfy the
+triangular inequality, so that two metric regions are easy to check for an overlap.
+Consequently, at query time the metric index is searched by a MAM in order to
+find those "candidate" equivalence classes, the regions of which overlap the query
+region. Such candidate classes are exhaustively checked for the relevant objects
+(see Figure 2.1b). A non-overlapping class contains objects which are surely
+irrelevant, thus the class can be excluded (or discarded) from further processing.
+Each equivalence class Ei
+is spatially bounded by a region in the metric space
+(e.g. by a hyper-sphere) spatially covering all the objects in the particular class.
+The distance function, as the only tool used for partitioning, must satisfy the
+triangular inequality, so that two metric regions are easy to check for an overlap.
+Consequently, at query time the metric index is searched by a MAM in order to
+find those "candidate" equivalence classes, the regions of which overlap the query
+region. Such candidate classes are exhaustively checked for the relevant objects
+(see Figure 2.1b). A non-overlapping class contains objects which are surely
+irrelevant, thus the class can be excluded (or discarded) from further processing.
+}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Spatial access metho (SAM)}}{}
+{\color{blue}Spatial access methods have
+been originally developed for indexing vector datasets, in order to provide efficient
+processing of exact-match queries, including window queries (hyper-rectangular
+query specfied by two boundary points), point queries, etc. However, there have
+been proposed many approaches later, extending the functionality of SAMs in
+order to provide also the similarity search (metric search respectively).
+}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Indexing by lower bounding}}{}
+see keogh.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Indexing by triangular equality}}{}
 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{$L_p-norm$ advantage and drawbacks}}{}
-Using normed spaces (definition \ref{def:norm}) such as $L_p-norm$ (definition \ref{lp_norm}) to solve the dissimilarity measure problem has the advantage that in order to solve the similarity search problem, one can use data structures which are specifically designed for points living in the normed space, such as k-d trees and R-trees. these data structures provide mechanisms for answering the NN-query in an orders of magnitude faster than linear scan of the database. However, the quality of the dissimilarity measure of such norms is not always satisfactory \cite{indyk2003fast}.\\
+%
+%{\color{blue}In principle, there exist two ways how to search in metric datasets, the exact
+%search methods and the approximate search methods. The exact methods search
+%the dataset such that no false drops are allowed, i.e. all of the objects understood
+%as relevant to a query are required to appear in the query result. On the other
+%side, the approximate methods relax such a strong requirement, so that a small
+%proportion of missing objects is accepted as insignificant.}
 
-\begin{definition}
-Given a data space $D$, for any two data elements  $x,y \in D$, a \textbf{norm} $\|\cdot\|$ is defined as:
-\begin{equation}
-\|\cdot\|: D \longrightarrow \mathbb{R}
-\end{equation}
-where the following conditions hold:
-\begin{itemize}
-\item $\|x\|=0 \Leftrightarrow x=0$
-\item $\|x-y\| \geq|\|x\|-\|y\||$
-\item $\|\alpha x\|=|\alpha|\|x\|$
-\end{itemize}
-the pair $\left(D,\|\cdot\|\right)$ is called a \textbf{normed space}.
-\label{def:norm}
-\end{definition}
-
-
-\begin{definition}
-Given an vector space $V=\mathbb{R}^N$ and $v=(v_1,v_2,...,v_N) \in V$, $L_p-norm$ is defined as:
-\begin{equation}
-\|v\|_p=\sqrt[p]{\sum\limits_{i=1}^N v_i^p}
-\end{equation}
-\label{lp_norm}
-\end{definition}
-
-$L_p-norm$ is based on the Minkowski distance function.\\
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Using both fast databases and good similarity measure}}{}
-As mentioned in section \ref{sec:similarity_measure}, advanced similarity measure technique that correspond to the human intuition distance measure techniques are usually require high complexity time and are not metrics. However, we should be able to efficiently compute the distance measure between two objects and also to use fast retrieval databases that avoid searching linearly the entire dataset for obtaining closest sample objects to a given query object. 
-
-{\color{blue}For example, computing
-the similarity of a given word to multiple shapes of
-each word in the English lexicon based on Dynamic Time
-Warping (DTW) similarity measurement may take more than
-few hours on an average personal computer. Therefore, to
-reduce time needed for searching (matching) a shape within
-a large lexicon, it is desirable to make as few as possible
-distance calculations to candidates, where, sub-linear size is
-preferable. This option is not feasible with non-metric spaces,
-such as many existing similarity functions, including DTW
-and others. \cite{saabni2013efficient}}\\
-
-In this following two subsection (\ref{} and \ref{}) we will discuss the usage indexing techniques and consider their advantages and drawbacks. 
-In subsection \ref{} 
+ 
 We will also consider an embedding techniques that allows us to get the best of the both fast similarity measure calculation and use the advantages of the normed space. It will allow us to approximate the EMD distance between two histograms, and since the embedding is into an $L_1$ normed space, efficient object retrieval data structures can be used.\\
 
-\subsection{Lower bounding}
-\label{subsec:lower_bounding}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction to the section.}}{}
-
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{$L_p-norm$ advantage and drawbacks}}{}
+%Using normed spaces (definition \ref{def:norm}) such as $L_p-norm$ (definition \ref{lp_norm}) to solve the dissimilarity measure problem has the advantage that in order to solve the similarity search problem, one can use data structures which are specifically designed for points living in the normed space, such as k-d trees and R-trees. these data structures provide mechanisms for answering the NN-query in an orders of magnitude faster than linear scan of the database. However, the quality of the dissimilarity measure of such norms is not always satisfactory \cite{indyk2003fast}.\\
+%
+%\begin{definition}
+%Given a data space $D$, for any two data elements  $x,y \in D$, a \textbf{norm} $\|\cdot\|$ is defined as:
+%\begin{equation}
+%\|\cdot\|: D \longrightarrow \mathbb{R}
+%\end{equation}
+%where the following conditions hold:
+%\begin{itemize}
+%\item $\|x\|=0 \Leftrightarrow x=0$
+%\item $\|x-y\| \geq|\|x\|-\|y\||$
+%\item $\|\alpha x\|=|\alpha|\|x\|$
+%\end{itemize}
+%the pair $\left(D,\|\cdot\|\right)$ is called a \textbf{normed space}.
+%\label{def:norm}
+%\end{definition}
+%
+%
+%\begin{definition}
+%Given an vector space $V=\mathbb{R}^N$ and $v=(v_1,v_2,...,v_N) \in V$, $L_p-norm$ is defined as:
+%\begin{equation}
+%\|v\|_p=\sqrt[p]{\sum\limits_{i=1}^N v_i^p}
+%\end{equation}
+%\label{lp_norm}
+%\end{definition}
+%
+%$L_p-norm$ is based on the Minkowski distance function.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Indexing and Lower Bounding}}{}
-{\color{blue}This can trivially be achieved by sequential scanning, comparing each and every candidate to the query, in an arbitrary order. The problem with sequential scanning is that it is simply too slow for most applications. What we really need is a technique to index the data, that is, to find the best match without having to examine every candidate. Indexing techniques can be exact, guaranteeing to return the same result as sequential scanning (Faloutsos et al. 1994; Keogh et al. 2000, 2001), or approximate, returning good matches but not necessarily the best matches (Faloutsos and Lin 1995; Park et al. 2001; Yi et al. 1998).
-\cite{keogh2005exact}}
+%{\color{blue}This can trivially be achieved by sequential scanning, comparing each and every candidate to the query, in an arbitrary order. The problem with sequential scanning is that it is simply too slow for most applications. What we really need is a technique to index the data, that is, to find the best match without having to examine every candidate. Indexing techniques can be exact, guaranteeing to return the same result as sequential scanning (Faloutsos et al. 1994; Keogh et al. 2000, 2001), or approximate, returning good matches but not necessarily the best matches (Faloutsos and Lin 1995; Park et al. 2001; Yi et al. 1998).
+%\cite{keogh2005exact}}
 
 Indexing techniques of measure functions is not fast enough for our application which has a strict responsiveness requirements. Thus we still need to use the euclidean space and integrating sub-linear search technique to achieve the needed performance and also we can't afford performing the computations the similarity measures mentioned above even if the number of computation is sub-linear. Thus we have taken a different approach and used embedding technique to facilitate using.\\ 
 
@@ -776,8 +821,6 @@ Indexing techniques of measure functions is not fast enough for our application 
 \end{equation}
 By rewriting inequality 2.9, $dist(Q,S) \geq dist(Q,R) - dist(R,S)$ can be derived. If $dist(Q,R)$ and $dist(R,S)$ are known, $dist(Q,R) - dist(R,S)$ can be treated as a lower bound distance of dist(Q,S). If the current query range is $r$ and $dist(Q,R)-dist(S,R)> r$, the computation of dist(Q,S) can be saved since S does not belong to the answer set. This is the basic principle that most of distance-based indexing structures follow.\cite{chen2005similarity}}
 
-\subsection{Indexing}
-\label{subsec:indexing}
 
 \subsection{Approximating EMD using Embedding}
 \label{subsec:approximating_emd_using_embedding}
@@ -1057,6 +1100,13 @@ Letter position & Number of samples & PCA & PCA+LDA\\
 \item On what data form do we run the DTW? and why we do it in this specific stage.
 \item generalize the metric definition used in the DTW. 
 \end{enumerate}
+
+%Answer the following:
+%\begin{itemize}
+%\item How is the classification is done - mention that the system receives a stroke and it goes over all the stages
+%\item A list of candidates is retrieved by the kdtree, then to be more precise we use a combination of the Constrained DTW metric and the distance of the sample and the candidate.
+%\item mention the alternatives - using different combination (we can afford using heavy tools since we have small candidate number)
+%\item we return the best 3 candidates.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{mention the various pruning and indexing techniques.}}{}
 
