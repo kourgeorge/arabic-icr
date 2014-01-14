@@ -626,26 +626,31 @@ In this work, DTW is used for candidates scoring (described in chapter \ref{sec:
 \section{Similarity Search}
 \label{sec:similarity_search}
 
-\underline{Mind Map:}
-\begin{enumerate}
-\item Introduction: what is similarity search and what type of queries are there. [Done]
-\item The problems encountered: 1. linear scan. 2. expensive similarity techniques. [Done]
-\item Simple solution to problematic metrics using Pruning by Lower bounding of metrics (still linearly scan the data). (not good enough) [Done]
-\item Indexing: What is indexing? What properties does it require from the distance function? Does the TE is required?
-\item What types of indexing techniques are there?Rtree, LSH and k-d tree pro's and con's. A section about k-d tree.
-\item EMD indexing using embedding to $L_1$ space, the two approaches and why did we select one of them.
-\item Our solution: using the embedding and k-d tree to get the approximate candidates (Saabne's paper)
-\item Resources: The basic principles of metric indexing \cite{hetland2009basic}, chen2005similarity \cite{chen2005similarity}, Approximate Embedding by Shirdhonkar, Embedding by Indyk.
-\end{enumerate}
+%\underline{Mind Map:}
+%\begin{enumerate}
+%\item Nearest neighbors based classification. 
+%\item Introduction: what is similarity search and what type of queries are there. [Done]
+%\item The problems encountered: 1. linear scan. 2. expensive similarity techniques. [Done]
+%\item Simple solution to problematic metrics using Pruning by Lower bounding of metrics (still linearly scan the data). (not good enough) [Done]
+%\item Indexing: What is indexing? What properties does it require from the distance function? Does the TE is required? What types of indexing techniques are there?Rtree, LSH and k-d tree pro's and con's. A section about k-d tree. [Done]
+%\item EMD indexing using embedding to $L_1$ space, the two approaches and why did we select one of them. [Done]
+%\item Our solution: using the embedding and k-d tree to get the approximate candidates (Saabne's paper)
+%\item Resources: The basic principles of metric indexing \cite{hetland2009basic}, chen2005similarity \cite{chen2005similarity}, Approximate Embedding by Shirdhonkar, Embedding by Indyk.
+%\end{enumerate}
 
+% We will have 4 main sections: 
+% 1. Lower Bounding
+% 2. embedding
+% 2.1. EMD embedding
+% 3. Indexing - maybe should be the first.
+% 3.1 How can lower bounding be used for Indexing.
+% 3.2 describe kdtree
+ 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
+In the previous Section (\ref{sec:similarity_measures}) we have discussed the first aspect of information retrieval - the effectiveness of measuring the perceptual notion of similarity between two objects. However, even the most qualitatively effective similarity technique is almost useless, if the task searching for similar objects, for a given query object, in the database cannot be done efficiently. In this chapter, we will discuss this aspect of information retrieval, namely how to build a data-structure methods for fast retrieval of the conceptually nearest object to a given query object. Keeping the similarity search efficient as much as possible requires the development of search methods that minimizes the overall search costs.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction - problem definition}}{}
-Similarity search is a type of information retrieval where the query is a sample object and the desired result is a set of objects deemed to be similar, in some aspect, to the query. An important question is how to build a data-structure that quickly identifies the objects that are closest to a query object.\\
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Similarity search query types - from similarity measure to similarity search}}{}
-Similarity measure techniques is used to facilitate similarity-based search. In general, similarity-based search can be classified into two types: \emph{range queries} and \emph{k-nearest neighbor queries} \cite{hetland2009basic}. 
-Under the definition of a distance function given in \ref{def:distance_function}, formal definitions of both query types are provided as follows: 
-
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Similarity search query types}}{}
+Similarity based search introduce two fundamental query types: \emph{range queries} and \emph{k-nearest neighbor queries} \cite{hetland2009basic}. Under the definition of a distance function given in \ref{def:distance_function}, formal definitions of both query types are provided below. See Figure \ref{fig:similarity_query_types} for a visual demonstration of the two types of queries.
 \begin{definition}
 Given a data space $D$, a distance function $dist$ defined on $D$, a query object $q$ and a range parameter $r \geq 0$. \textbf{Range query} returns all the data objects in $D$ that are within a distance $r$ from the query object $q$.
 \begin{equation}
@@ -676,37 +681,24 @@ k-NN(q,D,dist)=\{A \subseteq D | \forall a \in A, b \in D \setminus A: dist(q,a)
    \label{fig:similarity_query_types}
 \end{figure}
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The kNN queries}}{}
+While range queries are argued to be fundamental, kNN queries notably take a large volume in the literature. In the following I focus on one of the basic kinds, k-NN queries.\\
 
-%%%%%%%%%%%%%----------------------------------------%%%%%%%%%%%%%%
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The problem}}{}
-Two major hurdles need to be overcame to achieve a fast similarity search technique. First, it is the expensive time consumption of calculating similarity between given two sample objects. Advanced similarity measure technique that reasonably correspond to the human intuition as were discussed is Section \ref{sec:similarity_measures} are costly. The second issue is the need to scan linearly the entire dataset in order to obtain the nearest samples for a given query object. 
-%
-%{\color{blue}It is obvious that even the most qualitatively effective similarity search method is useless, 
-%if it is not efficient. In order to keep the similarity search efficient as much as possible, there
-%is a need for development of search methods minimizing the overall search costs.
-%The most objective definition of search costs can be determined as the computer
-%time needed to evaluate a query. In case of metric search, the methods should
-%minimize two major components of the overall search costs - the computation
-%costs (CC) and the I/O costs (or disk access costs). The computation costs
-%represent the number of distance computations needed for a query evaluation.
-%The I/O costs are related to the volume of data needed to be transfered from a
-%secondary memory during a query evaluation.}
+The similarity search costs can be objectively defined as the computer time needed to evaluate a query. In the case of similarity based search, the method should minimize two components. The computation cost and the disk access cost. The computation costs represent the number of distance computations needed for a query evaluation. As discussed in Section \ref{sec:similarity_measures}, effective similarity measure methods that reasonably correspond to the human intuition are computational costly. The I/O costs are related to the volume of data needed to be transfered from a secondary memory during a query evaluation. Namely, the number of samples in the dataset to be evaluated against the query object in order to obtain the nearest samples \cite{saabni2013efficient}.\\
 
-It is clear that the magnitude of the dataset depends on the type of data it holds, for example, a dataset containing a letters samples is much smaller than a database that contains word part samples and thus the motivation for techniques that avoid scan of the entire database increase. For Example, searching for similar word shapes for a given query word in the English lexicon using DTW may take more than few hours on an average personal computer \cite{saabni2013efficient}. However, even for a letters based recognition, a comprehensive letters recognition database will probably have hundreds or even thousands of samples. \\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Possible Solutions}}{}
-Therefore, to workout the fast retrieval problem, the two mentioned problem need to be solved by reducing the number of the costly similarity function calculations. This can be attacked from two directions. The first is by using a cheap similarity measure function to approximate (lower bound) the quantity of similarity between given two sample shapes, and filtering out candidates that their approximated similarity is larger than a preset threshold. The other direction is by discarding entire portion of the dataset which are assured that are distant enough (i.e., their similarity is assured to be relatively large) from the the given query object. Such techniques  are called \emph{Metric Indexing} and usually require the metric to maintain several conditions. Indexing techniques will be discussed in Section \ref{}. \\
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The different aspects of the problem}}{}
+%It is clear that the magnitude of the dataset depends on the type of data it holds, for example, a dataset containing a letters samples is much smaller than a database that contains word part samples and thus the motivation for techniques that avoid scan of the entire database increase. For Example, searching for similar word shapes for a given query word in the English lexicon using DTW may take more than few hours on an average personal computer \cite{saabni2013efficient}. However, even for a letters based recognition, a comprehensive letters recognition database will probably have hundreds or even thousands of samples. \\
 
-%{\color{blue} Therefore, to reduce time needed for searching (matching) a shape within
-%a large lexicon, it is desirable to make as few as possible
-%distance calculations to candidates, where, sub-linear size is
-%preferable. This option is not feasible with non-metric spaces,
-%such as many existing similarity functions, including DTW
-%and others. \cite{saabni2013efficient}}\\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Solution directions}}{}
+in order to minimize the time needed tie for searching a similar object in a large dataset, one needs to make as few as possible distance calculations to candidates. The problem is this option is not feasible with non-metric distance functions, such as many existing similarity functions, including DTW, EMD and others. However, reducing the computation cost can be achieved by using a cheap similarity measure function to approximate (lower bound) the quantity of similarity between given two sample shapes, and filtering out candidates that their approximated similarity is larger than a preset threshold. This is type of technique is called \emph{Lower Bounding}. reducing the disc access cost can be achieved by discarding entire portion of the dataset which are assured that are distant enough (i.e., their similarity is assured to be relatively large) from the the given query object. Such techniques are called \emph{Metric Indexing} and usually require the metric to maintain several conditions.\\
 
-\subsection{Distance function approximation}
-\label{subsec:distance_function_approximation}
-In order to improve upon the linear scan, we must somehow infer that an object x can be included in, or excluded from, the search result without calculating $d(q, x)$. The way to go is to find a cheap way of approximating the distance. In order to avoid wrongfully including or excluding objects, we need an approximation with certain properties. The approximated distance must either overestimate or underestimate the actual distance, and must do so consistently. For example, if the distance function $\check d$ consistently yields lower values than the actual distance function $d$ (over the same set of objects). Assuming that $\check d$ needs less effort to be calculated, a considerable speedup will be obtained by using the following algorithm for finding the nearest neighbor for a given query object $q$ \cite{keogh2005exact}.
+\subsection{Lower Bounding}
+\label{subsec:lower_bounding}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Distance function approximation}}{}
+In order to improve upon the evaluation of the distance function on every object in the dataset, we must somehow infer that an object x can be included in, or excluded from, the search result without calculating $d(q, x)$. The way to go is to find a cheap way of approximating the distance. In order to avoid wrongfully including or excluding objects, we need an approximation with certain properties. The approximated distance must either overestimate or underestimate the actual distance, and must do so consistently. For example, if the distance function $\check d$ consistently yields lower values than the actual distance function $d$ (over the same set of objects). Assuming that $\check d$ needs less effort to be calculated, a considerable speedup will be obtained by using the following algorithm for finding the nearest neighbor for a given query object $q$ \cite{keogh2005exact}.\\
 
 \begin{algorithm}
 $best\_so\_far = \infty$\;
@@ -722,35 +714,110 @@ $best\_so\_far = \infty$\;
 \caption{An algorithm that uses a lower bounding distance measure to speed up the sequential scan search for the query q}
 \label{alg:lower_bound}
 \end{algorithm}
-Although, both lower and upper bounding measures can be exploited to avoid running the expensive $d$ calculation, lower bounding appears to be more useful as it can be safely used to exclude far candidates (as seen in Algorithm \ref{alg:lower_bound}).
 
-The more the approximation is accurate the less the actual distance function $d$ will be invoked. However, there will normally be a tradeoff between approximation quality and cost of computation. The lower bounding is usually performed by the so called \emph{metric mapping} techniques which are discussed in \cite{hetland2009basic}.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Lower Bounding advantage}}{}
+Although, both lower and upper bounding measures can be exploited to avoid running the expensive $d$ calculation, lower bounding appears to be more useful as it can be safely used to exclude far candidates as described in Algorithm \ref{alg:lower_bound}. The more the approximation is accurate the less the actual distance function $d$ will be invoked. However, there will normally be a tradeoff between approximation quality and cost of computation. 
+
+\subsection{Metric Embedding}
+\label{subsec:metric_embedding}
+
+The speed up achieved by lower bounding is usually small (about 10 times faster). A different approach for solving the number of the distance function calculation is by embedding the feature vectors into a metric space equipped with a simple-to-compute metric function  so that the calculation of distances between two feature vectors will be approximated inexpensively. And using the triangular equality of the metric space sub-linear scan of the dataset can be obtained.\\
+
+\begin{definition}
+Given metric spaces $(X, d)$ and $(X', d')$ a map $f : X \rightarrow X'$ is called an embedding. An embedding is called distance-preserving or isometric if for all $x, y \in X$, $d(x, y) = d'(f(x), f(y))$.
+\end{definition}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Distortion}}{}
+It is very rare to find cases where isometric embeddings can be found between two spaces of interest, and hence we often have to allow the mappings to alter distances in some (hopefully restricted) fashion. The reason we do embedding is to be able to more cheaply calculate the distance function. Usually, the embedding will be into a space in which the distance function is cheap and the distance in the embedded approximate the distance of the distance space. There are many notions of "close"; most of the course will focus on the following notions.
+
+\begin{definition}
+Given two metrics $(X, d)$ and $(X',d')$ and a map $f : X \rightarrow X'$, the contraction of $f$ is the maximum factor by which distances are shrunk, i.e.,
+\begin{equation}
+\max_{x,y \in X} \frac{d(x,y)}{d'(f(x),f(y))}
+\end{equation}
+
+The expansion or stretch of f is the maximum factor by which distances are stretched:
+\begin{equation}
+\max_{x,y \in X} \frac{d'(f(x),f(y))}{d(x,y)}
+\end{equation}
+and the distortion of $f$, denoted by $\|f\|_{dist}$, is the product of the distortion and the expansion.
+\end{definition}
+
+%Another equivalent definition is the following: the distortion of $f$, is the smallest value $\alpha \geq 1$ for which there exists an $r > 0$ such that for all $x, y \in X$
+%\begin{equation}
+%rd(x, y) \leq d'(f(x), f(y)) \leq \alpha r d(x, y)
+%\end{equation}
+
+\subsection{Approximating EMD using Embedding}
+\label{subsec:approximating_emd_using_embedding}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{$L_p-norm$ advantage and drawbacks}}{}
+Using normed spaces (definition \ref{def:norm}) such as $L_p-norm$ (definition \ref{lp_norm}) to solve the dissimilarity measure problem has the advantage that in order to solve the similarity search problem, one can use data structures which are specifically designed for points living in the normed space, such as k-d trees and R-trees. these data structures provide mechanisms for answering the NN-query in an orders of magnitude faster than linear scan of the database. However, the quality of the dissimilarity measure of such norms is not always satisfactory \cite{indyk2003fast}.\\
+
+\begin{definition}
+Given a data space $D$, for any two data elements  $x,y \in D$, a \textbf{norm} $\|\cdot\|$ is defined as:
+\begin{equation}
+\|\cdot\|: D \longrightarrow \mathbb{R}
+\end{equation}
+where the following conditions hold:
+\begin{itemize}
+\item $\|x\|=0 \Leftrightarrow x=0$
+\item $\|x-y\| \geq|\|x\|-\|y\||$
+\item $\|\alpha x\|=|\alpha|\|x\|$
+\end{itemize}
+the pair $\left(D,\|\cdot\|\right)$ is called a \textbf{normed space}.
+\label{def:norm}
+\end{definition}
+
+
+\begin{definition}
+Given an vector space $V=\mathbb{R}^N$ and $v=(v_1,v_2,...,v_N) \in V$, $L_p-norm$ is defined as:
+\begin{equation}
+\|v\|_p=\sqrt[p]{\sum\limits_{i=1}^N v_i^p}
+\end{equation}
+\label{lp_norm}
+\end{definition}
+
+$L_p-norm$ is based on the Minkowski distance function.\\
+
+Various approximation algorithms have been proposed to speed up the computation of EMD \emph{TODO: add refernces}. Indyk and Thaper, in \cite{indyk2003fast}, has suggested an embedding technique in which the un-normed EMD metric is embedded into a normed space, so that the distance between the two images is comparable to the distance between the two points which represent the embedding of the two images. Embedding time complexity is $O(Nd log{\Delta}$, where $N$ is the feature set size, $d$ is the feature space dimension and $\Delta$ is the diameter of the union if the two feature sets.\\
+
+The embedding of EMD provides a way to map weighted point sets $A$ and $B$ from the metric space into the normed space $L_1$, such that the $L_1$ distance between the resulting embedded vectors is comparable to the EMD distance between $A$ and $B$. The motivation of doing so is that the working with normed space is desirable to enable fast approximate Nearest Neighbors (NN) search techniques such as LSH and kdTree. 
+
+A brief description of the embedding technique proposed by Indyk:
+{\color{blue}The embedding of EMD given in \cite{indyk2003fast} provides a way to map weighted point sets A and B from the metric space into the normed space L1, such that the L1 distance between the resulting embedded vectors is comparable to the EMD distance between A and B themselves. Working in a normed space is desirable since fast approximate NN search techniques such as LSH require it. The general idea of the embedding is to compute and concatenate several weighted histograms of decreasing resolution for a given point set. Formally, given two point sets A and B, each of cardinality n, and each containing points in $R^d$: impose grids $G_i$, $-1 \leq i \leq log(\Delta)$, on the space $R^d$, with grid $G_i$ having side length $2^i$, and $\Delta$ equal to the diameter of $A \bigcup B$. Each grid is translated by a vector chosen randomly from $[0, \Delta]^d$. To embed point set A, for each $G_i$ create vector $v_i$ with one coordinate per grid cell, where each coordinate counts the number of points in the corresponding cell, i.e., each $v_i$ forms a histogram of A. The embedding of A is then the concatenated vector of the $v_i$'s, scaled by the side lengths:
+$f(A) = [v_{-1}(A), v_0(A), 2v_1(A), . . . , 2^iv_i(A), . . .]$. The distortion of the embedding has an upper bound of $O(log \Delta))$ . See \cite{indyk2003fast} for details. The distortion $C$ of a metric embedding $f$ describes how much information loss the embedding induces: $\frac{1}{C}EMD(A,B) \leq \|f(A) - f(B)\|_{L_1} \leq EMD(A,B).$}
+
+In the original work on EMD, the authors provided more general definition of EMD which does nor assume $|P|=|Q|$. However, Indyk did not consider this generalization, since in such case EMD does not form a metric. Indyk and Thaper do not prove this for individual random embeddings, and also do not estimate the constants that bound the ratio of the norm to EMD. A work conducted by Shirdhonkar and Jacobs in \cite{shirdhonkar2008approximate} has proposed a method for approximating the EMD between two low dimensional histograms using the weighted wavelet coefficients of the difference histogram. The approximation is done by transforming the histograms to $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. They have proven the ratio of EMD to wavelet EMD is bounded by constants. The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity.
+
+\emph{TODO: give more details about the work done by Shirdhonkar. What are the estimates for the bound?. What coefficient was used and why? Is the approximation technique described by Shirdhonkar and Jacobs is applicable for different mass histograms? see works that referenced Shirdhonkar and Jacobs. We saw that the they embedd the difference histogram into the $L_1$ space and then calculate its norm, which approximate the EMD. Why it is correct to embed each vector to the $L_1$ space and then calculate the differences?
+i.e. $EMD(A,B)=WEMD(|A-B|_1)=|WEMD(A)-WEMD(B)|_1$ }
+
+It was enhanced to embed the feature vectors to the $L_1$ by using the embedding of the feature vectors to the wavelet domain. \emph{TODO: why is this a better embedding?}
+
 
 \subsection{Metric Indexing}
 \label{subsec:metric_indexing}
+
+%\underline{Mind Map}
+%\begin{enumerate}
+%
+%\item How Expensive is the exact NN? What is the motivation to use ANN?
+%\item How good is the approximation?
+%\item pruning and indexing - from the thesis.
+%\item k-d tree -  is it an ANN or exact data-structure? what is the approximation parameter? is it only for the Euclidean norm? norm or metric?
+%\item In case of general metric space branch and bound approach is known under the name of metric trees. Particular examples include vp-tree and BK-tree.
+%\item note that LSH require only a metric space.
+%\item How lower bounding can be used to generally achieve fast retrieval?
+%\end{enumerate}
+
+
 Note that distance function approximation techniques alone cannot avoid linearly scanning the entire dataset in a search for the nearest neighbors of an object. 
 
-{\color{blue}In order to search in a metric dataset efficiently (i.e. quickly), the dataset has to be preprocessed (or indexed) so that a data structure, a metric index, is built and used for query processing. Indexing technique organize, by partition or/and clustering the dataset among equivalence classes of objects such that each class include objects sharing a common distance property, e.g. it consists of objects sufficiently close to each other). The resulted datastructure is called \emph{metric index}. Each equivalence class Ei
-is spatially bounded by a region in the metric space
-(e.g. by a hyper-sphere) spatially covering all the objects in the particular class.
-The distance function, as the only tool used for partitioning, must satisfy the
-triangular inequality, so that two metric regions are easy to check for an overlap.
-Consequently, at query time the metric index is searched by a MAM in order to
-find those "candidate" equivalence classes, the regions of which overlap the query
-region. Such candidate classes are exhaustively checked for the relevant objects
-(see Figure 2.1b). A non-overlapping class contains objects which are surely
-irrelevant, thus the class can be excluded (or discarded) from further processing.
-Each equivalence class Ei
-is spatially bounded by a region in the metric space
-(e.g. by a hyper-sphere) spatially covering all the objects in the particular class.
-The distance function, as the only tool used for partitioning, must satisfy the
-triangular inequality, so that two metric regions are easy to check for an overlap.
-Consequently, at query time the metric index is searched by a MAM in order to
-find those "candidate" equivalence classes, the regions of which overlap the query
-region. Such candidate classes are exhaustively checked for the relevant objects
-(see Figure 2.1b). A non-overlapping class contains objects which are surely
-irrelevant, thus the class can be excluded (or discarded) from further processing.
-}
+{\color{blue}Index structures are structures built over the given data set in order to speed up queries. The time cost involved in building the index is amortized over the series of queries, and is usually ignored when considering search cost. The main goal, then, of an index method is to enable efficient search, either asymptotically or simply in real wall-clock time.\cite{hetland2009basic}}
+
+{\color{blue}In order to search in a metric dataset efficiently (i.e. quickly), the dataset has to be preprocessed (or indexed) so that a data structure, a metric index, is built and used for query processing. Indexing technique organize, by partition or/and clustering the dataset among equivalence classes of objects such that each class include objects sharing a common distance property, e.g. it consists of objects sufficiently close to each other). The resulted data-structure is called \emph{metric index}. Each equivalence class Ei is spatially bounded by a region in the metric space (e.g. by a hyper-sphere) spatially covering all the objects in the particular class.
+The distance function, as the only tool used for partitioning, must satisfy the triangular inequality, so that two metric regions are easy to check for an overlap. Consequently, at query time the metric index is searched by a MAM in order to find those "candidate" equivalence classes, the regions of which overlap the query region. Such candidate classes are exhaustively checked for the relevant objects (see Figure 2.1b). A non-overlapping class contains objects which are surely irrelevant, thus the class can be excluded (or discarded) from further processing.}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Spatial access metho (SAM)}}{}
 {\color{blue}Spatial access methods have
@@ -779,36 +846,8 @@ see keogh.
 We will also consider an embedding techniques that allows us to get the best of the both fast similarity measure calculation and use the advantages of the normed space. It will allow us to approximate the EMD distance between two histograms, and since the embedding is into an $L_1$ normed space, efficient object retrieval data structures can be used.\\
 
 
-%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{$L_p-norm$ advantage and drawbacks}}{}
-%Using normed spaces (definition \ref{def:norm}) such as $L_p-norm$ (definition \ref{lp_norm}) to solve the dissimilarity measure problem has the advantage that in order to solve the similarity search problem, one can use data structures which are specifically designed for points living in the normed space, such as k-d trees and R-trees. these data structures provide mechanisms for answering the NN-query in an orders of magnitude faster than linear scan of the database. However, the quality of the dissimilarity measure of such norms is not always satisfactory \cite{indyk2003fast}.\\
-%
-%\begin{definition}
-%Given a data space $D$, for any two data elements  $x,y \in D$, a \textbf{norm} $\|\cdot\|$ is defined as:
-%\begin{equation}
-%\|\cdot\|: D \longrightarrow \mathbb{R}
-%\end{equation}
-%where the following conditions hold:
-%\begin{itemize}
-%\item $\|x\|=0 \Leftrightarrow x=0$
-%\item $\|x-y\| \geq|\|x\|-\|y\||$
-%\item $\|\alpha x\|=|\alpha|\|x\|$
-%\end{itemize}
-%the pair $\left(D,\|\cdot\|\right)$ is called a \textbf{normed space}.
-%\label{def:norm}
-%\end{definition}
-%
-%
-%\begin{definition}
-%Given an vector space $V=\mathbb{R}^N$ and $v=(v_1,v_2,...,v_N) \in V$, $L_p-norm$ is defined as:
-%\begin{equation}
-%\|v\|_p=\sqrt[p]{\sum\limits_{i=1}^N v_i^p}
-%\end{equation}
-%\label{lp_norm}
-%\end{definition}
-%
-%$L_p-norm$ is based on the Minkowski distance function.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Indexing and Lower Bounding}}{}
+
 %{\color{blue}This can trivially be achieved by sequential scanning, comparing each and every candidate to the query, in an arbitrary order. The problem with sequential scanning is that it is simply too slow for most applications. What we really need is a technique to index the data, that is, to find the best match without having to examine every candidate. Indexing techniques can be exact, guaranteeing to return the same result as sequential scanning (Faloutsos et al. 1994; Keogh et al. 2000, 2001), or approximate, returning good matches but not necessarily the best matches (Faloutsos and Lin 1995; Park et al. 2001; Yi et al. 1998).
 %\cite{keogh2005exact}}
 
@@ -821,25 +860,6 @@ Indexing techniques of measure functions is not fast enough for our application 
 \end{equation}
 By rewriting inequality 2.9, $dist(Q,S) \geq dist(Q,R) - dist(R,S)$ can be derived. If $dist(Q,R)$ and $dist(R,S)$ are known, $dist(Q,R) - dist(R,S)$ can be treated as a lower bound distance of dist(Q,S). If the current query range is $r$ and $dist(Q,R)-dist(S,R)> r$, the computation of dist(Q,S) can be saved since S does not belong to the answer set. This is the basic principle that most of distance-based indexing structures follow.\cite{chen2005similarity}}
 
-
-\subsection{Approximating EMD using Embedding}
-\label{subsec:approximating_emd_using_embedding}
-
-Various approximation algorithms have been proposed to speed up the computation of EMD \emph{TODO: add refernces}. Indyk and Thaper, in \cite{indyk2003fast}, has suggested an embedding technique in which the un-normed EMD metric is embedded into a normed space, so that the distance between the two images is comparable to the distance between the two points which represent the embedding of the two images. Embedding time complexity is $O(Nd log{\Delta}$, where $N$ is the feature set size, $d$ is the feature space dimension and $\Delta$ is the diameter of the union if the two feature sets.
-
-The embedding of EMD provides a way to map weighted point sets $A$ and $B$ from the metric space into the normed space $L_1$, such that the $L_1$ distance between the resulting embedded vectors is comparable to the EMD distance between $A$ and $B$. The motivation of doing so is that the working with normed space is desirable to enable fast approximate Nearest Neighbors (NN) search techniques such as LSH and kdTree. 
-
-A brief description of the embedding technique proposed by Indyk:
-{\color{blue}The embedding of EMD given in \cite{indyk2003fast} provides a way to map weighted point sets A and B from the metric space into the normed space L1, such that the L1 distance between the resulting embedded vectors is comparable to the EMD distance between A and B themselves. Working in a normed space is desirable since fast approximate NN search techniques such as LSH require it. The general idea of the embedding is to compute and concatenate several weighted histograms of decreasing resolution for a given point set. Formally, given two point sets A and B, each of cardinality n, and each containing points in $R^d$: impose grids $G_i$, $-1 \leq i \leq log(\Delta)$, on the space $R^d$, with grid $G_i$ having side length $2^i$, and $\Delta$ equal to the diameter of $A \bigcup B$. Each grid is translated by a vector chosen randomly from $[0, \Delta]^d$. To embed point set A, for each $G_i$ create vector $v_i$ with one coordinate per grid cell, where each coordinate counts the number of points in the corresponding cell, i.e., each $v_i$ forms a histogram of A. The embedding of A is then the concatenated vector of the $v_i$'s, scaled by the side lengths:
-$f(A) = [v_{-1}(A), v_0(A), 2v_1(A), . . . , 2^iv_i(A), . . .]$. The distortion of the embedding has an upper bound of $O(log \Delta))$ . See \cite{indyk2003fast} for details. The distortion $C$ of a metric embedding $f$ describes how much information loss the embedding induces: $\frac{1}{C}EMD(A,B) \leq \|f(A) - f(B)\|_{L_1} \leq EMD(A,B).$}
-
-In the original work on EMD, the authors provided more general definition of EMD which does nor assume $|P|=|Q|$. However, Indyk did not consider this generalization, since in such case EMD does not form a metric. Indyk and Thaper do not prove this for individual random embeddings, and also do not estimate the constants that bound the ratio of the norm to EMD.
-
-A work conducted by Shirdhonkar and Jacobs in \cite{shirdhonkar2008approximate} has proposed a method for approximating the EMD between two low dimensional histograms using the weighted wavelet coefficients of the difference histogram. The approximation is done by transforming the histograms to $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. They have proven the ratio of EMD to wavelet EMD is bounded by constants. The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity.
-
-\emph{give more details about the work done by Shirdhonkar. What are the estimates for the bound?. What coefficient was used and why? Is the approximation technique described by Shirdhonkar and Jacobs is applicable for different mass histograms? see works that referenced Shirdhonkar and Jacobs. We saw that the they embedd the difference histogram into the $L_1$ space and then calculate its norm, which approximate the EMD. Why it is correct to embed each vector to the $L_1$ space and then calculate the differences?
-i.e. $EMD(A,B)=WEMD(|A-B|_1)=|WEMD(A)-WEMD(B)|_1$ }
-
 In our framework, sub-strokes classification is done by finding a stored letter sample that is maximally similar to the shape of the sub-stroke.
 
 For a given sub-stroke, we need to find the most perceptually close object in the sample set. Since our samples space is in $L_1$ we use NN classification method.
@@ -847,23 +867,6 @@ For a given sub-stroke, we need to find the most perceptually close object in th
 {\color{blue}To reduce the search space,we apply a series of filters in a hierarchical manner. The earlier filters perform light processing on a large number of candi- dates, and the later filters perform heavy processing on a small number of candidates. In the first filter, global fea- tures and delayed strokes patterns are used to reduce can- didate word-part models. In the second filter, local features are used to guide a dynamic time warping (DTW) classifi- cation. The resulting k top ranked candidates are sent for shape-context based classifier, which determines the recog- nized word-part. In this work, we have modified the classic DTW to enable different costs for the different operations and control their behavior\cite{saabni2009hierarchical}}
 
 {\color{blue}There are drawbacks to using the simple positional feature for shape matching with approximate EMD.Though straight forward to embed, it can be a brittle feature, and in order to achieve scale or translation invariance this feature demand preprocessing stage on all shapes. \cite{grauman2004fast}}
-
-\subsection{Nearest Neighbors search}
-\label{sec:nearest_neighbors_search}
-
-\underline{Mind Map}
-\begin{enumerate}
-\item Introduction - What is NN?
-\item Introduction - What is ANN?
-\item How Expensive is the exact NN? What is the motivation to use ANN?
-\item How good is the approximation?
-\item pruning and indexing - from the thesis.
-\item k-d tree -  is it an ANN or exact data-structure? what is the approximation parameter? is it only for the Euclidean norm? norm or metric?
-\item In case of general metric space branch and bound approach is known under the name of metric trees. Particular examples include vp-tree and BK-tree.
-\item note that LSH require only a metric space.
-\end{enumerate}
-
-{\color{blue}Index structures are structures built over the given data set in order to speed up queries. The time cost involved in building the index is amortized over the series of queries, and is usually ignored when considering search cost. The main goal, then, of an index method is to enable efficient search, either asymptotically or simply in real wall-clock time.\cite{hetland2009basic}}
 
 As stated at the preface to this chapter, many classification techniques can be used in order to recognizer handwritten text. Each classification method is based on some rational and has its advantages and drawbacks. In this thesis we decided to use the Nearest Neighbor classifier. The main advantage of the NN classifier is it very intuitive and achieves good results. As well as it behaves under different number of samples for each class.
 
@@ -884,7 +887,10 @@ The advantage of LSH is that it operates better than kdtree in a high dimensiona
 
 In this work, kdtree was the best choice we could think of and which its properties was the most suitable for our need since the dimensionality of the data was not height. After reducing the dimensionality of the samples,they are used to create a kdtree data structure.
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{k-d tree}
+\label{subsubsexc:kd_tree}
 
 \iftoggle{edit-mode}{\hspace{0pt}\hspace{0pt}\marginpar{A short introduction to kdtree}}{} 
 k-d tree, a special case of binary space partitioning trees, is a data structure for storing a finite set of points from a k-dimensional space. It was proposed by Bentley in \cite{bentley1975multidimensional}. It aims at solving the problem of searching kNN in a large set of multi-dimensional points by first building a data structure based on the set of reference points. Then, given a query object, it extract the kNN using this structure.
