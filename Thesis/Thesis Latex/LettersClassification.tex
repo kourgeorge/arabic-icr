@@ -752,7 +752,8 @@ and the distortion of $f$, denoted by $\|f\|_{dist}$, is the product of the dist
 \label{subsec:approximating_emd_using_embedding}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{$L_p-norm$ advantage and drawbacks}}{}
-Using normed spaces (definition \ref{def:norm}) such as $L_p-norm$ (definition \ref{lp_norm}) to solve the dissimilarity measure problem has the advantage that in order to solve the similarity search problem, one can use data structures which are specifically designed for points living in the normed space, such as k-d trees and R-trees. these data structures provide mechanisms for answering the NN-query in an orders of magnitude faster than linear scan of the database. However, the quality of the dissimilarity measure of such norms is not always satisfactory \cite{indyk2003fast}.\\
+Using normed spaces such as $L_p-norm$ (see Definitions \ref{def:norm} and \ref{lp_norm}) to solve the dissimilarity measure problem enables using data structures which are specifically designed for points living in the normed space, such as k-d trees and R-trees. 
+Such data structures provide mechanisms for answering the kNN query in an orders of magnitude faster than linear scan of the database. However, the quality of the dissimilarity measure of such norms, as mentioned before, is not always satisfactory \cite{indyk2003fast}.\\
 
 \begin{definition}
 Given a data space $D$, for any two data elements  $x,y \in D$, a \textbf{norm} $\|\cdot\|$ is defined as:
@@ -780,20 +781,64 @@ Given an vector space $V=\mathbb{R}^N$ and $v=(v_1,v_2,...,v_N) \in V$, $L_p-nor
 
 $L_p-norm$ is based on the Minkowski distance function.\\
 
-Various approximation algorithms have been proposed to speed up the computation of EMD \emph{TODO: add refernces}. Indyk and Thaper, in \cite{indyk2003fast}, has suggested an embedding technique in which the un-normed EMD metric is embedded into a normed space, so that the distance between the two images is comparable to the distance between the two points which represent the embedding of the two images. Embedding time complexity is $O(Nd log{\Delta}$, where $N$ is the feature set size, $d$ is the feature space dimension and $\Delta$ is the diameter of the union if the two feature sets.\\
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD embedding by Indyk and Thaper}}{}
+Various approximation algorithms have been proposed to speed up the computation of EMD \emph{TODO: add refernces}. Indyk and Thaper, in \cite{indyk2003fast}, has suggested a technique in which the un-normed EMD metric is embedded into a normed space $L_1$ norm, so that the distance between the two objects, in their case images, is comparable to the distance between the two points which represent the embedding of the two images. We will refer to this embedding as $L_1-EMD$. The Embedding time complexity is $O(Nd log{\Delta}$, where $N$ is the feature set size, $d$ is the feature space dimension and $\Delta$ is the diameter of the union if the two feature sets.\\
 
-The embedding of EMD provides a way to map weighted point sets $A$ and $B$ from the metric space into the normed space $L_1$, such that the $L_1$ distance between the resulting embedded vectors is comparable to the EMD distance between $A$ and $B$. The motivation of doing so is that the working with normed space is desirable to enable fast approximate Nearest Neighbors (NN) search techniques such as LSH and kdTree. 
+%Working in a normed space is desirable since fast approximate NN search techniques such as LSH require it. ????
 
-A brief description of the embedding technique proposed by Indyk:
-{\color{blue}The embedding of EMD given in \cite{indyk2003fast} provides a way to map weighted point sets A and B from the metric space into the normed space L1, such that the L1 distance between the resulting embedded vectors is comparable to the EMD distance between A and B themselves. Working in a normed space is desirable since fast approximate NN search techniques such as LSH require it. The general idea of the embedding is to compute and concatenate several weighted histograms of decreasing resolution for a given point set. Formally, given two point sets A and B, each of cardinality n, and each containing points in $R^d$: impose grids $G_i$, $-1 \leq i \leq log(\Delta)$, on the space $R^d$, with grid $G_i$ having side length $2^i$, and $\Delta$ equal to the diameter of $A \bigcup B$. Each grid is translated by a vector chosen randomly from $[0, \Delta]^d$. To embed point set A, for each $G_i$ create vector $v_i$ with one coordinate per grid cell, where each coordinate counts the number of points in the corresponding cell, i.e., each $v_i$ forms a histogram of A. The embedding of A is then the concatenated vector of the $v_i$'s, scaled by the side lengths:
-$f(A) = [v_{-1}(A), v_0(A), 2v_1(A), . . . , 2^iv_i(A), . . .]$. The distortion of the embedding has an upper bound of $O(log \Delta))$ . See \cite{indyk2003fast} for details. The distortion $C$ of a metric embedding $f$ describes how much information loss the embedding induces: $\frac{1}{C}EMD(A,B) \leq \|f(A) - f(B)\|_{L_1} \leq EMD(A,B).$}
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Indyk $L_1-EMD$ embedding details}}{}
+\subsubsection{EMD Embedding into $L_1$}
+As described in Section \ref{}, EMD can be viewed as a generalization of the distance between points to distance between sets of points. 
+For a given two points sets $A$ and $B$, both of cardinality $n$ and containing points in $L_2^d-metric$ and $C=A \bigcup B$, the embedding proposed in \cite{indyk2003fast} is into the $L_1^d-norm$ (i.e. the space of vectors in $\mathbb{R}$ equipped with the Manhattan norm). 
+The general idea of the embedding is to compute and concatenate several weighted histograms of decreasing resolution for a given point set as follows: 
+Let us assume that the smallest distance between any two points is $1$ and $\Delta$ is the diameter of $C$, the embedding can be described as imposing hierarchy of grids $G_i$ having side length $2^i$ on the space $\mathbb{R}^d$, where $-1 \leq i \leq log(\Delta)$. It is required that each grid $G_{i}$ is a refinement of the grid $G_{i+1}$. 
+Each grid is translated by a vector chosen randomly from $[0, \Delta]^d$. Then for each grid $G_i$ create a vector $v_i(A)$ with one coordinate per cell which contains the number of points in the corresponding cell, i.e. $v_i(A)$ forms a histogram of A. The embedding, denoted as $f(A)$, is then defined as the concatenated vector of the $v_i$'s, scaled by the grid side lengths:
+\begin{equation}
+L_1-EMD(A) = [v_{-1}(A)/2, v_0(A), 2v_1(A), 4v_2(A),..., 2^iv_i(A),...]
+\end{equation} 
+An image visually describing the embedding is given in Figure {}.\\
 
-In the original work on EMD, the authors provided more general definition of EMD which does nor assume $|P|=|Q|$. However, Indyk did not consider this generalization, since in such case EMD does not form a metric. Indyk and Thaper do not prove this for individual random embeddings, and also do not estimate the constants that bound the ratio of the norm to EMD. A work conducted by Shirdhonkar and Jacobs in \cite{shirdhonkar2008approximate} has proposed a method for approximating the EMD between two low dimensional histograms using the weighted wavelet coefficients of the difference histogram. The approximation is done by transforming the histograms to $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. They have proven the ratio of EMD to wavelet EMD is bounded by constants. The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity.
+Approximating the EMD distance between the set $A$ and $B$ is then done by calculating the Manhattan distance between the two coreesponding embedding vectors, i.e.,
+\begin{equation}
+EMD_{approx.}=|L_1-EMD(A) - L_1-EMD(A)|_1
+\end{equation}  
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Theoretical distortion}}{} 
+The distortion of the embedding has an upper bound of $O(log \Delta))$. A detailed proof is given in \cite{indyk2003fast}. However, the proved theoretical distortion can only provide a week practical instrument. Experimental check performed on a dataset of $20,000$ objects proved a $(1+\epsilon)-approximate$ nearest neighbor, with $\epsilon < 20\%$ achieved by the embedding compared to the exact EMD. \\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Contour matching}}{}
+Based on the $L_1-EMD$ embedding proposed by Indyk and Thaper, Grauman and Darrel in \cite{} used it as a metric for contour matching, and proved the quality of retrieval from the exact versus the approximate method is less than $10\%$. They have evaluated the drop in the accuracy of the nearest neighbor retrieval from the exact EMD, to $L_1-EMD$ embedding.\\
+
+
+\subsubsection{EMD Embedding into the Wavelet Coefficients Domain}
+%How it is done?
+%Is it faster to calculate?
+%Is the retrieval more accurate (empirically) than the $L_1-EMD$ embedding?
+%Are the bounds are more strict?
+
+Note that in the original work on EMD as a metric for image retrieval in \cite{rubner2000earth}, the authors provided more general definition of EMD which does not assume $|A|=|B|$. However, in \cite{indyk2003fast} this generalization was not considered, since in such case EMD does not form a metric and also did not estimate the constants that bound the ratio of the norm to EMD. In this work we use an embedding technique proposed in a later work \cite{shirdhonkar2008approximate} done by Shirdhonkar and Jacobs.
+In their work they has proposed a method for approximating the EMD between two low dimensional histograms using the weighted wavelet coefficients of the difference histogram. The approximation is done by transforming the histograms into $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. They have proven the ratio of EMD to wavelet EMD is bounded by constants. 
+
+First, the histogram descriptor is converted into the wavelet domain and its coefficients are scaled according to equation. 
+
+Computing the EMD distance in the next step is done as
+the l1 (Manhattan) distance between these coefficients. In order
+to choose the wavelet domain for embedding, the authors have
+tested few, and showed that the Coiflets of order 3 and the
+Symmetric Daubechies wavelets of order 5 had low error
+rates. We follow their results and use order 3 Coiflets in
+our system.
+
+Note that the embedding process requires histograms, 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why do we use this embedding}}{} 
+Experimentally they show that this metric follows EMD closely and can be used instead without any significant performance difference. The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity.
 
 \emph{TODO: give more details about the work done by Shirdhonkar. What are the estimates for the bound?. What coefficient was used and why? Is the approximation technique described by Shirdhonkar and Jacobs is applicable for different mass histograms? see works that referenced Shirdhonkar and Jacobs. We saw that the they embedd the difference histogram into the $L_1$ space and then calculate its norm, which approximate the EMD. Why it is correct to embed each vector to the $L_1$ space and then calculate the differences?
 i.e. $EMD(A,B)=WEMD(|A-B|_1)=|WEMD(A)-WEMD(B)|_1$ }
 
-It was enhanced to embed the feature vectors to the $L_1$ by using the embedding of the feature vectors to the wavelet domain. \emph{TODO: why is this a better embedding?}
+It was enhanced to embed the feature vectors to the $L_1$ by using the embedding of the feature vectors to the wavelet domain.
+ \emph{TODO: why is this a better embedding?}
 
 
 \subsection{Metric Indexing}
@@ -842,11 +887,7 @@ see keogh.
 %side, the approximate methods relax such a strong requirement, so that a small
 %proportion of missing objects is accepted as insignificant.}
 
- 
 We will also consider an embedding techniques that allows us to get the best of the both fast similarity measure calculation and use the advantages of the normed space. It will allow us to approximate the EMD distance between two histograms, and since the embedding is into an $L_1$ normed space, efficient object retrieval data structures can be used.\\
-
-
-
 
 %{\color{blue}This can trivially be achieved by sequential scanning, comparing each and every candidate to the query, in an arbitrary order. The problem with sequential scanning is that it is simply too slow for most applications. What we really need is a technique to index the data, that is, to find the best match without having to examine every candidate. Indexing techniques can be exact, guaranteeing to return the same result as sequential scanning (Faloutsos et al. 1994; Keogh et al. 2000, 2001), or approximate, returning good matches but not necessarily the best matches (Faloutsos and Lin 1995; Park et al. 2001; Yi et al. 1998).
 %\cite{keogh2005exact}}
@@ -907,7 +948,7 @@ The construction time of the k-d tree is O($d N log N$). We can afford this high
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why we chose kdtree and not LSH.}}{} 
 kdtree is mostly used for solving the k-NN problem and the range problem, i.e., given a range the algorithm should return all the object in the given range. We have preferred to use kdtree is over LSH. The reason is that since the dimensionality of the resulted samples after dimensionality reduction is low as seen in chapter \ref{[]} and we are able to use kdtree for retriving the exact kNN. kdtree is sensitive to the curse of dimensionality, which do not appear in our reduced data. 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Mention the matlab library and the parameters we used.}}{} 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Mention the Matlab library and the parameters we used.}}{} 
 In our implementation, the built-in Matlab wrapper was used for kdtree available in the statistical toolbox and introduced in Matlab R2013B \emph{[TODO: add reference]}. The implementation can be used with different parameters such as the distance measure and the cardinality of the lead node. And it do not provide the approximate version of kdtree, only the exact one. We empirically found that the following parameters are the best for our needs: $L_1$ metric, since the EMD embedding is into the $L_1$ space and the bucket size is 50. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Open Issues}}{}
