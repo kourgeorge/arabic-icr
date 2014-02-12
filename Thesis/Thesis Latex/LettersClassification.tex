@@ -753,10 +753,7 @@ In this special case we will denote this vector space as $L_p^N$ to emphasize it
 \subsection{Approximating EMD using Embedding}
 \label{subsec:approximating_emd_using_embedding}
 
-\subsubsection{EMD Embedding into $L_1$}
-Several approximation algorithms have been proposed to speed up the computation of EMD. Indyk and Thaper \cite{indyk2003fast} has suggested a technique in which the un-normed EMD metric is embedded into a the $L_1$ space, so that the distance between the two objects, in their case images, is comparable to the distance between the two points which represent the embedding of the two images. We will refer to this embedding as $L_1-EMD$. \\
-
-The Embedding can be described as follows:
+Several approximation algorithms have been proposed to speed up the computation of EMD. Indyk and Thaper \cite{indyk2003fast} has suggested a technique in which the un-normed EMD metric is embedded into a the $L_1$ space so that the distance between the two objects, in their case images, is comparable to the distance between the two points which represent the embedding of the two images. The Embedding can be described as follows:
 For a given two points sets $A$ and $B$, both of cardinality $n$ and containing points in $L_2^d$ space and $C=A \bigcup B$, the embedding is into the $L_1^d$ norm (i.e. the space of vectors in $\mathbb{R}^d$ equipped with the Manhattan norm). 
 The general idea of the embedding is to compute and concatenate several weighted histograms of decreasing resolution for a given point set as follows: 
 Let us assume that the smallest distance between any two points is $1$ and $\Delta$ is the diameter of $C$, the embedding can be described as imposing hierarchy of grids $G_i$ having side length $2^i$ on the space $\mathbb{R}^d$, where $-1 \leq i \leq log(\Delta)$. It is required that each grid $G_{i}$ is a refinement of the grid $G_{i+1}$. 
@@ -772,20 +769,21 @@ EMD_{approx.}=|f_{EMD}(A) - f_{EMD}(A)|
 \end{equation}  
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Theoretical distortion}}{} 
-The distortion of the embedding has an upper bound of $O(log \Delta))$. A detailed proof is given in \cite{indyk2003fast}. However, the proved theoretical distortion can only provide a week practical instrument. Experimental validation performed on a dataset of $20,000$ objects proved a $(1+\epsilon)-approximate$ nearest neighbor, with $\epsilon < 20\%$ achieved by the embedding compared to the exact EMD. Grauman and Darrel \cite{} have used this embedding as a metric for contour matching and proved the quality of retrieval. They have found that the accuracy drop from the exact EMD is less than $10\%$.\\
+The distortion of the embedding has an upper bound of $O(log \Delta))$. A detailed proof is given in \cite{indyk2003fast}. However, the proved theoretical distortion can only provide a week practical instrument. Experimental validation performed on a dataset of $20,000$ objects proved a $(1+\epsilon)-approximate$ nearest neighbor, with $\epsilon < 20\%$ achieved by the embedding compared to the exact EMD. Grauman and Darrel \cite{grauman2004fast} have used this embedding as a metric for contour matching and proved the quality of retrieval. They have found that the accuracy drop from the exact EMD is less than $10\%$.\\
 
-The Embedding time complexity is $O(Nd log{\Delta}$, where $N$ is the feature set size, $d$ is the feature space dimension and $\Delta$ is the diameter of the union if the two feature sets.\\
+The Embedding time complexity is $O(Nd log{\Delta})$, where $N$ is the feature set size, $d$ is the feature space dimension and $\Delta$ is the diameter of the union if the two feature sets.\\
 
 
-\subsubsection{EMD Embedding into the Wavelet Coefficients Domain}
+\subsubsection{EMD Embedding using the wavelet Coefficients Domain}
 %How it is done?
 %Is it faster to calculate?
 %Is the retrieval more accurate (empirically) than the $L_1-EMD$ embedding?
 %Are the bounds are more strict?
 
-Note that in the original work on EMD as a metric for image retrieval \cite{rubner2000earth}, the authors provided more general definition of EMD which does not assume $|A|=|B|$. However, in \cite{indyk2003fast} this generalization was not considered, since in this case EMD does not form a metric. Also, they have showed that $EMD_{approx.}$ is equivalent to EMD averaged over all random shifts. They do not prove this for individual embedding. In this work we use an embedding technique proposed in a later work \cite{shirdhonkar2008approximate} done by Shirdhonkar and Jacobs. In their work, they has proposed a method for approximating the EMD between two low dimensional histograms using the weighted wavelet coefficients of the difference histogram. The approximation is done by transforming the histograms into $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. They have proven the ratio of EMD to wavelet EMD is bounded by constants.\\ 
+In a later work \cite{shirdhonkar2008approximate} done by Shirdhonkar and Jacobs, the authors have proposed a method for approximating the EMD between two low dimensional histograms using the weighted wavelet coefficients of the difference histogram. The approximation is done by transforming the histograms into $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. They have proven the ratio of EMD to wavelet EMD is bounded by constants.\\ 
 
-\textbf{Wavelets}: the topic of wavelet and the wavelet transform is a relatively new concept (about 10 years old) which usually requires a large investment of time and a high level of mathematical background, which is not covered in a basic calculus course to be deeply comprehended.
+\emph{TODO: should it be in an appendix}\\
+\textbf{Wavelets}: the topic of wavelet and the wavelet transform is a relatively new concept which usually requires a large investment of time and a high level of mathematical background, which is not covered in a basic calculus course to be deeply comprehended.
 Wavelet transform, like the Fourier transform, is used in many fields of mathematics, physics and engineering. Quite a few articles and books were written on the subject, therefore, here we will try to provide an intuitive introduction to the topic and let the interested reader to learn more about the subject in the literature.  
 
 Recall that the Fourier Transform gives the frequency information of the signal, which means that it tells us how much of each frequency exists in the signal, but it does not tell us when in time these frequency components exist. This information is not required when the signal is so-called stationary, i.e. signals whose frequency content do not change in time. FT can be used for non-stationary signals, if we are only interested in what frequency components exist in the signal, but not interested where these occur. However, if this information is needed, i.e., if we want to know, what frequency component occur at what time (interval), then Fourier transform is not the right transform to use. Wavelet transform is capable of providing the time and frequency information simultaneously, hence giving a time-frequency representation of the signal.
@@ -800,40 +798,39 @@ The wavelet transform aims to convert a signal into a series of wavelets and by 
 As seen in the above equation , the transformed signal is a function of two variables, $\tau$ and $s$ , the translation and scale parameters, respectively. $\psi(t)$ is the transforming function, and it is called the mother wavelet .
 
 The scale parameter in the wavelet analysis is similar to the scale used in maps. As in the case of maps, high scales correspond to a non-detailed global view (of the signal), and low scales correspond to a detailed view. Similarly, in terms of frequency, low frequencies (high scales) correspond to a global information of a signal (that usually spans the entire signal), whereas high frequencies (low scales) correspond to a detailed information of a hidden pattern in the signal (that usually lasts a relatively short time).
+
 The idea of the wavelet transform is analysis a signal function $f(x)$ by creating a mathematical structures that vary is scale. i.e., construct a function, shift it by some amount, change its scale. Repeat the procedure to obtain a new approximation. This is usually refereed to as a \emph{multiresolution analysis}. In order to analyze a non-stationary signal, we need to determine its behavior at any individual event. Multi-resolution analysis provides one means to do this. A multi-resolution analysis decomposes a signal into a smoothed version of the original signal and a set of detail information at different scales. Once we have decomposed a signal this way, we may analyze the behavior of the detail information across the different scales.
-The fundamental idea of wavelet transforms is that the transformation should allow only changes in time extension, but not shape. This is effected by choosing suitable basis functions that allow for this.
+
+The fundamental idea of wavelet transforms is that the transformation should allow only changes in time extension, but not in the shape of the wavelet. This is effected by choosing suitable basis functions that allow for this.
 A function $f$ in $\mathbb{R}$ can be expressed in terms of wavelet series as:
 \begin{equation}
 f(x)=\sum\limits_{k}{f_k \phi(x-k)}+\sum\limits_{k}{f_{j,k}\psi_{j,k}(x)}
 \end{equation}
 
-where $\phi$ is the scaling function and $\psi$ is the wavelet. $k$ runs through all integer and represents shifts.
+where $\phi$ is the scaling function and $\psi$ is the wavelet. $k$ runs through all integer and represents shifts.\\
 
-Converting the histograms into the wavelet domain is done by converting and its coefficients are scaled according to equation \ref{eq:emd_scaling}.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD embedding to the wavelet domain}}{}
+Converting the histograms into the wavelet domain is done by finding the embedding coefficient according to the following equation (Equation \ref{eq:emd_embedding}).
 \begin{equation}
-d(p)_{wemd}=\sum\limits_{\lambda}|p_{\lambda}|2^{-j(s+n/2)}
-\label{eq:emd_scaling}
+d(p)_{wemd}=\sum\limits_{\lambda} 2^{-j}2^{-jn/2}|p_{\lambda}| = \sum\limits_{\lambda} 2^{-j(1+n/2)}|p_{\lambda}|
+\label{eq:emd_embedding}
 \end{equation}
-where $p_{\lambda}$ is the wavelet transform coefficients of the difference density $p$ generated by the orthonormal wavelet-scaling function. The index $\lambda$ includes shifts and the scale j.
+where $p$ is the n-dimensional difference histogram and $p_{\lambda}$ is the wavelet transform coefficients. The index $\lambda$ includes both shifts and the scale j.\\
 
-Computing the EMD distance in the next step is done as the $l_1$ (Manhattan) distance between these coefficients. In order to choose the wavelet domain for embedding, the authors have tested few, and showed that the Coif-lets of order 3 and the Symmetric Daubechies wavelets of order 5 had low error rates. We follow their results and use order 3 Coif-lets in
-our system.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Intuitive explanation}}{}
+Intuitively, the wavelet transform splits up the difference histogram according to scale and location where each coefficient represents the solution to the EMD subproblem. For a single wavelet, the mass to be moved is proportional to the volume of $|\psi_j(x)|$, i.e. to $2^{-jn/2}$ and the distance to be traveled is proportional to the span of the wavelet, i.e $2^{-j}$. The sum of all distances is an approximation to EMD as given in Equation \ref{eq:emd_embedding}. 
+This can be viewed as similar to the way packages are shipped over large distances. The route is broken into several pieces which are large and small distances. Packages from nearby places are merged at the end of the short distance route piece to travel together. Then another merge is done of packages from the entire country to be shipped together to the destination country. The sum of the distances traveled is an approximation to the actual distance.\\
 
-They have provided both theoretical and experimental bounds. The theoretical approximation is based on the following theorem:
-\begin{theorem}
-Consider the KR problem with the cost function $c(x,y)=\|x-y\|^s$, $s<1$. Let $p_k$ and $p_{\lambda}$ be the wavelet transform coefficients (approximation and details) of he difference density $p$ generated by the orthonormal wavelet scaling function pair $\psi$ and $\phi$ with regularity $r \geq q > s$. Then for any non-negative constants $C_0$ and $C_1>0$,
-\begin{equation}
-\hat{\mu}=C_0 \sum\limits_k{\|p_{\lambda}\|}+C_1\sum\limits_k{2^{-j(s+n/2)}\|p_{\lambda}\|}
-\end{equation}
-is an equivalent metric to KR metric $\dot{mu_c}$; i.e. there exist positive constant $C_L$ and $C_U$ (depending only on the wavelet used) such that
-\begin{equation}
-C_L\hat{\mu} \leq \dot{\mu_c} \leq C_U\hat{\mu_c}
-\end{equation} 
-\end{theorem} 
-And the empirical bound is based on an experiment done \emph{TODO: write the test setup} in which they show that this metric follows EMD closely and can be used instead without any significant performance difference. The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Embedding the histograms rather than the difference histogram}}{}
+However, in our application where the histogram descriptors are to be stored rather than the difference histogram, the computation of EMD can be split into two parts. First the histograms are converted into the wavelet domain and its coefficients are scaled according to equation \ref{eq:emd_embedding}. 
+Computing the EMD distance in the next step is done as the $l_1$ (Manhattan) distance between these coefficients of the corresponding histograms.\\
 
-Empirically the normalized RMS error obtained was between 13\% and 20\% while the embedding proposed by Indyk and Thaper achieved 43\%. In addition, the wavelet embedding surpassed the Indyk and Thaper embedding in time performance.
-Note that the embedding process requires histograms, thus the vectors in the feature space had to had to be normalized.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{shirdhonkar - theoretical and empirical bounds}}{}
+They have provided both theoretical and experimental bounds. The theoretical approximation is based on Theorem 2 in \cite{shirdhonkar2008approximate}.
+And the empirical bound is based on an experiment  in which they show that this metric follows EMD closely and can be alternatively used without any significant difference in performance. The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity. In choosing the best wavelet, the authors have tested few, and showed that the Coif-lets of order 3 and the Symmetric Daubechies wavelets of order 5 had lowest error rates. We followed their results and choose to work with the order 3 Coif-lets.\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Performance - Indyk vs. shirdhonkar}}{}
+Empirically, the normalized RMS error obtained in using the wavelet embedding was between in 13\% and 20\% compared to the embedding proposed by Indyk and Thaper which achieved 43\%. In addition, the wavelet embedding surpassed the Indyk and Thaper embedding in time performance. Note that the embedding process requires histograms, thus the vectors in the feature space need to be normalized.
 
 \subsection{Metric Indexing}
 \label{subsec:metric_indexing}
