@@ -1,18 +1,53 @@
-%%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-%%% Do not edit unless you really know what you are doing.
-%\documentclass[english]{report}
-%\usepackage[T1]{fontenc}
-%\usepackage[latin9]{inputenc}
-%\setcounter{secnumdepth}{3}
-%\setcounter{tocdepth}{3}
-%\usepackage{setspace}
-%\doublespacing
-%\usepackage{babel}
-%\begin{document}
+\documentclass[12pt,english]{report}
+\usepackage{mathptmx}
+\renewcommand{\familydefault}{\rmdefault}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[a4paper]{geometry}
+\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{verbatim}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\usepackage{subfig} %% This package has to be here
+\usepackage{setspace}
+\usepackage{arabtex}
+\usepackage[numbers]{natbib}
+\usepackage{nomencl}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\begin{document}
 
-\chapter{Appendix title}
+\chapter{Wavelets and the wavelet transform}
 
-Appendix is just a different type of Section - it's included at the
-end of the document (after the bibliography or list of references)
-and before the Hebrew part and it's numbered in a different manner. 
-%\end{document}
+The topic of wavelet and the wavelet transform is a relatively new concept which usually requires a large investment of time and a high level of mathematical background, which is not covered in a basic calculus course to be deeply comprehended.
+Wavelet transform, like the Fourier transform, is used in many fields of mathematics, physics and engineering. Quite a few articles and books were written on the subject, therefore, here we will try to provide an intuitive introduction to the topic and let the interested reader to learn more about the subject in the literature. \\ 
+
+Recall that the Fourier Transform gives the frequency information of the signal, which means that it tells us how much of each frequency exists in the signal, but it does not tell us when in time these frequency components exist. This information is not required when the signal is so-called stationary, i.e. signals whose frequency content do not change in time. FT can be used for non-stationary signals, if we are only interested in what frequency components exist in the signal, but not interested where these occur. However, if this information is needed, i.e., if we want to know, what frequency component occur at what time (interval), then Fourier transform is not the right transform to use. Wavelet transform is capable of providing the time and frequency information simultaneously, hence giving a time-frequency representation of the signal.\\
+
+Wavelets may be seen as small waves $\psi(t)$, which oscillate few times, but unlike the harmonic waves ($sin(nx)$ and $cos(nx)$ on $(-\pi,\pi]$) must die out to zero as $t \rightarrow \pm\infty$. The most applicable wavelets are those that die out after a few oscillations on a finite interval $[a,b)$. \\
+
+The wavelet transform aims to convert a signal into a series of wavelets and by doing so to provide a way for analyzing waveforms bounded in both frequency and duration. This is done to provide information that is not obvious in the original time domain function and also to allow signals to be stored efficiently and to be able to better approximate real-world signals. \\
+
+\begin{equation}
+\Psi^{\psi}_{x}(\tau, s)=\frac{1}{\sqrt{|s|}}\int{x(t)\psi^*(\frac{t-\tau}{s})dt}
+\end{equation}
+As seen in the above equation , the transformed signal is a function of two variables, $\tau$ and $s$ , the translation and scale parameters, respectively. $\psi(t)$ is the transforming function, and it is called the mother wavelet.\\
+
+The scale parameter in the wavelet analysis is similar to the scale used in maps. As in the case of maps, high scales correspond to a non-detailed global view (of the signal), and low scales correspond to a detailed view. Similarly, in terms of frequency, low frequencies (high scales) correspond to a global information of a signal (that usually spans the entire signal), whereas high frequencies (low scales) correspond to a detailed information of a hidden pattern in the signal (that usually lasts a relatively short time).\\
+
+The idea of the wavelet transform is analysis a signal function $f(x)$ by creating a mathematical structures that vary is scale. i.e., construct a function, shift it by some amount, change its scale. Repeat the procedure to obtain a new approximation. This is usually refereed to as a \emph{multiresolution analysis}. In order to analyze a non-stationary signal, we need to determine its behavior at any individual event. Multi-resolution analysis provides one means to do this. A multi-resolution analysis decomposes a signal into a smoothed version of the original signal and a set of detail information at different scales. Once we have decomposed a signal this way, we may analyze the behavior of the detail information across the different scales.\\
+
+The fundamental idea of wavelet transforms is that the transformation should allow only changes in time extension, but not in the shape of the wavelet. This is effected by choosing suitable basis functions that allow for this.
+A function $f$ in $\mathbb{R}$ can be expressed in terms of wavelet series as:
+\begin{equation}
+f(x)=\sum\limits_{k}{f_k \phi(x-k)}+\sum\limits_{k}{f_{j,k}\psi_{j,k}(x)}
+\end{equation}
+
+where $\phi$ is the scaling function and $\psi$ is the wavelet. $k$ runs through all integer and represents shifts.\\
+
+The reader is referred to \cite{meyer1992wavelets} for a exhaustive discussion on the wavelet transform.\\
+
+\end{document}

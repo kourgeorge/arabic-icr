@@ -21,8 +21,6 @@
 \usepackage{amsthm}
 \usepackage{amsmath}
 \usepackage{amsfonts}
-
-
 \usepackage{etoolbox}
 \newtoggle{edit-mode}
 %\togglefalse{edit-mode}  
@@ -630,7 +628,7 @@ In this work, DTW is used for candidates scoring (described in chapter \ref{sec:
 \label{sec:similarity_search}
  
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
-In Section \ref{sec:similarity_measures} we have discussed one aspect of information retrieval - the effectiveness of measuring the perceptual notion of similarity between two objects. However, even the most qualitatively effective similarity measure technique is almost useless if for a given query object, the task of searching for similar objects in the database cannot be done efficiently. Efficient similarity search usually requires the development of search methods that minimizes the overall search costs.\\
+In Section \ref{sec:similarity_measures} we have discussed one aspect of information retrieval - the effectiveness of measuring the perceptual notion of similarity between two objects. However, even the most qualitative similarity measure technique is almost useless if for a given query object, the task of searching for similar objects in the database cannot be done efficiently. Efficient similarity search usually requires the development of search methods that minimizes the overall search costs.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Similarity search query types}}{}
 Similarity based search introduce two fundamental query types: \emph{range queries} and \emph{k-nearest neighbor queries} \cite{hetland2009basic}. Under the definition of a distance function given in Definition\ref{def:distance_function}, formal definitions of both query types are provided in Definitions \ref{def:range_query} and \ref{def:knn_query} and visualized in figure \ref{fig:similarity_query_types}.
@@ -666,16 +664,17 @@ k-NN(q,D,dist)=\{A \subseteq D | \forall a \in A, b \in D \setminus A: dist(q,a)
 While range queries are argued to be fundamental, kNN queries notably take a large volume in the literature. In the following we focus on k-NN queries.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Problems - similarity search costs}}{}
-The efficiency of a search method is defined as the time needed to evaluate a query. Two main components; the computation cost and the disk access cost. The computation costs represent the number of distance computations needed for a query evaluation. As discussed in Section \ref{sec:similarity_measures}, effective similarity measure methods that reasonably correspond to the human intuition are costly. The I/O costs are related to the volume of data needed to be investigated in a query evaluation. Namely, the number of samples in the dataset to be evaluated against the query object in order to obtain the query results \cite{saabni2013efficient}.\\
+The efficiency of a search method is defined as the time needed to evaluate a query. There are two main components that affect the time needed to evaluate a query; the computation time and the disk access time. The computation costs represent the effort spent by the similarity measure function . As discussed in Section \ref{sec:similarity_measures}, effective similarity measure methods that reasonably correspond to the human intuition are costly. The I/O costs is determined by the volume of data needed to be investigated to evaluate a query. Namely, the number of samples in the dataset that needs to be examined.
+ \cite{saabni2013efficient}.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Solution directions}}{}
-Minimizing the time needed in searching for a similar object in a large dataset requires reducing the computation costs, i.e., make as few as possible costly calculations. One way to achieve this goal is by using a cheap distance measure function which provide a lower bound to the similarity between two given sample objects. The lower bound is used to filter out candidates with a similarity value larger than a preset threshold. Reducing the disc access cost can be attained by discarding entire portion of the dataset which are assured to be distant enough (i.e., their similarity is assured to be relatively large) from the the given query object. Such techniques are called \emph{Metric Indexing} and usually require the metric to maintain several conditions.\\
+Decreasing the computational cost can be obtained by using a cheap distance measure function which approximate, usually by providing a a lower bound, to the similarity between two given sample objects. The lower bound is used to filter out candidates with a similarity value larger than a preset threshold. Reducing the disc access cost can be attained by discarding entire portion of the dataset which are assured to be distant enough (i.e., their similarity is assured to be relatively large) from the the given query object. Such techniques are called \emph{Metric Indexing} and will be discussed in \ref{subsec:metric_embedding}. \\
 
 
 \subsection{Lower Bounding}
 \label{subsec:lower_bounding}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Distance function approximation}}{}
-In order to improve upon the evaluation of the distance function on every object in the dataset, we must somehow infer that an object x can be included in, or excluded from, the search result without calculating $d(q, x)$ by finding a cheap way of approximating the distance. In order to avoid wrongfully including or excluding objects, we need an approximation with certain properties. Although, both lower and upper bounding measures can be exploited to avoid running expensive calculation of the function $d$, lower bounding appears to be more useful as it can be safely used to exclude far candidates as described in Algorithm \ref{alg:lower_bound} . The more the approximation is accurate the less the actual distance function $d$ will be invoked. However, there will normally be a trade-off between approximation quality and cost of computation \cite{hetland2009basic, keogh2005exact}.\\
+In order to improve upon evaluating the distance function on every object in the dataset, we must somehow infer that an object $x$ can be included in, or excluded from, the search result without calculating $d(q, x)$. One option to do so is by finding a cheap way of approximating the distance. Although, both lower and upper bounding measures can be exploited to avoid running expensive calculation of the function $d$, lower bounding appears to be more useful as it can be safely used to exclude far candidates as described in Algorithm \ref{alg:lower_bound}. The more the approximation is accurate the less the actual distance function $d$ will be invoked. However, there will normally be a trade-off between approximation quality and cost of computation \cite{hetland2009basic, keogh2005exact}.\\
 
 \begin{algorithm}
 $best\_so\_far = \infty$\;
@@ -704,7 +703,7 @@ Given metric spaces $(D, d)$ and $(D', d')$ a map $f : D \rightarrow D'$ is call
 \end{definition}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Isometric embedding}}{}
-The special case where $d(x, y) = d'(f(x), f(y))$ for all $x, y \in D$ is called \textbf{distance-preserving} or \textbf{isometric} embedding. However It is very rare to find cases where isometric embeddings are beneficial, and hence we often have to allow the mappings to alter distances in some, hopefully restricted, fashion. The distortion of the embedding is defined in \ref{def:embedding_distortion}.
+The special case where $d(x, y) = d'(f(x), f(y))$ for all $x, y \in D$ is called \textbf{distance-preserving} or \textbf{isometric} embedding. However It is very rare to find cases where isometric embeddings are beneficial and hence we often have to allow the mappings to alter distances in some, hopefully restricted, fashion. The distortion of the embedding is defined in \ref{def:embedding_distortion}.
 
 \begin{definition}
 Given two metrics $(D, d)$ and $(D',d')$ and a map $f : D \rightarrow D'$, the \textbf{contraction} of $f$ is the maximum factor by which distances are shrunk, i.e.,
@@ -712,7 +711,7 @@ Given two metrics $(D, d)$ and $(D',d')$ and a map $f : D \rightarrow D'$, the \
 \max_{x,y \in D} \frac{d(x,y)}{d'(f(x),f(y))}
 \end{equation}
 
-The \textbf{expansion} of $f$ is the maximum factor by which distances are stretched:
+The \textbf{expansion} of $f$ is the maximum factor by which distances are stretched. Formally:
 \begin{equation}
 \max_{x,y \in D} \frac{d'(f(x),f(y))}{d(x,y)}
 \end{equation}
@@ -722,8 +721,7 @@ and the \textbf{distortion} of $f$ is the product of the distortion and the expa
 \end{definition}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{$L_p$ advantage and drawbacks}}{}
-Using normed spaces such as the $L_p$ norm (see Definitions \ref{def:norm} and \ref{lp}) to solve the dissimilarity measure problem enables using data structures which are specifically designed for points living in the normed space, such as k-d trees and R-trees since such spaces maintain the triangular equality.\emph{TODO: ADD references}. 
-Such data structures provide mechanisms for answering the $k-NN$ query in an orders of magnitude faster than linear scan of the database. However, the quality of the dissimilarity measure of such norms, as mentioned before, is not always satisfactory \cite{indyk2003fast}.\\
+Using normed spaces (see Definitions \ref{def:norm}) such as the $L_p$ norm (see Definitions \ref{lp}) to solve the dissimilarity measure problem enables using data structures such as k-d trees and R-trees. Such spaces maintain the triangular equality and provide mechanisms for answering the $k-NN$ query in an orders of magnitude faster than linear scan of the database. \cite{indyk2003fast}.\\
 
 \begin{definition}
 Given a data space $D$, for any two data elements  $x,y \in D$, a \textbf{norm} $\|\cdot\|$ is defined as:
@@ -748,31 +746,27 @@ Given an vector space $V=\mathbb{R}^N$ and $v=(v_1,v_2,...,v_N) \in V$, the $L_p
 \end{equation}
 \label{lp}
 \end{definition}
-In this special case we will denote this vector space as $L_p^N$ to emphasize its dimensions.\\
+In this case we will denote this vector space as $L_p^N$ to emphasize its $N$ dimensions.\\
 
 \subsection{Approximating EMD using Embedding}
 \label{subsec:approximating_emd_using_embedding}
 
-Several approximation algorithms have been proposed to speed up the computation of EMD. Indyk and Thaper \cite{indyk2003fast} has suggested a technique in which the un-normed EMD metric is embedded into a the $L_1$ space so that the distance between the two objects, in their case images, is comparable to the distance between the two points which represent the embedding of the two images. The Embedding can be described as follows:
-For a given two points sets $A$ and $B$, both of cardinality $n$ and containing points in $L_2^d$ space and $C=A \bigcup B$, the embedding is into the $L_1^d$ norm (i.e. the space of vectors in $\mathbb{R}^d$ equipped with the Manhattan norm). 
-The general idea of the embedding is to compute and concatenate several weighted histograms of decreasing resolution for a given point set as follows: 
-Let us assume that the smallest distance between any two points is $1$ and $\Delta$ is the diameter of $C$, the embedding can be described as imposing hierarchy of grids $G_i$ having side length $2^i$ on the space $\mathbb{R}^d$, where $-1 \leq i \leq log(\Delta)$. It is required that each grid $G_{i}$ is a refinement of the grid $G_{i+1}$. 
-Each grid is translated by a vector chosen randomly from $[0, \Delta]^d$. Then for each grid $G_i$ create a vector $v_i(A)$ with one coordinate per cell which contains the number of points in the corresponding cell, i.e. $v_i(A)$ forms a histogram of A. The embedding, denoted as $f(A)$, is then defined as the concatenated vector of the $v_i$'s, scaled by the grid side lengths:
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Indyk and Thaper Embedding}}{}
+Several approximation algorithms have been proposed to speed up the computation of EMD. Indyk and Thaper \cite{indyk2003fast} has suggested a technique in which the un-normed EMD metric is embedded into a the $L_1$ space so that the distance between the two objects, in their case images, is comparable to the distance between the two points which represent the embedding of the two images.  For a given two points sets $A$ and $B$, both of cardinality $n$ and containing points in $L_2^d$ space and $C=A \bigcup B$, the Embedding is into the $L_1^d$ norm (i.e. the space of vectors in $\mathbb{R}^d$ equipped with the Manhattan norm) and can be described by the following: 
+The general idea of the embedding is to compute and concatenate several weighted histograms of decreasing resolution for a given point set. Let us assume that the smallest distance between any two points is $1$ and $\Delta$ is the diameter of $C$, the embedding can be described as imposing hierarchy of grids $G_i$ having side length $2^i$ on the space $\mathbb{R}^d$, where $-1 \leq i \leq log(\Delta)$. It is required that each grid $G_{i}$ to be a refinement of the grid $G_{i+1}$. 
+Each grid is translated by a vector chosen randomly from $[0, \Delta]^d$. Then for each grid $G_i$ create a vector $v_i(A)$ with one coordinate per cell which contains the number of points in the corresponding cell, i.e. for every $i$, $v_i(A)$ forms a histogram of A. The embedding, denoted as $f_{EMD}(A)$, is then defined as the concatenated vector of the $v_i$'s, scaled by the grid side lengths:
 \begin{equation}
 f_{EMD}(A) = [v_{-1}(A)/2, v_0(A), 2v_1(A), 4v_2(A),..., 2^iv_i(A),...]
 \end{equation} 
-An image visually describing the embedding is given in Figure {}.\\
+An image visually describing the embedding is given in Figure \emph{TODO: add an image}.\\
 
 Approximating the EMD distance between the set $A$ and $B$ is then done by calculating the Manhattan distance between the two corresponding embedding vectors, i.e.,
 \begin{equation}
 EMD_{approx.}=|f_{EMD}(A) - f_{EMD}(A)|
 \end{equation}  
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Theoretical distortion}}{} 
-The distortion of the embedding has an upper bound of $O(log \Delta))$. A detailed proof is given in \cite{indyk2003fast}. However, the proved theoretical distortion can only provide a week practical instrument. Experimental validation performed on a dataset of $20,000$ objects proved a $(1+\epsilon)-approximate$ nearest neighbor, with $\epsilon < 20\%$ achieved by the embedding compared to the exact EMD. Grauman and Darrel \cite{grauman2004fast} have used this embedding as a metric for contour matching and proved the quality of retrieval. They have found that the accuracy drop from the exact EMD is less than $10\%$.\\
-
-The Embedding time complexity is $O(Nd log{\Delta})$, where $N$ is the feature set size, $d$ is the feature space dimension and $\Delta$ is the diameter of the union if the two feature sets.\\
-
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Performance}}{} 
+The embedding time complexity is $O(Nd log{\Delta})$, where $N$ is the feature set size, $d$ is the feature space dimension and $\Delta$ is the diameter of the union if the two feature sets. The distortion of the embedding has an upper bound of $O(log \Delta)$. A detailed proof of the embedding is given in \cite{indyk2003fast}. However, the proved theoretical distortion can only provide a week practical instrument. Experimental validation performed on a dataset of $20,000$ objects proved a $(1+\epsilon)-approximate$ nearest neighbor, with $\epsilon < 20\%$ achieved by the embedding compared to the exact EMD. Grauman and Darrel \cite{grauman2004fast} have used this embedding for contour matching and proved the quality of retrieval. They have found that the accuracy reduction is less than $10\%$ compared to the exact EMD.\\
 
 \subsubsection{EMD Embedding using the wavelet Coefficients Domain}
 %How it is done?
@@ -780,74 +774,49 @@ The Embedding time complexity is $O(Nd log{\Delta})$, where $N$ is the feature s
 %Is the retrieval more accurate (empirically) than the $L_1-EMD$ embedding?
 %Are the bounds are more strict?
 
-In a later work \cite{shirdhonkar2008approximate} done by Shirdhonkar and Jacobs, the authors have proposed a method for approximating the EMD between two low dimensional histograms using the weighted wavelet coefficients of the difference histogram. The approximation is done by transforming the histograms into $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. They have proven the ratio of EMD to wavelet EMD is bounded by constants.\\ 
-
-\emph{TODO: should it be in an appendix}\\
-\textbf{Wavelets}: the topic of wavelet and the wavelet transform is a relatively new concept which usually requires a large investment of time and a high level of mathematical background, which is not covered in a basic calculus course to be deeply comprehended.
-Wavelet transform, like the Fourier transform, is used in many fields of mathematics, physics and engineering. Quite a few articles and books were written on the subject, therefore, here we will try to provide an intuitive introduction to the topic and let the interested reader to learn more about the subject in the literature.  
-
-Recall that the Fourier Transform gives the frequency information of the signal, which means that it tells us how much of each frequency exists in the signal, but it does not tell us when in time these frequency components exist. This information is not required when the signal is so-called stationary, i.e. signals whose frequency content do not change in time. FT can be used for non-stationary signals, if we are only interested in what frequency components exist in the signal, but not interested where these occur. However, if this information is needed, i.e., if we want to know, what frequency component occur at what time (interval), then Fourier transform is not the right transform to use. Wavelet transform is capable of providing the time and frequency information simultaneously, hence giving a time-frequency representation of the signal.
-
-Wavelets may be seen as small waves $\psi(t)$, which oscillate few times, but unlike the harmonic waves ($sin(nx)$ and $cos(nx)$ on $(-\pi,\pi]$) must die out to zero as $t \rightarrow \pm\infty$. The most applicable wavelets are those that die out after a few oscillations on a finite interval $[a,b)$. 
-
-The wavelet transform aims to convert a signal into a series of wavelets and by doing so to provide a way for analyzing waveforms bounded in both frequency and duration. This is done to provide information that is not obvious in the original time domain function and also to allow signals to be stored efficiently and to be able to better approximate real-world signals. 
-
-\begin{equation}
-\Psi^{\psi}_{x}(\tau, s)=\frac{1}{\sqrt{|s|}}\int{x(t)\psi^*(\frac{t-\tau}{s})dt}
-\end{equation}
-As seen in the above equation , the transformed signal is a function of two variables, $\tau$ and $s$ , the translation and scale parameters, respectively. $\psi(t)$ is the transforming function, and it is called the mother wavelet .
-
-The scale parameter in the wavelet analysis is similar to the scale used in maps. As in the case of maps, high scales correspond to a non-detailed global view (of the signal), and low scales correspond to a detailed view. Similarly, in terms of frequency, low frequencies (high scales) correspond to a global information of a signal (that usually spans the entire signal), whereas high frequencies (low scales) correspond to a detailed information of a hidden pattern in the signal (that usually lasts a relatively short time).
-
-The idea of the wavelet transform is analysis a signal function $f(x)$ by creating a mathematical structures that vary is scale. i.e., construct a function, shift it by some amount, change its scale. Repeat the procedure to obtain a new approximation. This is usually refereed to as a \emph{multiresolution analysis}. In order to analyze a non-stationary signal, we need to determine its behavior at any individual event. Multi-resolution analysis provides one means to do this. A multi-resolution analysis decomposes a signal into a smoothed version of the original signal and a set of detail information at different scales. Once we have decomposed a signal this way, we may analyze the behavior of the detail information across the different scales.
-
-The fundamental idea of wavelet transforms is that the transformation should allow only changes in time extension, but not in the shape of the wavelet. This is effected by choosing suitable basis functions that allow for this.
-A function $f$ in $\mathbb{R}$ can be expressed in terms of wavelet series as:
-\begin{equation}
-f(x)=\sum\limits_{k}{f_k \phi(x-k)}+\sum\limits_{k}{f_{j,k}\psi_{j,k}(x)}
-\end{equation}
-
-where $\phi$ is the scaling function and $\psi$ is the wavelet. $k$ runs through all integer and represents shifts.\\
+In a later work \cite{shirdhonkar2008approximate} done by Shirdhonkar and Jacobs, the authors have proposed a method for approximating the EMD between two low dimensional histograms using the weighted wavelet coefficients of the difference histogram. The approximation is done by transforming the histograms into the $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. They have proven the ratio of EMD to wavelet EMD is bounded by constants. In the following, a background on wavelet is required and the user is reffered to Appendix A for a brief introduction on the subject.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD embedding to the wavelet domain}}{}
-Converting the histograms into the wavelet domain is done by finding the embedding coefficient according to the following equation (Equation \ref{eq:emd_embedding}).
+Shirdhonkar and Jacobs showed that the embedding of the difference histogram approximate the EMD between two histograms. It is done by calculating the $L_1$ norm of the coefficients vector of the embedding as given in Equation \ref{eq:emd_embedding}.
 \begin{equation}
-d(p)_{wemd}=\sum\limits_{\lambda} 2^{-j}2^{-jn/2}|p_{\lambda}| = \sum\limits_{\lambda} 2^{-j(1+n/2)}|p_{\lambda}|
+d(p)_{wemd}= \sum\limits_{\lambda} 2^{-j(1+n/2)}|p_{\lambda}|
 \label{eq:emd_embedding}
 \end{equation}
 where $p$ is the n-dimensional difference histogram and $p_{\lambda}$ is the wavelet transform coefficients. The index $\lambda$ includes both shifts and the scale j.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Intuitive explanation}}{}
 Intuitively, the wavelet transform splits up the difference histogram according to scale and location where each coefficient represents the solution to the EMD subproblem. For a single wavelet, the mass to be moved is proportional to the volume of $|\psi_j(x)|$, i.e. to $2^{-jn/2}$ and the distance to be traveled is proportional to the span of the wavelet, i.e $2^{-j}$. The sum of all distances is an approximation to EMD as given in Equation \ref{eq:emd_embedding}. 
-This can be viewed as similar to the way packages are shipped over large distances. The route is broken into several pieces which are large and small distances. Packages from nearby places are merged at the end of the short distance route piece to travel together. Then another merge is done of packages from the entire country to be shipped together to the destination country. The sum of the distances traveled is an approximation to the actual distance.\\
+This can be viewed as similar to the way packages are shipped over large distances. The route is broken into several pieces which are large and small distances. Packages from nearby places are merged at the end of the short distance route piece to travel together. Then another merge is done of packages from the entire country to be shipped together to the destination country. The sum of the distances traveled is an approximation to the actual distance. See figure \ref{fig:emd_wavelet}.\\
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{./figures/emd_wavelet}       
+\caption{EMD embedding using the wavelet domain.}
+\label{fig:emd_wavelet}
+\end{figure}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Embedding the histograms rather than the difference histogram}}{}
-However, in our application where the histogram descriptors are to be stored rather than the difference histogram, the computation of EMD can be split into two parts. First the histograms are converted into the wavelet domain and its coefficients are scaled according to equation \ref{eq:emd_embedding}. 
-Computing the EMD distance in the next step is done as the $l_1$ (Manhattan) distance between these coefficients of the corresponding histograms.\\
+However, in our application, where the histogram descriptors are to be stored rather than the difference histogram, the computation of EMD can be partitioned into two parts. First the histograms are converted into the wavelet domain and their coefficients are scaled according to equation \ref{eq:emd_embedding}. 
+Computing the EMD distance in the next step is done by calculating the Manhattan distance between the scaled coefficients of the corresponding histograms.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{shirdhonkar - theoretical and empirical bounds}}{}
-They have provided both theoretical and experimental bounds. The theoretical approximation is based on Theorem 2 in \cite{shirdhonkar2008approximate}.
-And the empirical bound is based on an experiment  in which they show that this metric follows EMD closely and can be alternatively used without any significant difference in performance. The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity. In choosing the best wavelet, the authors have tested few, and showed that the Coif-lets of order 3 and the Symmetric Daubechies wavelets of order 5 had lowest error rates. We followed their results and choose to work with the order 3 Coif-lets.\\
+They have provided both theoretical and experimental bounds. The theoretical approximation is based on Theorem 2 in \cite{shirdhonkar2008approximate}. Using a large dataset experiment they were able to prove that the proposed approximation follows the true EMD closely empirically and can be alternatively used without any significant difference in performance. The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity. The authors have tested few wavelets and showed that the Coif-lets of order 3 and the Symmetric Daubechies wavelets of order 5 have lowest error rates. We followed their results and choose to work with the order 3 Coif-lets.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Performance - Indyk vs. shirdhonkar}}{}
-Empirically, the normalized RMS error obtained in using the wavelet embedding was between in 13\% and 20\% compared to the embedding proposed by Indyk and Thaper which achieved 43\%. In addition, the wavelet embedding surpassed the Indyk and Thaper embedding in time performance. Note that the embedding process requires histograms, thus the vectors in the feature space need to be normalized.
+Empirically, the normalized RMS error obtained by using the wavelet embedding was between in 13\% and 20\% compared to the embedding proposed by Indyk and Thaper which achieved 43\% in the same experiment. In addition, the wavelet embedding surpassed the Indyk and Thaper embedding in time performance. Note that the embedding process requires histograms, thus the vectors in the feature space need to be normalized before using this method.
 
 \subsection{Metric Indexing}
 \label{subsec:metric_indexing}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}
-Distance function approximation techniques alone cannot avoid linearly scanning the entire dataset in a search for the nearest neighbors of an object. In order to speed up queries index structures should be build over the dataset. The main goal of an index method is to enable efficient search, either asymptotically or simply in real wall-clock time. The time cost involved in building the index is amortized over the series of queries, and is usually ignored when considering search cost \cite{hetland2009basic}.\\
+Distance function approximation techniques alone cannot avoid linear scan of the entire dataset in searching for the nearest neighbors of an object. In order to speed up queries, index structures should be build over the dataset. The main goal of an index method is to enable efficient search, either asymptotically or simply in real wall-clock time. The time cost involved in building the index is amortized over the series of queries, and is usually ignored when considering search cost \cite{hetland2009basic}.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Metric index definition}}{}
-Efficient data retrieval in a metric dataset requires building a \emph{metric index}, namely, a data-structure that boosts the query processing. Indexing technique partition the dataset into equivalent classes such that each equivalent class contains objects that are sufficiently close to each other. However, note that this does not assure that close objects will always be contained in the same equivalent class. Each class is bounded by a hypersphere covering all the objects in the class. Consequently, at query time the metric index is efficiently searched to locate the equivalent classes which covers the areas where the closest objects may be contained in. These classes are then exhaustively checked for the relevant objects
+Efficient data retrieval in a metric dataset requires building a \emph{metric index}, namely, a data-structure that boosts the query processing. Indexing technique partition the dataset into equivalent classes such that each equivalent class contains objects that are sufficiently close to each other. However, this does not assure that close objects will always be contained in the same equivalent class. Each class is bounded by a hypersphere covering all the objects in the class. Consequently, at query time the metric index is efficiently searched to locate the equivalent classes which covers the areas where the closest objects may be contained. These classes are then exhaustively checked for the relevant objects
 This allows discarding classes that surely does not contain relevant objects. In order for the metric indexing to work correctly and efficiently, the distance function is required to satisfy the triangular equality.\\
-
-\emph{TODO: should be removed?}
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Indexing by triangular equality}}{}
-The idea of using triangle inequality to remove false candidates is illustrated. Given a query object $Q$ and two objects in the dataset $R$ and $S$, the following holds: $dist(Q,S) \geq dist(Q,R) - dist(R,S)$. If $dist(Q,R)$ and $dist(R,S)$ are known, dist(Q,S) is lower bounded by $dist(Q,R) - dist(R,S)$. In the case of a range query, for a given range $r$, if $dist(Q,R)-dist(S,R) > r$, the computation of $dist(Q,S)$ can be saved since $S$ surely does not belong to the answer set \cite{chen2005similarity}.\\
  
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Exact vs. Approximate Indexing}}{}
-Indexing techniques can be exact, guaranteeing to return the same result as sequential scanning, or approximate, returning good matches but not necessarily the best matches. Exact methods do not allow false positives or false negatives, i.e., all of the relevant objects are required to be returned in the query result. However, the approximate methods relax this strong requirement so that a small false negatives is accepted \cite{keogh2005exact}. Many methods were proposed to solve the kNN problem that are significantly better than a brute-force computation over the entire database. However, computing nearest neighbors approximately, can to achieve significantly faster retrieval with a relatively small actual errors. \emph{Approximate nearest neighbor} (ANN) techniques also allow the user to specify a maximum approximation error bound, thus enabling the user to control the trade-off between accuracy and running time. \\
+Indexing techniques can be exact, guaranteeing to return the same result as sequential scanning, or approximate, returning good matches but not necessarily the best matches. Exact methods do not allow false positives or false negatives, i.e., all of the relevant objects are required to be returned in the query result. However, the approximate methods relax this strong requirement so that a small false negatives is accepted \cite{keogh2005exact}. Many methods were proposed to solve the $k$-NN problem that are significantly better than a brute-force computation over the entire database. However, computing nearest neighbors approximately, can to achieve significantly faster retrieval with a relatively small actual errors. \emph{Approximate nearest neighbor} (ANN) techniques also allow the user to specify a maximum approximation error bound, thus enabling the user to control the trade-off between accuracy and running time. \\
 
 \begin{figure}
 \centering
@@ -858,17 +827,17 @@ Indexing techniques can be exact, guaranteeing to return the same result as sequ
 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Examples of Exact and Approximate Indexing}}{}
-ANN methods such as k-d trees and Locality Sensitive Hashing (LSH) have been successfully applied on variety of fast similarity retrieval problems. The key assumption in these procedures is that objects in the dataset lie in a metric space. As mentioned in chapter \ref{sec:similarity_measures}, this assumption is not valid for many similarity measure techniques. In the case of k-d tree, it requires a more specific $L_p$ metric space to operate in. While the the worst case scenario complexity is $O(N)$, the expected complexity of a single $k$-NN query using k-d tree is $O(log N)$.\\
+ANN methods such as k-d trees (will be described later) and Locality Sensitive Hashing (LSH) \cite{gionis1999similarity} have been successfully applied on variety of fast similarity retrieval problems. The key assumption in these procedures is that the objects in the dataset lie in a metric space, i.e. the space satisfies the triangular equality. As mentioned in chapter \ref{sec:similarity_measures}, this assumption is not valid for many similarity measure techniques. In the case of k-d tree, it requires a more specific $L_p$ metric space for its operation. While the the worst case scenario complexity is $O(N)$, the expected complexity of a single $k$-NN query using k-d tree is $O(log N)$.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{This work}}{}
-In our framework, sub-strokes classification is done by finding data samples letter that are similar to the shape of the sub-stroke. Since our samples space was embedded into the $L_1$, NN classification method can be safely applied. The advantage of LSH is that it performs better than k-d tree in a high dimensional space. However, the strength of kdtree is that it can be used as an exact $k$-NN technique. In this work, we have chosen to work with k-d tree since we could obtain, after applying dimensionality reduction methods on the data, a low dimensional data space.\\
+In our framework, sub-strokes classification is done by finding data samples letter that are similar to the shape of the sub-stroke. Our feature vectors were embedded into the $L_1$ by using the wavelet embedding technique described earlier and thus metric indexing methods can be safely applied. While the advantage of LSH is that it performs better than k-d tree in a high dimensional space, kdtree it can be used both as an exact and approximate $k$-NN technique. In this work, we have chosen to work with k-d tree since we could obtain, after applying dimensionality reduction techniques, a low dimensional data space.\\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{k-d tree}
 \label{subsubsec:kd_tree}
 
 \iftoggle{edit-mode}{\hspace{0pt}\hspace{0pt}\marginpar{A short introduction to kdtree}}{} 
-k-d tree, a special case of binary space partitioning trees, is a data structure for storing a finite set of points from a k-dimensional space. It was proposed by Bentley in \cite{bentley1975multidimensional}. It aims at solving the problem of searching kNN in a large set of multi-dimensional points by first building a data structure based on the set of reference points. Then, given a query object, it extract the $k$-NN using this structure.\\
+k-d tree, a special case of binary space partitioning trees, is a data structure for storing a finite set of points from a $k$-dimensional space. It was proposed by Bentley in \cite{bentley1975multidimensional}. It aims at solving the problem of searching $k$-NN in a large set of multi-dimensional points by first building a data structure based on the set of reference points. Then, given a query object, it extract the $k$-NN using this structure.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{How it works, how the data is saved and extracted}}{} 
 The k-d tree is formed as follows: Every point is either branch node or is contained in a leaf node. Every point node in the tree is associated with one of the k-dimensions and can be though of an hyperplane that divides the space into two half spaces in that dimension. Points to the left of this hyperplane are represented by the left subtree of that node and points right of the hyperplane are represented by the right subtree. A desired property of the partition is to be as equal as possible. The selection of the pivot point (i.e,  the point that function as a branch node) in every level has a great impact on the balance of the tree. The most common way is to find the medial point of a number of points in the subtree. The number of points in a leaf node is also customizable and is mostly affected by the cardinality of the points in the database and $k$, which is a predefined in many applications. \\
@@ -877,10 +846,10 @@ The k-d tree is formed as follows: Every point is either branch node or is conta
 The approximation of the k-NN using k-d tree is done by initially finding the leaf node That represent the class the query point belongs to. Although it is probable that the $k$ nearest neighbors are all contained in a single leaf node, it is not necessarily the case, and an adjacent leafs may be examined by recursively explore the other child node and look for near neighbors in the all other branches that possibly contain a closer solution to the so far found points. Exact details of the algorithm can be found in \cite{bentley1975multidimensional}.\\
  
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Expected time complexity}}{}
-The construction time of the k-d tree is O($d N log N$), where $d$ is the dimensionality of the data space and $N$ is the cardinality of the dataset. We can afford this high complexity of the construction since the this process is done in a off-line manner and theoretically will be executed mostly several times. However, this tax pays off when it it comes to the enhancement we achieve in the k-$NN$ query evaluation. While the the worst case scenario the running time of $k$-NN is $O(N^{d^2})$, the amortized running time is $O(log N)$.\\
+The construction time of the k-d tree is O($k N log N$), where $k$ is the dimensionality of the data space and $N$ is the cardinality of the dataset. We can afford this high complexity of the construction since the this process is done in a off-line manner and theoretically will be executed mostly several times. However, this tax pays off when it it comes to the enhancement we achieve in the k-$NN$ query evaluation. While the the worst case scenario the running time of $k$-NN is $O(N^{d^2})$, the amortized running time is $O(log N)$.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Mention the Matlab library and the parameters we used.}}{} 
-In our implementation, the built-in Matlab wrapper was used for kdtree available in the statistical toolbox and introduced in Matlab R2013B. The implementation can be used with different parameters such as the distance measure and the size of the leaf node. The library provide only implementation for the exact version of k-d tree. We empirically found that the following parameters are the best for our needs: $L_1$ metric, since the EMD embedding is into the $L_1$ space and leaf node of size 50. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Matlab library}}{} 
+Our implementation uses a built-in Matlab implementation for kdtree which is available in the statistical toolbox and introduced in Matlab R2013B. The library allows configuring the distance function (Euclidean, Manhattan, Mankowski, etc...) and the size of the leaf node. The library provide only implementation for the exact version of k-d tree.\\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -1096,8 +1065,6 @@ At this stage the N sample objects are nominated by the NN classifier. In our ca
 All the information about the candidates is available, namely, the original letter stroke, the normalized stroke, the feature vector and the embedded vector. In this stage the system needs to select the best 3 candidates to give the segmentation system. 
 
 The N candidates that are delivered may have the same labeling.
-
-
 
 \bibliographystyle{plainnat}
 \bibliography{references}
