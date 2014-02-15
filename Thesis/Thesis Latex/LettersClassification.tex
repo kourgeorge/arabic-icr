@@ -141,11 +141,6 @@ For the disadvantages for HMM and NN techniques mentioned above and the intuitiv
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{NN classification}}{}
 In the k-NN problem a set of data points in d-dimensional space is given and for a query point q, the nearest or generally k nearest points of P to q can be reported efficiently. The distance between two points can be defined in many ways as will be detailed in section \ref{[]}.k-NN based classification a very basic and common approach for implementing the pattern classification. However, the retrieval of the exact k-Nearest Neighbors for a given query object $q$ and a database of sample set $S$ suffers from bad performance that is mainly caused by two factors. The first, is the total numbers of samples in the data. This issue will be discussed in Section \ref{sec:similarity_search} and the other is the dimensionality of objects in the data (known as the \emph{curse of dimensionality}). Computing exact nearest neighbors in dimensions much higher than 8 seems to be a very difficult task. However, the first issue has much smaller impact on the speed of the nearest neighbor retrieval and can be healed easily by using dimensionality reduction techniques which will be discussed in details in Section \ref{sec:dimensionality_reduction}. However, the first issue, i.e., the size of the sample data, is crucial. The simplest solution to the NN problem is to linearly go over the entire sample set and keep track of the best k best nominates so far. The running time of this algorithm in $O(Nd)$ where $N$ is the cardinality of sample set and d is the dimensionality of the sample set. While looking in the entire database for the kNN is not permissible for most applications. The only advantage of this approach is that it requires no extra space, beyond the amount of the memory needed for keeping the sample set. This issue is will be treated in Section \ref{similarity_search}. \\
 
-\emph{TODO: show a diagram of the letters learning process}
-
-\emph{TODO: show a diagram of substrokes clasgmssification process.}
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -562,7 +557,7 @@ Equipped with the definition of a warping path, DTW is defined as follows:
 \begin{equation}
 DTW(X,Y)=\min\limits_{W} {G(W)}
 \end{equation}
-Namely, DTW returns the the weight of the path which is associated with the optimal alignment.\\
+Namely, DTW returns the weight of the path which is associated with the optimal alignment.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Accumulated distance matrix}}{}
 Using a dynamic programing approach, DTW yields the optimal warping path by constructing the \emph{accumulated distance matrix} $D \in \mathbb{R}^{m \times n}$. 
@@ -668,7 +663,7 @@ The efficiency of a search method is defined as the time needed to evaluate a qu
  \cite{saabni2013efficient}.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Solution directions}}{}
-Decreasing the computational cost can be obtained by using a cheap distance measure function which approximate, usually by providing a a lower bound, to the similarity between two given sample objects. The lower bound is used to filter out candidates with a similarity value larger than a preset threshold. Reducing the disc access cost can be attained by discarding entire portion of the dataset which are assured to be distant enough (i.e., their similarity is assured to be relatively large) from the the given query object. Such techniques are called \emph{Metric Indexing} and will be discussed in \ref{subsec:metric_embedding}. \\
+Decreasing the computational cost can be obtained by using a cheap distance measure function which approximate, usually by providing a lower bound, to the similarity between two given sample objects. The lower bound is used to filter out candidates with a similarity value larger than a preset threshold. Reducing the disk access cost can be attained by discarding entire portion of the dataset which are assured to be distant enough (i.e., their similarity is assured to be relatively large) from the given query object. Such techniques are called \emph{Metric Indexing} and will be discussed in \ref{subsec:metric_embedding}. \\
 
 
 \subsection{Lower Bounding}
@@ -703,7 +698,7 @@ Given metric spaces $(D, d)$ and $(D', d')$ a map $f : D \rightarrow D'$ is call
 \end{definition}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Isometric embedding}}{}
-The special case where $d(x, y) = d'(f(x), f(y))$ for all $x, y \in D$ is called \textbf{distance-preserving} or \textbf{isometric} embedding. However It is very rare to find cases where isometric embeddings are beneficial and hence we often have to allow the mappings to alter distances in some, hopefully restricted, fashion. The distortion of the embedding is defined in \ref{def:embedding_distortion}.
+The special case where $d(x, y) = d'(f(x), f(y))$ for all $x, y \in D$ is called \textbf{distance-preserving} or \textbf{isometric} embedding. However, isometric embeddings are rarely found beneficial. In many cases we allow the mapping to alter the distances in a restricted manner. The distortion of the embedding is defined in \ref{def:embedding_distortion}.
 
 \begin{definition}
 Given two metrics $(D, d)$ and $(D',d')$ and a map $f : D \rightarrow D'$, the \textbf{contraction} of $f$ is the maximum factor by which distances are shrunk, i.e.,
@@ -721,7 +716,7 @@ and the \textbf{distortion} of $f$ is the product of the distortion and the expa
 \end{definition}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{$L_p$ advantage and drawbacks}}{}
-Using normed spaces (see Definitions \ref{def:norm}) such as the $L_p$ norm (see Definitions \ref{lp}) to solve the dissimilarity measure problem enables using data structures such as k-d trees and R-trees. Such spaces maintain the triangular equality and provide mechanisms for answering the $k-NN$ query in an orders of magnitude faster than linear scan of the database. \cite{indyk2003fast}.\\
+Using normed spaces (see Definitions \ref{def:norm}) such as the $L_p$ norm (see Definitions \ref{lp}) to solve the dissimilarity measure problem enables using data structures such as k-d trees and R-trees. Such data-structures allow answering the $k-NN$ query in an orders of magnitude faster than linear scan of the database. \cite{indyk2003fast}.\\
 
 \begin{definition}
 Given a data space $D$, for any two data elements  $x,y \in D$, a \textbf{norm} $\|\cdot\|$ is defined as:
@@ -774,6 +769,7 @@ The embedding time complexity is $O(Nd log{\Delta})$, where $N$ is the feature s
 %Is the retrieval more accurate (empirically) than the $L_1-EMD$ embedding?
 %Are the bounds are more strict?
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Wavelet embedding}}{}
 In a later work \cite{shirdhonkar2008approximate} done by Shirdhonkar and Jacobs, the authors have proposed a method for approximating the EMD between two low dimensional histograms using the weighted wavelet coefficients of the difference histogram. The approximation is done by transforming the histograms into the $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. They have proven the ratio of EMD to wavelet EMD is bounded by constants. In the following, a background on wavelet is required and the user is reffered to Appendix A for a brief introduction on the subject.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD embedding to the wavelet domain}}{}
@@ -811,12 +807,12 @@ Empirically, the normalized RMS error obtained by using the wavelet embedding wa
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}
 Distance function approximation techniques alone cannot avoid linear scan of the entire dataset in searching for the nearest neighbors of an object. In order to speed up queries, index structures should be build over the dataset. The main goal of an index method is to enable efficient search, either asymptotically or simply in real wall-clock time. The time cost involved in building the index is amortized over the series of queries, and is usually ignored when considering search cost \cite{hetland2009basic}.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Metric index definition}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
 Efficient data retrieval in a metric dataset requires building a \emph{metric index}, namely, a data-structure that boosts the query processing. Indexing technique partition the dataset into equivalent classes such that each equivalent class contains objects that are sufficiently close to each other. However, this does not assure that close objects will always be contained in the same equivalent class. Each class is bounded by a hypersphere covering all the objects in the class. Consequently, at query time the metric index is efficiently searched to locate the equivalent classes which covers the areas where the closest objects may be contained. These classes are then exhaustively checked for the relevant objects
 This allows discarding classes that surely does not contain relevant objects. In order for the metric indexing to work correctly and efficiently, the distance function is required to satisfy the triangular equality.\\
  
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Exact vs. Approximate Indexing}}{}
-Indexing techniques can be exact, guaranteeing to return the same result as sequential scanning, or approximate, returning good matches but not necessarily the best matches. Exact methods do not allow false positives or false negatives, i.e., all of the relevant objects are required to be returned in the query result. However, the approximate methods relax this strong requirement so that a small false negatives is accepted \cite{keogh2005exact}. Many methods were proposed to solve the $k$-NN problem that are significantly better than a brute-force computation over the entire database. However, computing nearest neighbors approximately, can to achieve significantly faster retrieval with a relatively small actual errors. \emph{Approximate nearest neighbor} (ANN) techniques also allow the user to specify a maximum approximation error bound, thus enabling the user to control the trade-off between accuracy and running time. \\
+Indexing techniques are split into two types: exact and approximate. Exact techniques are guaranteed to return the same result as  scanning the entire database. Approximate indexing methods return good matches but not necessarily the best matches. Exact methods do not allow false positives or false negatives, i.e., all of the relevant objects are required to be returned in the query result. However, the approximate methods relax this strong requirement so that a small false negatives is accepted \cite{keogh2005exact}. Many methods were proposed to solve the $k$-NN problem that are significantly better than a brute-force computation over the entire database. However, computing nearest neighbors approximately, can to achieve significantly faster retrieval with a relatively small actual errors. \emph{Approximate nearest neighbor} (ANN) techniques also allow the user to specify a maximum approximation error bound, thus enabling the user to control the trade-off between accuracy and running time. \\
 
 \begin{figure}
 \centering
@@ -827,7 +823,7 @@ Indexing techniques can be exact, guaranteeing to return the same result as sequ
 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Examples of Exact and Approximate Indexing}}{}
-ANN methods such as k-d trees (will be described later) and Locality Sensitive Hashing (LSH) \cite{gionis1999similarity} have been successfully applied on variety of fast similarity retrieval problems. The key assumption in these procedures is that the objects in the dataset lie in a metric space, i.e. the space satisfies the triangular equality. As mentioned in chapter \ref{sec:similarity_measures}, this assumption is not valid for many similarity measure techniques. In the case of k-d tree, it requires a more specific $L_p$ metric space for its operation. While the the worst case scenario complexity is $O(N)$, the expected complexity of a single $k$-NN query using k-d tree is $O(log N)$.\\
+ANN methods such as k-d trees (will be described later) and Locality Sensitive Hashing (LSH) \cite{gionis1999similarity} have been successfully applied on variety of fast similarity retrieval problems. The key assumption in these procedures is that the objects in the dataset lie in a metric space, i.e. the space satisfies the triangular equality. As mentioned in chapter \ref{sec:similarity_measures}, this assumption is not valid for many similarity measure techniques. In the case of k-d tree, it requires a more specific $L_p$ metric space for its operation. While the worst case scenario complexity is $O(N)$, the expected complexity of a single $k$-NN query using k-d tree is $O(log N)$.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{This work}}{}
 In our framework, sub-strokes classification is done by finding data samples letter that are similar to the shape of the sub-stroke. Our feature vectors were embedded into the $L_1$ by using the wavelet embedding technique described earlier and thus metric indexing methods can be safely applied. While the advantage of LSH is that it performs better than k-d tree in a high dimensional space, kdtree it can be used both as an exact and approximate $k$-NN technique. In this work, we have chosen to work with k-d tree since we could obtain, after applying dimensionality reduction techniques, a low dimensional data space.\\
@@ -846,7 +842,7 @@ The k-d tree is formed as follows: Every point is either branch node or is conta
 The approximation of the k-NN using k-d tree is done by initially finding the leaf node That represent the class the query point belongs to. Although it is probable that the $k$ nearest neighbors are all contained in a single leaf node, it is not necessarily the case, and an adjacent leafs may be examined by recursively explore the other child node and look for near neighbors in the all other branches that possibly contain a closer solution to the so far found points. Exact details of the algorithm can be found in \cite{bentley1975multidimensional}.\\
  
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Expected time complexity}}{}
-The construction time of the k-d tree is O($k N log N$), where $k$ is the dimensionality of the data space and $N$ is the cardinality of the dataset. We can afford this high complexity of the construction since the this process is done in a off-line manner and theoretically will be executed mostly several times. However, this tax pays off when it it comes to the enhancement we achieve in the k-$NN$ query evaluation. While the the worst case scenario the running time of $k$-NN is $O(N^{d^2})$, the amortized running time is $O(log N)$.\\
+The construction time of the k-d tree is O($k N log N$), where $k$ is the dimensionality of the data space and $N$ is the cardinality of the dataset. We can afford this high complexity of the construction since the this process is done in a off-line manner and theoretically will be executed mostly several times. However, this tax pays off when it it comes to the enhancement we achieve in the k-$NN$ query evaluation. While the worst case scenario the running time of $k$-NN is $O(N^{d^2})$, the amortized running time is $O(log N)$.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Matlab library}}{} 
 Our implementation uses a built-in Matlab implementation for kdtree which is available in the statistical toolbox and introduced in Matlab R2013B. The library allows configuring the distance function (Euclidean, Manhattan, Mankowski, etc...) and the size of the leaf node. The library provide only implementation for the exact version of k-d tree.\\
@@ -863,7 +859,7 @@ On the one hand a large and verified sample set is crucial for every learning al
 As can be seen in section \ref{[]}, for some letters positions many samples were collected. And for other letters smaller set of samples were collected. On the one hand, we would like to maintain the underlying letters distribution since the distribution of our sample set has a high correlation to the real world letter distribution. On the other hand, as we have mentioned before, a non proportional sample size for some letters may harm our recognition process.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
-Cluster analysis is a common approach used in both supervised and unsupervised learning. It aims to partition a a set of objects  into groups in such a way that objects in the same group (called a cluster) are more similar (in some sense or another) to each other than to those in other groups.
+Cluster analysis is a common approach used in both supervised and unsupervised learning. It aims to partition a set of objects  into groups in such a way that objects in the same group (called a cluster) are more similar (in some sense or another) to each other than to those in other groups.
 Clustering has two main uses; the first is deriving a reduced representation of the full data set. the second use is deducing new insights into the structure of the data.
 Since a cluster is a notion that cannot be precisely defined, thus there is no objectively correct clustering and this is the reason there are so many clustering algorithms.
 There are many clustering models. By models we mean the basic concept on which the clustering is based upon. The most prominent models are the \emph{Connectivity models}. In this group we can find the hierarchical clustering. Another widely used set of models is the \emph{Centroids models} which contain such as well known k-means algorithm. Cluster analysis is used for various goals. In non-supervised learning, when the class label are not available, this technique enable the classification system to impose classes on the sample set. In the supervised learning, it can be used to impose a hierarchy on the sample set and by doing so improving the classification performance and accuracy.\\
@@ -874,14 +870,14 @@ k-medoids can work with an arbitrary matrix of distances between data points. In
 Our decision to use the k-medoids algorithm rather than the common k-means algorithm is derived from obtain a digest of the dataset. Thus the returned $k$ objects by the k-medoids algorithm will function as the representatives of the samples in a given class.\\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Short description of the k-medoids algorithm}}{}
-k-medoids operates as follows: first it selects $k$ objects in random, named $M$ of the in datapoints and associate each datapoint to the closest object in $M$. Then, for each element $m$ in $M$ and for each object $o$ in the data set, swap $m$ and $o$ and compute the the total cost of of the configuration, and select the configuration, with the lowest cost. Repeat the mentioned until the is no change in the set $M$. \emph{TODO: fix this flabby description.} \\ 
+k-medoids operates as follows: first it selects $k$ objects in random, named $M$ of the in datapoints and associate each datapoint to the closest object in $M$. Then, for each element $m$ in $M$ and for each object $o$ in the data set, swap $m$ and $o$ and compute the total cost of of the configuration, and select the configuration, with the lowest cost. Repeat the mentioned until the is no change in the set $M$. \emph{TODO: fix this flabby description.} \\ 
 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{When it is applied? How did we determine the number of clusters per each letter, and the number of elements in each cluster.}}{}
 As mentioned before, the number of sample instances per class may greatly affect the classification result. Thus, we would like that the number of samples of each class will be distributed correspondingly to the apriory probability of the appearance of the letter in a given text. Since the letters were taken from the same database as the test set, it could have achieved optimistic results since the lexicon is the same lexicon of ~930 Tunisian cities. Thus the redistribution of letters according there apriori probability to the general Arabic text probability. We pretend to to be context free, thus this step is necessary. In addition to the fact the we have achieved very disproportion of class representative in the sample set. \\    
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{How did affect our results.}}{}  
-On the one hand, as claimed above, leaving the original distribution may result in a too good results since it will distributed according the the letters aproiri probability appearance. On the other hand the classification results may be hurt because of outliers that affect the NN algorithm. Here we would like to show classification results of before and after samples redistribution. In the following table we show the results of the test we have conducted as follows: We have created a test set of letters and reported the percentage of the recognition rate.\\
+On the one hand, as claimed above, leaving the original distribution may result in a too good results since it will distributed according the letters aproiri probability appearance. On the other hand the classification results may be hurt because of outliers that affect the NN algorithm. Here we would like to show classification results of before and after samples redistribution. In the following table we show the results of the test we have conducted as follows: We have created a test set of letters and reported the percentage of the recognition rate.\\
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -1034,37 +1030,23 @@ Letter position & Number of samples & PCA & PCA+LDA\\
 \section{Letters Classification and Candidates Scoring}
 \label{sec:candidates_scoring}
 
-\underline{Mind Map}
-\begin{enumerate}
-\item A query sequence like the sample set pass the entire process mentioned below. 
-\item In this stage the triangular equality is not needed, it was proven that the human intuition do not subjected to the triangular inequality.
-\item why do we use DTW and not the exact EMD instead?
-\item On what data form do we run the DTW? and why we do it in this specific stage.
-\item generalize the metric definition used in the DTW. 
-\end{enumerate}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
+After discussing in details the theory underline each stage of the recognition process, in this sub section we will provide a high level description of the system and show how all the elements integrate together to build the recognizer. Also, we will drill down to describe the parameters used in every stage that were tunned to obtain the achieve the best results.\\ 
 
-%Answer the following:
-%\begin{itemize}
-%\item How is the classification is done - mention that the system receives a stroke and it goes over all the stages
-%\item A list of candidates is retrieved by the kdtree, then to be more precise we use a combination of the Constrained DTW metric and the distance of the sample and the candidate.
-%\item mention the alternatives - using different combination (we can afford using heavy tools since we have small candidate number)
-%\item we return the best 3 candidates.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning stage}}{}
+We will split our description into the learning process and the classification process, starting with the learning process. Letters samples obtained by the ADAB databases were split into four group according to their position: Ini, Med, Fin and Iso. Four databases were created corresponding to the four positions. The samples were preprocessed as described in section \ref{}, then feature vectors were extracted using the Shape context. Then, the samples were embedded to $L_1$ by extracting the scaled coefficients of the wavelet transformation as described in subsection \ref{}. Using a process that consists of PCA, LDA and dimensionality estimation techniques are applied to reduce the dimensionality of the high dimensional vectors produced by the embedding and to create the transformation matrix o be used to reduce the dimensionality of query samples in the recognition stage. Clustering using $L_1$ $k$-means clustering is applied to compress the dataset to avoid redundant samples. In this stage dataset is a coherent low dimensional collection of samples. This enable the construction of the metric indexing data-structure to enable fast similarity search. The usage of k-d tree enabled us to find the most similar object in sub-linear time complexity. A schematic description of the learning process can be shown in Figure \ref{}. \\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{mention the various pruning and indexing techniques.}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The recognition process}}{}
+Once the classifier is provided a sequence to be classified and the position, it produces a preprocessed version of the stroke. The corresponding feature vector is extracted and then wavelet domain embedding is performed to obtain the coefficient vector. This vector is then multiplied by the dimensionality reduction matrix, so that the vector will be transformed to the compact space defined in the learning process. The reduced dimensionality vector is then function as the query object in the k-d tree data-structure. At this stage the ten sample objects are nominated by the k-d tree. Different candidates are allowed to have the same labeling at this stage. Note that also the nearest neighbor classification is based on the reduced wavelet coefficient vector, each sample holds all the different representation of it, including the original sequence, the feature vector, etc. Using the constrained version of DTW, the distance between feature vector of the candidates and the feature vector representation of the query object are calculated to select the best three candidates having different labeling. See Figure \ref{}.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{literature}}{}
-Embedding the data samples into the wavelet domain and using NN techniques aimed to avoid the costly classifier to be invoked on each and every data sample. The usage of k-d tree enable us to find the most similar object in sub-linear time complexity, and allow the costly and more accurate classifier to measure the perceptively similar object to be better calculated.
-
- 
- has a the main goal to avoid performing heavy calculation  
-
-Many approaches were proposed to avoid costly calculations by using a pruning and Indexing to weakly  
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The recognition process - justification}}{}
+The reason for using the constrained version of DTW that the exact calculation of EMD on the nearest neighbors is that it has proved to be result in better recognition results as seen in table \ref{}.\\
 
 
-At this stage the N sample objects are nominated by the NN classifier. In our case, we have chosen set $N=10$. 
-All the information about the candidates is available, namely, the original letter stroke, the normalized stroke, the feature vector and the embedded vector. In this stage the system needs to select the best 3 candidates to give the segmentation system. 
+\emph{TODO: show a diagram of the letters learning process}
 
-The N candidates that are delivered may have the same labeling.
+\emph{TODO: show a diagram of substrokes clasgmssification process.}
+
 
 \bibliographystyle{plainnat}
 \bibliography{references}
