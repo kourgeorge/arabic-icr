@@ -185,27 +185,30 @@ Scores of sub-strokes representing a letter will achieve, in most cases, better 
 \label{fig:candidate_points}
 \end{figure}
 
-The scoring system contains four databases, one for each letter position. It receive a sequence and a position (Ini, Mid, Fin and Iso). A stroke may represent an entire or a fraction of a WP or a portion of a WP that contain the following letter positions: 
-\begin{multicols}{2}
-\begin{itemize}
-    \item $Iso$
-    \item $Ini,Mid^{*}$
-    \item $Mid^{+}$    
-    \item $Mid^{*},Fin$
-    \item $Ini,Mid^{*},Fin$
-\end{itemize}
-\end{multicols}
-where $^{+}$ represents one or more occurrences and $^{*}$ represents zero or more occurrences.\\
+The scoring system contains four databases, one for each letter position. 
+It receive a sequence and a position (Ini, Mid, Fin and Iso) and return the list of nearest neighbors samples and their similarity measure.
+In order to reduce the number of databases too look for candidates into, we differentiate between four types of subsequences and the corresponding letter position it may represent according to the location of the subsequence in the stroke.\\
+\begin{figure}
+\centering
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{| c |c | c |}
+\hline
+  Name     & Subsequence      & Databases       \\
+\hline
+  $\alpha$ & $S_0^{k}$         & $Ini$ or $Mid$  \\
+\hline
+  $\beta$  & $S_{m}^{k}$     & $Mid$              \\
+\hline
+  $\chi$    & $S_{m}^{L+1}$ & $Mid$ or $Fin$   \\
+\hline
+  $\delta$ & $S_0^{L+1}$     & All                   \\
+\hline
+\end{tabular}
+\caption{A relation between the subsequence and the possible letter position it may represent. In the table ,$S$ is a stroke containing $L$ POIs, $m>0$ and $k<L+1$.}
+\label{table:subsequences_types}
+\end{figure}
 
-In order to reduce the number of databases to be searched in, we define four types of subsequences. Given the stroke $S$ containing $L$ POIs we define: 
-\begin{itemize}
-	\item \textbf{$\alpha$ subsequence:}  A sub-sequence $S_0^k$ where $ 1\leq k < L+1$. It may contain an initial or medial letter only.
-	\item \textbf{$\beta$ subsequence:}  A sub-sequence $S_m^k$ where $m \geq 1 \wedge m< k \leq L$. It may contain a medial letter only.
-	\item \textbf{$\chi$ subsequence:}  A sub-sequence $S_m^{L+1}$ where $m \geq 1$. It can contain only a medial or final letter.
-	\item \textbf{$\delta$ subsequence:} A sub-sequence $S_0^{L+1}$. It can represent letter in any position.
-\end{itemize}
-
-The type of the database to be examined for a given cell in $D$ is indicated in the corresponding cell in the matrix $D_p$ (see Matrix in Equation \ref{eq:positions_matrix}). 
+The type of the database to be examined for a given cell in $D$ is indicated in the corresponding cell in the matrix $D_p$ as in Equation \ref{eq:positions_matrix}. 
 
 \begin{equation}
 D_{p}=
@@ -220,8 +223,7 @@ D_{p}=
 \infty  & \infty  & \infty   & \infty   & \cdots  & \infty  & \infty \end{array} \right)
 \label{eq:positions_matrix}
 \end{equation}
-
-For each subsequence, the recognition system returns the $K$ minimal scored potential different letters (we set $K=3$), see Figure \ref{table:substrokes_demo}.\\
+For each subsequence, the recognition system returns the $K$ minimal scored potential letters (with different labels, where the label consists of the tuple (letter, position). In our case, we set $K=3$.\\
 
 
 \begin{figure}
@@ -269,28 +271,30 @@ $5$
 \end{figure}
 
 \subsection{Second Stage: Candidate points filtering and scoring correction}
-In this stage we eliminate redundant segmentation points found in the over-segmentation based on the following rules:
+In this stage we eliminate redundant POIs based on the following rules:
 
 \begin{itemize}
 	\item[] \textbf{Rule 1:} Inner Segmentation point lies close to the baseline. 
 	\item[] \textbf{Rule 2:} Segmentation points do not reside in loops.
-	\item[] \textbf{Rule 3:} A sub-stroke length is proportional to the length of the containing stroke.
+	\item[] \textbf{Rule 3:} A sub-stroke length is proportional to the length of the containing stroke.\\
 \end{itemize}
 
-In order to detect whether a POI is a possible segmentation point we consider its distance to the stroke baseline. Inaccurate baseline position is not critical in our case because we need only to make sure that the candidate points are in a reasonable distance from the baseline. POIs located inside loops are filtered out. The calculated ratio of the sub-stroke length/ containing stroke width is used to penalize POIs with very low ratios. To figure the threshold for filtering we use the anticipated number of letters derived from the number of POIs. We use the third rule is to avoid high scoring resulted for discordant scaling of the letters. To illustrate the discordant scaling problem, see figure below. The suffix of the letter \RL{d} is very similar to the letter \RL{-a}. The only way to visually discriminate between them is by comparing the scaling of this suffix to the whole stroke dimensions.
-
-In some cases candidate segmentation points are incorrectly nominated on areas that are not horizontal, this is caused from the fact that the nomination is done while the word is being scribed, and our filtering algorithm should be corrected to handle this case.
-
-In several cases we encountered POIs that reside on the same horizontal fragment. This may result from scaling problems and also  . We filter out this redundant candidate points in the nomination process and do not wait till this filtering phase. The reason is that since we calculate a narrow band of the Scoring matrix, leaving the impermissible candidate points will result in low performance since highly over segment the word will cause also the system to miss letters because we calculate only a portion a narrow band of the scoring matrix. If such case is identified by the nomination algorithm the medial point between the adjacent candidate points is taken.
-
-\textbf{Baseline detection:} The baseline is determined by calculating the vertical density histogram of the re-sampled sub-stroke. The y-axis is partitioned into $10$ intervals, then, the center of the of the most common interval is calculated $I_{max}$. A $POI$ is filtered out if the following holds:
+\textbf{Baseline detection:} The baseline is determined by calculating the vertical density histogram of the re-sampled sub-stroke. The y-axis is partitioned into $10$ intervals, then, the center of the of the most inhabited interval $I_{max}$ is determined. A $POI$ is filtered out it does not satisfy the following condition:
 \begin{equation}
-|POI_y-I_{max}|>2*max{({|I|},0.15)} 
+|POI_y-I_{max}| \leq 2*max{({|I|},0.15)} 
 \end{equation}
-where $POI_y$ represents the $y$ coordinate of the $POI$ and $|I|$ is the length of the interval. In order to reliably determine the baseline, the algorithm is activated only from the fourth POI. This process has proven to be very effective in eliminating challenging false POIs that reside on valleys of frequently used Arabic letters, such as \RL{q}, \RL{s} and \RL{n}, in the their final form. An example of such POI can be seen in the letter \RL{-n} in Figure \ref{fig:candidate_in_no_horizontal}. 
+where $POI_y$ represents the $y$ coordinate of the $POI$ and $|I|$ is the length of an interval. In order to reliably determine the baseline, the algorithm is activated only after the fourth POI is detected. This process has proven to be very effective in eliminating challenging false POIs that reside on valleys of frequently used Arabic letters, such as \RL{q}, \RL{s} and \RL{n}, in the their final form. An example of such POI can be seen in the letter \RL{-n} in Figure \ref{fig:candidate_in_no_horizontal}. \\
+
+In our case the baseline is needed only to verify that the candidate points are in a reasonable distance from it. Therefore, imprecise valuation of the position or the direction of the baseline is tolerable.
+The third rule is used to penalize the unreasonably high scoring given to small sub-strokes. 
+This is done by calculating the ratio of the sub-stroke length proportional to the entire stroke length.
+For instance, the suffix of the letter \RL{d} is very similar to the letter \RL{-a} and may result in a very high scoring to be granted by the recognition system. 
+The only way to visually discriminate between them is by comparing the scaling of this suffix to the stroke dimensions.\\
+
+In some cases candidate segmentation points are incorrectly nominated on areas that are not horizontal, this is caused due to the fact that the nomination is done while the word is being scribed. Our filtering algorithm should be corrected to handle this case.\\
 
 \subsection{Third Stage: Segmentation Selection}
-The goal of this phase is to select the best segmentation points set among the POIs. It is done by finding a \emph{segmentation path} in $D$ with the best scoring possible under a preset constraint. A segmentation path $\pi$ is an ordered sub-set of the scoring matrix $D$ cells which has the following form: 
+The goal of this phase is to select the set of segmentation points among the POIs. It is done by finding a \emph{segmentation path} in $D$ with the best scoring possible under a preset constraint. A segmentation path $\pi$ is an ordered subset of the scoring matrix $D$ cells which has the following form: 
 \begin{equation}
 \pi=\{\pi_i\}_{i=1}^{i=L}=(1,a_{1}),(a_{1},a_{2}),...,(a_{L-1},a_{L}),(a_{L},n)
 \end{equation}
