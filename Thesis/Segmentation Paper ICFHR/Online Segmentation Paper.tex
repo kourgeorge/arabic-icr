@@ -26,7 +26,7 @@
 
 \begin{document}
 
-\title{Instant Segmentation of On-line Handwritten Arabic Script}
+\title{Ongoing Segmentation of On-line Handwritten Arabic Script}
 %% or ongoing.
 
 \author{George~Kour,
@@ -42,7 +42,10 @@
 
 \IEEEcompsoctitleabstractindextext{
 \begin{abstract}
-the cursive and unconstrained nature of the Arabic script, both printed and handwritten, anneals the task of segmentation. Real time performance is necessary in applications involving on-line handwriting recognition. However, most techniques for handwriting recognition wait until the entire curve is traced out before starting the analysis which will inevitably cause delays after the character is written. This paper proposes a novel ongoing on-line strokes-level recognition-based segmentation technique of the Arabic script. The advantage of our approach is that the most time consuming procedures are performed while the stroke is being scribed. The system has been designed and tested using the ADAB Database and promising results were obtained.
+the cursive and unconstrained nature of the Arabic script, in both printed and handwritten forms, anneals the task of segmentation. 
+While real-time performance is required in applications involving on-line handwriting recognition, most techniques for handwriting recognition wait until the entire curve is traced out before starting the analysis, inevitably causing delays in the recognition process. 
+This paper proposes a novel ongoing recognition-based segmentation technique of the on-line Arabic script by carrying out the most time consuming recognition process while the stroke being scribed. 
+The system has been designed and tested using the ADAB Database and promising results were obtained.
 \end{abstract}
 \begin{IEEEkeywords}
 Arabic Script Segmentation, Strokes Segmentation, On-line Text Recognition
@@ -54,40 +57,62 @@ Arabic Script Segmentation, Strokes Segmentation, On-line Text Recognition
 
 \section{Introduction}
 \date
-\IEEEPARstart{H}{andwriting} remains the most used mean of communication and recording of information in the daily life. Therefore, a growing interest in the handwriting character recognition field has taken place in recent years. Handwriting recognition can be categorized into two main fields: off-line and on-line. In the off-line, a digital image containing text is fed to the computer and the system attempts to convert the spatial representation of the letters into digital symbols \cite{al2011online}. On the contrary, in the on-line case, the recognition process is done on the digital representation of the text written on a special digitizer, PDA, tablet or smart-phone devices where sensors picks up the pen-tip movements.\\
+\IEEEPARstart{H}{andwriting} remains the most used mean of communication and recording of information in the daily life. 
+Therefore, a growing interest in the handwriting character recognition field has taken place in recent years. 
+Handwriting recognition can be categorized into two main fields: off-line and on-line. 
+In the off-line, a digital image containing text is fed to the computer and the system attempts to convert the spatial representation of the letters into digital symbols \cite{al2011online}. 
+On the contrary, in the on-line handwriting recognition, the process is done on a digital representation of the text written on a special digitizer, PDA, tablet or smart-phone device where sensors picks up the pen-tip movements.\\
  
-Two main approaches for cursive text recognition has been established. The holistic approach which considers the global properties of the written text and recognizes the input word shape as a whole \cite{biadsy2011segmentation, saabni2009hierarchical}. And the analytic approach which involves segmentation and classification of each part of the text \cite{abdulla2008off, sari2002off, Dinges2011}. The holistic approach requires the recognition system to be trained over all words in the dictionary. While it is possible for small vocabulary of words, this is not feasible for large vocabularies (20,000 words or more) \cite{elanwar2012unconstrained}. Since each word is constructed from a subset of the character alphabet, it is much more efficient to classify words using the analytic approach.\\
+Techniques for cursive text recognition can be split into two main approaches. 
+The holistic approach considers the global properties of the written text and recognizes the input word shape as a whole \cite{biadsy2011segmentation, saabni2009hierarchical}. 
+The analytic approach involves segmentation and classification of each part of the text \cite{abdulla2008off, sari2002off, Dinges2011}. 
+The holistic approach requires the classifier to be trained over the entire dictionary. 
+While this is possible for small vocabulary of words, it is impractical for large dictionaries containing 20,000 words or more. 
+Under these circumstances, recognizing words using the analytic approach seems to be more feasible \cite{elanwar2012unconstrained}.\\
 
-In this paper we propose a novel stroke level segmentation method. In Section \ref{sec:related_work} we mention related studies done in the field of on-line Arabic recognition. The proposed approach is described in details in Section \ref{sec:approach} and results are shown in the section \ref{sec:results}. 
+The cursiveness of the Arabic script, prima facie, requires delaying the launch of the recognition process until the entire word is scribed. 
+However, revising this observation one may notice that in most cases significant acceleration of the recognition process can be achieved by approximating the position of the segmentation points while the stroke is being written.\\
+
+In Section \ref{sec:related_work} we mention related studies done in the field of on-line Arabic recognition. 
+The proposed approach is described in details in Section \ref{sec:approach} and results are shown in the section \ref{sec:results}. 
 
 \section{Related Work}
 \label{sec:related_work}
 
-Randa et al. \cite{elanwar2012unconstrained} have proposed a two stage on-line Arabic handwritten text segmentation system based on Hidden Markov Model (HMM). In the first stage, segmentation points were nominated and in the second stage these points were validated using a rules-based engine. The system was tested using a self-collected database named OHASD.\\
+Randa et al. \cite{elanwar2012unconstrained} have proposed a two stage on-line Arabic handwritten text segmentation system based on Hidden Markov Model (HMM). 
+In the first stage, segmentation points were nominated and in the second stage these points were validated using a rules-based engine. 
+The system was tested using a self-collected database named OHASD.\\
 
-Laslo Digness et al. \cite{Dinges2011} used a segmentation-based recognition approach based on dividing the word to smaller pieces which afterwards segmented into candidate letters and then classified into letter classes using statistical and structural features. k-NN classifier was used to obtain the final recognition.\\
+Laslo Digness et al. \cite{Dinges2011} used a segmentation-based recognition approach based on dividing the word to smaller pieces which afterwards segmented into candidate letters and then classified into letter classes using statistical and structural features. 
+$k$-NN classifier was used to obtain the final recognition.\\
 
-A segmentation-based recognition method that operates on the stroke level for on-line Arabic handwritten words recognition was proposed by Khaled Daifallah et al. \cite{daifallah2009recognition}. Segmentation points were nominated and then selected by locating semi-horizontal lines moving from right to left. A portion of the segmentation points is filtered out by applying on a certain set of rules. Then, HMM is used to classify the sub-strokes to letters using Hu feature. The candidate and its scoring letters results were used to determine the best set of segmentation points.\\
+A segmentation-based recognition method that operates on the stroke level for on-line Arabic handwritten words recognition was proposed by Khaled Daifallah et al. \cite{daifallah2009recognition}. 
+Segmentation points were nominated and then selected by locating semi-horizontal lines moving from right to left. 
+A portion of the segmentation points is filtered out by applying on a certain set of rules. 
+Then, HMM is used to classify the sub-strokes to letters using Hu feature. 
+The candidate and its scoring letters results were used to determine the best set of segmentation points.\\
 
 
 \section{Approach}
 \label{sec:approach}
 
-\textbf{Complexity Measure:} This measure gives a numerical representation of the captured tortuousness of a given trajectory. The more curved and complex the trajectory is, the higher is the complexity value. We have used this measure for several purposes in this work.
-A preprocessing step that include simplification and re-sampling is done to ensure this measure is invariant and unaffected by the data imperfections. Then, for each inner point $p_i$ the parameter $\alpha_{i}$ is calculated as follows:
+\textbf{Complexity Measure:} Given a trajectory $S=\{{p_i}\}_{i=1}^{n}$, this value indicates the degree of the trajectory's curvature. 
+Preprocessing steps which includes simplification and re-sampling is required to ensure invariance under scaling and disregard the data imperfections. 
+The calculation of this parameter is done as follows: for each inner point $p_i$ the parameter $\alpha_{i}$ is computed by:
 \begin{equation}
  \alpha_{i}=\frac{\pi-\phi_{i}}{\frac{\pi}{6}}
 \end{equation}
-where $\phi=\angle(\overline{p_{i-1}p_{i}},\overline{p_{i}p_{i+1}})$ 
+where $\phi=\angle(\overline{p_{i-1}p_{i}},\overline{p_{i}p_{i+1}})$.\\ 
 The complexity measure is then defined as:
 \begin{equation}
 CM(S)=\Sigma_{i}\alpha_{i}
 \end{equation}\\
 
-Below, a digest of the main stages of our approach (see Figure \ref{fig:system_flow}):\\
-\textbf{Stage 1.}  \emph{Points of interest} (POIs) are identified as potential segmentation points which are continuously nominated while the stroke is being scribed. The sub-strokes imposed by these POIs are scored by a Arabic letter classifier.\\
-\textbf{Stage 2.} Once the entire stroke is available, a rules-based process is used to refine the POIs and re-score the sub-strokes.\\
-\textbf{Stage 3.} The system heuristically determines the final set of segmentation points based on the sub-strokes scoring.\\
+%{\color{blue}
+%Below, a digest of the main stages of our approach (see Figure \ref{fig:system_flow}):\\
+%\textbf{Stage 1.}  \emph{Points of interest} (POIs) are identified as potential segmentation points which are continuously nominated while the stroke is being scribed. The sub-strokes imposed by these POIs are scored by a Arabic letter classifier.\\
+%\textbf{Stage 2.} Once the entire stroke is available, a rules-based process is used to refine the POIs and re-score the sub-strokes.\\
+%\textbf{Stage 3.} The system heuristically determines the final set of segmentation points based on the sub-strokes scoring.}\\
 
 \begin{figure}
 \centering
@@ -98,7 +123,12 @@ Below, a digest of the main stages of our approach (see Figure \ref{fig:system_f
 
 \subsection{First Stage: nomination of POIs and sub-strokes scoring}
 
-\textbf{Horizontal Fragment identification:} In this stage the system attempts to identify \emph{horizontal fragments} (HFs) which join pairs of connected letters. These handlers are horizontal, directed right to left and located near the baseline (see Figure  \ref{fig:horizontal_fragments}). Using a smoothed version of the trajectory helps the process to ignores undesired small horizontal regions that are frequently caused by the digitizer imperfection.  A point $p_{i}$ is defined as a "horizontal point" if the slope of the line $\overline{p_{i-1}p_{i}}$ is less than a threshold value $\delta$. This value was empirically tuned to $0.6$. The same exact value for this parameter was found independently in \cite{daifallah2009recognition}.\\
+\textbf{Horizontal Fragment identification:} in this stage the system attempts to identify \emph{horizontal fragments} (HFs) which join pairs of connected letters. 
+These handlers are horizontal, directed right to left and located near the baseline (see Figure  \ref{fig:horizontal_fragments}). 
+Using a smoothed version of the trajectory helps the process to ignores undesired small horizontal regions that are frequently caused by the digitizer imperfection.  
+A point $p_{i}$ is defined as a "horizontal point" if the slope of the line $\overline{p_{i-1}p_{i}}$ is less than a threshold value $\delta$. T
+his value was empirically tuned to $0.6$. 
+The same exact value for this parameter was found independently in \cite{daifallah2009recognition}.\\
 
 \begin{figure}
 \centering
@@ -107,9 +137,16 @@ Below, a digest of the main stages of our approach (see Figure \ref{fig:system_f
 \label{fig:horizontal_fragments}
 \end{figure}
 
-HFs are continuously identified using the following process: The first detected horizontal point is set as a "HF starting point". All the subsequent horizontal points are ignored horizontal points until a non horizontal point is obtained indicating the end of HF sequence. This point is identified as a "HF ending point" and the medial point of an HF is marked as POI. This process result is an over-segmentation of the stroke. While false positive segmentation points can be easily removed, missed real segmentation points cannot be easily recovered. Therefore, in order minimize the miss rate, this process is delicate and allows many false HFs to be detected.\\
+HFs are continuously identified using the following process: 
+The first detected horizontal point is set as a "HF starting point". 
+All the subsequent horizontal points are ignored until a non horizontal point is obtained indicating the end of HF sequence. 
+This point is identified as a "HF ending point" and the medial point of an HF is marked as \emph{point of interest} (POI). 
+POI are potential segmentation points and thus this process result in an over-segmentation of the stroke. 
+While false positive segmentation points can be easily removed, missed real segmentation points cannot be easily recovered. 
+Therefore, in order minimize the miss rate, this process is delicate and allows false HFs to be detected.\\
 
-In a post processing step, fractions of the same horizontal segment identified as multiple HFs are rejoined to a single HF. The merging is done by evaluating the complexity measurement across the two consequent HFs, see Figure \ref{fig:candidate_in_no_horizontal}.\\
+In a post processing step, fractions of the same horizontal segment identified as multiple HFs are rejoined to a single HF. 
+The merging is done by evaluating the complexity measurement across the two consequent HFs, see Figure \ref{fig:candidate_in_no_horizontal}.\\
 
 \begin{figure}
 \centering
@@ -119,7 +156,8 @@ In a post processing step, fractions of the same horizontal segment identified a
 \end{figure}
 
 \textbf{Sub-stroke Scoring:}
-Let $S=\{p_{i}\}_{i=1}^{n}$ be a sequence of 2-D representing the stroke in which $L$ points were detected. Let $KP=\{KP_{i}\}_{i=0}^{L+1}$ (Key Points) a set containing the identified POIs in a addition to the first and the last points of the stroke as the first and the last items of the set.
+Let $S=\{p_{i}\}_{i=1}^{n}$ be a 2-D sequence representing a handwritten stroke in which $L$ POIs were detected. 
+Let $KP=\{KP_{i}\}_{i=0}^{L+1}$ (Key Points) a set containing the identified POIs in addition to the first and the last points of the stroke as the first and the last items of the set.
 Formally, we define: 
 \begin{equation}
 KP_{i} =\begin{cases}    1		, & \mbox{if } i=0 \\
@@ -130,13 +168,15 @@ KP_{i} =\begin{cases}    1		, & \mbox{if } i=0 \\
 
 A sub-stroke $S_{i}^{j}$ is a sub-sequence of the stroke $S$ that starts at $KP_{i}$ and ends at $KP_{j}$, formally:
 \begin{equation}
-S_{i}^{j}=(p_{k})_{k=KP_{i}}^{KP_{j}}; i<j
+S_{i}^{j}=\{p_{k}\}_{k=KP_{i}}^{KP_{j}}; i<j
 \end{equation}
-We generate an upper triangular scoring matrix $D\in\mathbb{R}^{n\times n}$ where each cell $D_{i,j}$ defines the scoring obtained by the classifier for the sub-strokes in $S_{i,j}$. The matrix $D$ is generated dynamically adding a row and a column for each new detected POI. A locality constraint which narrows the band of the $D$ matrix above the main diagonal improves efficiency and segmentation accuracy. Given a band width $B$ we fix:
+We generate an upper triangular scoring matrix $D\in\mathbb{R}^{(L+1)\times (L+1)}$ where each cell $D_{i,j}$ defines the scoring obtained by the classifier for the sub-strokes in $S_i^j$. 
+The matrix $D$ is generated dynamically adding a row and a column for each new detected POI. 
+A locality constraint which narrows the band of the $D$ matrix above the main diagonal improves efficiency and segmentation accuracy. Given a band width $B$ we fix:
 \begin{equation}
-D(i,j)=\infty \Leftrightarrow j \leq i \vee j-i>B 
+D_{i,j}=\infty \Leftrightarrow j \leq i \vee j-i>B 
 \end{equation}
-Leading to that scores of sub-strokes representing a letter will achieve better resemblance scoring, i.e., $D(i,j)$ value will be relatively smaller than for other sub-strokes.\\
+Scores of sub-strokes representing a letter will achieve, in most cases, better resemblance scoring, i.e., $D_{i,j}$ value will be relatively smaller than for other sub-strokes.\\
 
 \begin{figure}
 \centering
@@ -239,9 +279,9 @@ In this stage we eliminate redundant segmentation points found in the over-segme
 
 In order to detect whether a POI is a possible segmentation point we consider its distance to the stroke baseline. Inaccurate baseline position is not critical in our case because we need only to make sure that the candidate points are in a reasonable distance from the baseline. POIs located inside loops are filtered out. The calculated ratio of the sub-stroke length/ containing stroke width is used to penalize POIs with very low ratios. To figure the threshold for filtering we use the anticipated number of letters derived from the number of POIs. We use the third rule is to avoid high scoring resulted for discordant scaling of the letters. To illustrate the discordant scaling problem, see figure below. The suffix of the letter \RL{d} is very similar to the letter \RL{-a}. The only way to visually discriminate between them is by comparing the scaling of this suffix to the whole stroke dimensions.
 
-In some cases candidate segmentation points are incorrectly nominated on areas that are not horizontal, this is caused from the fact that the nomination is done while the word is being scribed, and our filtering algorithm should be corrected to handle this case.\\
+In some cases candidate segmentation points are incorrectly nominated on areas that are not horizontal, this is caused from the fact that the nomination is done while the word is being scribed, and our filtering algorithm should be corrected to handle this case.
 
-In several cases we encountered POIs that reside on the same horizontal fragment. This may result from scaling problems and also  . We filter out this redundant candidate points in the nomination process and do not wait till this filtering phase. The reason is that since we calculate a narrow band of the Scoring matrix, leaving the impermissible candidate points will result in low performance since highly over segment the word will cause also the system to miss letters because we calculate only a portion a narrow band of the scoring matrix. If such case is identified by the nomination algorithm the medial point between the adjacent candidate points is taken.\\
+In several cases we encountered POIs that reside on the same horizontal fragment. This may result from scaling problems and also  . We filter out this redundant candidate points in the nomination process and do not wait till this filtering phase. The reason is that since we calculate a narrow band of the Scoring matrix, leaving the impermissible candidate points will result in low performance since highly over segment the word will cause also the system to miss letters because we calculate only a portion a narrow band of the scoring matrix. If such case is identified by the nomination algorithm the medial point between the adjacent candidate points is taken.
 
 \textbf{Baseline detection:} The baseline is determined by calculating the vertical density histogram of the re-sampled sub-stroke. The y-axis is partitioned into $10$ intervals, then, the center of the of the most common interval is calculated $I_{max}$. A $POI$ is filtered out if the following holds:
 \begin{equation}
@@ -252,9 +292,8 @@ where $POI_y$ represents the $y$ coordinate of the $POI$ and $|I|$ is the length
 \subsection{Third Stage: Segmentation Selection}
 The goal of this phase is to select the best segmentation points set among the POIs. It is done by finding a \emph{segmentation path} in $D$ with the best scoring possible under a preset constraint. A segmentation path $\pi$ is an ordered sub-set of the scoring matrix $D$ cells which has the following form: 
 \begin{equation}
-\pi=\{\pi_i\}_{i=1}^{i=L}=(1,a_{1}),(a_{1},a_{2}),(a_{2},a_{3}),...,(a_{L-1},a_{L}),(a_{L},n)
+\pi=\{\pi_i\}_{i=1}^{i=L}=(1,a_{1}),(a_{1},a_{2}),...,(a_{L-1},a_{L}),(a_{L},n)
 \end{equation}
-
 Note that a segmentation path defines a unique the \emph{Final Segmentation Points} ($FSP$).\\
 
 The scoring of the segmentation path $\pi$ is defined as follows:
@@ -262,9 +301,10 @@ The scoring of the segmentation path $\pi$ is defined as follows:
 \Pi = \Sigma_{i=1}^{L}{D(\pi_{i})}
 \end{equation}
 
-The scoring matrix $D$ can be modeled as a directed weighted edges graph $G=(V,E)$ where a possible segmentation defines a path from vertex $KP_1$ to vertex $KP_{L+1}$. However, in this case, the optimal segmentation is not necessarily obtained by finding the shortest path in $G$. In most cases, greedily selecting the outgoing edge with the minimal value obtains a better segmentation than the one defined by the shortest path.\\
+The scoring matrix $D$ can be modeled as a directed weighted edges graph $G=(V,E)$ where a possible segmentation defines a path from vertex $KP_1$ to vertex $KP_{L+1}$. However, in this case, the optimal segmentation is not necessarily obtained by finding the shortest path in $G$. In most cases, greedily selecting the outgoing edge with the minimal value obtains a better segmentation than the one defined by the shortest path.
 
-Several \emph{segmentation selection algorithms} (SSAs) are proposed in this work for finding the best segmentation path, i.e. which represent the correct segmentation of the stroke $S$.\\
+
+Several \emph{segmentation selection algorithms} (SSAs) are proposed in this work for finding the best segmentation path, i.e. which represent the correct segmentation of the stroke $S$.
 
 Here we describe two algorithm that were given the names \emph{Forward Segmentation Selection} (FSS) and \emph{Backward Segmentation Selection} (BSS) which are and operate pretty similarly. A pseudo-code of FSS can be seen in Algorithm \ref{alg:fss} below. FSS starts with the first point and advancing toward the end of the stroke. In Each step it tries to find the next best segmentation point by selecting the subsequence $S_i^j$ having the best scoring value (as can be seen in line 5). BSS starts from the last point and advances toward the beginning of the stroke. The drawback of the these two algorithms is that FSS tends to under-segment the suffix of the stroke and BSS tends to under-segment the prefix of the stroke.   
 
