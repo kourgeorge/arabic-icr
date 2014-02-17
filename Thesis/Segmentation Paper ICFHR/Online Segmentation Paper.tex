@@ -204,7 +204,7 @@ In order to reduce the number of databases too look for candidates into, we diff
   $\delta$ & $S_0^{L+1}$     & All                   \\
 \hline
 \end{tabular}
-\caption{A relation between the subsequence and the possible letter position it may represent. In the table ,$S$ is a stroke containing $L$ POIs, $m>0$ and $k<L+1$.}
+\caption{A mapping between the subsequence and the possible letter position it may represent. In the table ,$S$ is a stroke containing $L$ POIs, $m>0$ and $k<L+1$.}
 \label{table:subsequences_types}
 \end{figure}
 
@@ -294,28 +294,21 @@ The only way to visually discriminate between them is by comparing the scaling o
 In some cases candidate segmentation points are incorrectly nominated on areas that are not horizontal, this is caused due to the fact that the nomination is done while the word is being scribed. Our filtering algorithm should be corrected to handle this case.\\
 
 \subsection{Third Stage: Segmentation Selection}
-The goal of this phase is to select the set of segmentation points among the POIs. It is done by finding a \emph{segmentation path} in $D$ with the best scoring possible under a preset constraint. A segmentation path $\pi$ is an ordered subset of the scoring matrix $D$ cells which has the following form: 
-\begin{equation}
-\pi=\{\pi_i\}_{i=1}^{i=L}=(1,a_{1}),(a_{1},a_{2}),...,(a_{L-1},a_{L}),(a_{L},n)
-\end{equation}
-Note that a segmentation path defines a unique the \emph{Final Segmentation Points} ($FSP$).\\
+The goal of this phase is to select the set of segmentation points among the KPs. 
+This set will be referred to as the \emph{Final Segmentation Points} (FSP). 
+It is performed by finding the \emph{segmentation path} in $D$ with the best scoring possible. 
+A segmentation path $\pi$ is an ordered subset of the KPs having the constraint that the start and end with the first and the last point in the stroke, i.e., $KP_{0}$ and $KP_{L+1}$ correspondingly.
+The scoring of the segmentation path $\pi$ is defined as the sum of the sub-sequences scoring imposed by the FSP.\\
 
-The scoring of the segmentation path $\pi$ is defined as follows:
-\begin{equation}
-\Pi = \Sigma_{i=1}^{L}{D(\pi_{i})}
-\end{equation}
+The scoring matrix $D$ can be modeled as a directed weighted edges graph $G=(V,E)$ where a possible segmentation defines a path from vertex $KP_0$ to vertex $KP_{L+1}$. However, in this case, the optimal segmentation is not necessarily obtained by finding the shortest path in $G$. In most cases, greedily selecting the outgoing edge with the minimal value obtains a better segmentation than the one defined by the shortest path.\\
 
-The scoring matrix $D$ can be modeled as a directed weighted edges graph $G=(V,E)$ where a possible segmentation defines a path from vertex $KP_1$ to vertex $KP_{L+1}$. However, in this case, the optimal segmentation is not necessarily obtained by finding the shortest path in $G$. In most cases, greedily selecting the outgoing edge with the minimal value obtains a better segmentation than the one defined by the shortest path.
-
-
-Several \emph{segmentation selection algorithms} (SSAs) are proposed in this work for finding the best segmentation path, i.e. which represent the correct segmentation of the stroke $S$.
-
-Here we describe two algorithm that were given the names \emph{Forward Segmentation Selection} (FSS) and \emph{Backward Segmentation Selection} (BSS) which are and operate pretty similarly. A pseudo-code of FSS can be seen in Algorithm \ref{alg:fss} below. FSS starts with the first point and advancing toward the end of the stroke. In Each step it tries to find the next best segmentation point by selecting the subsequence $S_i^j$ having the best scoring value (as can be seen in line 5). BSS starts from the last point and advances toward the beginning of the stroke. The drawback of the these two algorithms is that FSS tends to under-segment the suffix of the stroke and BSS tends to under-segment the prefix of the stroke.   
+Several \emph{segmentation selection algorithms} (SSAs) for finding the best segmentation path are proposed in this work.
+Here we describe two algorithms that were given the names \emph{Forward Segmentation Selection} (FSS) and \emph{Backward Segmentation Selection} (BSS) which operate pretty similarly. A pseudo-code of FSS can be seen in Algorithm \ref{alg:fss}. FSS starts with the first point, $KP_0$, and advancing toward the end of the stroke, $KP_{L+1}$. In Each step it tries to find the next best key point by selecting the subsequence $S_i^j$ having the best scoring value (as can be seen in line 5). BSS starts from the last point and advances toward the beginning of the stroke. The drawback of the these two algorithms is that FSS tends to under-segment the suffix of the stroke and BSS tends to under-segment the prefix of the stroke.\\
 
 \begin{algorithm}
+$FSP = \{1\} $\;
 $i=0$\;
 $sum=0$\;
-$FSP = \emptyset $\;
 \While{$i<L+1$}
 {
 	$j = \mathop {\arg \min }\limits_k \left( {D\left( {i,k} \right)} \right)$\;
@@ -327,29 +320,31 @@ $FSP = \emptyset $\;
 \label{alg:fss}
 \end{algorithm}
 
-To overcome the aforementioned drawback a third SSA was proposed and was given the name \emph{Backward-Forward Segmentation Selection} (BFSS). As described in Algorithm \ref{alg:bfss}, it combines both FSS and BSS. BFSS operates from the sides of the stroke toward the center. In every iteration the algorithm selects two candidate points to include to the $FSP$. \\
+To overcome the aforementioned drawback, a third SSA is proposed and given the name \emph{Backward-Forward Segmentation Selection} (BFSS). As described in Algorithm \ref{alg:bfss}, it combines both FSS and BSS. BFSS operates from the sides of the stroke toward the center. In every iteration the algorithm selects two candidate points to include to the $FSP$ as described in Algorithm \ref{alg:bfss}. \\
 
 \begin{algorithm}
-$poi_{a}=1$\;
-$poi_{b}=n$\;
-\While{$poi_{a}<poi_{b}$}
+$FSP = \{0,L+1\}$\;
+$kp_{a}=0$\;
+$kp_{b}=L+1$\;
+\While{$kp_{a}<kp_{b}$}
 {
-	$poi_{a,next} = \mathop {\arg \min}\limits_k (D(poi_a,k))$\;
-	$FSP = FSP \cup \{poi_{a,next}\}$\;
-	$poi_{a}=poi_{a,next}$\;
+	$kp_{a,next} = \mathop {\arg \min}\limits_k (D(kp_a,k))$\;
+	$FSP = FSP \cup \{kp_{a,next}\}$\;
+	$kp_{a}=kp_{a,next}$\;
 	
-	$poi_{b,next} = \mathop {\arg \min}\limits_k (D(k,poi_{b,next}))$\;
-	$FSP = FPS \cup \{poi_{b,next}\}$\;	
-	$poi_{b}=poi_{b,next}$\;
+	$kp_{b,next} = \mathop {\arg \min}\limits_k (D(k,kp_{b,next}))$\;
+	$FSP = FPS \cup \{kp_{b,next}\}$\;	
+	$kp_{b}=kp_{b,next}$\;
 }
+
 \caption{Backward-Forward Segmentation Selection (BFSS).}
 \label{alg:bfss}
 \end{algorithm}
   
-The last SSA, that was given the name \emph{Greedy Segmentation Selection} (GSS), operates completely in a different way. In every iteration, the cell with the best scoring is selected. If cell $D(i,j)$ is selected, both the candidate point $POI_{i}$ and $POI_{j}$ are added to FSP and every segmentation point between $i$ and $j$ are removed from the scoring matrix by setting to $\infty$ in the corresponding cells in $D$. This, to avoid those candidate point to be selected in a later iteration. 
+The last SSA operates completely differently. In every iteration, the cell with the lowest (best) scoring is selected. If a cell $D(i,j)$ is selected, both $KP_{i}$ and $KP_{j}$ are added to FSP and every cell representing a $KP_{z}$ where $z$ between $i$ and $j$ are removed from the scoring matrix by setting its scoring value to $\infty$. This is done to avoid those candidate point to be selected in a later iteration. This algorithm was given the name \emph{Greedy Segmentation Selection} (GSS) and is described in Algorithm \ref{alg:gss}.
 
 \begin{algorithm}
-$FP=\emptyset$\;
+$FSP=\emptyset$\;
 \While{$CPS \neq \emptyset$}
 {
 	${s,e} = \mathop {\arg \min}(D)$\;
@@ -358,7 +353,6 @@ $FP=\emptyset$\;
 	$UpdateMatrix(D,s,e)$\;
 	$CPS = CPS\setminus\{s,e\}$\;
 }
-$FP=FP\setminus\{1,n\}$\;
 
 \caption{Greedy Segmentation Selection (GSS)}
 \label{alg:gss}
@@ -371,11 +365,10 @@ FSS, BSS, BFSS and GSS are executed independently for each stroke. The $FSP$ wit
 \section{The ADAB Database}
 \label{sec:database}
 The ADAB database is de-facto a standard in the on-line Arabic handwriting recognition field. It is freely available and consists of more than 20k Arabic handwritten words (city names in Morocco) scribed by more than 170 different writers. 
-In figure \ref{fig:sample_parts} we show the parts of a sample.
-Unfortunately, the ADAB only provides the data of the strokes for a given city name. 
-No information indicating the letters boundaries or WP is provided, thus, extra work was needed to add this information to the database so that it could be used as a letters samples source and as ground truth for the segmentation points.
-To provide this additional information, we have employed the skills of a human expert to segment the strokes into letters and determine the words and the WPs bounderies that each sample contain. 
-This additional information was saved in an xml file. Delayed strokes are not included in the processed information since it is not considered in the segmentation process.
+Unfortunately, the ADAB only provides data on the strokes for a given city name. 
+No segmentation into letters or WP is provided, thus, extra work was needed to add this information to the database so that it could be used as a letters samples source and as ground truth for the segmentation system.
+To provide this information, we have employed the skills of a human expert to segment the strokes into letters and determine the words and the WPs boundaries for each sample. 
+This additional information was saved in an xml file. Delayed strokes were not included in the processed information since it is not considered by the segmentation process.
 We have manually segmented more than 15k samples which contains about 40k strokes. 
 
 \begin{figure}
@@ -387,13 +380,13 @@ We have manually segmented more than 15k samples which contains about 40k stroke
 
 \section{Validation}
 \label{sec:validation}
-Other researches in this area usually use a human expert to validate the accuracy of the segmentation points. However, in this work, we applied an automatic validation process using the ground truth information provided by the database. We discriminate between three types of final segmentation point. A final segmentation point is classified as true positive if the complexity measure between the identified point and a true segmentation point is less than a preset threshold, otherwise it is is classified as false positive. A miss (i.e, false Negative) is the case when the system failed to identify a segmentation point. Although, this validation process was tested on several sets and found to be highly accurate, it was used only on the validation set.
+Other researches in this area usually use a human expert to validate the accuracy of the segmentation points. However, in this work, we applied an automatic validation process using the ground truth information provided by the database. We discriminate between three types of final segmentation point. A final segmentation point is classified as true positive if the complexity measure between the identified point and a true segmentation point is less than a preset threshold, otherwise it is is classified as false positive. A miss ,i.e, false Negative, is the case when the system failed to identify a segmentation point. The validation process was tested on several sets and found to be highly reliable.
 
 %A Segmentation point can be considered one of the following: 1. Valid (true positive): the segmentation point is identified in the correct location. 2. Invalid (false positive): the segmentation point was identified in an incorrect place. 3. Missing: No segmentation point was identified between two successive letters.
 
 \section{Experimental Results}
 \label{sec:results}
-The system is implemented using the Matlab environment. Comparing the performance of our approach to other research done in the field is not a simple task. The complexity of such task is not only the different experimental settings, databases and methodology but also the different parameters that are used to display the work results. For this reason, to make our results clear we have chosen to display them from two points of view. The first is the WP and the second is the segmentation point. For the WP, we measured the Segmentation rate (SR) and the Recognition rate (RR).  The usage of the ADAB database instead of an own collected database give our results further firmness. In table \ref{table:general_stats} we provide basic statistics of our sample set.\\
+The system was implemented using Matlab environment. Comparing the performance of the proposed approach to other research done in the field is not a simple task. The complexity of such task is not only the different experimental settings, databases and methodology but also the different parameters that are used to display the results. For this reason, to make our results clear we have chosen to display them from two points of view. The first is the WP and the second is the segmentation point. The usage of the ADAB database instead of an own collected database give our results further firmness. In table \ref{table:general_stats} we provide basic statistics of our sample set.\\
 
 \begin{table}[h]
 \caption{General statistics}
@@ -455,40 +448,40 @@ The results shown in table \ref{table:wp_results} summarizes the system performa
 \label{table:sp_results} 
 \end{table}
 
-The absolute majority of the false negative segmentation points were identified as POI in the first stage. A small number were filtered out in the filtering phase but most of them were not selected by the SSA.
+The absolute majority of the false negative segmentation points were identified as POIs in the first stage. A small number were filtered out in the filtering phase but most of them were not selected by the SSA.
 
 \subsection{Analysis}
 In this section we discuss common cases of incorrect segmentation.
 \subsubsection{Over-segmentation}
-\textbf{Case 1:} Several Arabic letters contain a horizontal region in their initial form which do not contain a segmentation point but was falsely identified as an HF in the first stage. However, this issue was overcame by adding the following rule: A POI is nominated only if the sub-stroke that spans from the beginning of the stroke to the POI is has a high complexity measure, see Figure \ref{fig:oversegmentation_begin_1}.\\
+\textbf{Case 1:} Several Arabic letters contain a horizontal region in their initial form which do not contain a segmentation point. However, in many cases, it was falsely identified as an HF. This issue was overcame by adding the following rule: A POI is nominated only if the sub-stroke that spans from the beginning of the stroke to the POI has a high complexity measure, i.e., not a straight line.\\
 
-\textbf{Case 2:} Over segmentation can be caused also from typing a letter in unusual form where it is spanned over several strokes. It happens mostly in the letter forms \RL{-m-}, \RL{-m} (as can be seen in Figure \ref{fig:2_strokes_m}) and in rare cases in the letter \RL{-.h-}.
+\textbf{Case 2:} Over segmentation can be caused by typing a letter in unusual form where it is spanned over several strokes. It happens mostly in the letter \RL{-m-}, \RL{-m} and in rare cases in the letter \RL{-.h-}.
 
-\begin{figure}
-\centering
-        \subfloat[]{
-           \label{fig:2_strokes_m}
-           \includegraphics[width=0.16\columnwidth]{./figures/2_strokes_m}
-        }
-        \qquad
-        \qquad
-        \subfloat[]{
-        	  \label{fig:oversegmentation_begin_1}
-           \includegraphics[width=0.6\columnwidth]{./figures/oversegmentation_begin_1}		
-        }        
-    \caption{An example of writing a single letter using more than a single strokes is shown in \ref{fig:2_strokes_m}. In \ref{fig:letters_same_body} an example of a HF at the beginning of the stroke which do not contain a segmentation point.}
-   \label{fig:over_segmentations}
-\end{figure}
+%\begin{figure}
+%\centering
+%        \subfloat[]{
+%           \label{fig:2_strokes_m}
+%           \includegraphics[width=0.16\columnwidth]{./figures/2_strokes_m}
+%        }
+%        \qquad
+%        \qquad
+%        \subfloat[]{
+%        	  \label{fig:oversegmentation_begin_1}
+%           \includegraphics[width=0.6\columnwidth]{./figures/oversegmentation_begin_1}		
+%        }        
+%    \caption{An example of writing a single letter using more than a single strokes is shown in \ref{fig:2_strokes_m}. In \ref{fig:letters_same_body} an example of a HF at the beginning of the stroke which do not contain a segmentation point.}
+%   \label{fig:over_segmentations}
+%\end{figure}
 
 \subsubsection{Under-segmentation}
 \textbf{Case 1:} No HF is identified. mainly results from letter pairs that do not contain horizontal joint between them. This issue is partially solved by extending the notion of a letters to include such pairs. For example the pair \RL{lm} and \RL{l.h}.\\
 
 \textbf{Case 2:} HF is identified but the corresponding POI is not selected in the third stage. This result from a low scoring and thus not being selected by the SSA.\\
 
-In addition, differentiating between the main body of the letter \RL{-s-} and the main body of two consecutive \RL{-b-} letters is impossible without taking into consideration the additional strokes, thus both cases were considered correct.\\
+In addition, differentiating between the main body of the letter \RL{-s-} and the main body of two consecutive \RL{-b-} letters is impossible without taking into consideration the additional strokes, thus both cases were considered correct.
 
 \subsection{Sample set size and distribution}
-Since our letters samples are extracted from a real database, the sample set distribution is imbalanced. On the one hand, it can be viewed as an advantage since the letters samples  distribution will reflect the a-priory probability of a letter appearance. On the other hand, a highly imbalanced dataset is known to have negative affect on many classification algorithms.
+Since our letters samples are extracted from a real database, the sample set distribution is imbalanced. On the one hand, it can be viewed as an advantage since the letters samples distribution will reflect the a-priory probability of a letter appearance. On the other hand, a highly imbalanced dataset is known to have negative affect on many classification algorithms.
 In the following experiment we measure the affect of both a increasingly large training set and the affect of imbalanced sample set on the system performance.
 To do so, we allowed an increasing maximal number of samples per a letter position and measured the segmentation and recognition rates of the system as well as on its time performance. Note that increasing the maximal number of samples per class (letter position) increases the imbalance between the classes. The graph in figure \ref{fig:num_letter_impact} shows that the maximal number of letters does not improve much the segmentation and recognition rates. The graph convergences after 200 samples per letter. It is also evident that there is a point where allowing more samples per class may decrease the accuracy of the system.
 
@@ -501,7 +494,7 @@ To do so, we allowed an increasing maximal number of samples per a letter positi
 
 \subsection{Segmentation Selection Algorithms performance}
 \label{subsec:ssa_performance}
-As can be seen in table \ref{table:ss_algorithms_results} the SSA has a crucial affect on the system performance. We tried to combine two SSA by running both SSA and select the segmentation with the smallest scoring divided by the size of $FSP$ to prevent giving superiority to segmentations with less segmentation points. Combination of two algorithms is symboled by $\oplus$.
+As can be seen in table \ref{table:ss_algorithms_results} the SSA has a crucial affect on the system performance. We tried different combinations of two SSA. The selection of the FSP is done by running both SSA and select the segmentation with the smallest scoring divided by the number of segmentation points. This is done to prevent giving superiority to FSPs with less segmentation points. In table \ref{table:ss_algorithms_results}, combination of two algorithms is symboled by $\oplus$.
 
 \begin{table}[h]
 \caption{SSA Performance}
