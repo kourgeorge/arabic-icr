@@ -462,9 +462,11 @@ The absolute majority of the false negative segmentation points were identified 
 \subsection{Analysis}
 In this section we discuss common cases of incorrect segmentation.
 \subsubsection{Over-segmentation}
-\textbf{Case 1:} Several Arabic letters contain a horizontal region in their initial form which do not contain a segmentation point. However, in many cases, it was falsely identified as an HF. This issue was overcame by adding the following rule: A POI is nominated only if the sub-stroke that spans from the beginning of the stroke to the POI has a high complexity measure, i.e., not a straight line.\\
-
-\textbf{Case 2:} Over segmentation can be caused by typing a letter in unusual form where it is spanned over several strokes. It happens mostly in the letter \RL{-m-}, \RL{-m} and in rare cases in the letter \RL{-.h-}.
+Several Arabic letters contain a horizontal region in their initial form which do not contain a segmentation point. 
+However, in many cases, it was falsely identified as an HF. 
+This issue was overcame by adding the following rule: A POI is nominated only if the sub-stroke that spans from the beginning of the stroke to the POI has a high complexity measure, i.e., not a straight line. 
+Over segmentation can also be caused by typing a letter in unusual form where it is spanned over several strokes. 
+It happens mostly in the letter \RL{-m-}, \RL{-m} and in rare cases in the letter \RL{-.h-}.
 
 %\begin{figure}
 %\centering
@@ -483,9 +485,10 @@ In this section we discuss common cases of incorrect segmentation.
 %\end{figure}
 
 \subsubsection{Under-segmentation}
-\textbf{Case 1:} No HF is identified. mainly results from letter pairs that do not contain horizontal joint between them. This issue is partially solved by extending the notion of a letters to include such pairs. For example the pair \RL{lm} and \RL{l.h}.\\
-
-\textbf{Case 2:} HF is identified but the corresponding POI is not selected in the third stage. This result from a low scoring and thus not being selected by the SSA.\\
+HFs that were not identified  mainly occur when letter pairs are not separated by horizontal joint. 
+This issue is partially solved by extending the notion of a letter to include such pairs. For example the pair \RL{lm} and \RL{l.h}.
+Another reason for under-segmentation are HFs that were identified but the corresponding POI were not selected in the third stage. 
+This mainly results by a high scoring given to the  by the  and thus not being selected by the SSA.\\
 
 In addition, differentiating between the main body of the letter \RL{-s-} and the main body of two consecutive \RL{-b-} letters is impossible without taking into consideration the additional strokes, thus both cases were considered correct.
 
