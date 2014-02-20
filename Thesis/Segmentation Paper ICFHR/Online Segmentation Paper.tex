@@ -76,11 +76,13 @@ Techniques for cursive text recognition can be split into two main approaches.
 The holistic approach considers the global properties of the written text and recognizes the input word shape as a whole \cite{biadsy2011segmentation, saabni2009hierarchical}. 
 The analytic approach involves segmentation and classification of each part of the text \cite{abdulla2008off, sari2002off, Dinges2011}. 
 The holistic approach requires the classifier to be trained over the entire dictionary. 
-While this is possible for small vocabulary of words, it is impractical for large dictionaries containing 20,000 words or more. 
-Under these circumstances, recognizing words using the analytic approach seems to be more feasible \cite{elanwar2012unconstrained}.\\
+While this is possible for small vocabulary of words, it is impractical for large dictionaries containing 20,000 words or more \cite{elanwar2012unconstrained}.\\
 
+{\color{blue}
 The cursiveness of the Arabic script, prima facie, requires delaying the launch of the recognition process until the entire word is scribed. 
-However, revising this observation one may notice that in most cases significant acceleration of the recognition process can be achieved by approximating the position of the segmentation points while the stroke is being written.\\
+However, in this paper, this observation is revised. 
+We show that significant acceleration of the recognition process can be achieved by approximating the position of the segmentation points while the stroke is being written. 
+Doing so, will allow the task of selecting the best segmentation when the stroke is completed and predominantly decrease the search space in a latter holistic phase.\\}
 
 In Section \ref{sec:related_work} we mention related studies done in the field of on-line Arabic recognition. 
 The proposed approach is described in details in Section \ref{sec:approach} and results are shown in the section \ref{sec:results}. 
@@ -105,14 +107,14 @@ The candidate and its scoring letters results were used to determine the best se
 \section{Approach}
 \label{sec:approach}
 
-\textbf{Complexity Measure:} Given a trajectory $S=\{{p_i}\}_{i=1}^{n}$, this value indicates the degree of the trajectory's curvature. 
-Preprocessing steps which includes simplification and re-sampling is required to ensure invariance under scaling and disregard the data imperfections. 
-The calculation of this parameter is done as follows: for each inner point $p_i$ the parameter $\alpha_{i}$ is computed by:
+\textbf{Complexity Measure:} this value indicates the degree of the trajectory's curvature. 
+Preprocessing steps which include simplification and re-sampling are required to ensure invariance under scaling and data imperfections. 
+The calculation of this parameter is done as follows. Given a trajectory $T=\{p_i\}_{i=1}^{k}$, for each inner point $p_i$ the parameter $\alpha_{i}$ is computed by:
 \begin{equation}
  \alpha_{i}=\frac{\pi-\phi_{i}}{\frac{\pi}{6}}
 \end{equation}
 where $\phi=\angle(\overline{p_{i-1}p_{i}},\overline{p_{i}p_{i+1}})$.\\ 
-The complexity measure is then defined as:
+The complexity measure is then defined as the sum of :
 \begin{equation}
 CM(S)=\Sigma_{i}\alpha_{i}
 \end{equation}\\
@@ -123,12 +125,12 @@ Below, a digest of the main stages in the proposed approach (see Figure \ref{fig
 \textbf{Stage 2.} Once the entire stroke is available, a rules-based process is used to refine the POIs and re-score the sub-strokes.\\
 \textbf{Stage 3.} The system heuristically determines the final set of segmentation points based on the sub-strokes scoring.}\\
 
-\begin{figure*}
+\begin{figure}
 \centering
-\includegraphics[width=1.3\columnwidth]{./figures/system_flow}
-\caption{High level system flow. The first stage is multi-phase and contain three subcomponent. }
+\includegraphics[width=0.9\columnwidth]{./figures/system_flow}
+\caption{High level system flow.}
 \label{fig:system_flow}
-\end{figure*}
+\end{figure}
 
 \subsection{First Stage: nomination of POIs and sub-strokes scoring}
 
@@ -159,8 +161,8 @@ The merging is done by evaluating the complexity measurement across the two cons
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\columnwidth]{./figures/candidate_in_no_horizontal}
-\caption{The main body of Arabic word \RL{`yn}. POIs are colored in cyan. The green areas ensigns that HFs merge has taken place. Three types of false POIs can be seen: 1. A POI at the beginning of a stroke. 2. A candidate point that do not reside on a HF. 3. A POI on the valley of the letter \RL{-n}. }
+\includegraphics[width=0.4\columnwidth]{./figures/candidate_in_no_horizontal}
+\caption{The main body of Arabic word \RL{`yn}. POIs are colored in cyan. The green areas ensigns that HFs merge has taken place. Three types of false POIs can be seen: 1. A POI at the beginning of a stroke. 2. A POI that is caused by a bad HF. 3. A POI that reside in a letter valley. }
 \label{fig:candidate_in_no_horizontal}
 \end{figure}
 
@@ -199,7 +201,7 @@ It receive a sequence and a position (Ini, Mid, Fin and Iso) and return the list
 In order to reduce the number of databases too look for candidates into, we differentiate between four types of subsequences and the corresponding letter position it may represent according to the location of the subsequence in the stroke.\\
 \begin{figure}
 \centering
-\renewcommand{\arraystretch}{2}
+\renewcommand{\arraystretch}{1.5}
 \begin{tabular}{| c |c | c |}
 \hline
   Name     & Subsequence      & Databases       \\
@@ -237,10 +239,10 @@ For each subsequence, the recognition system returns the $K$ minimal scored pote
 
 \begin{figure}
 \centering
-\renewcommand{\arraystretch}{2}
+\renewcommand{\arraystretch}{1.5}
 \begin{tabular}{| c |c | c | c| c | c | c |}
 \hline
- $KP_i$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$\\ 
+ $KP_i$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$\\ [0.01pt]
 \hline
 $0$
    & N/A
@@ -350,7 +352,7 @@ $kp_{b}=L+1$\;
 \label{alg:bfss}
 \end{algorithm}
   
-The last SSA operates completely differently. In every iteration, the cell with the lowest (best) scoring is selected. If a cell $D(i,j)$ is selected, both $KP_{i}$ and $KP_{j}$ are added to FSP and every cell representing a $KP_{z}$ where $z$ between $i$ and $j$ are removed from the scoring matrix by setting its scoring value to $\infty$. This is done to avoid those candidate point to be selected in a later iteration. This algorithm was given the name \emph{Greedy Segmentation Selection} (GSS) and is described in Algorithm \ref{alg:gss}.
+The last SSA operates completely differently. In every iteration, the cell with the lowest (best) scoring is selected. If a cell $D(i,j)$ is selected, both $KP_{i}$ and $KP_{j}$ are added to FSP and every cell representing a $KP_{z}$ where $z$ between $i$ and $j$ are removed from the scoring matrix by setting its scoring value to $\infty$. This is done to avoid those candidate point to be selected in a later iteration. This algorithm was given the name \emph{Greedy Segmentation Selection} (GSS) and is described in Algorithm \ref{alg:gss}.\\
 
 \begin{algorithm}
 $FSP=\emptyset$\;
@@ -380,26 +382,28 @@ To provide this information, we have employed the skills of a human expert to se
 This additional information was saved in an xml file. Delayed strokes were not included in the processed information since it is not considered by the segmentation process.
 We have manually segmented more than 15k samples which contains about 40k strokes. 
 
-\begin{figure}
-\centering
-\includegraphics[width=0.3\textwidth]{./figures/sample_parts}
-\caption{Visual demonstration of a test sample parts.}
-\label{fig:sample_parts}
-\end{figure}
-
 \section{Validation}
 \label{sec:validation}
 Other researches in this area usually use a human expert to validate the accuracy of the segmentation points. However, in this work, we applied an automatic validation process using the ground truth information provided by the database. We discriminate between three types of final segmentation point. A final segmentation point is classified as true positive if the complexity measure between the identified point and a true segmentation point is less than a preset threshold, otherwise it is is classified as false positive. A miss ,i.e, false Negative, is the case when the system failed to identify a segmentation point. The validation process was tested on several sets and found to be highly reliable.
 
 %A Segmentation point can be considered one of the following: 1. Valid (true positive): the segmentation point is identified in the correct location. 2. Invalid (false positive): the segmentation point was identified in an incorrect place. 3. Missing: No segmentation point was identified between two successive letters.
 
+\begin{figure}
+\centering
+\includegraphics[width=0.6\columnwidth]{./figures/sample_parts}
+\caption{Visual demonstration of a test sample parts.}
+\label{fig:sample_parts}
+\end{figure}
+
 \section{Experimental Results}
 \label{sec:results}
 The system was implemented using Matlab environment. Comparing the performance of the proposed approach to other research done in the field is not a simple task. The complexity of such task is not only the different experimental settings, databases and methodology but also the different parameters that are used to display the results. For this reason, to make our results clear we have chosen to display them from two points of view. The first is the WP and the second is the segmentation point. The usage of the ADAB database instead of an own collected database give our results further firmness. In table \ref{table:general_stats} we provide basic statistics of our sample set.\\
 
 \begin{table}[h]
-\caption{General statistics}
+\caption{General statistics and Results}
 \begin{tabular}{ | c | c | }
+  \hline
+  \multicolumn{2}{|c|}{\textbf{General statistics}}\\
   \hline
   Number of test samples (city name) & 319 \\
   \hline
@@ -407,38 +411,17 @@ The system was implemented using Matlab environment. Comparing the performance o
   \hline
   Number of Strokes & 1237 \\
   \hline
-\end{tabular}
-\centering
-\label{table:general_stats} 
-\end{table}
-
-The results shown in table \ref{table:wp_results} summarizes the system performance in the WP level and in table \ref{table:sp_results} we provide experimental results in the segmentation points level. 
-
-\begin{table}[h]
-\caption{WP Results}
-\begin{tabular}{ | c | c | }
   \hline
-  Segmentation Rate &  83\% \\ 
- \hline
+  \multicolumn{2}{|c|}{\textbf{WP Results}}\\
+  \hline
+   Segmentation Rate &  83\% \\ 
+  \hline
   Recognition Rate &  78\% \\ 
- \hline
+  \hline
   Average Time & 0.64 [sec] \\
-\hline
-\end{tabular}
-\centering
-\label{table:wp_results} 
-\end{table}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.9\columnwidth]{./figures/sp_types}
-\caption{Segmentation points types.}
-\label{fig:sp_types}
-\end{figure}
-
-\begin{table}[h]
-\caption{Segmentation Points Results}
-\begin{tabular}{ | c | c | }
+  \hline
+  \hline
+  \multicolumn{2}{|c|}{\textbf{Segmentation Points Results}}\\
   \hline
   Total number of Segmentation point & 1081 \\
   \hline
@@ -454,41 +437,34 @@ The results shown in table \ref{table:wp_results} summarizes the system performa
  \hline
 \end{tabular}
 \centering
-\label{table:sp_results} 
+\label{table:general_stats} 
 \end{table}
+
+The results shown in table \ref{table:wp_results} summarizes the system performance in the WP level and in table \ref{table:sp_results} we provide experimental results in the segmentation points level. \\
+
+\begin{figure}
+\centering
+\includegraphics[width=0.9\columnwidth]{./figures/sp_types}
+\caption{Segmentation points types.}
+\label{fig:sp_types}
+\end{figure}
 
 The absolute majority of the false negative segmentation points were identified as POIs in the first stage. A small number were filtered out in the filtering phase but most of them were not selected by the SSA.
 
 \subsection{Analysis}
 In this section we discuss common cases of incorrect segmentation.
 \subsubsection{Over-segmentation}
-Several Arabic letters contain a horizontal region in their initial form which do not contain a segmentation point. 
-However, in many cases, it was falsely identified as an HF. 
-This issue was overcame by adding the following rule: A POI is nominated only if the sub-stroke that spans from the beginning of the stroke to the POI has a high complexity measure, i.e., not a straight line. 
-Over segmentation can also be caused by typing a letter in unusual form where it is spanned over several strokes. 
-It happens mostly in the letter \RL{-m-}, \RL{-m} and in rare cases in the letter \RL{-.h-}.
-
-%\begin{figure}
-%\centering
-%        \subfloat[]{
-%           \label{fig:2_strokes_m}
-%           \includegraphics[width=0.16\columnwidth]{./figures/2_strokes_m}
-%        }
-%        \qquad
-%        \qquad
-%        \subfloat[]{
-%        	  \label{fig:oversegmentation_begin_1}
-%           \includegraphics[width=0.6\columnwidth]{./figures/oversegmentation_begin_1}		
-%        }        
-%    \caption{An example of writing a single letter using more than a single strokes is shown in \ref{fig:2_strokes_m}. In \ref{fig:letters_same_body} an example of a HF at the beginning of the stroke which do not contain a segmentation point.}
-%   \label{fig:over_segmentations}
-%\end{figure}
+\begin{itemize}
+\item Several Arabic letters contain a horizontal region in their initial form which do not contain a segmentation point. However, in many cases, it was falsely identified as an HF. We could overcame by adding the following rule: A POI is nominated only if the sub-stroke that spans from the beginning of the stroke to the POI has a high complexity measure, i.e., not a straight line.
+\item Over segmentation can also be caused by typing a letter in unusual form where it is spanned over several strokes. 
+It happens mostly in the letter \RL{-m-}, \RL{-m} and in rare cases in the letter \RL{-.h-}.\\
+\end{itemize}
 
 \subsubsection{Under-segmentation}
-HFs that were not identified  mainly occur when letter pairs are not separated by horizontal joint. 
-This issue is partially solved by extending the notion of a letter to include such pairs. For example the pair \RL{lm} and \RL{l.h}.
-Another reason for under-segmentation are HFs that were identified but the corresponding POI were not selected in the third stage. 
-This mainly results by a high scoring given to the  by the  and thus not being selected by the SSA.\\
+\begin{itemize}
+\item Letter pairs which are not separated by horizontal joint HFs causes POIs to be missed. This issue is partially solved by extending the notion of a letter to include such pairs. For example the pair \RL{lm} and \RL{l.h}.
+\item In some cases, HFs were identified correctly but the corresponding POI were not selected in the third stage. \\
+\end{itemize}
 
 In addition, differentiating between the main body of the letter \RL{-s-} and the main body of two consecutive \RL{-b-} letters is impossible without taking into consideration the additional strokes, thus both cases were considered correct.
 
@@ -532,11 +508,13 @@ It is also evident that there is a point where allowing more samples per class m
 
 \begin{figure}
 \centering
-\includegraphics[width=1\columnwidth]{./figures/num_letter_impact}
-\caption{The diagram shows the influence of the number of letters samples on the segmentation (SR) , recognition rates (RR) , and the average segmentation time. All the three parameters showing convergence when the maximum letter samples per letter position is larger than 200. }
+\includegraphics[width=0.9\columnwidth]{./figures/num_letter_impact}
+\caption{The diagram shows the influence of the number of letters samples on the segmentation (SR), recognition rates (RR), and the average segmentation time. All the three parameters showing convergence when the maximum letter samples per letter position is larger than 200. }
 \label{fig:num_letter_impact}
 \end{figure}
 
+\section{Acknowlegement}
+{\color{blue}We want to thank Prof. Dana Ron for her support in the bla bla bla.}
 \bibliographystyle{IEEEtran}
 \bibliography{IEEEabrv,bibliography}
 
