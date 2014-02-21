@@ -31,22 +31,19 @@
 \author{\IEEEauthorblockN{George Kour}
 \IEEEauthorblockA{Faculty of Engineering\\
 Tel-Aviv University\\
-Tel-Aviv, Israel\\
+Tel-Aviv Jaffa, Israel\\
 Email: kourgeorge@gmail.com}
 \and
 \IEEEauthorblockN{Raid Saabne}
-\IEEEauthorblockA{Triangle R\&D Center\\
-Kafr Qara, Israel\\
-Email: raidsa@gmail.com}
+\IEEEauthorblockA{Department of Computer Science\\
+Tel Aviv-Yaffo Academic Collage, Israel\\
+Triangle R\&D Center, Kafr Qara, Israel\\
+Email: saabni@cs.bgu.ac.il}
 }
 
 
 %\markboth{Journal of \LaTeX\ Class Files,~Vol.~6, No.~1, January~2007}%
 %{Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for Computer Society Journals}
-
-\markboth{\today}{}
-
-%\IEEEspecialpapernotice{(Invited Paper)}
 
 
 \IEEEcompsoctitleabstractindextext{
@@ -54,10 +51,11 @@ Email: raidsa@gmail.com}
 the cursive and unconstrained nature of the Arabic script, in both printed and handwritten forms, anneals the task of segmentation. 
 While real-time performance is required in applications involving on-line handwriting recognition, most techniques for handwriting recognition wait until the entire curve is traced out before starting the analysis, inevitably causing delays in the recognition process. 
 This paper proposes a novel ongoing recognition-based segmentation technique of the on-line Arabic script by carrying out the most time consuming recognition process while the stroke being scribed. 
-The system has been designed and tested using the ADAB Database and promising results were obtained.
+The system has been designed and tested using the ADAB Database and promising results were obtained.\\
 \end{abstract}
+
 \begin{IEEEkeywords}
-Arabic Script Segmentation, Strokes Segmentation, On-line Text Recognition
+Arabic Script Segmentation, Strokes Segmentation, On-line Text Recognition, Word Segmentation, Arabic OCR, On-line handwriting recognition
 \end{IEEEkeywords}
 }
 \maketitle
@@ -78,11 +76,10 @@ The analytic approach involves segmentation and classification of each part of t
 The holistic approach requires the classifier to be trained over the entire dictionary. 
 While this is possible for small vocabulary of words, it is impractical for large dictionaries containing 20,000 words or more \cite{elanwar2012unconstrained}.\\
 
-{\color{blue}
 The cursiveness of the Arabic script, prima facie, requires delaying the launch of the recognition process until the entire word is scribed. 
 However, in this paper, this observation is revised. 
 We show that significant acceleration of the recognition process can be achieved by approximating the position of the segmentation points while the stroke is being written. 
-Doing so, will allow the task of selecting the best segmentation when the stroke is completed and predominantly decrease the search space in a latter holistic phase.\\}
+Doing so will predominantly decrease the search space in a post-processing holistic analysis of the entire word.\\
 
 In Section \ref{sec:related_work} we mention related studies done in the field of on-line Arabic recognition. 
 The proposed approach is described in details in Section \ref{sec:approach} and results are shown in the section \ref{sec:results}. 
@@ -109,21 +106,13 @@ The candidate and its scoring letters results were used to determine the best se
 
 \textbf{Complexity Measure:} this value indicates the degree of the trajectory's curvature. 
 Preprocessing steps which include simplification and re-sampling are required to ensure invariance under scaling and data imperfections. 
-The calculation of this parameter is done as follows. Given a trajectory $T=\{p_i\}_{i=1}^{k}$, for each inner point $p_i$ the parameter $\alpha_{i}$ is computed by:
-\begin{equation}
- \alpha_{i}=\frac{\pi-\phi_{i}}{\frac{\pi}{6}}
-\end{equation}
-where $\phi=\angle(\overline{p_{i-1}p_{i}},\overline{p_{i}p_{i+1}})$.\\ 
-The complexity measure is then defined as the sum of :
-\begin{equation}
-CM(S)=\Sigma_{i}\alpha_{i}
-\end{equation}\\
+The calculation of this parameter is done as follows. Given a trajectory $T=\{p_i\}_{i=1}^{k}$, for each inner point $p_i$ the parameter $\alpha_{i}$ is computed as $\alpha_{i}=\frac{\pi-\phi_{i}}{\frac{\pi}{6}}$ where $\phi=\angle(\overline{p_{i-1}p_{i}},\overline{p_{i}p_{i+1}})$.
+The complexity measure is then defined as: $CM(T)=\Sigma_{i}\alpha_{i}$.\\
+%\begin{equation}
+%CM(S)=\Sigma_{i}\alpha_{i}
+%\end{equation}\\
 
-{\color{blue}
-Below, a digest of the main stages in the proposed approach (see Figure \ref{fig:system_flow}):\\
-\textbf{Stage 1.}  \emph{Points of interest} (POIs) are identified as potential segmentation points which are continuously nominated while the stroke is being scribed. The sub-strokes imposed by these POIs are scored by a Arabic letter classifier.\\
-\textbf{Stage 2.} Once the entire stroke is available, a rules-based process is used to refine the POIs and re-score the sub-strokes.\\
-\textbf{Stage 3.} The system heuristically determines the final set of segmentation points based on the sub-strokes scoring.}\\
+The proposed approach goes through three stages. In the first stage \emph{Points of interest} (POIs) are identified as potential segmentation points which are continuously nominated while the stroke is being scribed. The sub-strokes imposed by these POIs are scored by a Arabic letter classifier. In the second stage, once the entire stroke is available, a rules-based process is used to refine the POIs and re-score the sub-strokes. Eventually, the system heuristically determines the final set of segmentation points based on the sub-strokes scoring.\\
 
 \begin{figure}
 \centering
@@ -144,7 +133,7 @@ The same exact value for this parameter was found independently in \cite{daifall
 \begin{figure}
 \centering
 \includegraphics[width=0.5\columnwidth]{./figures/horizontal_fragments}
-\caption{Horizontal Fragments [HF] of the word \RL{jbl}(JABAL)}
+\caption{Horizontal Fragments [HF] of the word \RL{jbl} (JABAL).}
 \label{fig:horizontal_fragments}
 \end{figure}
 
@@ -162,7 +151,7 @@ The merging is done by evaluating the complexity measurement across the two cons
 \begin{figure}
 \centering
 \includegraphics[width=0.4\columnwidth]{./figures/candidate_in_no_horizontal}
-\caption{The main body of Arabic word \RL{`yn}. POIs are colored in cyan. The green areas ensigns that HFs merge has taken place. Three types of false POIs can be seen: 1. A POI at the beginning of a stroke. 2. A POI that is caused by a bad HF. 3. A POI that reside in a letter valley. }
+\caption{The main body of Arabic word \RL{`yn}. POIs are colored in cyan. The green areas indicate that HFs merge has taken place. Three types of false POIs can be seen: 1. A POI at the beginning of a stroke. 2. A POI that is caused by a bad HF. 3. A POI that reside in a letter valley. }
 \label{fig:candidate_in_no_horizontal}
 \end{figure}
 
@@ -183,10 +172,7 @@ S_{i}^{j}=\{p_{k}\}_{k=KP_{i}}^{KP_{j}}; i<j
 \end{equation}
 We generate an upper triangular scoring matrix $D\in\mathbb{R}^{(L+1)\times (L+1)}$ where each cell $D_{i,j}$ defines the scoring obtained by the classifier for the sub-strokes in $S_i^j$. 
 The matrix $D$ is generated dynamically adding a row and a column for each new detected POI. 
-A locality constraint which narrows the band of the $D$ matrix above the main diagonal improves efficiency and segmentation accuracy. Given a band width $B$ we fix:
-\begin{equation}
-D_{i,j}=\infty \Leftrightarrow j \leq i \vee j-i>B 
-\end{equation}
+A locality constraint which narrows the band of the $D$ matrix above the main diagonal improves efficiency and segmentation accuracy. Given a band width $B$ we fix $D_{i,j}=\infty$ if  $j \leq i$ or $j-i>B$.
 Scores of sub-strokes representing a letter will achieve, in most cases, better resemblance scoring, i.e., $D_{i,j}$ value will be relatively smaller than for other sub-strokes.\\
 
 \begin{figure}
@@ -201,10 +187,10 @@ It receive a sequence and a position (Ini, Mid, Fin and Iso) and return the list
 In order to reduce the number of databases too look for candidates into, we differentiate between four types of subsequences and the corresponding letter position it may represent according to the location of the subsequence in the stroke.\\
 \begin{figure}
 \centering
-\renewcommand{\arraystretch}{1.5}
+\renewcommand{\arraystretch}{1.2}
 \begin{tabular}{| c |c | c |}
 \hline
-  Name     & Subsequence      & Databases       \\
+  Name     & Subsequence    & Databases       \\
 \hline
   $\alpha$ & $S_0^{k}$         & $Ini$ or $Mid$  \\
 \hline
@@ -239,10 +225,10 @@ For each subsequence, the recognition system returns the $K$ minimal scored pote
 
 \begin{figure}
 \centering
-\renewcommand{\arraystretch}{1.5}
+\renewcommand{\arraystretch}{1.3}
 \begin{tabular}{| c |c | c | c| c | c | c |}
 \hline
- $KP_i$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$\\ [0.01pt]
+ $KP_i$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$\\
 \hline
 $0$
    & N/A
@@ -285,9 +271,9 @@ $5$
 In this stage we eliminate redundant POIs based on the following rules:
 
 \begin{itemize}
-	\item[] \textbf{Rule 1:} Inner Segmentation point lies close to the baseline. 
-	\item[] \textbf{Rule 2:} Segmentation points do not reside in loops.
-	\item[] \textbf{Rule 3:} A sub-stroke length is proportional to the length of the containing stroke.\\
+	\item Inner Segmentation point lies close to the baseline. 
+	\item Segmentation points do not reside in loops.
+	\item A sub-stroke length is proportional to the length of the containing stroke.\\
 \end{itemize}
 
 \textbf{Baseline detection:} The baseline is determined by calculating the vertical density histogram of the re-sampled sub-stroke. The y-axis is partitioned into $10$ intervals, then, the center of the of the most inhabited interval $I_{max}$ is determined. A $POI$ is filtered out it does not satisfy the following condition:
@@ -369,7 +355,7 @@ $FSP=\emptyset$\;
 \label{alg:gss}
 \end{algorithm}
 
-FSS, BSS, BFSS and GSS are executed independently for each stroke. The $FSP$ with the smallest $\Pi$ is selected. Evaluations of the mentioned SSA is provided in \ref{subsec:ssa_performance}. 
+FSS, BSS, BFSS and GSS are executed independently for each stroke. The $FSP$ with the smallest $\Pi$ is selected. Evaluations of the mentioned SSA is provided in \ref{subsec:ssa_performance}. \\
 
 
 
@@ -380,13 +366,7 @@ Unfortunately, the ADAB only provides data on the strokes for a given city name.
 No segmentation into letters or WP is provided, thus, extra work was needed to add this information to the database so that it could be used as a letters samples source and as ground truth for the segmentation system.
 To provide this information, we have employed the skills of a human expert to segment the strokes into letters and determine the words and the WPs boundaries for each sample. 
 This additional information was saved in an xml file. Delayed strokes were not included in the processed information since it is not considered by the segmentation process.
-We have manually segmented more than 15k samples which contains about 40k strokes. 
-
-\section{Validation}
-\label{sec:validation}
-Other researches in this area usually use a human expert to validate the accuracy of the segmentation points. However, in this work, we applied an automatic validation process using the ground truth information provided by the database. We discriminate between three types of final segmentation point. A final segmentation point is classified as true positive if the complexity measure between the identified point and a true segmentation point is less than a preset threshold, otherwise it is is classified as false positive. A miss ,i.e, false Negative, is the case when the system failed to identify a segmentation point. The validation process was tested on several sets and found to be highly reliable.
-
-%A Segmentation point can be considered one of the following: 1. Valid (true positive): the segmentation point is identified in the correct location. 2. Invalid (false positive): the segmentation point was identified in an incorrect place. 3. Missing: No segmentation point was identified between two successive letters.
+We have manually segmented more than 15k samples which contains about 40k strokes. \\
 
 \begin{figure}
 \centering
@@ -395,15 +375,25 @@ Other researches in this area usually use a human expert to validate the accurac
 \label{fig:sample_parts}
 \end{figure}
 
+\section{Validation}
+\label{sec:validation}
+Other researches in this area usually use a human expert to validate the accuracy of the segmentation points. However, in this work, we applied an automatic validation process using the ground truth information provided by the database. We discriminate between three types of final segmentation point. A final segmentation point is classified as true positive if the complexity measure between the identified point and a true segmentation point is less than a preset threshold, otherwise it is is classified as false positive. A miss ,i.e, false Negative, is the case when the system failed to identify a segmentation point. The validation process was tested on several sets and found to be highly reliable.\\
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\columnwidth]{./figures/sp_types}
+\caption{Segmentation points types.}
+\label{fig:sp_types}
+\end{figure}
+
 \section{Experimental Results}
 \label{sec:results}
 The system was implemented using Matlab environment. Comparing the performance of the proposed approach to other research done in the field is not a simple task. The complexity of such task is not only the different experimental settings, databases and methodology but also the different parameters that are used to display the results. For this reason, to make our results clear we have chosen to display them from two points of view. The first is the WP and the second is the segmentation point. The usage of the ADAB database instead of an own collected database give our results further firmness. In table \ref{table:general_stats} we provide basic statistics of our sample set.\\
 
 \begin{table}[h]
-\caption{General statistics and Results}
+\caption{General statistics}
+\renewcommand{\arraystretch}{1.2}
 \begin{tabular}{ | c | c | }
-  \hline
-  \multicolumn{2}{|c|}{\textbf{General statistics}}\\
   \hline
   Number of test samples (city name) & 319 \\
   \hline
@@ -411,45 +401,80 @@ The system was implemented using Matlab environment. Comparing the performance o
   \hline
   Number of Strokes & 1237 \\
   \hline
-  \hline
-  \multicolumn{2}{|c|}{\textbf{WP Results}}\\
-  \hline
-   Segmentation Rate &  83\% \\ 
-  \hline
-  Recognition Rate &  78\% \\ 
-  \hline
-  Average Time & 0.64 [sec] \\
-  \hline
-  \hline
-  \multicolumn{2}{|c|}{\textbf{Segmentation Points Results}}\\
-  \hline
-  Total number of Segmentation point & 1081 \\
-  \hline
-  Valid SP (True Positive) & 922 \\
-  \hline
-  Invalid SP (False Positive) & 119 \\
-  \hline
-  Missing SP (False Negative) & 159 \\
-  \hline                                    
-  Precision & 88.6\% \\ 
- \hline
-  Recall &  85.3\% \\ 
- \hline
 \end{tabular}
 \centering
 \label{table:general_stats} 
 \end{table}
 
-The results shown in table \ref{table:wp_results} summarizes the system performance in the WP level and in table \ref{table:sp_results} we provide experimental results in the segmentation points level. \\
+The results shown in table \ref{table:results} summarizes the system performance. The absolute majority of the false negative segmentation points were identified as POIs in the first stage. A small number were filtered out in the filtering phase but most of them were not selected by the SSA.
 
-\begin{figure}
+%
+%\begin{table}[h]
+%\caption{General statistics and Results}
+%\begin{tabular}{ | c | c | }
+%  \hline
+%  \multicolumn{2}{|c|}{\textbf{General statistics}}\\
+%  \hline
+%  Number of test samples (city name) & 319 \\
+%  \hline
+%  Number of WPs & 1148 \\
+%  \hline
+%  Number of Strokes & 1237 \\
+%  \hline
+%  \hline
+%  \multicolumn{2}{|c|}{\textbf{WP Results}}\\
+%  \hline
+%   Segmentation Rate &  83\% \\ 
+%  \hline
+%  Recognition Rate &  78\% \\ 
+%  \hline
+%  Average Time & 0.64 [sec] \\
+%  \hline
+%  \hline
+%  \multicolumn{2}{|c|}{\textbf{Segmentation Points Results}}\\
+%  \hline
+%  Total number of Segmentation point & 1081 \\
+%  \hline
+%  Valid SP (True Positive) & 922 \\
+%  \hline
+%  Invalid SP (False Positive) & 119 \\
+%  \hline
+%  Missing SP (False Negative) & 159 \\
+%  \hline                                    
+%  Precision & 88.6\% \\ 
+% \hline
+%  Recall &  85.3\% \\ 
+% \hline
+%\end{tabular}
+%\centering
+%\label{table:general_stats} 
+%\end{table}
+
+\begin{table}[h]
+\caption{Results}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{ | c | c | }
+  \hline
+  Strokes Segmentation Rate &  83\% \\ 
+  \hline
+  Strokes Recognition Rate &  78\% \\ 
+ \hline
+  Total number of true Segmentation point & 1081 \\
+  \hline
+  Valid Segmentation points (True Positive) & 85.3\% \\
+    \hline
+  Missing Segmentation points (False Negative) & 14.7\% \\
+  \hline
+  Invalid Segmentation points (False Positive) & 119 \\
+  \hline                                    
+  Segmentation points Precision & 88.6\% \\ 
+ \hline
+  Segmentation points Recall &  85.3\% \\ 
+ \hline
+\end{tabular}
 \centering
-\includegraphics[width=0.9\columnwidth]{./figures/sp_types}
-\caption{Segmentation points types.}
-\label{fig:sp_types}
-\end{figure}
-
-The absolute majority of the false negative segmentation points were identified as POIs in the first stage. A small number were filtered out in the filtering phase but most of them were not selected by the SSA.
+\label{table:results} 
+\end{table}
 
 \subsection{Analysis}
 In this section we discuss common cases of incorrect segmentation.
@@ -466,15 +491,16 @@ It happens mostly in the letter \RL{-m-}, \RL{-m} and in rare cases in the lette
 \item In some cases, HFs were identified correctly but the corresponding POI were not selected in the third stage. \\
 \end{itemize}
 
-In addition, differentiating between the main body of the letter \RL{-s-} and the main body of two consecutive \RL{-b-} letters is impossible without taking into consideration the additional strokes, thus both cases were considered correct.
+In addition, differentiating between the main body of the letter \RL{-s-} and the main body of two consecutive \RL{-b-} letters is possible only when taking considering additional strokes, thus both cases were considered to be correct.
 
 
 \subsection{Segmentation Selection Algorithms performance}
 \label{subsec:ssa_performance}
-As can be seen in table \ref{table:ss_algorithms_results} the SSA has a crucial affect on the system performance. We tried different combinations of two SSA. The selection of the FSP is done by running both SSA and select the segmentation with the smallest scoring divided by the number of segmentation points. This is done to prevent giving superiority to FSPs with less segmentation points. In table \ref{table:ss_algorithms_results}, combination of two algorithms is symboled by $\oplus$.
+As can be seen in table \ref{table:ss_algorithms_results} the SSA has a crucial affect on the system performance. We tried different combinations of two SSA. The selection of the FSP is done by running both SSA and select the segmentation with the smallest scoring divided by the number of segmentation points. This is done to prevent giving superiority to FSPs with less segmentation points. In table \ref{table:ss_algorithms_results}, combination of two algorithms is denoted by $\oplus$.
 
 \begin{table}[h]
 \caption{SSA Performance}
+\renewcommand{\arraystretch}{1.2}
 \begin{tabular}{ | c | c | c | c | c |}
 \hline
 SSA & WP SR & WP RR & SP Precision & SP Recall\\
@@ -508,13 +534,18 @@ It is also evident that there is a point where allowing more samples per class m
 
 \begin{figure}
 \centering
-\includegraphics[width=0.9\columnwidth]{./figures/num_letter_impact}
+\includegraphics[width=1\columnwidth]{./figures/num_letter_impact}
 \caption{The diagram shows the influence of the number of letters samples on the segmentation (SR), recognition rates (RR), and the average segmentation time. All the three parameters showing convergence when the maximum letter samples per letter position is larger than 200. }
 \label{fig:num_letter_impact}
 \end{figure}
 
-\section{Acknowlegement}
-{\color{blue}We want to thank Prof. Dana Ron for her support in the bla bla bla.}
+\section{Conclusions and Future Work}
+In this paper we proposed an ongoing approach for segmenting dictionary-free Arabic handwritten script in the stroke level, based on continuous sub-strokes scoring. The nomination of potential segmentation points is done based on morphological features and a letter recognition system is used to provide scored letter candidates to the sub-strokes that are induced by the nominated points. The  system has demonstrated promising results.
+In future work, we will use the scoring information to decrease the size of possible dictionary words and significantly reduce the potential samples space to allow efficient holistic recognition method in a later phase. \\ 
+
+\section{Acknowledgment}
+We would like to thank Prof. Dana Ron from Tel-Aviv University for her insightful comments on this paper. \\
+
 \bibliographystyle{IEEEtran}
 \bibliography{IEEEabrv,bibliography}
 
