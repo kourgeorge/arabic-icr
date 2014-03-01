@@ -44,33 +44,33 @@ Arabic Script Segmentation, Strokes Segmentation, On-line Text Recognition, Word
 Handwriting remains the most commonly used mean of communication and recording of information in the daily life, therefore, a growing interest in the handwriting character recognition field has emerged in recent years. 
 Handwriting recognition can be categorized into two main fields: off-line and on-line. 
 In the off-line case, a digital image containing text is fed to the computer, and the system attempts to convert the spatial representation of the letters into digital symbols \cite{al2011online}. 
-In contrast, the process of on-line handwriting recognition is done on a digital representation of the text written on a special digitizer, tablet or smart-phone device, where sensors pick up the pen-tip movements.\\
+In contrast, the process of on-line handwriting recognition is done on a digital representation of the text written on a special digitizer, tablet or smart-phone device, where sensors pick up the pen-tip movements.
  
 The proposed method is an analytic approach for handwriting recognition, i.e., it involves segmentation and classification of each part of the text \cite{abdulla2008off, sari2002off, Dinges2011}. 
-Unlike the analytic approach, the holistic approach considers the global properties of the written text and recognizes the input word shape as a whole \cite{biadsy2011segmentation, saabni2009hierarchical}. While having many advantages, the holistic approach requires the classifier to be trained over the entire dictionary, which is impractical for large dictionaries (containing more than 20,000 words) \cite{elanwar2012unconstrained}.\\
+Unlike the analytic approach, the holistic approach considers the global properties of the written text and recognizes the input word shape as a whole \cite{biadsy2011segmentation, saabni2009hierarchical}. While having many advantages, the holistic approach requires the classifier to be trained over the entire dictionary, which is impractical for large dictionaries (containing more than 20,000 words) \cite{elanwar2012unconstrained}.
 
 The cursiveness of the Arabic script, prima facie, requires delaying the launch of the recognition process until the completion of the word scribing. 
 However, in this paper, we question the necessity of the requirement by demonstrating the feasibility of approximating the position of the segmentation points (SPs) while the stroke is being written; and by doing so, accelerating the recognition process. 
-Furthermore, the obtained information can be used to significantly reduce the potential dictionary size and facilitate a later holistic recognition process.\\
+Furthermore, the obtained information can be used to significantly reduce the potential dictionary size and facilitate a later holistic recognition process.
 
 In Section \ref{sec:related_work}, we mention related studies done in the field of on-line Arabic recognition. 
-The proposed approach is described in detail in Section \ref{sec:approach}. Experimental results and analysis is given in Section \ref{sec:results}. 
+The proposed approach is described in detail in Section \ref{sec:approach}. Experimental results and analysis is given in Section \ref{sec:results}. \\
 
 \section{Related Work}
 \label{sec:related_work}
 
 Randa et al. \cite{elanwar2012unconstrained} proposed a two stage on-line Arabic handwritten text segmentation system based on Hidden Markov Model (HMM). 
 In the first stage, SPs were nominated, and then, in a second stage, the nominated points were validated using a rules-based engine. 
-The system was tested using a self-collected database named OHASD.\\
+The system was tested using a self-collected database named OHASD.
 
 Digness et al. \cite{Dinges2011} used a segmentation-based recognition approach based on dividing the word into smaller pieces, which were afterwards segmented into candidate letters, and then classified into letter classes, using statistical and structural features. 
-The $k$-NN classifier was used to obtain the final recognition.\\
+The $k$-NN classifier was used to obtain the final recognition.
 
 A segmentation-based recognition method that operates on the stroke level for on-line Arabic handwritten words recognition was proposed by Daifallah et al. \cite{daifallah2009recognition}. 
 SPs were nominated and then selected by locating semi-horizontal lines moving from right to left. 
 A portion of the SPs is filtered out by applying a certain set of rules. 
 Then, HMM is used to classify the sub-strokes to letters using the Hu feature. 
-The letters candidates and their scoring were used to determine the best set of SPs.
+The letters candidates and their scoring were used to determine the best set of SPs.\\
 
 
 \section{Our Approach}
@@ -89,11 +89,11 @@ The proposed approach goes through three stages.
 In the first stage, \emph{points of interest} (POIs), are continuously nominated while the stroke is being scribed.
 The sub-strokes imposed by these POIs are scored by an Arabic letter classifier. 
 In the second stage, once the entire stroke is available, a rules-based process is used to refine the set of POIs and re-score the sub-strokes. 
-Eventually, the system heuristically determines the final set of SPs based on the sub-strokes scoring. See figure \ref{fig:system_flow}. \\
+Eventually, the system heuristically determines the final set of SPs based on the sub-strokes scoring. See Figure \ref{fig:system_flow}. 
 
 \begin{figure}
 \centering
-\includegraphics[width=0.9\columnwidth]{./figures/system_flow}
+\includegraphics[width=1\columnwidth]{./figures/system_flow}
 \caption{High level visualization of the system flow.}
 \label{fig:system_flow}
 \end{figure}
@@ -103,11 +103,11 @@ Eventually, the system heuristically determines the final set of SPs based on th
 \textbf{Horizontal fragment identification:} in this stage, the system attempts to identify \emph{horizontal fragments} (HFs) that join pairs of connected letters. 
 These handlers are horizontal, directed right to left and located near the baseline (see Figure  \ref{fig:horizontal_fragments}). 
 Using a smoothed version of the trajectory helps the process to ignore undesired small horizontal regions that are frequently caused by the digitizer's imperfection.  
-A point $p_{i}$ is defined as a "horizontal point" if the slope of the line $\overline{p_{i-1}p_{i}}$ is less than a preset value $\delta$, which was empirically tuned to $0.6$. The same exact value for this parameter was found independently in \cite{daifallah2009recognition}.\\
+A point $p_{i}$ is defined as a "horizontal point" if the slope of the line $\overline{p_{i-1}p_{i}}$ is less than a preset value $\delta$, which was empirically tuned to $0.6$. The same exact value for this parameter was found independently in \cite{daifallah2009recognition}.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.45\columnwidth]{./figures/horizontal_fragments}
+\includegraphics[width=0.5\columnwidth]{./figures/horizontal_fragments}
 \caption{Horizontal Fragments [HF] of the word \RL{jbl} (JABAL).}
 \label{fig:horizontal_fragments}
 \end{figure}
@@ -118,7 +118,7 @@ All the subsequent horizontal points are ignored until a non-horizontal point is
 This point is identified as an "HF ending point" and the medial point of an HF is marked as POI. 
 POIs are potential SPs, thus, this process yields an over-segmentation of the stroke. 
 While false positive SPs can be easily removed, missed real SPs cannot be easily recovered. 
-Therefore, in order to minimize the miss-rate, this process is delicate and allows false HFs to be detected.\\
+Therefore, in order to minimize the miss-rate, this process is delicate and allows false HFs to be detected.
 
 In a post processing step, fractions of the same horizontal segment, which were identified as multiple HFs, are rejoined to a single HF. 
 The merging is done by evaluating the complexity measurement across the two consequent HFs, see Figure \ref{fig:candidate_in_no_horizontal}.\\
@@ -130,7 +130,7 @@ The merging is done by evaluating the complexity measurement across the two cons
 \label{fig:candidate_in_no_horizontal}
 \end{figure}
 
-\textbf{Sub-stroke Scoring:}
+\textbf{Sub-strokes scoring:}
 Let $S=\{p_{i}\}_{i=1}^{n}$ be a sequence representing a handwritten stroke in which $L$ POIs were detected. 
 Let $KP=\{KP_{i}\}_{i=0}^{L+1}$ (Key points) be the ordered set of POIs, in addition to the first and the last points of the stroke positioned as the first and the last items in the set.
 Formally, we define: 
@@ -140,16 +140,16 @@ KP_{i} =\begin{cases}    1		, & \mbox{if } i=0 \\
 							   n    , & \mbox{if } i=L+1 
 			\end{cases}				
 \end{equation}
-
 A sub-stroke $S_{i}^{j}$ is a sub-sequence of the stroke $S$ that starts at $KP_{i}$ and ends at $KP_{j}$, formally:
 \begin{equation}
 S_{i}^{j}=\{p_{k}\}_{k=KP_{i}}^{KP_{j}}; i<j
 \end{equation}
+
 We generate an upper triangular scoring matrix $D\in\mathbb{R}^{(L+1)\times (L+1)}$ where each cell $D_{i,j}$ represents the sub-stroke $S_i^j$. It contains the information returned by the scoring system for the sub-strokes $S_i^j$. 
 The matrix $D$ is generated dynamically; adding a row and a column for each new detected POI. 
 Imposing a locality constraint which narrows the band of the $D$ matrix above the main diagonal improved the efficiency of the process and the segmentation accuracy. 
 Given a band width $B$ we fix $D_{i,j}=\infty$ if  $j \leq i$ or $j-i>B$.
-We argue that sub-strokes representing a letter will achieve, in most cases, better scoring, i.e., lower $D_{i,j}$ value than other sub-strokes.\\
+We argue that sub-strokes representing a letter will achieve, in most cases, better scoring, i.e., lower $D_{i,j}$ value than other sub-strokes.
 
 \begin{figure}
 \centering
@@ -164,7 +164,7 @@ This scoring indicates the similarity measure between the sequence and the candi
 The relative location of the sub-stroke was used to avoid accessing all the four databases. 
 As can be seen in Table \ref{table:subsequences_types}, we differentiate between four types of subsequences. 
 For each type, we indicate the set of databases that need to be examined, i.e., the possible letter positions the sub-stroke may represent. 
-In Table \ref{table:subsequences_types}, $S$ denotes a stroke containing $L$ POIs where $m>0$ and $k<L+1$.\\
+In Table \ref{table:subsequences_types}, $S$ denotes a stroke containing $L$ POIs where $m>0$ and $k<L+1$.
 
 \begin{table}
 \centering
@@ -252,12 +252,12 @@ $5$
 \end{figure}
 
 \subsection{Second Stage: Candidate points filtering and scoring correction}
-In this stage we re-score subsequences and eliminate redundant POIs based on the following rules:
+In this stage we re-score subsequences and eliminate redundant POIs based on the following rules:\\
 
 \begin{itemize}
 	\item Inner SPs should lie close to the baseline. 
 	\item SPs do not reside in loops.
-	\item The sub-stroke length should be proportional to the length of the containing stroke.
+	\item The sub-stroke length should be proportional to the length of the containing stroke.\\
 \end{itemize}
 
 \textbf{Baseline detection:} The system determines the baseline by calculating the vertical density histogram of the re-sampled and normalized sub-stroke. 
@@ -283,12 +283,12 @@ This set will be referred to as the \emph{final segmentation points} (FSP).
 It is performed by finding the \emph{segmentation path} in $D$ with the best scoring possible. 
 A segmentation path $\pi$ is an ordered subset of the KPs and must contain $KP_{0}$ and $KP_{L+1}$ as the first and the last points in the path.
 $\Pi$ denotes the scoring of the segmentation path $\pi$. 
-It is defined as the summation of the sub-sequences scoring in the segmentation path divided by the path length; this is done in order to prevent giving superiority to under-segmentations.\\
+It is defined as the summation of the sub-sequences scoring in the segmentation path divided by the path length; this is done in order to prevent giving superiority to under-segmentations.
 
 One can model the scoring matrix $D$ as a directed, edge-weighted graph $G=(V,E)$, for which a path from vertex $KP_0$ to vertex $KP_{L+1}$ defines a possible segmentation. 
 It can be experimentally validated that finding the shortest path in $G$ (from $KP_0$ to $KP_{L+1}$) does not necessarily obtain the optimal segmentation, and in some cases, produces under-segmentation of the stroke. 
 It is because the shortest path is a global property, which may prefer a highly weighted shortcut path over a path that consists of several low weighted fragments; in cases where the accumulative weight of the fragmented path is larger than the shortcut path.
-However, greedily selecting the outgoing edge with the minimal weight will mostly return a better segmentation.\\
+However, greedily selecting the outgoing edge with the minimal weight will mostly return a better segmentation.
 
 Several \emph{segmentation selection algorithms} (SSAs) for finding the best segmentation path are proposed in this work.
 Here we describe two algorithms that were given the names \emph{Forward Segmentation Selection} (FSS) and \emph{Backward Segmentation Selection} (BSS) which operate quite similarly. 
@@ -296,7 +296,7 @@ A pseudo-code of FSS algorithm can be seen in Algorithm \ref{alg:fss}.
 FSS starts with the first point, $KP_0$, advancing toward the end of the stroke. 
 In Each step, it tries to find the next best KP by selecting the adjacent subsequence $S_i^j$ with the best scoring (as can be seen in line 5). 
 BSS operates similarly but starts from the last point and advances toward the beginning of the stroke. 
-The main drawback of these two algorithms is that FSS tends to under-segment the suffix of the stroke and BSS tends to under-segment the stroke's prefix.\\
+The main drawback of these two algorithms is that FSS tends to under-segment the suffix of the stroke and BSS tends to under-segment the stroke's prefix.
 
 \begin{algorithm}
 $\pi = \{0\} $\;
@@ -353,8 +353,7 @@ $\pi = \{0,L+1\}$\;
 \label{alg:gss}
 \end{algorithm}
 
-Performance evaluation of the mentioned SSA is provided in \ref{subsec:ssa_performance}.
-
+Performance evaluation of the mentioned SSA is provided in \ref{subsec:ssa_performance}.\\
 
 \section{The ADAB Database}
 \label{sec:database}
@@ -364,22 +363,23 @@ Unfortunately, the ADAB only provides data on the strokes for a given city name.
 No segmentation into letters or \emph{word parts} (WPs) is provided by the database, thus, extra work was needed to add this information in order to use its letter samples and as a ground truth for the segmentation system.
 To provide this information, we employed the skills of a human expert to segment the strokes into letters, and to determine the words and the WP boundaries for each sample. 
 This additional information was saved in an XML file. Delayed strokes were not included in the processed information since it is not considered by the segmentation process.
-We have manually segmented more than 15k samples that contain about 40k strokes. 
+We have manually segmented more than 15k samples that contain about 40k strokes. \\
 
 \begin{figure}
 \centering
-\includegraphics[width=0.6\columnwidth]{./figures/sample_parts}
-\caption{The parts of a sample in the ADAB database.}
+\includegraphics[width=0.7\columnwidth]{./figures/sample_parts}
+\caption{The different parts of a sample in the ADAB database.}
 \label{fig:sample_parts}
 \end{figure}
 
 \section{Validation}
 \label{sec:validation}
-Related researches usually use a human expert to validate the accuracy of the SPs. However, in this work, we applied an automatic validation process using the ground truth information provided by the database. We discriminate between three types of final SPs. A final SP is classified as true positive if the complexity measure between the identified point and a true SP is less than a preset threshold; otherwise, it is classified as false positive. A false negative (miss), is the case when the system failed to identify a true SP. The validation process was tested on several sets and found to be highly reliable.
+Related researches usually use a human expert to validate the accuracy of the SPs. However, in this work, we applied an automatic validation process using the ground truth information provided by the database. We discriminate between three types of final SPs. A final SP is classified as true positive if the complexity measure between the identified point and a true SP is less than a preset threshold; otherwise, it is classified as false positive. A false negative (miss), is the case when the system failed to identify a true SP. The different types of SPs can be seen in Figure \ref{fig:sp_types}.
+The validation process was tested on several sets and found to be highly reliable.\\
 
 \begin{figure}
 \centering
-\includegraphics[width=0.8\columnwidth]{./figures/sp_types}
+\includegraphics[width=1\columnwidth]{./figures/sp_types}
 \caption{SPs types.}
 \label{fig:sp_types}
 \end{figure}
@@ -404,7 +404,7 @@ The system was implemented using Matlab environment. Comparing the performance o
 \label{table:general_stats} 
 \end{table}
 
-The results shown in Table \ref{table:results} summarizes the system's performance. The absolute majority of the false negative SPs were identified as POIs in the first stage. A small number were filtered out in the filtering phase but most of them were not selected by the SSA.\\
+The results shown in Table \ref{table:results} summarizes the system's performance. The absolute majority of the false negative SPs were identified as POIs in the first stage. A small number were filtered out in the filtering phase but most of them were not selected by the SSA.
 
 \begin{table}[h]
 \caption{Results}
@@ -444,7 +444,7 @@ It happens mostly in the letter \RL{-m-}, \RL{-m} and in rare cases in the lette
 \subsubsection{Under-segmentation}
 \begin{itemize}
 \item Letter pairs that are not separated by HFs cause the system to miss POIs. This issue was partially solved by extending the notion of a letter to include such pairs. For example the pair \RL{lm} and \RL{l.h}.
-\item In some cases, HFs were identified correctly but the corresponding POI were not selected in the third stage. \\
+\item In some cases, HFs were identified correctly but the corresponding POI were not selected in the third stage. 
 \end{itemize}
 
 In addition, differentiating between the main body of the letter \RL{-s-} and the main body of two consecutive \RL{-b-} letters is possible only when considering additional strokes, thus both cases were considered to be correct.
@@ -473,6 +473,7 @@ SSA & WP SR & WP RR & SP Precision & SP Recall\\
   GSS$\oplus$BFSS & 81\% & 75\% & 83\% & 90\% \\
   \hline
 \end{tabular}
+\\
 \centering
 \label{table:ss_algorithms_results} 
 \end{table}
@@ -482,27 +483,32 @@ The letters is our training set are extracted from a database with a limited wor
 On one hand, it can be regarded as an advantage; since, the training set distribution reflects the a-priory probability of a letter appearance in the test set. 
 On the other hand, a highly imbalanced training set is known to negatively affect many classification algorithms.
 In the following experiment, we measure the effect of a large and imbalanced training set on the WP segmentation and recognition rates. 
-It is done by gradually increasing the maximal allowed number of samples per class (letter and position). 
+It is done by gradually increasing the maximal allowed number of samples per class (letter and position).
+ 
 The graph in Figure \ref{fig:num_letter_impact} shows convergence of the system's performance when the maximal number of samples is larger than 200 per class. 
 Nevertheless, a miniature degradation can be seen, which is caused, probably, due to the increasing imbalance in the distribution of the training set.
-In addition, it is evident that the recognition rate (RR) is more sensitive to small training set than the segmentation rate (RR).
+In addition, it is evident that the recognition rate (RR) is more sensitive to small training set than the segmentation rate (RR).\\
 
 \begin{figure}
 \centering
 \includegraphics[width=1\columnwidth]{./figures/num_letter_impact}
-\caption{The impact of increasing of maximal number of samples per class on the segmentation and recognition rates.}
+\caption{The impact of increasing the maximal number of samples per class on the segmentation and recognition rates.}
 \label{fig:num_letter_impact}
 \end{figure}
 
 \section{Summary and Future Work}
-In this paper, we proposed a continuous approach for segmenting open-dictionary, Arabic handwritten script. Morphological features are employed to nominate potential SPs and the resulting sub-strokes are classified using a $k$-NN letters classifier.
-The candidates scoring provided by the classifier, which reflects the perceptual similarity between the sub-stroke and the candidate, is used to select the final SPs. 
-The system has demonstrated promising results.\\
+In this paper, we proposed a ongoing approach for segmenting open-dictionary, Arabic handwritten script.
+The segmentation is performed in the strokes level. 
+Morphological features are employed to nominate potential SPs. 
+The sub-strokes induced by the SPs are classified using a $k$-NN letters classifier, and the classification information is saved in a scoring matrix.
+The final segmentation points are then selected by finding the best-scored segmentation path in the scoring matrix. 
+This is done using several proposed algorithms. 
+The system has demonstrated promising results.
 
-In future work, we will expand the process by adding a later holistic WP recognizer that exploits the proposed segmentation and the scoring information to inspect a limited number of potential WPs.
+In future work, we will expand the process by adding a later holistic WP recognizer that exploits the proposed segmentation and the scoring information to inspect a limited number of potential WPs.\\
 
 \section{Acknowledgment}
-We would like to thank Professor Dana Ron, from the Tel-Aviv University, for her invaluable help in this research and her insightful comments on this paper. 
+We would like to thank Professor Dana Ron, from the Tel-Aviv University, for her invaluable help in this research and her insightful comments on this paper. \\
 
 \bibliographystyle{IEEEtran}
 \bibliography{IEEEabrv,bibliography}
