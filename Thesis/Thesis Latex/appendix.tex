@@ -28,7 +28,10 @@ Recall that the Fourier transform provides a frequency related information of a 
 
 Wavelets may be seen as small waves $\psi(t)$, which oscillate few times, but unlike the harmonic waves ($sin(nx)$ and $cos(nx)$ on $(-\pi,\pi]$) must die out to zero as $t \rightarrow \pm\infty$. The most applicable wavelets are those that die out after a few oscillations on a finite interval $[a,b)$. \\
 
-The fundamental idea of the wavelet transform is that the transformation should allow only changes in time extension, but not shape. Namely, the wavelet transform aims to convert a signal into a series of similar shapes wavelets that only vary in location and expansion, and by doing so, to provide a way for analyzing waveforms bounded in both frequency and duration. This is done to reveal information that is not obvious in the original time domain function, to allow signals to be stored efficiently and facilitate better approximation of real-world signals. \\
+The fundamental idea of the wavelet transform is to convert a signal into a series of similar shapes wavelets that vary in location and expansion, and by doing so, to provide a way for analyzing waveforms bounded in both frequency and duration. 
+In order to analyze a given signal function $f(t)$ using the wavelet transform, one needs to create a mathematical structure that vary in scale. i.e., to construct a function, shift it by some amount, and change its scale. Repeat the procedure to obtain a new approximation. This is usually refereed to as a \emph{multi-resolution analysis}.\\ 
+
+Analyzing a non-stationary signal requires determining its behavior at any individual event. Multi-resolution analysis provides one means to do this. A multi-resolution analysis decomposes a signal into a smoothed version of the original signal and a set of detail information at different scales. Once we have decomposed a signal this way, we may analyze the behavior of the detail information across the different scales. This is done to reveal information that is not obvious in the original time domain function, to allow signals to be stored efficiently and facilitate better approximation of real-world signals. \\
 
 For a given time-domain signal function $f(t)$ and a wavelet function $\psi(t)$, Equation \ref{eq:wavelet_decomposition} formally defines the wavelet transform.
 \begin{equation}
@@ -39,12 +42,13 @@ As seen in Equation \ref{eq:wavelet_decomposition} above, the transformed signal
 
 The scale parameter $s$ can be thought of as exactly the scaling in maps. High scales correspond to a non-detailed high level view (of the signal), and low scales correspond to a detailed low level view. Similarly, in terms of frequency, low frequencies (high scales) correspond to a global information of a signal (that usually spans the entire signal), whereas high frequencies (low scales) correspond to a detailed information of a hidden pattern in the signal.\\
 
-The idea of the wavelet transform is analyzing a signal function $f(t)$ by creating a mathematical structure that vary in scale. i.e., construct a function, shift it by some amount, and change its scale. Repeat the procedure to obtain a new approximation. This is usually refereed to as a \emph{multi-resolution analysis}. In order to analyze a non-stationary signal, we need to determine its behavior at any individual event. Multi-resolution analysis provides one means to do this. A multi-resolution analysis decomposes a signal into a smoothed version of the original signal and a set of detail information at different scales. Once we have decomposed a signal this way, we may analyze the behavior of the detail information across the different scales.\\
-
 A function $f \in \mathbb{R}$ can be expressed in terms of wavelet series as follows:
 \begin{equation}
 f(x)=\sum\limits_{k}{f_k \phi(x-k)}+\sum\limits_{k}{f_{j,k}\psi_{j,k}(x)}
 \end{equation}
 where $\phi$ is the scaling function and $\psi$ is the wavelet. $k$ runs through all integer and represents shifts.\\
+
+\bibliographystyle{plainnat}
+\bibliography{references}
 
 \end{document}
