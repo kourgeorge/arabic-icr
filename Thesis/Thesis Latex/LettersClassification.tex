@@ -451,7 +451,7 @@ To overcome the drawbacks of the basic Minkowski distance, many distance functio
            \label{fig:dtw_distance_time_series}
            \includegraphics[width=0.5\textwidth]{./figures/dtw_distance_time_series}
         }        
-    \caption{The distance between two relatively similar time series. Using the Euclidean distance as demonstrated in (a), the distance is $Minkowski_{2}(R,S)=8.68$. Using Data Time Warping as seen in (b), the distance is $DTW(R,S)=2.48$.}
+    \caption{The distance between two relatively similar time series. Using the Euclidean distance as demonstrated in (a), the distance is $Minkowski_{2}(R,S)=8.68$. Using Data Time Warping as seen in (b), the distance is $DTW(R,S)=2.48$ \cite{chen2005similarity}.}
    \label{fig:time_series_distance_demo}
 \end{figure}
 
@@ -534,7 +534,7 @@ DTW is used for solving the discrepancy between intuition and calculated distanc
 \begin{figure}[h!] 
 \centering
 \includegraphics[width=1\textwidth]{./figures/dtw_dequence_demo}      
-\caption{The right scheme shows sample-by-sample na\"{\i}ve alignment after re-sampling and in the left scheme the alignment was performed using DTW }
+\caption{The right scheme shows sample-by-sample na\"{\i}ve alignment after re-sampling and in the left scheme the alignment was performed using DTW \cite{rath2003word}.}
 \label{fig:dtw_dequence_demo}
 \end{figure}
 
@@ -603,7 +603,7 @@ In some cases DTW tends to create an unrealistic correspondence between time-ser
 \begin{figure}
 \centering
 \includegraphics[width=0.7\textwidth]{./figures/dtw_sukoe_chuba}       
-\caption{Cost matrix constraints: Sukoe-Chuba Band (left) and the Itakura Parallelogram (right).}
+\caption{Cost matrix constraints: Sakoe-Chiba band (left) and the Itakura parallelogram (right).}
 \label{fig:dtw_sukoe_chuba}
 \end{figure}
 
@@ -860,8 +860,8 @@ Our system uses a built-in Matlab implementation for k-d tree which is available
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Clustering-based Sample set Redistribution}
-\label{sec:csr}
+\section{Sample set Redistribution}
+\label{sec:sample_set_redistribution}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}  
 On the one hand a large and verified sample set is crucial for every learning algorithm, in particular, it is important in the handwritten pattern classification because of the variety of styles between people in their handwriting. On the other hand, a large sample set can harm the performance of the NN based recognition system, and even harm the accuracy of the recognition because of outliers. 
