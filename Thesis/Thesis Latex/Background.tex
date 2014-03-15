@@ -1,44 +1,92 @@
-%%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-%%% Do not edit unless you really know what you are doing.
-%\documentclass[twoside,english]{report}
-%\usepackage[T1]{fontenc}
-%\usepackage[latin9]{inputenc}
-%\setcounter{secnumdepth}{3}
-%\setcounter{tocdepth}{3}
-%\usepackage[active]{srcltx}
-%\usepackage{verbatim}
-%\usepackage{graphicx}
-%\usepackage{setspace}
-%\usepackage[numbers]{natbib}
-%\doublespacing
-%
-%\makeatletter
-%
-%\makeatother
-%
-%\usepackage{babel}
-%\begin{document}
+% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+% Do not edit unless you really know what you are doing.
+\documentclass[12pt,english]{report}
+\usepackage{mathptmx}
+\renewcommand{\familydefault}{\rmdefault}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[a4paper]{geometry}
+\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{verbatim}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\usepackage{subfig} %% This package has to be here
+\usepackage{setspace}
+\usepackage{arabtex}
+\usepackage[numbers]{natbib}
+\usepackage{nomencl}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{etoolbox}
+\newtoggle{edit-mode}
+\togglefalse{edit-mode}  
+%\toggletrue{edit-mode}
+\iftoggle{edit-mode}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
+}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+}
+
+\makenomenclature
+
+% Theorem Styles
+\newtheorem{theorem}{Theorem}[section]
+% Definition Styles
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\usepackage[linesnumbered]{algorithm2e}
+
+\begin{document}
+\printnomenclature{}
+
+\tableofcontents{}
+
 
 \chapter{Background}
 
+\textbf{MindMap}
+\begin{itemize}
+\item Give general background on the area of handwriting recognition
+\item Arabic handwriting recognition
+\item Arabic segmentation
+\end{itemize}
 
-\section{Hand Writing Recognition}
-Handwriting recognition is a task of transforming a language represented in its spatial form of graphical marks into its symbolic representation. 
-At the highest level, handwriting recognition can be broken into two categories: offline and online. 
+\section{Handwriting Recognition}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{}}{}
+Handwriting remains the most commonly used mean of communication and recording of information in the daily life, therefore, a growing interest in the handwriting character recognition field has emerged in recent years.
+The handwriting recognition process, was defined by Plamondon and Srihari in \cite{plamondon2000online} as "the task of transforming a language represented in its spatial form of graphical marks into its symbolic representation".
+At the highest level, handwriting recognition can be broken into two categories: off-line and on-line.
+In the off-line case, a digital image containing text is fed to the computer, and the system attempts to convert the spatial representation of the letters into digital symbols \cite{al2011online}.
+In contrast, the process of on-line handwriting recognition is done on a digital representation of the text written on a special digitizer, tablet or smart-phone device, where sensors pick up the pen-tip movements.
 
-\emph{TODO: Review \cite{bahlmann2005advanced} thesis}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Types of English texts forms}}{}
+Latin handwriting can appear in several forms which impose a different recognition difficulties. The \textbf{cursive script} form, which is the most common type of day-to-day script, is the text in which words, or portion of a word, is written with a single stroke, i.e, ligatures connect adjacent letters. 
+The \textbf{hand-printed script} is the case where the writing still represents an entire word sequence, but succeeding characters are explicitly segmented by a pen lift; though, the character segmentation problem is still not solved as pen lifts can also occur within a character. 
+Another form is the \textbf{isolated characters} form, in which the segmentation problem is already solved, for instance by the acquisition interface and the cooperation of the writer. 
+Graphical boxes or timeouts are common interface techniques for this purpose.
+However, in the Arabic language, the only case is the cursive, in both handwritten and printed text.
+One problem in unconstrained HWR is the huge variety in the writing of different people. Another extreme difficulty is the so-called segmentation, that is, the process of dividing an entire writing into sub-units (typically characters).
+The recognition difficulty decreases from the first listed type to the last. Indeed, HWR systems have a strong history in making use of this graduation in difficulty. They have aimed (and still aim) at a reasonable user satisfaction by restricting the text input to a simpler handwriting type, while simultaneously rewarding the user with recognition accuracy \cite{bahlmann2005advanced}.
 
 \subsection{On-line vs. Off-line Handwriting Recognition}
-\emph{see: \cite{al2010development} section "types of handwriting input - on-line and off-line"}
 
-\emph{TODO: for online handwriting recognition see for all these sections see H. Shu, "On-line handwriting recognition using hidden Markov models," 1996.}
-
-
-While much of the today's data is directly entered into computers using the keyboard, many tasks still exist in which people tend to prefer handwriting over keyboard entry. Note taking (e.g. in classrooms) is a task that can still be done more efficiently by hand for most users. In addition, while people can produce annotated hand sketches very quickly, data entry into a computer using a combination of the mouse and keyboard is relatively time consuming\cite{connell2000online}.
-Smartphones and tablets are pocket sized consumer devices that can store calendars and address books, provide access to emails, the web, and contain other productivity tools. These devices are too small to have full sized keyboards, or sometimes may be too small for any keyboard at all, requiring pen, hand gestures, figure gestures or voice interface to enter data \cite{connell2000online}. 
-The problem of handwriting recognition has now been a topic of research for over four decades. There are many types of problems (with varying complexity) within handwriting recognition, based on how the data is presented to the recognition system, at what level the data can be unambiguously broke n into pieces (e.g. individual characters or words), and the transcription complexity of the language used \cite{connell2000online}. 
-Offline handwriting recognition focuses on documents that have been written on paper at some previous point of time. Information is presented to the system in the form of scanned image of the paper document. In contrast, online Hand Writing Recognition refers to the situation where the recognition is performed concurrently to the writing process. This requires the use of special equipment, such touch screen or digitizing tablet, to capture the strokes of the pen as that are being written. The trace of a writer's pen is stored as a sequence of points sampled at equally spaced time intervals. The information captured for each sample is the   coordinates. While this sequence can be used to construct a static image of the writing, thus allowing offline character recognition techniques to be applied, it has been shown that the information about the pen dynamics can be used to obtain a better recognition accuracies than the static data alone. Therefore, it is beneficial to capture the data in an online form, even if the real-time processing requirements can be relaxed \cite{connell2000online}. 
-Another advantage of online handwritten data over offline data is the availability of the stroke segmentation and the order of writing. Ink in static images must first be separated from the image background, creating a potential source of error. The ability to detect the states of "pen-down" (when the pen touches the tablet or the finger touches the touch screen) and "pen-up" can also be used. A single stroke is defined as the sequence of sample points occurring between consecutive pen-down and pen-up transitions. However, a complication occurs when a stroke is added to a character in a word after the rest of the word has already been written, such as the cross of a 't' or an 'x', or the dot of an 'i' or a 'j' These types are called delayed strokes \cite{connell2000online}. 
+While much of the today's data is directly entered into computers using the keyboard, many tasks still exist in which people tend to prefer handwriting over keyboard entry. 
+Note taking (e.g. in classrooms) is a task that can still be done more efficiently by hand for most users. 
+In addition, while people can produce annotated hand sketches very quickly, data entry into a computer using a combination of the mouse and keyboard is relatively time consuming.
+Smart-phones and tablets are pocket sized consumer devices that can store calendars and address books, provide access to emails, the web, and contain other productivity tools. 
+These devices are too small to have full sized keyboards, or sometimes may be too small for any keyboard at all, requiring pen, hand gestures, figure gestures or voice interface to enter data. 
+The problem of handwriting recognition has now been a topic of research for over four decades. 
+There are many types of problems (with varying complexity) within handwriting recognition, based on how the data is presented to the recognition system, at what level the data can be unambiguously broke into pieces (e.g. individual characters or words), and the transcription complexity of the language used \cite{connell2000online}. 
+Off-line handwriting recognition focuses on documents that have been written on paper at some previous point of time. Information is presented to the system in the form of scanned image of the paper document. In contrast, on-line Hand Writing Recognition refers to the situation where the recognition is performed concurrently to the writing process. This requires the use of special equipment, such touch screen or digitizing tablet, to capture the strokes of the pen as that are being written. The trace of a writer's pen is stored as a sequence of points sampled at equally spaced time intervals. The information captured for each sample is the   coordinates. While this sequence can be used to construct a static image of the writing, thus allowing offline character recognition techniques to be applied, it has been shown that the information about the pen dynamics can be used to obtain a better recognition accuracies than the static data alone. Therefore, it is beneficial to capture the data in an online form, even if the real-time processing requirements can be relaxed \cite{connell2000online}. 
+Another advantage of on-line handwritten data over off-line data is the availability of the stroke segmentation and the order of writing. Ink in static images must first be separated from the image background, creating a potential source of error. The ability to detect the states of "pen-down" (when the pen touches the tablet or the finger touches the touch screen) and "pen-up" can also be used. A single stroke is defined as the sequence of sample points occurring between consecutive pen-down and pen-up transitions. However, a complication occurs when a stroke is added to a character in a word after the rest of the word has already been written, such as the cross of a 't' or an 'x', or the dot of an 'i' or a 'j' These types are called delayed strokes \cite{connell2000online}. 
 
 {\color{blue}Handwriting data is converted to digital form either by
 scanning the writing on paper or by writing with a special
@@ -82,7 +130,9 @@ of the image. \cite{plamondon2000online}}
    \label{fig:offlibe_vs_online}
 \end{figure}
 
+\emph{see: \cite{al2010development} section "types of handwriting input - on-line and off-line"}
 
+\emph{TODO: for online handwriting recognition see for all these sections see H. Shu, "On-line handwriting recognition using hidden Markov models," 1996.}
 
 \subsection{Characteristic of the Arabic writing system}
 \emph{[See Online handwriting recognition for the Arabic Letter Set]}
@@ -120,4 +170,7 @@ However in this work we do not use the temporal information of the written strok
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{techniques that were adopted from temporal data classification}}{}
 
-%\end{document}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+\end{document}
