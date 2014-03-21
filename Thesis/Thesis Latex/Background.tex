@@ -63,8 +63,14 @@
 
 \chapter{Background}
 
-
 \section{Optical character Recognition}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Writing}}{}
+{\color{blue}Writing consists of artificial graphical marks on a surface; its purpose is to communicate something; this purpose is achieved by virtue of the mark's conventional relation to language.
+Writing is considered to have made possible much of culture and civilization. 
+Each script has a set of icons, which are known as characters or letters, that have certain basic shapes. 
+There are rules for combining letters to represent shapes of higher level linguistic units. 
+For example, there are rules for combining the shapes of individual letters so as to form cursively written words in the Latin alphabet  \cite{plamondon2000online}}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Definition and history of OCR}}{}
 \emph{Optical character recognition} (OCR) is the process of electronically converting a scanned, photoed or sensed of both typewritten or printed text into machine-encoded text.
@@ -79,38 +85,65 @@ OCR is considered one of the best applications of machine vision and one of the 
 Although considered a well developed technological field, OCR remains an area of active scientific research and creative engineering. 
 It is widely used today in a wide range of projects, from occasional document scanning to creation of massive digital document archives \cite{borovikov2004survey}.
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Handwriting Recognition}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR Definition}}{}
+Handwriting was developed a long time ago as a means to expand human memory and to facilitate communication. 
+It is a skill that is personal to individuals.
+
 Handwriting recognition (HWR) is a special case of OCR and can be defined as the task of transforming text represented in the spatial form of graphical marks into its symbolic representation. HWR in many cases referred to as \emph{intelligent character recognition} (ICR).
 ICR is an advanced optical character recognition (OCR), that performs handwriting recognition and which allows fonts and different styles of handwriting to be learned by a computer during processing to improve accuracy and recognition levels.
+The problem of HWR has now been a topic of research for over four decades. 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR Motivation}}{}
-Despite long standing predictions that handwriting, and even paper itself, would become obsolete in the age of the digital computer, both persist \cite{noaparast2009persian}.
-Although much of the today's data is directly entered into computers using the keyboard, for many tasks, handwriting is still more common used
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Types of analysis that can be performed on handwritten data}}{}
+Besides recognition, handwriting is associated with other types of analysis, such as, signature verification, writer identification, etc...
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR Motivation 1 - handwriting survival}}{}
+Despite long standing predictions that handwriting, and even paper itself, would become obsolete in the age of the digital computer, both persist \cite{noaparast2009persian}. \emph{TODO: an alternative - Despite the long standing prediction that digital computers will seemingly challenges the future of handwriting, several writing tasks are much more convenient to be carried out using handwriting.}
+Although much of the today's data is directly entered into computers using the keyboard, for many tasks, handwriting is still more commonly used.
 While producing documents was hugely simplified by computers, the pen and paper are still the natural medium for many important tasks. For instance, note taking in classrooms is a task that can still be done more efficiently by hand for most users. 
 Not only this is useful for making digital copies of handwritten documents, but also in many automated processing tasks, such as searching, indexing, automatic mail sorting, cheque processing, etc...
 However, the ease and convenience of having information in digital form provides a powerful incentive to find a way of quickly converting handwritten text into its digital equivalent  \cite{noaparast2009persian}.
 
-Smart-phones and tablets devices are too small to have full sized keyboards, or sometimes may be too small for any keyboard at all, requiring pen, hand gestures, figure gestures or voice interface to enter data. 
-The problem of handwriting recognition has now been a topic of research for over four decades. 
-There are many types of problems (with varying complexity) within handwriting recognition, based on how the data is presented to the recognition system, at what level the data can be unambiguously broke into pieces (e.g. individual characters or words), and the transcription complexity of the language used \cite{burrow2004arabic, connell2000online}. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR Motivation 2 - Keyboard-less devices}}{}
+Additional motivation for HWR is the rapid transition from personal computers and laptops to the usage of smart-phones and tablets devices that are too small to have full sized keyboards, or sometimes may be too small for any keyboard at all, requiring pen, hand gestures, figure gestures or voice interface to enter data. 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Off-line versus On-line Handwriting recognition}}{}
-Handwriting data is converted to digital form either by scanning the writing on paper or by writing with a special pen on an electronic surface such as a digitizer combined
-with a liquid crystal display. The two approaches are distinguished as off-line and on-line handwriting, respectively.
-Off-line HWR focuses on documents that have been written on paper at some previous point of time. 
-Information is presented to the system in the form of scanned image of the paper document. 
-In contrast, on-line HWR, the two-dimensional coordinates of successive points of the writing as a function of time are stored in order, i.e., the order of strokes made by the writer is readily available. 
-This requires the use of special equipment, such touch screen or digitizing tablet, to capture the strokes of the pen as that are being written. 
-While this sequence can be used to construct a static image of the writing, thus allowing off-line character recognition techniques to be applied, it has been shown that the information about the pen dynamics can be used to obtain a better recognition accuracies than the static data alone. Figure \ref{fig:offlibe_vs_online} shows typical input signals that can be analyzed in both cases.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Levels of difficulties in HWR}}{}
+There are different types with varying complexity of problems within handwriting recognition, which is based on how the data is presented to the recognition system, at what level the data can be unambiguously broke into pieces (e.g. individual characters or words), and the transcription complexity of the language used. 
+Latin handwriting can appear in several forms which impose a different recognition difficulties. The \textbf{cursive script} form, which is the most common type of day-to-day script, is the text in which words, or portion of a word, is written with a single stroke, i.e, ligatures connect adjacent letters. 
+The \textbf{hand-printed script} is the case where the writing still represents an entire word sequence, but succeeding characters are explicitly segmented by a pen lift; though, the character segmentation problem is still not solved as pen lifts can also occur within a character. 
+Another form is the \textbf{isolated characters} form, in which the segmentation problem is already solved, for instance by the acquisition interface and the cooperation of the writer. 
+Graphical boxes or timeouts are common interface techniques for this purpose \cite{burrow2004arabic, connell2000online}.
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The cursive nature of the Arabic handwriting}}{}
+However, in the Arabic language, the only case is the cursive, in both handwritten and printed text.
+One problem in unconstrained HWR is the huge variety in the writing of different people. Another extreme difficulty is the so-called segmentation, that is, the process of dividing an entire writing into sub-units (typically characters).
+The recognition difficulty decreases from the first listed type to the last. Indeed, HWR systems have a strong history in making use of this graduation in difficulty. They have aimed (and still aim) at a reasonable user satisfaction by restricting the text input to a simpler handwriting type, while simultaneously rewarding the user with recognition accuracy \cite{bahlmann2005advanced}.
+
+
+
+\subsection{Off-line versus On-line HWR}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
+HWR can be categorized into two main fields: off-line and on-line. 
+In the off-line case, a digital image containing text is fed to the computer, and the system attempts to convert the spatial representation of the letters into digital symbols \cite{al2011online}. Off-line HWR focuses on documents that have been written on paper at some previous point of time. 
+In contrast, on-line HWR is performed on a digital representation of the text written on a special digitizer, tablet or smart-phone device, where sensors pick up the pen-tip movements.
+The two-dimensional coordinates of successive points of the writing as a function of time are stored in order, i.e., the order of strokes made by the writer is readily available. 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Similarity between on-line and off-line}}{}
+While this sequence can be used to construct a static image of the writing, thus allowing off-line character recognition techniques to be applied, it has been shown that the information about the pen dynamics can be used to obtain a better recognition accuracies than the static data alone. In addition, the difficulty of recreating the temporal data has led to few such feature extraction systems so far \cite{plamondon2000online}. Figure \ref{fig:offline_vs_online} shows typical input signals that can be analyzed in both cases.
 An advantage of on-line handwritten data over off-line data is the availability of the stroke segmentation and the order of writing. 
 Ink in static images must first be separated from the image background, creating a potential source of error. 
 The ability to detect the states of "pen-down" (when the pen touches the tablet or the finger touches the touch screen) and "pen-up" can also be used. 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{}}{}
 A single stroke is defined as the sequence of sample points occurring between consecutive pen-down and pen-up transitions. 
 However, a complication occurs when a stroke is added to a character in a word after the rest of the word has already been written, such as the cross of a 't' or an 'x', or the dot of an 'i' or a 'j' These types are called delayed strokes \cite{connell2000online}. 
 
-%On-line Hand Writing Recognition refers to the situation where the recognition is performed concurrently to the writing process. 
 
 \begin{figure}
 	\centering
@@ -122,22 +155,30 @@ However, a complication occurs when a stroke is added to a character in a word a
            \label{fig:online}
            \includegraphics[width=0.5\textwidth]{./figures/online}
         }        
-    \caption{(a) Off-line word. The image of the word is converted into gray-level pixels using a scanner. (b) On-line word. The x; y coordinates of the pen-tip are recorded as a function of time with a digitizer}
-   \label{fig:offlibe_vs_online}
+    \caption{(a) Off-line word. The image of the word is converted into gray-level pixels using a scanner. (b) On-line word. The x; y coordinates of the pen-tip are recorded as a function of time with a digitizer \cite{plamondon2000online}}.
+   \label{fig:offline_vs_online}
 \end{figure}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Levels of difficulties in HWR}}{}
-Latin handwriting can appear in several forms which impose a different recognition difficulties. The \textbf{cursive script} form, which is the most common type of day-to-day script, is the text in which words, or portion of a word, is written with a single stroke, i.e, ligatures connect adjacent letters. 
-The \textbf{hand-printed script} is the case where the writing still represents an entire word sequence, but succeeding characters are explicitly segmented by a pen lift; though, the character segmentation problem is still not solved as pen lifts can also occur within a character. 
-Another form is the \textbf{isolated characters} form, in which the segmentation problem is already solved, for instance by the acquisition interface and the cooperation of the writer. 
-Graphical boxes or timeouts are common interface techniques for this purpose.
-However, in the Arabic language, the only case is the cursive, in both handwritten and printed text.
-One problem in unconstrained HWR is the huge variety in the writing of different people. Another extreme difficulty is the so-called segmentation, that is, the process of dividing an entire writing into sub-units (typically characters).
-The recognition difficulty decreases from the first listed type to the last. Indeed, HWR systems have a strong history in making use of this graduation in difficulty. They have aimed (and still aim) at a reasonable user satisfaction by restricting the text input to a simpler handwriting type, while simultaneously rewarding the user with recognition accuracy \cite{bahlmann2005advanced}.
-After a long period of focus on western and East Asian scripts there is now a general trend to explore other scripts such as Arabic and various Indic scripts. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{State of the art HWR}}{}
+HWR is no longer an esoteric topic on the fringes of information technology, but a mature discipline that has many commercial usages.
+On-line systems for handwriting recognition are available in hand-held computers such as PDAs.
+Off-line systems are less accurate than on-line systems.
+However, they are now good enough that they have a significant economic impact on for specialized domains such as interpreting handwritten postal addresses on envelopes and reading courtesy amounts on bank checks.
+The success of on-line systems makes it attractive to consider developing off-line systems that first estimate the trajectory of the writing from off-line data and then use pentip are recorded as a function of time with a digitizer.
+on-line recognition algorithms [151]. 
 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Closed Vocabulary vs. Open Vocabulary}}{}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{off-line HWR general recognition scheme}}{}
+
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{on-line HWR general recognition scheme}}{}
+
+
+
+\subsection{Closed Vocabulary vs. Open Vocabulary}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{General definition}}{}
 {\color{blue}
 Vocabulary is also a major factor in determining how difficult a handwriting
 recognition task is. Closed-vocabulary tasks refer to recognition of words from a
@@ -156,10 +197,13 @@ words, the number of nodes is $mxn$ instead of n where as the number of words, a
 is the average number of letters per word (generally between three and ten).
 As the vocabulary size increases, the occurrence of out-of-vocabulary words is
 less frequent. Thus, the performance of the large vocabulary tasks is approximately the
-same as of the performance of the open-vocabulary tasks.\cite{shu1996line}}
+same as of the performance of the open-vocabulary tasks.}
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{problems imposed by the open vocabulary}}{}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Approaches of OCR}}{}
+\cite{shu1996line}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Approaches of HWR}}{}
 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Achievements in HWR}}{}
@@ -192,12 +236,15 @@ be processedfurthertoprovidethebestsegmentation.}
 \section{Arabic Handwriting Recognition}
 
 \begin{itemize}
+\item The Arabic trend
 \item The Arabic language - Importance and history.
 \item Arabic handwriting recognition - Talk about the characteristics of the Arabic script. maybe a little bit of history.
 \item Where is does the current knowledge on Arabic handwriting recognition stands - general literature review.
 \item Arabic segmentation
 \end{itemize}
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Arabic Trend}}{}
+After a long period of focus on western and East Asian scripts there is now a general trend to explore other scripts such as Arabic and various Indic scripts. 
 
 \emph{TODO:see the in introduction of \cite{abandah2009analysis}}
 
