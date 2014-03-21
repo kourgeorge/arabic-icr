@@ -63,34 +63,39 @@
 
 \chapter{Background}
 
-\section{Handwriting Recognition}
 
-\textbf{MindMap}
-\begin{itemize}
-\item Talk about OCR in general, and make the distinctions between the following: Handwriting vs. printed, the different types of writing, Open vs. Close dictionary, etc.
-\item what is the current status of knowledge about handwriting recognition - general literature review.
-\item mention Latin and Chinese in the background.
-\end{itemize}
-
+\section{Optical character Recognition}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Definition and history of OCR}}{}
-\emph{Optical character recognition} (OCR) is an electronically converting a scanned, photoed or sensed images of typewritten or printed text into machine-encoded text.
-It has been an actively researched since the early days of computers; a 1972 survey cites nearly 130 works on the subject. 
-{\color{blue} Historically, optical character recognition was considered a technique for solving a particular kind of pattern recognition problems. Indeed, to recognize a character from a given image, one would match (via some known metric) this character's feature pattern against some very limited reference set of known feature patterns in the given alphabet. This clearly is a classical case of a pattern recognition problem. Character classification has always been a favorite testing ground for new ideas in pattern recognition, but since many such experiments are conducted on isolated characters, the results are not always immediately reflected in OCR applications. Optical character recognition has been steadily evolving during its history, giving rise to an exciting set of research topics and producing many powerful practical applications. Now it is considered one of the best applications of machine vision and one of the most successful research branches in pattern recognition theory. Being a well developed technological field, optical character recognition is widely used today for projects of various scales, from occasional document scanning to creation of massive digital document archives. Yet it remains an area of active scientific research and creative engineering.}
+\emph{Optical character recognition} (OCR) is the process of electronically converting a scanned, photoed or sensed of both typewritten or printed text into machine-encoded text.
+OCR is a classical case of a pattern recognition problem which has been an actively researched since the early days of computers; a 1972 survey cites nearly 130 works on the subject \cite{burrow2004arabic}. 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation for HWR}}{}
-Handwriting recognition (HWR) can be defined as the task of transforming text represented in the spatial form of graphical marks into its symbolic representation. 
-Despite long standing predictions that handwriting, and even paper itself, would become obsolete in the age of the digital computer, both persist. 
-While much of the today's data is directly entered into computers using the keyboard, many tasks still exist in which people tend to prefer handwriting over keyboard entry.
-Whilst the computer has hugely simplified the process of producing printed documents, the convenience of a pen and paper still makes it the natural medium for many important tasks.  
-Note taking (e.g. in classrooms) is a task that can still be done more efficiently by hand for most users. 
-However, the ease and convenience of having information in digital form provides a powerful incentive to find a way of quickly converting handwritten text into its digital equivalent
-Not only is this useful for making digital copies of handwritten documents, but also in many automated processing tasks, such as searching, indexing, automatic mail sorting, cheque processing. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{OCR as a pattern recognition problem}}{}
+OCR has been steadily evolving during its history. It has always been a favorite testing ground for new ideas in pattern recognition giving rise to an exciting set of research topics and producing many powerful practical applications.
+However, since many experiments of new ideas in pattern recognition where where conducted on isolated characters, the results are not always immediately reflected in OCR applications. 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{OCR field achievements}}{}
+OCR is considered one of the best applications of machine vision and one of the most successful research branches in pattern recognition theory. 
+Although considered a well developed technological field, OCR remains an area of active scientific research and creative engineering. 
+It is widely used today in a wide range of projects, from occasional document scanning to creation of massive digital document archives \cite{borovikov2004survey}.
+
+\section{Handwriting Recognition}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR Definition}}{}
+Handwriting recognition (HWR) is a special case of OCR and can be defined as the task of transforming text represented in the spatial form of graphical marks into its symbolic representation. HWR in many cases referred to as \emph{intelligent character recognition} (ICR).
+ICR is an advanced optical character recognition (OCR), that performs handwriting recognition and which allows fonts and different styles of handwriting to be learned by a computer during processing to improve accuracy and recognition levels.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR Motivation}}{}
+Despite long standing predictions that handwriting, and even paper itself, would become obsolete in the age of the digital computer, both persist \cite{noaparast2009persian}.
+Although much of the today's data is directly entered into computers using the keyboard, for many tasks, handwriting is still more common used
+While producing documents was hugely simplified by computers, the pen and paper are still the natural medium for many important tasks. For instance, note taking in classrooms is a task that can still be done more efficiently by hand for most users. 
+Not only this is useful for making digital copies of handwritten documents, but also in many automated processing tasks, such as searching, indexing, automatic mail sorting, cheque processing, etc...
+However, the ease and convenience of having information in digital form provides a powerful incentive to find a way of quickly converting handwritten text into its digital equivalent  \cite{noaparast2009persian}.
+
 Smart-phones and tablets devices are too small to have full sized keyboards, or sometimes may be too small for any keyboard at all, requiring pen, hand gestures, figure gestures or voice interface to enter data. 
 The problem of handwriting recognition has now been a topic of research for over four decades. 
 There are many types of problems (with varying complexity) within handwriting recognition, based on how the data is presented to the recognition system, at what level the data can be unambiguously broke into pieces (e.g. individual characters or words), and the transcription complexity of the language used \cite{burrow2004arabic, connell2000online}. 
 
-\subsection{Types of handwriting input:off-line versus on-line}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Off-line versus On-line Handwriting recognition}}{}
 Handwriting data is converted to digital form either by scanning the writing on paper or by writing with a special pen on an electronic surface such as a digitizer combined
 with a liquid crystal display. The two approaches are distinguished as off-line and on-line handwriting, respectively.
 Off-line HWR focuses on documents that have been written on paper at some previous point of time. 
@@ -121,7 +126,7 @@ However, a complication occurs when a stroke is added to a character in a word a
    \label{fig:offlibe_vs_online}
 \end{figure}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Types of English texts forms}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Levels of difficulties in HWR}}{}
 Latin handwriting can appear in several forms which impose a different recognition difficulties. The \textbf{cursive script} form, which is the most common type of day-to-day script, is the text in which words, or portion of a word, is written with a single stroke, i.e, ligatures connect adjacent letters. 
 The \textbf{hand-printed script} is the case where the writing still represents an entire word sequence, but succeeding characters are explicitly segmented by a pen lift; though, the character segmentation problem is still not solved as pen lifts can also occur within a character. 
 Another form is the \textbf{isolated characters} form, in which the segmentation problem is already solved, for instance by the acquisition interface and the cooperation of the writer. 
@@ -157,6 +162,8 @@ same as of the performance of the open-vocabulary tasks.\cite{shu1996line}}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Approaches of OCR}}{}
 
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Achievements in HWR}}{}
+
 {\color{blue}
 %There exist a wide variety of approaches to optical character recognition. Some of them require pre-segmentation into recognition items, and some of them do not, but we can safely expect that any OCR algorithm would posses these two essential components:
 %\begin{itemize}
@@ -168,13 +175,11 @@ same as of the performance of the open-vocabulary tasks.\cite{shu1996line}}
 %
 
 
-\emph{see: \cite{al2010development} section "types of handwriting input - on-line and off-line"}
-
 \emph{TODO: for online handwriting recognition see for all these sections see H. Shu, "On-line handwriting recognition using hidden Markov models," 1996.}
 
 
-\subsection{Handwriting Segmentation}
-{An integralpartofthehandwritingrecognitionprocessis
+\section{Handwriting Segmentation}
+{An integral part of the hand writingrecognitionprocessis
 segmentation. Thetechniquerequiresanover-segmentationstage
 which partitionhandwrittenwordsintoprimitivesthatmaythen
 be processedfurthertoprovidethebestsegmentation.}
