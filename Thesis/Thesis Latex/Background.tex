@@ -63,7 +63,7 @@
 
 \chapter{Background}
 
-\section{Optical character Recognition}
+\section{Optical Character Recognition}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Writing}}{}
 {\color{blue}Writing consists of artificial graphical marks on a surface; its purpose is to communicate something; this purpose is achieved by virtue of the mark's conventional relation to language.
@@ -93,7 +93,7 @@ It is widely used today in a wide range of projects, from occasional document sc
 \section{Handwriting Recognition}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR Definition}}{}
 Handwriting was developed a long time ago as a means to expand human memory and to facilitate communication. 
-It is a skill that is personal to individuals.
+It is a skill that is personal to individuals, thus, the task of HWR is considered a 
 
 Handwriting recognition (HWR) is a special case of OCR and can be defined as the task of transforming text represented in the spatial form of graphical marks into its symbolic representation. HWR in many cases referred to as \emph{intelligent character recognition} (ICR).
 ICR is an advanced optical character recognition (OCR), that performs handwriting recognition and which allows fonts and different styles of handwriting to be learned by a computer during processing to improve accuracy and recognition levels.
@@ -124,12 +124,11 @@ However, in the Arabic language, the only case is the cursive, in both handwritt
 One problem in unconstrained HWR is the huge variety in the writing of different people. Another extreme difficulty is the so-called segmentation, that is, the process of dividing an entire writing into sub-units (typically characters).
 The recognition difficulty decreases from the first listed type to the last. Indeed, HWR systems have a strong history in making use of this graduation in difficulty. They have aimed (and still aim) at a reasonable user satisfaction by restricting the text input to a simpler handwriting type, while simultaneously rewarding the user with recognition accuracy \cite{bahlmann2005advanced}.
 
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Off-line versus On-line HWR}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
-HWR can be categorized into two main fields: off-line and on-line. 
+The field of HWR can be classified in several ways. However, the most common categorization is the one that distinguish between off-line (also called static) and on-line (also called dynamic) HWR.
 In the off-line case, a digital image containing text is fed to the computer, and the system attempts to convert the spatial representation of the letters into digital symbols \cite{al2011online}. Off-line HWR focuses on documents that have been written on paper at some previous point of time. 
 In contrast, on-line HWR is performed on a digital representation of the text written on a special digitizer, tablet or smart-phone device, where sensors pick up the pen-tip movements.
 The two-dimensional coordinates of successive points of the writing as a function of time are stored in order, i.e., the order of strokes made by the writer is readily available. 
@@ -143,7 +142,6 @@ The ability to detect the states of "pen-down" (when the pen touches the tablet 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{}}{}
 A single stroke is defined as the sequence of sample points occurring between consecutive pen-down and pen-up transitions. 
 However, a complication occurs when a stroke is added to a character in a word after the rest of the word has already been written, such as the cross of a 't' or an 'x', or the dot of an 'i' or a 'j' These types are called delayed strokes \cite{connell2000online}. 
-
 
 \begin{figure}
 	\centering
@@ -165,25 +163,27 @@ On-line systems for handwriting recognition are available in hand-held computers
 Off-line systems are less accurate than on-line systems.
 However, they are now good enough that they have a significant economic impact on for specialized domains such as interpreting handwritten postal addresses on envelopes and reading courtesy amounts on bank checks.
 The success of on-line systems makes it attractive to consider developing off-line systems that first estimate the trajectory of the writing from off-line data and then use pentip are recorded as a function of time with a digitizer.
-on-line recognition algorithms [151]. 
-
-
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{off-line HWR general recognition scheme}}{}
 
+There are many approaches for off-line handwriting recognition, and it is difficult to draw a common flow or stages that are common on most offline HWR techniques. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Common stages of on-line Arabic handwriting recognition system}}{}
+{\color{blue}As mentioned before in an on-line handwriting recognition system, the motion of the tip of the stylus (pen) is sampled at equal time intervals using a digitizer tablet and it is passed to a computer which runs the handwriting recognition algorithm. In most systems, the data signal undergoes some filtration process. Then the signal is normalized to a standard size and its slant and slope is corrected. After normalization, the writing is usually segmented into basic units and each segment is classified and labeled. Using a search algorithm in the context of a language model, the most likely path is then returned to the user as the intended string, see Figure \ref{fig:online_generic_process} \cite{beigi1993overview}.}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{on-line HWR general recognition scheme}}{}
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth]{./figures/online_generic_process}       
+\caption{Generic Handwriting Recognition Process \cite{beigi1993overview}}
+\label{fig:online_generic_process}
+\end{figure}
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Closed Vocabulary vs. Open Vocabulary}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{General definition}}{}
 {\color{blue}
-Vocabulary is also a major factor in determining how difficult a handwriting
-recognition task is. Closed-vocabulary tasks refer to recognition of words from a
-predetermined dictionary. The dictionary size is arbitrary. Open-vocabulary tasks refer to
-recognition of any words without the constraint of being in a dictionary.
+Vocabulary is also a major factor in determining how difficult a handwriting recognition task is. Closed-vocabulary tasks refer to recognition of words from a predetermined dictionary. The dictionary size is arbitrary. Open-vocabulary tasks refer to recognition of any words without the constraint of being in a dictionary.
 Closed-vocabulary tasks are easier than open-vocabulary ones because only certain
 subsequences of letters are possible when limited by a dictionary.
 Closed-vocabulary tasks using a small dictionary are especially easy because: 1) a -
@@ -199,16 +199,59 @@ As the vocabulary size increases, the occurrence of out-of-vocabulary words is
 less frequent. Thus, the performance of the large vocabulary tasks is approximately the
 same as of the performance of the open-vocabulary tasks.}
 
+
+{\color{blue}One of the most common constraints of current
+recognition systems is that they are only capable of recognising
+words that are present in a restricted vocabulary,
+typically comprised of 10-1000 words [14-16,18,20,21].
+The restricted vocabulary, usually called a lexicon, is a
+list of all valid words that are expected to be recognized
+by the system. There are no established definitions, however,
+the following terms are usually used:
+\begin{itemize}
+\item small vocabulary - tens of words;
+\item medium vocabulary - hundreds of words;
+\item large vocabulary - thousands of words;
+\item very large vocabulary - tens of thousands of words.
+\end{itemize}
+The lexicon is a key point to the success of such recognition
+systems, because it is a source of linguistic knowledge
+that helps to disambiguate single characters by looking
+at the entire context [17,40,41]. As the number of
+words in the lexicon grows, the more difficult the recognition
+task becomes, because more similar words are more
+likely to be present in the lexicon. The computational
+complexity is also related to the lexicon, and it increases
+relatively to its size. Some open vocabulary systems, i.e.
+systems that are capable of dealing with any word
+presented at the input without relying on a lexicon, have
+also been proposed [42,43], but their accuracy is still far
+below those relying on limited lexicons [43,44]. However,
+most of the research efforts in the field have been devoted
+to improving the accuracy of constrained systems, notably
+small vocabulary systems, without giving much attention
+to the computational complexity or recognition speed.
+\cite{koerich2003large}}
+
+
+
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{problems imposed by the open vocabulary}}{}
 
 \cite{shu1996line}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Approaches of HWR}}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The Holistic versus Analytic approaches for HWR}
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Overview of the Analytic Approach}}{}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Literature review of the Analytic Approach}}{}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Overview of the Holistic Approach}}{}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Literature review of the Holistic Approach}}{}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Achievements in HWR}}{}
 
-{\color{blue}
 %There exist a wide variety of approaches to optical character recognition. Some of them require pre-segmentation into recognition items, and some of them do not, but we can safely expect that any OCR algorithm would posses these two essential components:
 %\begin{itemize}
 %\item a feature extractor, and
@@ -222,6 +265,7 @@ same as of the performance of the open-vocabulary tasks.}
 \emph{TODO: for online handwriting recognition see for all these sections see H. Shu, "On-line handwriting recognition using hidden Markov models," 1996.}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Handwriting Segmentation}
 {An integral part of the hand writingrecognitionprocessis
 segmentation. Thetechniquerequiresanover-segmentationstage
@@ -247,6 +291,9 @@ be processedfurthertoprovidethebestsegmentation.}
 After a long period of focus on western and East Asian scripts there is now a general trend to explore other scripts such as Arabic and various Indic scripts. 
 
 \emph{TODO:see the in introduction of \cite{abandah2009analysis}}
+
+\subsection{Motivation}
+\emph{See \cite{lorigo2006offline} - motivation section}
 
 \subsection{Characteristic of the Arabic writing system}
 \emph{[See Online handwriting recognition for the Arabic Letter Set]}
