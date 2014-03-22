@@ -66,7 +66,7 @@
 \section{Optical Character Recognition}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Writing}}{}
-{\color{blue}Writing consists of artificial graphical marks on a surface; its purpose is to communicate something; this purpose is achieved by virtue of the mark's conventional relation to language.
+{Writing consists of artificial graphical marks on a surface; its purpose is to communicate something; this purpose is achieved by virtue of the mark's conventional relation to language.
 Writing is considered to have made possible much of culture and civilization. 
 Each script has a set of icons, which are known as characters or letters, that have certain basic shapes. 
 There are rules for combining letters to represent shapes of higher level linguistic units. 
@@ -153,7 +153,7 @@ However, a complication occurs when a stroke is added to a character in a word a
            \label{fig:online}
            \includegraphics[width=0.5\textwidth]{./figures/online}
         }        
-    \caption{(a) Off-line word. The image of the word is converted into gray-level pixels using a scanner. (b) On-line word. The x; y coordinates of the pen-tip are recorded as a function of time with a digitizer \cite{plamondon2000online}}.
+    \caption{(a) Off-line word. The image of the word is converted into gray-level pixels using a scanner. (b) On-line word. The x; y coordinates of the pen-tip are recorded as a function of time with a digitizer \cite{plamondon2000online}.}
    \label{fig:offline_vs_online}
 \end{figure}
 
@@ -165,10 +165,29 @@ However, they are now good enough that they have a significant economic impact o
 The success of on-line systems makes it attractive to consider developing off-line systems that first estimate the trajectory of the writing from off-line data and then use pentip are recorded as a function of time with a digitizer.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{off-line HWR general recognition scheme}}{}
+There are many approaches for off-line handwriting recognition, and it is difficult to draw a common flow or stages that are common on most off-line HWR techniques. One may find it very difficult to draw a general scheme that outline the flow of off-line handwriting recognition approaches or procedures. However, there are several stages that can be found in many approaches.
+\begin{itemize}
+\item preprocessing
+\item feature extraction
+\item classification algorithm
+\end{itemize}
 
-There are many approaches for off-line handwriting recognition, and it is difficult to draw a common flow or stages that are common on most offline HWR techniques. 
+
+\emph{TODO: talk in general about the flow of handwriting recognition and then go into the differences between the off-line and the on-line}\\
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{A general flow for handwriting recognition}}{}
+{\color{blue}In a document image, first step is layout analysis and extraction of text lines. Then each text line is segmented into isolated individual character images. In final, these character images are sent to the classifier and the corresponding class labels are obtained. The whole process is straightforward for well printed/well written documents and is shown in Figure \ref{fig:flow_diagram_ocr} \cite{saba2010survey}.}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth]{./figures/flow_diagram_ocr}       
+\caption{Generic Handwriting Recognition Process \cite{saba2010survey}}
+\label{fig:flow_diagram_ocr}
+\end{figure}
+
+
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Common stages of on-line Arabic handwriting recognition system}}{}
-{\color{blue}As mentioned before in an on-line handwriting recognition system, the motion of the tip of the stylus (pen) is sampled at equal time intervals using a digitizer tablet and it is passed to a computer which runs the handwriting recognition algorithm. In most systems, the data signal undergoes some filtration process. Then the signal is normalized to a standard size and its slant and slope is corrected. After normalization, the writing is usually segmented into basic units and each segment is classified and labeled. Using a search algorithm in the context of a language model, the most likely path is then returned to the user as the intended string, see Figure \ref{fig:online_generic_process} \cite{beigi1993overview}.}
+As mentioned before, in an on-line handwriting recognition system, the stylos motion is sampled at equal time intervals and pass the information to the recognition algorithm. The samples goes through preprocessing stage that include filtering of noises, re-sampling the stroke information to obtain equidistant stroke, and normalized to a standard size. Additional preprocessing may include slant and slope corrections. Then, depending on the nature of the system, the trajectory may undergoes segmentation into basic units and each unit is labeled, or the word or the WP is classified as a whole. A preprocessing stage usually include using a lexicon/language soecific model to search for the most likely string, see Figure \ref{fig:online_generic_process} \cite{beigi1993overview}. 
 
 \begin{figure}
 \centering
@@ -177,100 +196,67 @@ There are many approaches for off-line handwriting recognition, and it is diffic
 \label{fig:online_generic_process}
 \end{figure}
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Closed Vocabulary vs. Open Vocabulary}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{General definition}}{}
-{\color{blue}
-Vocabulary is also a major factor in determining how difficult a handwriting recognition task is. Closed-vocabulary tasks refer to recognition of words from a predetermined dictionary. The dictionary size is arbitrary. Open-vocabulary tasks refer to recognition of any words without the constraint of being in a dictionary.
-Closed-vocabulary tasks are easier than open-vocabulary ones because only certain
-subsequences of letters are possible when limited by a dictionary.
-Closed-vocabulary tasks using a small dictionary are especially easy because: 1) a -
-small vocabulary size can mean a smaller number of configurable word pairs; 2) a small
-vocabulary size enables the direct modeling of individual words, whereas a large
-vocabulary size necessitates the modeling of letters, which is due to the computational
-complexity of modeling words directly, 3) with the usage of letters for large vocabulary
-tasks, the search space of all possible sentences i usually much larger due to an increase in
-the number of nodes in the search graph. When letters are used for modeling instead of
-words, the number of nodes is $mxn$ instead of n where as the number of words, and m
-is the average number of letters per word (generally between three and ten).
-As the vocabulary size increases, the occurrence of out-of-vocabulary words is
-less frequent. Thus, the performance of the large vocabulary tasks is approximately the
-same as of the performance of the open-vocabulary tasks.}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Importance of the dictionary size}}{}
+The vocabulary, from which the words in the test set are taken, has a major impact on how difficult the HWR task is.
 
-
-{\color{blue}One of the most common constraints of current
-recognition systems is that they are only capable of recognising
-words that are present in a restricted vocabulary,
-typically comprised of 10-1000 words [14-16,18,20,21].
-The restricted vocabulary, usually called a lexicon, is a
-list of all valid words that are expected to be recognized
-by the system. There are no established definitions, however,
-the following terms are usually used:
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Closed and open vocabulary definitions}}{}
+Closed-vocabulary HWR system is capable of recognizing words from a predetermined limited size dictionary. 
+The restricted vocabulary set is usually called a lexicon.
+There are no established definitions for the lexicon size, however, the following terms are usually used:
 \begin{itemize}
-\item small vocabulary - tens of words;
-\item medium vocabulary - hundreds of words;
-\item large vocabulary - thousands of words;
-\item very large vocabulary - tens of thousands of words.
+\item small lexicon - tens of words.
+\item medium lexicon - hundreds of words.
+\item large lexicon - thousands of words.
+\item very large lexicon - tens of thousands of words.
 \end{itemize}
-The lexicon is a key point to the success of such recognition
-systems, because it is a source of linguistic knowledge
-that helps to disambiguate single characters by looking
-at the entire context [17,40,41]. As the number of
-words in the lexicon grows, the more difficult the recognition
-task becomes, because more similar words are more
-likely to be present in the lexicon. The computational
-complexity is also related to the lexicon, and it increases
-relatively to its size. Some open vocabulary systems, i.e.
-systems that are capable of dealing with any word
-presented at the input without relying on a lexicon, have
-also been proposed [42,43], but their accuracy is still far
-below those relying on limited lexicons [43,44]. However,
-most of the research efforts in the field have been devoted
-to improving the accuracy of constrained systems, notably
-small vocabulary systems, without giving much attention
-to the computational complexity or recognition speed.
-\cite{koerich2003large}}
+Open-vocabulary tasks refer to recognition of any words without the constraint of being in a dictionary.
 
-
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Recognition difficulty}}{}
+Closed-vocabulary tasks are easier than open-vocabulary ones because only certain subsequences of letters are possible when limited by a dictionary.
+The vocabulary size is a common constraint of current recognition systems. 
+Most current HWR systems are able to handle small and medium size lexicons.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{problems imposed by the open vocabulary}}{}
-
-\cite{shu1996line}
-
+The lexicon is a key-point post-processing stage in many systems, because the linguistic knowledge helps to filter out many possible options that are not included in the lexicon, and consequently raise the recognition rate.
+The adhesion to a some limited dictionary, may also limit the computational complexity. 
+Although most research efforts have been devoted to closed vocabulary systems, open vocabulary systems has also been proposed.
+However, their accuracy is still far below those relying on a small vocabulary \cite{koerich2003large, shu1996line}.
+ 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{The Holistic versus Analytic approaches for HWR}
+\subsection{The Holistic versus Analytic approach}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Overview of the Analytic Approach}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{problems imposed by the open vocabulary}}{}
+While there exist a wide variety of approaches to cursive script recognition, research in this field has established two main approaches
+1. the analytic approach \cite{abdulla2008off, sari2002off, Dinges2011, elanwar2012unconstrained} and 2. The holistic approach \cite{biadsy2011segmentation}. 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Literature review of the Analytic Approach}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The analytic approach}}{}
+The analytic approach involves segmentation of the input curve (that represents a word) into basic units (usually letters) and classification of each part of the text into individual characters, which are recognized and then assembled to identify the written word. 
+The advantage of this approach is that it requires to maintain only a small set of trained models - one for each letter shape - to handle large vocabulary. however, the absence of consistent baselines, large variations in writing styles, and seamless connection between letters (connection is done with almost no ligatures)make segmentation into individual letters almost impossible. \cite{saabni2009hierarchical}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Overview of the Holistic Approach}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The holistic approach}}{}
+The holistic approach (also called a global approach) considers the global properties of the written text and recognizes the input word shape as a whole. 
+{Most popular methods among this group are based on analysis of the number and order of ascenders, descenders, loops and vertical strokes. They often rely on heavy dictionary searching that is costly and prone to be mislead by spelling errors. \cite{brodowska2011oversegmentation}}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Literature review of the Holistic Approach}}{}
+While it avoids the error-prone segmentation process the holistic approach, the recognition system needs to be trained over all words in the dictionary and to maintain and train models for each word. 
+It may be possible for small vocabulary of words, however, this is not feasible for large vocabularies (20,000 words or more). 
+Since each word is constructed from a subset of the character alphabet, it is much more efficient to classify words using the analytic approach \cite{elanwar2012unconstrained}.\\
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Achievements in HWR}}{}
-
-%There exist a wide variety of approaches to optical character recognition. Some of them require pre-segmentation into recognition items, and some of them do not, but we can safely expect that any OCR algorithm would posses these two essential components:
-%\begin{itemize}
-%\item a feature extractor, and
-%\item a classifier
-%\end{itemize}
-%Given an item image, the feature extractor derives the features (descriptors) that the item possesses. The derived features are then used as input to the classifier that determines the (most likely) known item corre sponding to the observed features. The classifier is also expected to give a confidence level number that tells how certain the classifier is about the recognized item. }
-%
-%
-
-
-\emph{TODO: for online handwriting recognition see for all these sections see H. Shu, "On-line handwriting recognition using hidden Markov models," 1996.}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The similarities}}{}
+Although HWR processes and approaches may differ, we can safely expect that any OCR algorithm would posses these two essential components:
+\begin{itemize}
+\item a feature extractor, and
+\item a classifier
+\end{itemize}
+Given an item image, the feature extractor derives the features (descriptors) that the item possesses. The derived features are then used as input to the classifier that determines the (most likely) known item corresponding to the observed features. The classifier is also expected to give a confidence level number that tells how certain the classifier is about the recognized item.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Handwriting Segmentation}
-{An integral part of the hand writingrecognitionprocessis
-segmentation. Thetechniquerequiresanover-segmentationstage
-which partitionhandwrittenwordsintoprimitivesthatmaythen
-be processedfurthertoprovidethebestsegmentation.}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Trends in pattern recognitions techniques}}{}
+The are some leading pattern recognition techniques, which can be encoutered frequently, when reviewing the field of on-line handwriting recognition.
+Techniques such as \emph{hidden Markov models} (HMM) and \emph{neural networks} are encountered frequently.
+More details will be provided in Section \ref{}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -299,12 +285,11 @@ After a long period of focus on western and East Asian scripts there is now a ge
 \emph{[See Online handwriting recognition for the Arabic Letter Set]}
 \emph{[See [1]	G. a. Abandah and M. Z. Khedher, "Analysis of Handwritten Arabic Letters Using Selected Feature Extraction Techniques,"International Journal of Computer Processing of Languages, vol. 22, no. 01, pp. 49-73, Mar. 2009.]}
 
-
-
-
 One difficulty with the Arabic script is the number and position of diacritic marks associated to Arabic characters.
 
-{\color{blue}The Arabic language is one of the most structured and served languages. It comes as the fifth of the most used languages (as a first language) after Chinese, Hindi, Spanish and English. It is spoken as a first language by nearly 350 million people around the globe, mainly in the Arab countries, which is about 5.5\% of the world population (the world population is estimated at 6.44 billion in July 2005) (CIA, 2005). However, almost all Muslims (close to $1/4$ of the world population) can read Arabic script as it is the language of the Holy Qur'an. The Arabic script evolved from a type of Aramaic, with the earliest known document dating from 512 AD. The Aramaic language has fewer consonants than Arabic (Burrow, 2004). The old Arabic was written without dots or diacritics. The dots were first introduced by Yahya bin Ya'mur (died around 746 AD) and Nasr bin Asim (died around 707 AD), students of Abu Al-Aswad Al-Du'ali (died around 688 AD) who introduced the diacritics to prevent the Qur'an from being misread by Muslims (Al-Fakhri, 1997). Figure 1 shows a sample of an old manuscript of a sentence written without dots or diacritics. Due to the Islamic conquests, the use of Arabic language extended in the 7th and 8th centuries from India to the Atlantic Ocean (Al- Fakhri, 1997). Consequently, many other languages adopted the Arabic alphabet with some changes. Among those languages are Jawi, Urdu, Persian, Ottoman, Kashmiri, Punjabi, Dari, Pashto, Adighe, Baluchi, Ingush, Kazakh, Uzbek, Kyrgyz, Uygur, Sindhi, Lahnda, Hausa, Berber, Comorian, Mandinka, Wolof, Dargwa, and few others. Figure 2 shows samples of some of the above mentioned languages. However, it must be mentioned that some of those languages are currently using Latin characters, but in general, people can still read the Arabic script. It is also worth mentioning that the United Nation adopted Arabic in 1974 as its sixth official language (Strange, 1993). Despite the fact that Arabic alphabets are used in many languages, Arabic Character Recognition (ACR) has not received enough interests from researchers. Little research progress has been achieved as compared to the one done on Latin or Chinese. It has almost only started in 1975 by Nazif (1975), while the earlier research efforts in Latin may be traced back to the middle of the 1940s. However, due to a lack of computing power, no significant work was performed until the 1980s. Recent years have shown a considerable increase in the number of research papers related to ACR. (Segmentation of Arabic Characters: A Comprehensive Survey)}\\
+Arabic is one of the six United Nations official languages.
+
+{\color{blue}The Arabic language is one of the most structured and served languages. It comes as the fifth of the most used languages (as a first language) after Chinese, Hindi, Spanish and English. It is spoken as a first language by nearly 350 million people around the globe, mainly in the Arab countries, which is about 5.5\% of the world population (the world population is estimated at 6.44 billion in July 2005) (CIA, 2005). However, almost all Muslims (close to $1/4$ of the world population) can read Arabic script as it is the language of the Holy Qur'an. The Arabic script evolved from a type of Aramaic, with the earliest known document dating from 512 AD. The Aramaic language has fewer consonants than Arabic (Burrow, 2004). The old Arabic was written without dots or diacritics. The dots were first introduced by Yahya bin Ya'mur (died around 746 AD) and Nasr bin Asim (died around 707 AD), students of Abu Al-Aswad Al-Du'ali (died around 688 AD) who introduced the diacritics to prevent the Qur'an from being misread by Muslims (Al-Fakhri, 1997). Figure 1 shows a sample of an old manuscript of a sentence written without dots or diacritics. Due to the Islamic conquests, the use of Arabic language extended in the 7th and 8th centuries from India to the Atlantic Ocean (Al- Fakhri, 1997). Consequently, many other languages adopted the Arabic alphabet with some changes. Among those languages are Jawi, Urdu, Persian, Ottoman, Kashmiri, Punjabi, Dari, Pashto, Adighe, Baluchi, Ingush, Kazakh, Uzbek, Kyrgyz, Uygur, Sindhi, Lahnda, Hausa, Berber, Comorian, Mandinka, Wolof, Dargwa, and few others. Figure 2 shows samples of some of the above mentioned languages. However, it must be mentioned that some of those languages are currently using Latin characters, but in general, people can still read the Arabic script. It is also worth mentioning that the United Nation adopted Arabic in 1974 as its sixth official language (Strange, 1993). Despite the fact that Arabic alphabets are used in many languages, Arabic Character Recognition (ACR) has not received enough interests from researchers. Little research progress has been achieved as compared to the one done on Latin or Chinese. It has almost only started in 1975 by Nazif (1975), while the earlier research efforts in Latin may be traced back to the middle of the 1940s. However, due to a lack of computing power, no significant work was performed until the 1980s. Recent years have shown a considerable increase in the number of research papers related to ACR. (Segmentation of Arabic Characters: A Comprehensive Survey)}
 
 The Arabic Aleph bet is widely used for more than twenty different languages such as Farsi, Urdu, Malay, Housa and Ottoman Turkish. Arabic is used in over 20 different countries, written by more than 100 million people and spoken by 234 million people. Although the spoken Arabic is slightly different from country to country, the written Arabic is standard system used all over the Arab world \cite{saabni2009efficient} \cite{jannoud2007automatic}.
 Arabic Scripts consists of 28 basic letters, 12 additional special letters, and 8 diacritics. Arabic script is written from right to left in a semi-cursive manner in both printed and handwritten. Most letters are written in four different letter shapes depending on their position in a word, e.g., the letter \RL{`}  (Ain) appears as \RL{`} (isolated), \RL{`-}(initial),\RL{-`-} (medial) and \RL{-`} (final). Among the basic letters, six are Disconnective - \RL{A} (Alef), \RL{d} (Dal), \RL{_d} (Thal), \RL{r} (Reh), \RL{z} (Zain) and \RL{w} (Waw). Disconnective letters do not connect to the following letter and have only two shapes each. The presence of this letters interrupts the continuity of the graphic form of a word. We denote connected letters in a word, as word-part. If the word-part is composed of only one letter, this letter will be in its isolated shape \cite{biadsy2011segmentation}. 
@@ -328,23 +313,113 @@ Saabni and El-sana have explored a large collection of Arabic texts and extracte
 
 \emph{TODO: talk about the WP and give statistics of WP length as described in {abandah2009analysis}}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Issues with Arabic Handwriting Recognition}
 {RecognitionandsegmentationofArabichandwrittenscriptisadifficulttaskbecausetheArabic
 handwrittencharactersarenaturallybothcursiveandunconstrained.TheanalysisofArabicscriptis
 more complicatedincomparisonwithEnglishscript. Itisbelieved,goodsegmentationisonereasonfor
 high accuracycharacterrecognition.\cite{al2010development}}
 
-\section{On-line handwriting as temporal information}
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Online HW representation}}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Arabic text Segmentation}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Online HW space definition}}{}
-The stroke trajectory space definition.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Definition}}{}
+Character segmentation is the process of splitting the handwritten script into basic units, usually corresponding to single letters. 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Online HW as time series}}{}
-However in this work we do not use the temporal information of the written stroke trajectory, however we view it as an ordered set of points. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Importance}}{}
+Segmentation is one of the required steps in numerous off-line and on-line cursive handwritten word recognition solutions \cite{brodowska2011oversegmentation}.
+It is also a very important step, because improperly extracted characters are usually impossible to recognize correctly with currently used methods.
+It is wrong sufficiently often to make a major contribution to the error rate of the system.
+Character segmentation has long been a critical area of the OCR process \cite{casey1996survey}. 
+An integral part of the hand writing recognition process, when the analytic approach is considered, is segmentation. 
+The problems of segmentation persist today. 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The segmentation-recognition catch 22}}{}
+{It is believed, good segmentation is one reason for high accuracy character recognition. However, the task of segmentation, while usually trivial to a human, is a very challenging pattern recognition problem.
+The Catch 22 in segmentation is as follows: character is a pattern that
+resembles one of the symbols the system is designed to recognize. But to determine such a resemblance
+the pattern must be segmented from the document image. Each stage depends on the other, and in complex
+cases it is paradoxical to seek a pattern that will match a member of the system's recognition alphabet
+of symbols without incorporating detailed knowledge of the structure of those symbols into the process.
+\cite{casey1996survey}}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The context dependent of segmentation}}{}
+{the segmentation decision is not a local decision, independent of previous and subsequent
+decisions. Producing a good match to a library symbol is necessary, but not sufficient, for reliable
+recognition. That is, a poor match on a later pattern can cast doubt on the correctness of the current
+segmentation/recognition result. Even a series of satisfactory pattern matches can be judged incorrect if
+contextual requirements on the system output are not satisfied. For example, the letter sequence "cl" can
+often closely resemble a "d", but usually such a choice will not constitute a contextually valid result.}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Cursive English segmentation - techniques and achievements}}{}
+{The broad range of significant real world applications and the
+considerable difficulty of the task both contribute to the fact that there are many
+known methods of performing cursive word recognition - one suited better for some
+applications and some for the others \cite{brodowska2011oversegmentation}}
+
+{Conventional approaches can segment typical words
+accurately. In this regard, different strategies such as
+projection profile, bounding box or contour tracing exhibit
+promising results [1]. However, they might lead to incorrect
+segmentation when deal with touching characters \cite{saba2010survey}.}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Recognition-Based Segmentation Approaches}}{}
+{Character segmentation and character classification steps are not totally separate. Degree of connection between them vary from a solution to a solution.
+However, the most common general approach is to split words into segments that should be characters, pass each segment to a classifier and, if the classification results are not satisfactory (e.g. some measure of belief requirements is not met), call segmentation once more with the feedback information about rejecting the previous result. \cite{brodowska2011oversegmentation}}
 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{techniques that were adopted from temporal data classification}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Over-segmentation}}{}
+The most common  method of character segmentation is initial over-segmentation - finding some set of potential  splitting points in the graphical representation of the word and then attempting to eliminate the improper ones
+The segmentation task of some cursive and unconstrained nature of some languages such Arabic, anneals the segmentation task. 
+The technique requires an over-segmentation stage which partition handwritten words into primitives that may then be processed further to provide the best segmentation.
+
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Issues with segmentation}}{}
+In languages that are commonly written non-cursively, segmentation techniques may be used in HWR systems.
+also may use segmentation techniques since human handwriting 
+touching characters are error prone in
+segmentation stage that contributes to recognition errors.
+Commonly, the problem is due to the conventional
+
+A through survey on character segmentation is given in \cite{casey1996survey} and \cite{brodowska2011oversegmentation}.  
+
+
+References:\\
+--------------\\
+cursive english segmentation [36],[19],[20],[55],[58],[81]
+
+[36] L.D. Harmon, {Automatic Recognition of Print and Script}, Proceedings of the IEEE, vol. 60, no. 10,
+pp. 1165-1177, Oct. 72.
+
+[19] G. Dimauro, S. Impedovo and G. Pirlo, {From Character to Cursive Script Recognition: Future
+Trends in Scientific Research}, Proc. 11th Int. Conf. on Pattern Recognition, vol. II, page 516, Aug.
+1992.
+
+[20] C.E. Dunn and P.S.P. Wang, {Character Segmenting Techniques for Handwritten Text - A Survey},
+Proc. 11th Int. Conf. on Pattern Recognition, vol. II, page 577, August 1992.
+
+[55] E. Lecolinet and O. Baret, {Cursive Word Recognition: Methods and Strategies, Fundamentals in
+Handwriting Recognition}, S. Impedovo (Ed.), NATO ASI Series F: Computer and Systems Sciences,
+vol. 124, Springer Verlag, 1994, pages 235-263.
+
+[81] C.C. Tappert, C.Y. Suen and T. Wakahara, {The State of the Art in On-line Handwriting Recognition},
+IEEE Trans. on Pattern Analysis and Machine Intelligence, vol. 12, no. 8, page 787, Aug.
+1990.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\section{On-line handwriting as temporal information}
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Online HW representation}}{}
+%
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Online HW space definition}}{}
+%The stroke trajectory space definition.
+%
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Online HW as time series}}{}
+%However in this work we do not use the temporal information of the written stroke trajectory, however we view it as an ordered set of points. 
+%
+%
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{techniques that were adopted from temporal data classification}}{}
 
 
 \bibliographystyle{plainnat}
