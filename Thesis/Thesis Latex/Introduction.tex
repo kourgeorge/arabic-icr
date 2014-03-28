@@ -1,29 +1,70 @@
-%%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-%%% Do not edit unless you really know what you are doing.
-%\documentclass[twoside,english]{report}
+%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+%\documentclass[12pt,english]{report}
+%\usepackage{mathptmx}
+%\renewcommand{\familydefault}{\rmdefault}
 %\usepackage[T1]{fontenc}
 %\usepackage[latin9]{inputenc}
-%\setcounter{secnumdepth}{3}
-%\setcounter{tocdepth}{3}
-%\usepackage[active]{srcltx}
+%\usepackage[a4paper]{geometry}
+%\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+%\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+%\setlength{\parskip}{\medskipamount}
+%\setlength{\parindent}{0pt}
 %\usepackage{verbatim}
+%\usepackage{pdfpages}
 %\usepackage{graphicx}
+%\usepackage{subfig} %% This package has to be here
 %\usepackage{setspace}
+%\usepackage{arabtex}
 %\usepackage[numbers]{natbib}
-%\doublespacing
+%\usepackage{nomencl}
+%\usepackage{amsthm}
+%\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{etoolbox}
+%\newtoggle{edit-mode}
+%\toggletrue{edit-mode}  
+%%\toggletrue{edit-mode}
+%\iftoggle{edit-mode}{
+%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
+%}{
+%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+%}
 %
-%\makeatletter
+%\makenomenclature
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
-%\providecommand{\LyX}{L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
-%%% Because html converters don't know tabularnewline
-%\providecommand{\tabularnewline}{\\}
+%% Theorem Styles
+%\newtheorem{theorem}{Theorem}[section]
+%% Definition Styles
+%\theoremstyle{definition}
+%\newtheorem{definition}{Definition}[section]
+%\newtheorem{example}{Example}[section]
+%\theoremstyle{remark}
+%\newtheorem{remark}{Remark}
 %
-%\makeatother
+%\usepackage[linesnumbered]{algorithm2e}
 %
-%\usepackage{babel}
 %\begin{document}
+%\printnomenclature{}
+%
+%\tableofcontents{}
 
+%Instructions - How to write a background:
+%-------------------------------------------------
+%You can't write a good introduction until you know what the body of the paper says. Consider writing the introductory section(s) after you have completed the rest of the paper, rather than before.
+%Be sure to include a hook at the beginning of the introduction. This is a statement of something sufficiently interesting to motivate your reader to read the rest of the paper, it is an important/interesting scientific problem that your paper either solves or addresses. You should draw the reader in and make them want to read the rest of the paper.
+%
+%The next paragraphs in the introduction should cite previous research in this area. It should cite those who had the idea or ideas first, and should also cite those who have done the most recent and relevant work. You should then go on to explain why more work was necessary (your work, of course.) 
+% 
+%What else belongs in the introductory section(s) of your paper? 
+%A statement of the goal of the paper: why the study was undertaken, or why the paper was written. Do not repeat the abstract. 
+%Sufficient background information to allow the reader to understand the context and significance of the question you are trying to address. 
+%Proper acknowledgement of the previous work on which you are building. Sufficient references such that a reader could, by going to the library, achieve a sophisticated understanding of the context and significance of the question. 
+%The introduction should be focused on the thesis question(s).  All cited work should be directly relevent to the goals of the thesis.  This is not a place to summarize everything you have ever read on a subject.
+%Explain the scope of your work, what will and will not be included. 
+%A verbal "road map" or verbal "table of contents" guiding the reader to what lies ahead. 
+%Is it obvious where introductory material ("old stuff") ends and your contribution ("new stuff") begins? 
+%Remember that this is not a review paper. We are looking for original work and interpretation/analysis by you. Break up the introduction section into logical segments by using subheads. 
 \chapter{Introduction}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation for handwriting recognition}}{}
@@ -49,35 +90,36 @@ In this thesis we propose a novel approach which combines both holistic and anal
 \emph{see: \cite{al2010development} for a well written introduction}
 \emph{TODO: Review \cite{bahlmann2005advanced} thesis}
 
+\section{Contribution}
+%
+%\section{Approach Overview}
+%
+%While the holistic approach is a common technique used for Arabic handwriting recognition, this approach is not practical for recognizing words from the unrestricted dictionary (contains all the words in the Arabic dictionary), since it needs to train the system for each word in the dictionary.  As mentioned in section 2.2 there are about 40,000 valid word parts, with different main strokes. There are much more classes if additional strokes are taken into consideration, practically, a very large number of classes. To overcome this problem, we propose an Arabic word-parts recognizer which breaks up the whole recognition process to 2 restricted recognition tasks. The first is analytical letters classification and the other is holistic word-part recognition from the limited dictionary that contains veritable combinations of letters candidates found in the previous stage. The most significant benefit of this approach is that in both stages the recognition is performed on spaces which contain a very limited class number. 
+%
+%
+%In this section we draw the skeleton of our recognition process. Figure \ref{fig:overview} presents the main flow of our approach followed by a brief description on each stage.
+%
+%\begin{figure}
+%\centering
+%\includegraphics{./figures/overview}       
+%\caption{The main stages of the recognition system.}
+%\label{fig:overview}
+%\end{figure}
+%
+%\subsection{Demarcation Points Nomination}
+%The goal of this stage is to decide coarsely but effectively if a certain point is a demarcation point. This stage is performed while the word part is being written. To identify demarcation point we have used the following 2 Arabic demarcation points characteristic: 1. Demarcation point lives in a horizontal region. 2. Demarcation point is usually contained in a Forward region. More details and definitions will follow in a section \emph{[]}. We present a novel algorithm online segmentation using static rules engine. Over segmentation and under-segmentation are the main problems segmentation algorithms encounter. Over segmentation is handled in the next stage. Under-segmentation is handled by a defining a new notion named hyper-letter, which represents combinations of letters that the demarcation points between them is sometimes concealed. More details will be given in section \emph{[]}.
+%
+%\subsection{Segmentation selection and Letter classification}
+%This stage starts when the user finishes to scribe the stroke, i.e. on "pen up" event.  The goal of this sub-process is to select the set of demarcation points which gives the best letter recognition results. This is done after the writer has completed scribing the main body of the stroke. Segmentation induces partition to subsequences, where each subsequent is a geometric representation of a letter (or a combination or letters). The subsequence is classified to a set of 3 or candidate letters using a combination of EMD and DTW metrics. The quality scoring of the segmentation is based on the recognition score of each letter which is calculated using dynamic programming technique. 
+%
+%\subsection{Candidate Word-Part generation and embedding}
+%After the segmentation is determined and each sub-sequent was classified to a small set of hyper-letters candidates, the system generate all possible word-parts sequences using the samples of hyper-letters in our letters database using the most common ways to write the hyper-letter. Here we use the Holistic approach to classify the word-part. However, instead of taking the whole dictionary of possible word-parts, our space of candidate word part only samples of word parts combinations of letters nominated in the previous stage. Subsequently, we extract the features of the generated word-parts and embed them using approximate Earth Movers Distance (EMD) approach described by Shirdhonkar and Jacobs in \cite{shirdhonkar2008approximate}.
+%
+%\subsection{Candidate Word-Part generation and embedding}
+%The number of possible different word-parts is relatively small. Assume that the written word part composed of 4 letters. For every letter, the second stage has nominated 3 different letters. In the worst case when all combinations are legal, we get at most $3^4=27$ different possible word-parts. However, the number of different samples created is very large. Thus, we need a fast classification approach to overcome this obstacle. 
+%EMD is a true metric, thus we can utilize a recently developed tool which allow fast (sub linear time) approximate nearest neighbor (NN) named Linear Sensitivity Hashing (LSH) presented by Gionis et al in \cite{gionis1999similarity}. LSH indexes a set of training examples living in a normed space by a number of hash tables, such that the probability of collision is high for similar examples and low for dissimilar ones. In this stage, the system initializes an LSH data structure with the set of word parts generated in the previous stage and use it to efficiently find the most similar word-parts.
 
-\section{Approach Overview}
-
-While the holistic approach is a common technique used for Arabic handwriting recognition, this approach is not practical for recognizing words from the unrestricted dictionary (contains all the words in the Arabic dictionary), since it needs to train the system for each word in the dictionary.  As mentioned in section 2.2 there are about 40,000 valid word parts, with different main strokes. There are much more classes if additional strokes are taken into consideration, practically, a very large number of classes. To overcome this problem, we propose an Arabic word-parts recognizer which breaks up the whole recognition process to 2 restricted recognition tasks. The first is analytical letters classification and the other is holistic word-part recognition from the limited dictionary that contains veritable combinations of letters candidates found in the previous stage. The most significant benefit of this approach is that in both stages the recognition is performed on spaces which contain a very limited class number. 
-
-
-In this section we draw the skeleton of our recognition process. Figure \ref{fig:overview} presents the main flow of our approach followed by a brief description on each stage.
-
-\begin{figure}
-\centering
-\includegraphics{./figures/overview}       
-\caption{The main stages of the recognition system.}
-\label{fig:overview}
-\end{figure}
-
-\subsection{Demarcation Points Nomination}
-The goal of this stage is to decide coarsely but effectively if a certain point is a demarcation point. This stage is performed while the word part is being written. To identify demarcation point we have used the following 2 Arabic demarcation points characteristic: 1. Demarcation point lives in a horizontal region. 2. Demarcation point is usually contained in a Forward region. More details and definitions will follow in a section \emph{[]}. We present a novel algorithm online segmentation using static rules engine. Over segmentation and under-segmentation are the main problems segmentation algorithms encounter. Over segmentation is handled in the next stage. Under-segmentation is handled by a defining a new notion named hyper-letter, which represents combinations of letters that the demarcation points between them is sometimes concealed. More details will be given in section \emph{[]}.
-
-\subsection{Segmentation selection and Letter classification}
-This stage starts when the user finishes to scribe the stroke, i.e. on "pen up" event.  The goal of this sub-process is to select the set of demarcation points which gives the best letter recognition results. This is done after the writer has completed scribing the main body of the stroke. Segmentation induces partition to subsequences, where each subsequent is a geometric representation of a letter (or a combination or letters). The subsequence is classified to a set of 3 or candidate letters using a combination of EMD and DTW metrics. The quality scoring of the segmentation is based on the recognition score of each letter which is calculated using dynamic programming technique. 
-
-\subsection{Candidate Word-Part generation and embedding}
-After the segmentation is determined and each sub-sequent was classified to a small set of hyper-letters candidates, the system generate all possible word-parts sequences using the samples of hyper-letters in our letters database using the most common ways to write the hyper-letter. Here we use the Holistic approach to classify the word-part. However, instead of taking the whole dictionary of possible word-parts, our space of candidate word part only samples of word parts combinations of letters nominated in the previous stage. Subsequently, we extract the features of the generated word-parts and embed them using approximate Earth Movers Distance (EMD) approach described by Shirdhonkar and Jacobs in \cite{shirdhonkar2008approximate}.
-
-\subsection{Candidate Word-Part generation and embedding}
-The number of possible different word-parts is relatively small. Assume that the written word part composed of 4 letters. For every letter, the second stage has nominated 3 different letters. In the worst case when all combinations are legal, we get at most $3^4=27$ different possible word-parts. However, the number of different samples created is very large. Thus, we need a fast classification approach to overcome this obstacle. 
-EMD is a true metric, thus we can utilize a recently developed tool which allow fast (sub linear time) approximate nearest neighbor (NN) named Linear Sensitivity Hashing (LSH) presented by Gionis et al in \cite{gionis1999similarity}. LSH indexes a set of training examples living in a normed space by a number of hash tables, such that the probability of collision is high for similar examples and low for dissimilar ones. In this stage, the system initializes an LSH data structure with the set of word parts generated in the previous stage and use it to efficiently find the most similar word-parts.
-
-\section{Notes and Limitations}
+\section{Thesis Scope - notes and limitations}
 As mentioned before, Arabic is a cursive written language and it contains about 40k possible word parts. By "possible", we mean that there is an Arabic word which contains the word part. Arabic letters may differ by additional stroke above or beneath the main stroke. For example, the Arabic letter \RL{f} (Fa) contains a single dot above the main stroke, however the letter \RL{q} (Qa), contains double dots, both having identical main body. In our work we recognize and classify the main body of the letter and ignore the additional stroke entirely. As a result, the number of different letters drops from 29 to18 and the number of different possible word parts decreases to []. It is important to comment that taking the additional strokes into consideration may be exploited to boost the classification rate.
 The Arabic letters system contain 7 sets of letters that have the same body, and are differentiated only by the additional strokes above or under it. The following table describes the sets of similarity:
 
@@ -111,9 +153,6 @@ We have also considered the common combination of the letter \RL{l} followed by 
 Also, three consequent appearances of the letter \RL{-b-} (B) in the middle of the word-part looks as follows: \RL{-bbb-}. As can be seen very similar to the \RL{s} (S) letter in its medial position \RL{-s-}, the only to distinguish between the two options is by looking at the additional strokes.
 For these mentioned complexities, when recognizing Arabic scripts, most researches have preferred the holistic approach. 
 
-
-
-\section{Our Results}
 
 \section{Organization of Thesis}
 

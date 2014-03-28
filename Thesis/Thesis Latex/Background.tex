@@ -1,53 +1,52 @@
-% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-% Do not edit unless you really know what you are doing.
-\documentclass[12pt,english]{report}
-\usepackage{mathptmx}
-\renewcommand{\familydefault}{\rmdefault}
-\usepackage[T1]{fontenc}
-\usepackage[latin9]{inputenc}
-\usepackage[a4paper]{geometry}
-\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-\setlength{\parskip}{\medskipamount}
-\setlength{\parindent}{0pt}
-\usepackage{verbatim}
-\usepackage{pdfpages}
-\usepackage{graphicx}
-\usepackage{subfig} %% This package has to be here
-\usepackage{setspace}
-\usepackage{arabtex}
-\usepackage[numbers]{natbib}
-\usepackage{nomencl}
-\usepackage{amsthm}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{etoolbox}
-\newtoggle{edit-mode}
-\toggletrue{edit-mode}  
-%\toggletrue{edit-mode}
-\iftoggle{edit-mode}{
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
-}{
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
-}
+%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+%\documentclass[12pt,english]{report}
+%\usepackage{mathptmx}
+%\renewcommand{\familydefault}{\rmdefault}
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
+%\usepackage[a4paper]{geometry}
+%\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+%\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+%\setlength{\parskip}{\medskipamount}
+%\setlength{\parindent}{0pt}
+%\usepackage{verbatim}
+%\usepackage{pdfpages}
+%\usepackage{graphicx}
+%\usepackage{subfig} %% This package has to be here
+%\usepackage{setspace}
+%\usepackage{arabtex}
+%\usepackage[numbers]{natbib}
+%\usepackage{nomencl}
+%\usepackage{amsthm}
+%\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{etoolbox}
+%\newtoggle{edit-mode}
+%\toggletrue{edit-mode}  
+%%\toggletrue{edit-mode}
+%\iftoggle{edit-mode}{
+%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
+%}{
+%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+%}
+%
+%\makenomenclature
+%
+%% Theorem Styles
+%\newtheorem{theorem}{Theorem}[section]
+%% Definition Styles
+%\theoremstyle{definition}
+%\newtheorem{definition}{Definition}[section]
+%\newtheorem{example}{Example}[section]
+%\theoremstyle{remark}
+%\newtheorem{remark}{Remark}
+%
+%\usepackage[linesnumbered]{algorithm2e}
+%
+%\begin{document}
+%\printnomenclature{}
 
-\makenomenclature
-
-% Theorem Styles
-\newtheorem{theorem}{Theorem}[section]
-% Definition Styles
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[section]
-\newtheorem{example}{Example}[section]
-\theoremstyle{remark}
-\newtheorem{remark}{Remark}
-
-\usepackage[linesnumbered]{algorithm2e}
-
-\begin{document}
-\printnomenclature{}
-
-\tableofcontents{}
 
 %Instructions - How to write a background:
 %-------------------------------------------------
@@ -61,9 +60,9 @@
 
 
 
-\chapter{Background}
+\section{Background}
 
-\section{Optical Character Recognition}
+\subsection{Optical Character Recognition}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Writing}}{}
 {Writing consists of artificial graphical marks on a surface; its purpose is to communicate something; this purpose is achieved by virtue of the mark's conventional relation to language.
@@ -90,7 +89,7 @@ It is widely used today in a wide range of projects, from occasional document sc
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Handwriting Recognition}
+\subsection{Handwriting Recognition}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR Definition}}{}
 Handwriting was developed a long time ago as a means to expand human memory and to facilitate communication. 
 It is a skill that is personal to individuals, thus, the task of HWR is considered a 
@@ -125,7 +124,7 @@ One problem in unconstrained HWR is the huge variety in the writing of different
 The recognition difficulty decreases from the first listed type to the last. Indeed, HWR systems have a strong history in making use of this graduation in difficulty. They have aimed (and still aim) at a reasonable user satisfaction by restricting the text input to a simpler handwriting type, while simultaneously rewarding the user with recognition accuracy \cite{bahlmann2005advanced}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Off-line versus On-line HWR}
+\subsubsection{Off-line versus On-line HWR}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
 The field of HWR can be classified in several ways. However, the most common categorization is the one that distinguish between off-line (also called static) and on-line (also called dynamic) HWR.
@@ -165,12 +164,14 @@ However, they are now good enough that they have a significant economic impact o
 The success of on-line systems makes it attractive to consider developing off-line systems that first estimate the trajectory of the writing from off-line data and then use pentip are recorded as a function of time with a digitizer.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{off-line HWR general recognition scheme}}{}
-There are many approaches for off-line handwriting recognition, and it is difficult to draw a common flow or stages that are common on most off-line HWR techniques. One may find it very difficult to draw a general scheme that outline the flow of off-line handwriting recognition approaches or procedures. However, there are several stages that can be found in many approaches.
+There are many approaches for off-line handwriting recognition, and it is difficult to draw a common flow or stages that are common on most off-line HWR techniques. One may find it very difficult to draw a general scheme that outlines the flow of off-line handwriting recognition approaches or procedures. However, there are several stages that can be found in many approaches.
 \begin{itemize}
 \item preprocessing
 \item feature extraction
 \item classification algorithm
 \end{itemize}
+The preprocessing stage usually consists of smoothing, writing flow reconstruction, purification, etc... 
+
 
 
 \emph{TODO: talk in general about the flow of handwriting recognition and then go into the differences between the off-line and the on-line}\\
@@ -197,7 +198,7 @@ As mentioned before, in an on-line handwriting recognition system, the stylos mo
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Closed Vocabulary vs. Open Vocabulary}
+\subsubsection{Closed Vocabulary vs. Open Vocabulary}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Importance of the dictionary size}}{}
 The vocabulary, from which the words in the test set are taken, has a major impact on how difficult the HWR task is.
@@ -226,6 +227,7 @@ Although most research efforts have been devoted to closed vocabulary systems, o
 However, their accuracy is still far below those relying on a small vocabulary \cite{koerich2003large, shu1996line}.
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{The Holistic versus Analytic approach}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{problems imposed by the open vocabulary}}{}
@@ -263,86 +265,86 @@ More details will be provided in Section \ref{}
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Arabic Handwriting Recognition}
+\subsection{Arabic Handwriting Recognition}
 
-\begin{itemize}
-\item The Arabic trend
-\item The Arabic language - Importance and history.
-\item Arabic handwriting recognition - Talk about the characteristics of the Arabic script. maybe a little bit of history.
-\item Where is does the current knowledge on Arabic handwriting recognition stands - general literature review.
-\item Arabic segmentation
-\end{itemize}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Arabic Trend}}{}
 After a long period of focus on western and East Asian scripts there is now a general trend to explore other scripts such as Arabic and various Indic scripts. 
 
-\emph{TODO:see the in introduction of \cite{abandah2009analysis}}
+%\emph{TODO:see the in introduction of \cite{abandah2009analysis}}
 
-\subsection{Motivation}
-\emph{See \cite{lorigo2006offline} - motivation section}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Characteristic of the Arabic writing system}
-\emph{[See Online handwriting recognition for the Arabic Letter Set]}
-\emph{[See [1]	G. a. Abandah and M. Z. Khedher, "Analysis of Handwritten Arabic Letters Using Selected Feature Extraction Techniques,"International Journal of Computer Processing of Languages, vol. 22, no. 01, pp. 49-73, Mar. 2009.]}
+\subsubsection{Motivation}
+%\emph{See \cite{lorigo2006offline} - motivation section}
 
-One difficulty with the Arabic script is the number and position of diacritic marks associated to Arabic characters.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Arabic language spread}}{}
+The Arabic language is spoken as their first language by nearly 350 million people around the world \cite{zeki2011segmentation}, and written by more than 100 million people, in over 20 different countries, which makes it one of the five most common languages in the world and one of the six United Nations official languages since 1974\cite{burrow2004arabic}. 
+Although Arabic is used mainly in the Arab countries, which is about 5.5\% of the world population, almost all Muslims, around 25\% of the world population can read Arabic script as it is the language of the Holy Qur'an \cite{zeki2011segmentation}.
 
-Arabic is one of the six United Nations official languages.
 
-{\color{blue}The Arabic language is one of the most structured and served languages. It comes as the fifth of the most used languages (as a first language) after Chinese, Hindi, Spanish and English. It is spoken as a first language by nearly 350 million people around the globe, mainly in the Arab countries, which is about 5.5\% of the world population (the world population is estimated at 6.44 billion in July 2005) (CIA, 2005). However, almost all Muslims (close to $1/4$ of the world population) can read Arabic script as it is the language of the Holy Qur'an. The Arabic script evolved from a type of Aramaic, with the earliest known document dating from 512 AD. The Aramaic language has fewer consonants than Arabic (Burrow, 2004). The old Arabic was written without dots or diacritics. The dots were first introduced by Yahya bin Ya'mur (died around 746 AD) and Nasr bin Asim (died around 707 AD), students of Abu Al-Aswad Al-Du'ali (died around 688 AD) who introduced the diacritics to prevent the Qur'an from being misread by Muslims (Al-Fakhri, 1997). Figure 1 shows a sample of an old manuscript of a sentence written without dots or diacritics. Due to the Islamic conquests, the use of Arabic language extended in the 7th and 8th centuries from India to the Atlantic Ocean (Al- Fakhri, 1997). Consequently, many other languages adopted the Arabic alphabet with some changes. Among those languages are Jawi, Urdu, Persian, Ottoman, Kashmiri, Punjabi, Dari, Pashto, Adighe, Baluchi, Ingush, Kazakh, Uzbek, Kyrgyz, Uygur, Sindhi, Lahnda, Hausa, Berber, Comorian, Mandinka, Wolof, Dargwa, and few others. Figure 2 shows samples of some of the above mentioned languages. However, it must be mentioned that some of those languages are currently using Latin characters, but in general, people can still read the Arabic script. It is also worth mentioning that the United Nation adopted Arabic in 1974 as its sixth official language (Strange, 1993). Despite the fact that Arabic alphabets are used in many languages, Arabic Character Recognition (ACR) has not received enough interests from researchers. Little research progress has been achieved as compared to the one done on Latin or Chinese. It has almost only started in 1975 by Nazif (1975), while the earlier research efforts in Latin may be traced back to the middle of the 1940s. However, due to a lack of computing power, no significant work was performed until the 1980s. Recent years have shown a considerable increase in the number of research papers related to ACR. (Segmentation of Arabic Characters: A Comprehensive Survey)}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Arabic History}}{}
+The Arabic script is one of the descendants of the Aramaic script. 
+The earliest known document written using the Arabic script is dating from 512 AD.  
+The reason there are some letters in the Arabic script that differ only by dots is the that new letters were created around the 7th century by adding dots to existing Armaic letters \cite{burrow2004arabic}.
+The old Arabic was written without dots or diacritics. The dots were first introduced by Yahya bin Ya'mur (died around 746 AD) and Nasr bin Asim (died around 707 AD), students of Abu Al-Aswad Al-Du'ali (died around 688 AD) who introduced the diacritics to prevent the 
+Qur'an from being misread by Muslims \cite{zeki2011segmentation}.
 
-The Arabic Aleph bet is widely used for more than twenty different languages such as Farsi, Urdu, Malay, Housa and Ottoman Turkish. Arabic is used in over 20 different countries, written by more than 100 million people and spoken by 234 million people. Although the spoken Arabic is slightly different from country to country, the written Arabic is standard system used all over the Arab world \cite{saabni2009efficient} \cite{jannoud2007automatic}.
-Arabic Scripts consists of 28 basic letters, 12 additional special letters, and 8 diacritics. Arabic script is written from right to left in a semi-cursive manner in both printed and handwritten. Most letters are written in four different letter shapes depending on their position in a word, e.g., the letter \RL{`}  (Ain) appears as \RL{`} (isolated), \RL{`-}(initial),\RL{-`-} (medial) and \RL{-`} (final). Among the basic letters, six are Disconnective - \RL{A} (Alef), \RL{d} (Dal), \RL{_d} (Thal), \RL{r} (Reh), \RL{z} (Zain) and \RL{w} (Waw). Disconnective letters do not connect to the following letter and have only two shapes each. The presence of this letters interrupts the continuity of the graphic form of a word. We denote connected letters in a word, as word-part. If the word-part is composed of only one letter, this letter will be in its isolated shape \cite{biadsy2011segmentation}. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Arabic Alphabet usage in other languages}}{}
+{Due to the Islamic conquests, the use of Arabic language extended in the 7th and 8th centuries from India to the Atlantic Ocean (Al- Fakhri, 1997). Consequently, more than twenty different languages adopted the Arabic alphabet with some changes, such as Farsi, Urdu, Malay, Housa and Ottoman Turkish \cite{saabni2009efficient,jannoud2007automatic}. }
+However, it must be mentioned that some of those languages are currently using Latin characters, but in general, people can still read the Arabic script.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Literary vs. daily language}}{}
+{The literary language is called Modern Standard Arabic or Literary Arabic which is a Pluricentric language. 
+It is currently the only official form of Arabic, used in most written documents as well as in formal spoken occasions, such as lectures and news broadcasts. However, this varies from one country to the other.[wikipedia]}
+Other small marks (diacritics) are used to indicate short vowels, often heard and in written when using the standard Arabic are seldom used in day-to-day communication and handwriting. \cite{burrow2004arabic}
+Although the spoken Arabic is slightly different from country to country, the written Arabic is standard system used all over the Arab world \cite{saabni2009efficient,jannoud2007automatic}.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The growing interest in the Arabic HWR}}{}
+{Despite the fact that Arabic alphabets are used in many languages, Arabic Character Recognition (ACR) has not received enough interests from researchers. Little research progress has been achieved as compared to the one done on Latin or Chinese. It has almost only started in 1975 by Nazif (1975), while the earlier research efforts in Latin may be traced back to the middle of the 1940s. However, due to a lack of computing power, no significant work was performed until the 1980s. Recent years have shown a considerable increase in the number of research papers related to ACR. \cite{zeki2011segmentation}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{Characteristic of the Arabic writing system}
+Arabic Scripts consists of 28 basic letters, 12 additional special letters, and 8 diacritics. 
+Arabic script is written from right to left in a semi-cursive manner in both printed and handwritten. 
+Most letters are written in four different letter shapes depending on their position in a word, e.g., the letter \RL{`}  (Ain) appears as \RL{`} (isolated), \RL{`-}(initial),\RL{-`-} (medial) and \RL{-`} (final). Among the basic letters, six are Disconnective - \RL{A} (Alef), \RL{d} (Dal), \RL{_d} (Thal), \RL{r} (Reh), \RL{z} (Zain) and \RL{w} (Waw). 
+Disconnective letters do not connect to the following letter and have only two shapes each. 
+The presence of this letters interrupts the continuity of the graphic form of a word. 
+We denote connected letters in a word, as word-part. 
+If the word-part is composed of only one letter, this letter will be in its isolated shape \cite{biadsy2011segmentation}. 
+
 Certain characteristics relating to the obligatory dots and strokes of the Arabic script distinguish it from Roman script, making the recognition of words in Arabic more difficult than in Roman script. First, Most Arabic letters contain dots in addition to the letter body, such as \RL{s} (Sheen) which consists of \RL{s} (Seen) body and three dots above it. In addition to dots, there are stroke that can attach to a letter body creating new letter such as \RL{k}, \RL{.t} and \RL{lA}. These dots and strokes are called delayed strokes since they are usually drawn last in the in handwritten word-part/word. Second, eliminating, adding or moving a dot or stroke could produce a completely different letter and, as a result, produce a word other than the one that was intended (see Table 1). Third, the number of possible variations of delayed strokes is greater than those in Roman scripts, as shown in Figure 2. There are only three such strokes used for English: the cross in the letter t, the slash in x, and the dots in i and j. 
 
-{\color{blue}The Arabic language has some diacritics that are used in the holy book Qur'an and sometimes in teaching material and poetry. These diacritics are small markings used above or below the letters of a word to specify the exact pronunciation of the word. They are not commonly used in the daily, scientific, and business uses, and are not discussed further in this work.(Abandah \& Khedher, 2009)}
+{The Arabic language has some diacritics that are used in the holy book Qur'an and sometimes in teaching material and poetry. These diacritics are small markings used above or below the letters of a word to specify the exact pronunciation of the word. They are not commonly used in the daily, scientific, and business uses, and are not discussed further in this work.\cite{abandah2009analysis}}
 
-{\color{blue}Arabic is written by more than 100 million people, in over 20 different countries.
-The Arabic script evolved from a type of Aramaic, with the earliest known document
-dating from 512 AD. The Aramaic language has fewer consonants than
-Arabic, so new letters were created around the 7th century by adding dots to
-existing letters. There are therefore several letters differing only by a single dot.
-Other small marks (diacritics) are used to indicate short vowels, but are often
-not used. \cite{burrow2004arabic}}
-
-
-Finally, in Arabic script a top-down writing style called vertical ligatures is very common - letters in a word may be written above their consequent letters. In this style, the position of letters cannot be predefined relative to the baseline of the word \cite{biadsy2011segmentation}.    
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Word parts count}}{}    
 Saabni and El-sana have explored a large collection of Arabic texts and extracted 300,000 different word combinations of 82,000 different word-parts. Ignoring the additional strokes reduced the number of different word-parts to 40,000 \cite{saabni2009efficient}. 
 
-\emph{TODO: see the section "Overview of Arabic Letters" in \cite{abandah2009analysis}. It talks about letters frequencies and special letters}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Issues with Arabic Handwriting Recognition}}{} 
+One difficulty with the Arabic script is the number and position of diacritic marks associated to Arabic characters.
+{Recognition and segmentation of Arabic handwritten script is a difficult task because the Arabic handwritten characters are naturally both cursive and unconstrained. The analysis of Arabic script is more complicated in comparison with English script \cite{al2010development}}.
 
-\emph{TODO: talk about the WP and give statistics of WP length as described in {abandah2009analysis}}
+%TODOs:
+%\begin{enumerate}
+%\item See the section "Overview of Arabic Letters" in \cite{abandah2009analysis}. It talks about letters frequencies and special 
+%\item Talk about the WP and give statistics of WP length as described in {abandah2009analysis}
+%\item Add a table containing the letters in all positions
+%\item See \cite{al2011online}.
+%\item See \cite{abandah2009analysis}
+%\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Arabic script Segmentation}
 
-\subsection{Issues with Arabic Handwriting Recognition}
-{RecognitionandsegmentationofArabichandwrittenscriptisadifficulttaskbecausetheArabic
-handwrittencharactersarenaturallybothcursiveandunconstrained.TheanalysisofArabicscriptis
-more complicatedincomparisonwithEnglishscript. Itisbelieved,goodsegmentationisonereasonfor
-high accuracycharacterrecognition.\cite{al2010development}}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Arabic text Segmentation}
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Definition}}{}
-Character segmentation is the process of splitting the handwritten script into basic units, usually corresponding to single letters. 
+Character segmentation is the process of splitting the handwritten script into basic units, usually corresponding to single letters or alternatively to different basic units usually named graphems. Graphemes are ... and they could be letters, couples of letters or part of a letter.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Importance}}{}
-Segmentation is one of the required steps in numerous off-line and on-line cursive handwritten word recognition solutions \cite{brodowska2011oversegmentation}.
-It is also a very important step, because improperly extracted characters are usually impossible to recognize correctly with currently used methods.
-It is wrong sufficiently often to make a major contribution to the error rate of the system.
-Character segmentation has long been a critical area of the OCR process \cite{casey1996survey}. 
-An integral part of the hand writing recognition process, when the analytic approach is considered, is segmentation. 
-The problems of segmentation persist today. 
+Segmentation is one of the required steps in numerous off-line and on-line cursive handwritten word recognition solutions and has long been a critical area of the OCR process. The problems of segmentation persist today. .
+Its importance is derived from the fact that improperly extracted characters are usually difficult to recognize correctly. 
+Wrong segmentation will often results in major contribution to the error of the recognition algorithm. 
+An integral part of the hand writing recognition process, when the analytic approach is considered, is segmentation. \cite{casey1996survey, brodowska2011oversegmentation}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The segmentation-recognition catch 22}}{}
-{It is believed, good segmentation is one reason for high accuracy character recognition. However, the task of segmentation, while usually trivial to a human, is a very challenging pattern recognition problem.
-The Catch 22 in segmentation is as follows: character is a pattern that
-resembles one of the symbols the system is designed to recognize. But to determine such a resemblance
-the pattern must be segmented from the document image. Each stage depends on the other, and in complex
-cases it is paradoxical to seek a pattern that will match a member of the system's recognition alphabet
-of symbols without incorporating detailed knowledge of the structure of those symbols into the process.
-\cite{casey1996survey}}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The context dependent of segmentation}}{}
 {the segmentation decision is not a local decision, independent of previous and subsequent
@@ -352,25 +354,44 @@ segmentation/recognition result. Even a series of satisfactory pattern matches c
 contextual requirements on the system output are not satisfied. For example, the letter sequence "cl" can
 often closely resemble a "d", but usually such a choice will not constitute a contextually valid result.}
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The segmentation - recognition catch-22}}{}
+{It is believed, good segmentation is one reason for high accuracy character recognition. However, the task of segmentation, while usually trivial to a human, is a very challenging pattern recognition problem.
+The Catch 22 in segmentation is as follows: character is a pattern that
+resembles one of the symbols the system is designed to recognize. But to determine such a resemblance
+the pattern must be segmented from the document image. Each stage depends on the other, and in complex
+cases it is paradoxical to seek a pattern that will match a member of the system's recognition alphabet
+of symbols without incorporating detailed knowledge of the structure of those symbols into the process.
+\cite{casey1996survey}}
+
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Cursive English segmentation - techniques and achievements}}{}
-{The broad range of significant real world applications and the
-considerable difficulty of the task both contribute to the fact that there are many
-known methods of performing cursive word recognition - one suited better for some
-applications and some for the others \cite{brodowska2011oversegmentation}}
+There are many known method of performing cursive letters segmentation. 
+The broad range of significant real world applications and the considerable difficulty of the task both contribute to the fact that there are many known methods of performing cursive word recognition - one suited better for some applications and some for the others \cite{brodowska2011oversegmentation}
+However, a correct segmentation rate is not easily achievable.
 
-{Conventional approaches can segment typical words
-accurately. In this regard, different strategies such as
-projection profile, bounding box or contour tracing exhibit
-promising results [1]. However, they might lead to incorrect
-segmentation when deal with touching characters \cite{saba2010survey}.}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The three approaches for segmentation}}{}
+In a comprehensive survey done in \cite{casey1996survey}, the authors has pinpointed three elemental strategies for off-line cursive text segmentation in addition to many approaches that are a combinations of these three. They have noted that much of the literature on segmentation reports methods that can be characterized as a blend of these three mentioned methods.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Recognition-Based Segmentation Approaches}}{}
-{Character segmentation and character classification steps are not totally separate. Degree of connection between them vary from a solution to a solution.
-However, the most common general approach is to split words into segments that should be characters, pass each segment to a classifier and, if the classification results are not satisfactory (e.g. some measure of belief requirements is not met), call segmentation once more with the feedback information about rejecting the previous result. \cite{brodowska2011oversegmentation}}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Dissection}}{}
+The classical approach which is usually named \emph{dissection}. 
+This approach attempts to segment the text into character using "character-like" properties. 
+Examples of such properties are height, width, separation from neighboring components, disposition along a baseline, etc.
+Conventional approaches can segment typical words accurately. 
+In this regard, different strategies such as projection profile, bounding box or contour tracing exhibit promising results. 
+However, they might lead to incorrect segmentation when deal with touching characters \cite{saba2010survey}.
+
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Recognition based segmentation}}{}
+The catch 22 described above explains the fact that character segmentation and character classification steps are not totally separate. Degree of connection between them vary from a solution to a solution.
+The second approach is recognition-based segmentation, in which the system searches for sub-components in the cursive that match letters in its alphabet. 
+In this method, the recognition confidence, heavily affects the overall segmentation accuracy.
+The general approach is to split words into segments that should be characters, pass each segment to a classifier and, if the classification results are not satisfactory (e.g. some measure of belief requirements is not met), call segmentation once more with the feedback information about rejecting the previous result. \cite{brodowska2011oversegmentation}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The holistic approach}}{}
+The holistic methods, in which the system seeks to recognize words as a whole, thus avoiding the segmentation process which was previously discussed in Section \ref{[]}.
 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Over-segmentation}}{}
-The most common  method of character segmentation is initial over-segmentation - finding some set of potential  splitting points in the graphical representation of the word and then attempting to eliminate the improper ones
+The most common methods of character segmentation is initial over - segmentation, i.e, finding some set of potential splitting points in the graphical representation of the word and then attempting to eliminate the improper ones
 The segmentation task of some cursive and unconstrained nature of some languages such Arabic, anneals the segmentation task. 
 The technique requires an over-segmentation stage which partition handwritten words into primitives that may then be processed further to provide the best segmentation.
 
@@ -378,50 +399,33 @@ The technique requires an over-segmentation stage which partition handwritten wo
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Issues with segmentation}}{}
 In languages that are commonly written non-cursively, segmentation techniques may be used in HWR systems.
 also may use segmentation techniques since human handwriting 
-touching characters are error prone in
-segmentation stage that contributes to recognition errors.
-Commonly, the problem is due to the conventional
+touching characters are error prone in segmentation stage that contributes to recognition errors.
 
 A through survey on character segmentation is given in \cite{casey1996survey} and \cite{brodowska2011oversegmentation}.  
 
 
-References:\\
---------------\\
-cursive english segmentation [36],[19],[20],[55],[58],[81]
-
-[36] L.D. Harmon, {Automatic Recognition of Print and Script}, Proceedings of the IEEE, vol. 60, no. 10,
-pp. 1165-1177, Oct. 72.
-
-[19] G. Dimauro, S. Impedovo and G. Pirlo, {From Character to Cursive Script Recognition: Future
-Trends in Scientific Research}, Proc. 11th Int. Conf. on Pattern Recognition, vol. II, page 516, Aug.
-1992.
-
-[20] C.E. Dunn and P.S.P. Wang, {Character Segmenting Techniques for Handwritten Text - A Survey},
-Proc. 11th Int. Conf. on Pattern Recognition, vol. II, page 577, August 1992.
-
-[55] E. Lecolinet and O. Baret, {Cursive Word Recognition: Methods and Strategies, Fundamentals in
-Handwriting Recognition}, S. Impedovo (Ed.), NATO ASI Series F: Computer and Systems Sciences,
-vol. 124, Springer Verlag, 1994, pages 235-263.
-
-[81] C.C. Tappert, C.Y. Suen and T. Wakahara, {The State of the Art in On-line Handwriting Recognition},
-IEEE Trans. on Pattern Analysis and Machine Intelligence, vol. 12, no. 8, page 787, Aug.
-1990.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%References:\\
+%--------------\\
+%cursive english segmentation [36],[19],[20],[55],[58],[81]
 %
-%\section{On-line handwriting as temporal information}
-%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Online HW representation}}{}
+%[36] L.D. Harmon, {Automatic Recognition of Print and Script}, Proceedings of the IEEE, vol. 60, no. 10,
+%pp. 1165-1177, Oct. 72.
 %
-%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Online HW space definition}}{}
-%The stroke trajectory space definition.
+%[19] G. Dimauro, S. Impedovo and G. Pirlo, {From Character to Cursive Script Recognition: Future
+%Trends in Scientific Research}, Proc. 11th Int. Conf. on Pattern Recognition, vol. II, page 516, Aug.
+%1992.
 %
-%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Online HW as time series}}{}
-%However in this work we do not use the temporal information of the written stroke trajectory, however we view it as an ordered set of points. 
+%[20] C.E. Dunn and P.S.P. Wang, {Character Segmenting Techniques for Handwritten Text - A Survey},
+%Proc. 11th Int. Conf. on Pattern Recognition, vol. II, page 577, August 1992.
 %
+%[55] E. Lecolinet and O. Baret, {Cursive Word Recognition: Methods and Strategies, Fundamentals in
+%Handwriting Recognition}, S. Impedovo (Ed.), NATO ASI Series F: Computer and Systems Sciences,
+%vol. 124, Springer Verlag, 1994, pages 235-263.
 %
-%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{techniques that were adopted from temporal data classification}}{}
+%[81] C.C. Tappert, C.Y. Suen and T. Wakahara, {The State of the Art in On-line Handwriting Recognition},
+%IEEE Trans. on Pattern Analysis and Machine Intelligence, vol. 12, no. 8, page 787, Aug.
+%1990.
 
-
-\bibliographystyle{plainnat}
-\bibliography{references}
-\end{document}
+%\bibliographystyle{plainnat}
+%\bibliography{references}
+%\end{document}
