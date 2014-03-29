@@ -177,7 +177,7 @@ In Table \ref{table:subsequences_types}, $S$ denotes a stroke containing $L$ POI
 \caption{A mapping between the subsequence types and the possible letter positions}
 \begin{tabular}{| c |c | c |}
 \hline
-  Name     & Subsequence    & Letter Position       \\
+  Name     & Subsequence    & Letter Position    \\
 \hline
   $\alpha$ & $S_0^{k}$         & $Ini$ or $Mid$  \\
 \hline
@@ -502,16 +502,6 @@ In addition, it is evident that the recognition rate (RR) is more sensitive to s
 \label{fig:num_letter_impact}
 \end{figure}
 
-\section{Summary and Future Work}
-In this paper, we proposed a ongoing approach for segmenting open-dictionary, Arabic handwritten script.
-The segmentation is performed in the strokes level. 
-Morphological features are employed to nominate potential SPs. 
-The sub-strokes induced by the SPs are classified using a $k$-NN letters classifier, and the classification information is saved in a scoring matrix.
-The final segmentation points are then selected by finding the best-scored segmentation path in the scoring matrix. 
-This is done using several proposed algorithms. 
-The system has demonstrated promising results.
-
-In future work, we will expand the process by adding a later holistic WP recognizer that exploits the proposed segmentation and the scoring information to inspect a limited number of potential WPs.\\
 
 %
 %\bibliographystyle{plainnat}
