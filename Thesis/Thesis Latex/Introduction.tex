@@ -72,63 +72,56 @@
 \subsection{Handwriting Recognition}
 
 \nomenclature{$HWR$}{Handwriting recognition}
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}
-Writing, which has made much of the culture and civilization possible, was developed a long time ago as a mean to expand human memory and to facilitate communication. 
-Nowadays, it remains a commonly used mean of communication and recording of information in the daily life, and therefore, a growing interest in the \emph{handwriting character recognition} (HWR) field has emerged in recent years, and has now been a topic of research for over four decades.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR Motivation 1 - handwriting importance and survival}}{}
+Writing, which has made much of the culture and civilization possible, was developed a long time ago as a mean to expand human memory and to facilitate communication. Despite the long standing prediction that digital computers will challenge its future, handwriting persists. 
+Nowadays, handwriting remains a commonly used mean of communication and recording of information in the daily life, and therefore, a growing interest in the \emph{handwriting character recognition} (HWR) field has emerged in recent years, and has now been a topic of research for over four decades .
+Producing documents were hugely simplified by computers, however, the pen and paper are still the natural medium for many important tasks such as notes taking in class.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR Motivation 1 - handwriting survival}}{}
-Despite the long standing prediction that digital computers will challenge its future, handwriting persists. 
-Producing documents was hugely simplified by computers, however, the pen and paper are still the natural medium for many important tasks. For instance, note taking in classrooms is a task that can still be done more efficiently by hand for most users. 
-The ease and convenience of having information in digital form provides a powerful incentive to find a way of quickly converting handwritten text into its digital equivalent.
-Not only this is useful for making digital copies of handwritten documents, but also in many automated processing tasks, such as searching, indexing, automatic mail sorting, cheque processing, etc.. \cite{noaparast2009persian,connell2000online}
+Converting handwritten text into its digital equivalent is highly motivated by the ease and convenience of the digital representation.
+Not only this is useful for making digital copies of handwritten documents, but also in many automated processing tasks, such as searching, indexing, automatic mail sorting, processing, sharing and more \cite{noaparast2009persian}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR Motivation 2 - Keyboard-less devices}}{}
-Other motivation for HWR is the rapid transition from personal computers and laptops to the usage of smart-phones and tablets devices that are too small to have full sized keyboards, or sometimes may be too small for any keyboard at all, requiring pen, hand gestures, figure gestures or voice interface to enter data. 
+Other motivation for recognizing handwritten scripts is the rapid transition from personal computers and laptops to the usage of keyboard-less smart-phone and table devices that which are too small to have convenient keyboards thus requiring pen or finger gestures to enter data \cite{connell2000online}. 
 
 \nomenclature{$OCR$}{Optical character recognition}
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR as OCR}}{}
-HWR is a special case of emph{optical character recognition} (OCR). HWR was defined by Plamondon and Srihari as "the task of transforming a language represented in its spatial form of graphical marks into its symbolic representation" \cite{plamondon2000online}.
-It is a skill that is personal to individuals, thus, the task of HWR is considered a difficult pattern recognition problem. 
- 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR as OCR}}{} 
-OCR is defined as the process of electronically converting a scanned, photoed or sensed of both typewritten or printed text into machine-encoded text. It has been steadily evolving during its history. It has always been a favorite testing ground for new ideas in pattern recognition giving rise to an exciting set of research topics and producing many powerful practical applications.
-However, since many experiments of new ideas in pattern recognition were conducted on isolated characters, the results are not always immediately reflected in OCR applications.
+HWR was defined by Plamondon and Srihari as "the task of transforming a language represented in its spatial form of graphical marks into its symbolic representation" \cite{plamondon2000online}.
+HWR is a special case of emph{optical character recognition} (OCR), an important field in pattern recognition that is defined as the science of electronically converting a scanned, photoed or sensed of both typewritten or printed texts into machine-encoded text. OCR has been steadily evolving during its history. It has always been a favorite testing ground for new ideas in pattern recognition giving rise to an exciting set of research topics and producing many powerful practical applications.
+However, since many experiments of new ideas in pattern recognition were conducted on isolated characters, the results are not always immediately reflected in OCR applications \cite{burrow2004arabic}  .
 OCR is considered one of the best applications of machine vision and one of the most successful research branches in pattern recognition theory. 
-Although considered a well developed technological field, OCR remains an area of active scientific research and creative engineering. 
-It is widely used today in a wide range of projects, from occasional document scanning to creation of massive digital document archives. \cite{burrow2004arabic, borovikov2004survey} 
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HW types of analysis}}{}
-Besides recognition, handwriting is associated with other types of analysis, such as, signature verification, writer identification, etc...
+Although considered a well developed technological field, OCR remains an area of active scientific research and creative engineering \cite{borovikov2004survey}.
+Besides recognition, handwriting is associated with other types of analysis, such as, signature verification, writer identification, etc.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Levels of difficulties in HWR}}{}
-There are different types with varying complexity of problems within HWR, which is based on how the data is presented to the recognition system, at what level the data can be unambiguously broke into pieces (e.g. individual characters or words), and the transcription complexity of the language used. 
-Latin handwriting can appear in several forms which impose a different recognition difficulties. The \textbf{cursive script} form, which is the most common type of day-to-day script, is the text in which words, or portion of a word, is written with a single stroke, i.e, ligatures connect adjacent letters. 
-The \textbf{hand-printed script} is the case where the writing still represents an entire word sequence, but succeeding characters are explicitly segmented by a pen lift; though, the character segmentation problem is still not solved as pen lifts can also occur within a character. 
-Another form is the \textbf{isolated characters} form, in which the segmentation problem is already solved, for instance by the acquisition interface and the cooperation of the writer. 
-Graphical boxes or timeouts are common interface techniques for this purpose .
-The recognition difficulty decreases from the first listed type to the last. Indeed, HWR systems have a strong history in making use of this graduation in difficulty. They have aimed (and still aim) at a reasonable user satisfaction by restricting the text input to a simpler handwriting type, while simultaneously rewarding the user with recognition accuracy \cite{burrow2004arabic}.
+There are different types with varying complexity of problems within HWR, which is based on how the data is presented to the recognition system, at what level the data can be unambiguously broke into pieces (e.g. individual characters or words), and the transcription complexity of the language used \cite{bahlmann2005advanced}. In one extreme there is the case of isolated characters written inside graphical boxes in which the segmentation problem is already solved. The opposite extreme is the case of cursive unrestricted handwriting in which words, or portion of a word, is written with a single stroke, i.e, ligatures connect adjacent letters. Indeed, HWR systems have a strong history in making use of this graduation in difficulty \cite{bahlmann2005advanced}. 
+
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The cursive nature of the Arabic handwriting}}{}
-However, in the Arabic language, the only case is the cursive, in both handwritten and printed text.
+Unlike the Latin, in which non-cursive handwriting, i.e., using isolated characters, is possible and common, the Arabic script, the only case is the cursive in both handwritten and printed text.
 One problem in unconstrained HWR is the huge variety in the writing of different people. 
-Another extreme difficulty is the so-called segmentation, that is, the process of dividing an entire writing into sub-units (typically characters) \cite{bahlmann2005advanced}.
-
-%\emph{TODO: Review \cite{bahlmann2005advanced} thesis}
+Another extreme difficulty task is the so-called segmentation task, that is, the process of dividing an entire writing into sub-units (typically characters) \cite{bahlmann2005advanced}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Off-line versus On-line Handwriting Recognition}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
-The field of HWR can be classified in several ways. However, the most common categorization is the one that distinguish between off-line (also called static) and on-line (also called dynamic) HWR.
-In the off-line case, a digital image containing text is fed to the computer, and the system attempts to convert the spatial representation of the letters into digital symbols \cite{al2011online}. Off-line HWR focuses on documents that have been written on paper at some previous point of time. 
-In contrast, on-line HWR is performed on a digital representation of the text written on a special digitizer, tablet or smart-phone device, where sensors pick up the pen-tip movements.
-The two-dimensional coordinates of successive points of the writing as a function of time are stored in order, i.e., the order of strokes made by the writer is readily available. 
+The field of HWR can be classified in several ways. However, the most common categorization is the one that distinguish between \emph{off-line} (also called static) and \emph{on-line} (also called dynamic).
+Offline HWR focuses on documents that have been written on paper at some previous point of time. A digital image of the document is fed to the computer, and the system attempts to convert the spatial representation of the letters into digital symbols \cite{al2011online}. 
+In contrast, on-line HWR is performed on a digital representation of the text written on a special digitizer, tablet or smart-phone device, where sensors pick up the pen-tip movements and the two-dimensional coordinates of successive points of the writing as a function of time are stored.
+
+Figure \ref{fig:offline_vs_online} shows typical input signals that can be analyzed in both cases.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Similarities and advantages of on-line and off-line}}{}
-While this sequence can be used to construct a static image of the writing, thus allowing off-line character recognition techniques to be applied, it has been shown that the information about the pen dynamics can be used to obtain a better recognition accuracies than the static data alone. In addition, the difficulty of recreating the temporal data has led to few such feature extraction systems so far \cite{plamondon2000online}. Figure \ref{fig:offline_vs_online} shows typical input signals that can be analyzed in both cases.
+Off-line HWR techniques can be applied on on-line data by constructing a static image of the on-line script. 
+However, it has been shown that the information about the pen dynamics can be used to obtain a better recognition accuracies than the static data alone. 
+In the other direction, the success of on-line systems makes it attractive to consider developing off-line systems that first estimate the trajectory of the writing from off-line data and then use on-line HWR techniques. 
+However, the difficulty of reconstructing the temporal data has led to few such systems so far \cite{plamondon2000online}.
 An advantage of on-line handwritten data over off-line data is the availability of the stroke segmentation and the order of writing. 
 Ink in static images must first be separated from the image background, creating a potential source of error. 
 The ability to detect the states of "pen-down" (when the pen touches the tablet or the finger touches the touch screen) and "pen-up" can also be used. 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{State of the art HWR}}{}
+In general, off-line HWR systems are less accurate than on-line systems, but, they are now good enough that they have a significant economic impact on for specialized domains such as interpreting handwritten postal addresses on envelopes and reading courtesy amounts on bank checks.
 
 \begin{figure}
 	\centering
@@ -143,13 +136,6 @@ The ability to detect the states of "pen-down" (when the pen touches the tablet 
     \caption{(a) Off-line word. The image of the word is converted into gray-level pixels using a scanner. (b) On-line word. The x; y coordinates of the pen-tip are recorded as a function of time with a digitizer \cite{plamondon2000online}.}
    \label{fig:offline_vs_online}
 \end{figure}
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{State of the art HWR}}{}
-HWR is no longer an esoteric topic on the fringes of information technology, but a mature discipline that has many commercial usages.
-On-line systems for handwriting recognition are available in hand-held computers such as PDAs.
-Off-line systems are less accurate than on-line systems.
-However, they are now good enough that they have a significant economic impact on for specialized domains such as interpreting handwritten postal addresses on envelopes and reading courtesy amounts on bank checks.
-The success of on-line systems makes it attractive to consider developing off-line systems that first estimate the trajectory of the writing from off-line data and then use pen-tip are recorded as a function of time with a digitizer.
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -293,7 +279,8 @@ Other small marks (diacritics) are used to indicate short vowels, often heard an
 Although the spoken Arabic is slightly different from country to country, the written Arabic is standard system used all over the Arab world \cite{saabni2009efficient,jannoud2007automatic}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The growing interest in the Arabic HWR}}{}
-{Despite the fact that Arabic alphabets are used in many languages, Arabic Character Recognition (ACR) has not received enough interests from researchers. Little research progress has been achieved as compared to the one done on Latin or Chinese. It has almost only started in 1975 by Nazif (1975), while the earlier research efforts in Latin may be traced back to the middle of the 1940s. However, due to a lack of computing power, no significant work was performed until the 1980s. Recent years have shown a considerable increase in the number of research papers related to ACR. \cite{zeki2011segmentation}}
+{Despite the fact that Arabic alphabets are used in many languages, Arabic Character Recognition (ACR) has not received enough interests from researchers. Little research progress has been achieved as compared to the one done on Latin or Chinese. It has almost only started in 1975 by Nazif (1975), while the earlier research efforts in Latin may be traced back to the middle of the 1940s. However, due to a lack of computing power, no significant work was performed until the 1980s. Recent years have shown a considerable incr
+ in the number of research papers related to ACR. \cite{zeki2011segmentation}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -317,14 +304,6 @@ Saabni and El-sana have explored a large collection of Arabic texts and extracte
 One difficulty with the Arabic script is the number and position of diacritic marks associated to Arabic characters.
 {Recognition and segmentation of Arabic handwritten script is a difficult task because the Arabic handwritten characters are naturally both cursive and unconstrained. The analysis of Arabic script is more complicated in comparison with English script \cite{al2010development}}.
 
-%TODOs:
-%\begin{enumerate}
-%\item See the section "Overview of Arabic Letters" in \cite{abandah2009analysis}. It talks about letters frequencies and special 
-%\item Talk about the WP and give statistics of WP length as described in {abandah2009analysis}
-%\item Add a table containing the letters in all positions
-%\item See \cite{al2011online}.
-%\item See \cite{abandah2009analysis}
-%\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Arabic script Segmentation}
@@ -381,12 +360,10 @@ The general approach is to split words into segments that should be characters, 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The holistic approach}}{}
 The holistic methods, in which the system seeks to recognize words as a whole, thus avoiding the segmentation process which was previously discussed in Section \ref{[]}.
 
-
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Over-segmentation}}{}
 The most common methods of character segmentation is initial over - segmentation, i.e, finding some set of potential splitting points in the graphical representation of the word and then attempting to eliminate the improper ones
 The segmentation task of some cursive and unconstrained nature of some languages such Arabic, anneals the segmentation task. 
 The technique requires an over-segmentation stage which partition handwritten words into primitives that may then be processed further to provide the best segmentation.
-
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Issues with segmentation}}{}
 In languages that are commonly written non-cursively, segmentation techniques may be used in HWR systems.
@@ -395,45 +372,23 @@ touching characters are error prone in segmentation stage that contributes to re
 
 A through survey on character segmentation is given in \cite{casey1996survey} and \cite{brodowska2011oversegmentation}.  
 
-
-%References:\\
-%--------------\\
-%cursive english segmentation [36],[19],[20],[55],[58],[81]
-%
-%[36] L.D. Harmon, {Automatic Recognition of Print and Script}, Proceedings of the IEEE, vol. 60, no. 10,
-%pp. 1165-1177, Oct. 72.
-%
-%[19] G. Dimauro, S. Impedovo and G. Pirlo, {From Character to Cursive Script Recognition: Future
-%Trends in Scientific Research}, Proc. 11th Int. Conf. on Pattern Recognition, vol. II, page 516, Aug.
-%1992.
-%
-%[20] C.E. Dunn and P.S.P. Wang, {Character Segmenting Techniques for Handwritten Text - A Survey},
-%Proc. 11th Int. Conf. on Pattern Recognition, vol. II, page 577, August 1992.
-%
-%[55] E. Lecolinet and O. Baret, {Cursive Word Recognition: Methods and Strategies, Fundamentals in
-%Handwriting Recognition}, S. Impedovo (Ed.), NATO ASI Series F: Computer and Systems Sciences,
-%vol. 124, Springer Verlag, 1994, pages 235-263.
-%
-%[81] C.C. Tappert, C.Y. Suen and T. Wakahara, {The State of the Art in On-line Handwriting Recognition},
-%IEEE Trans. on Pattern Analysis and Machine Intelligence, vol. 12, no. 8, page 787, Aug.
-%1990.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Problem Definition}
+\section{Contribution to the field}
+%Scope and Problem Definition Limitations
 
-The growing use of keyboard-less handheld devices accelerates a transition in the Human-Computer data input interface.  While in the past, keyboards and mice were the primary mode of data entry, nowadays, hand and finger gestures are increasingly used for this task. Consequently, a growing interest in the online character recognition field has taken place. Automated script recognition of Latin, Chinese and Kanji has been a focus of study in the last decade and impressive recognition rates were achieved. However, Arabic text recognition is at an early stage. The reason for this is lack of funds and other utilities such as text database, dictionaries, etc. [2]
-Text recognition can be classified into two main fields: online and offline recognition. Online recognition aims recognizing the text as it is being written. However, in the offline script recognition field, a digital image containing text is fed to the computers and the system attempt to recognise the written text [3]. The main existing approaches for script recognition are the holistic approach and the analytic approach. The holistic approach considers the global properties of the written text while the analytic approach involves segmentation and classification of each part of the text. 
-Arabic text, both handwritten and printed is cursive. An Arabic word consists of one or more sub-words (which will be referred to as word parts). Each word part consists of one character or more. Thus, most of the online Arabic recognition systems perform the recognition soon after the word part scribing is completed using the holistic or the analytic approach. The analysis of Arabic script is further due to obligatory dots and stokes that are placed above or below most letters in addition to the wide range variety of writing fashions.
-In this thesis we propose a novel approach which combines both holistic and analytic techniques for recognizing open dictionary Arabic online script. The recognition process, in our approach, is performed whilst the word part is being written. At the first stage, demarcation points are identified using SVM. At the second stage we employ an agile but loose classifier to select letters candidates for each segment. Finally, we holistically recognize the word part by applying a costly yet accurate classifier. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The problem}}{}
 
-\emph{see: \cite{al2010development} for a well written introduction}
-\emph{TODO: Review \cite{bahlmann2005advanced} thesis}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Gap}}{}
 
-\section{Scope}
-As mentioned before, Arabic is a cursive written language and it contains about 40k possible word parts. By "possible", we mean that there is an Arabic word which contains the word part. Arabic letters may differ by additional stroke above or beneath the main stroke. For example, the Arabic letter \RL{f} (Fa) contains a single dot above the main stroke, however the letter \RL{q} (Qa), contains double dots, both having identical main body. In our work we recognize and classify the main body of the letter and ignore the additional stroke entirely. As a result, the number of different letters drops from 29 to18 and the number of different possible word parts decreases to []. It is important to comment that taking the additional strokes into consideration may be exploited to boost the classification rate.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Describe the solution}}{}
+The current study is focused on exploration of possible techniques to facilitate true on-line recognition system by enabling .
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Limitation}}{}
+
+As mentioned before, Arabic is a cursive written language and it contains about 40k possible word parts. By "possible", we mean that there is an Arabic word which contains the word part. Arabic letters may differ by additional stroke above or beneath the main stroke. For example, the Arabic letter \RL{f} (Fa) contains a single dot above the main stroke, however the letter \RL{q} (Qa), contains double dots, both having identical main body. In our work we recognize and classify the main body of the letter and ignore the additional stroke entirely. As a result, the number of different letters drops from 29 to 18 and the number of different possible word parts decreases to []. It is important to comment that taking the additional strokes into consideration may be exploited to boost the classification rate.
 The Arabic letters system contain 7 sets of letters that have the same body, and are differentiated only by the additional strokes above or under it. The following table describes the sets of similarity:
 
 \begin{table}[h]
@@ -466,7 +421,7 @@ We have also considered the common combination of the letter \RL{l} followed by 
 Also, three consequent appearances of the letter \RL{-b-} (B) in the middle of the word-part looks as follows: \RL{-bbb-}. As can be seen very similar to the \RL{s} (S) letter in its medial position \RL{-s-}, the only to distinguish between the two options is by looking at the additional strokes.
 For these mentioned complexities, when recognizing Arabic scripts, most researches have preferred the holistic approach. 
 
-\section{Contribution to the field}
+
 
 An Example:
 The current study is focused on exploration of possible techniques to develop an OCR system for
@@ -477,35 +432,23 @@ for Urdu ligatures, and built a recognition module for these ligatures. The comp
 proposed to develop an OCR system for Urdu and a testing application is also made. Test results
 are reported and compared with the previous work done in this area.
 
-%
-%\section{Approach Overview}
-%
-%While the holistic approach is a common technique used for Arabic handwriting recognition, this approach is not practical for recognizing words from the unrestricted dictionary (contains all the words in the Arabic dictionary), since it needs to train the system for each word in the dictionary.  As mentioned in section 2.2 there are about 40,000 valid word parts, with different main strokes. There are much more classes if additional strokes are taken into consideration, practically, a very large number of classes. To overcome this problem, we propose an Arabic word-parts recognizer which breaks up the whole recognition process to 2 restricted recognition tasks. The first is analytical letters classification and the other is holistic word-part recognition from the limited dictionary that contains veritable combinations of letters candidates found in the previous stage. The most significant benefit of this approach is that in both stages the recognition is performed on spaces which contain a very limited class number. 
-%
-%
-%In this section we draw the skeleton of our recognition process. Figure \ref{fig:overview} presents the main flow of our approach followed by a brief description on each stage.
-%
-%\begin{figure}
-%\centering
-%\includegraphics{./figures/overview}       
-%\caption{The main stages of the recognition system.}
-%\label{fig:overview}
-%\end{figure}
-%
-%\subsection{Demarcation Points Nomination}
-%The goal of this stage is to decide coarsely but effectively if a certain point is a demarcation point. This stage is performed while the word part is being written. To identify demarcation point we have used the following 2 Arabic demarcation points characteristic: 1. Demarcation point lives in a horizontal region. 2. Demarcation point is usually contained in a Forward region. More details and definitions will follow in a section \emph{[]}. We present a novel algorithm online segmentation using static rules engine. Over segmentation and under-segmentation are the main problems segmentation algorithms encounter. Over segmentation is handled in the next stage. Under-segmentation is handled by a defining a new notion named hyper-letter, which represents combinations of letters that the demarcation points between them is sometimes concealed. More details will be given in section \emph{[]}.
-%
-%\subsection{Segmentation selection and Letter classification}
-%This stage starts when the user finishes to scribe the stroke, i.e. on "pen up" event.  The goal of this sub-process is to select the set of demarcation points which gives the best letter recognition results. This is done after the writer has completed scribing the main body of the stroke. Segmentation induces partition to subsequences, where each subsequent is a geometric representation of a letter (or a combination or letters). The subsequence is classified to a set of 3 or candidate letters using a combination of EMD and DTW metrics. The quality scoring of the segmentation is based on the recognition score of each letter which is calculated using dynamic programming technique. 
-%
-%\subsection{Candidate Word-Part generation and embedding}
-%After the segmentation is determined and each sub-sequent was classified to a small set of hyper-letters candidates, the system generate all possible word-parts sequences using the samples of hyper-letters in our letters database using the most common ways to write the hyper-letter. Here we use the Holistic approach to classify the word-part. However, instead of taking the whole dictionary of possible word-parts, our space of candidate word part only samples of word parts combinations of letters nominated in the previous stage. Subsequently, we extract the features of the generated word-parts and embed them using approximate Earth Movers Distance (EMD) approach described by Shirdhonkar and Jacobs in \cite{shirdhonkar2008approximate}.
-%
-%\subsection{Candidate Word-Part generation and embedding}
-%The number of possible different word-parts is relatively small. Assume that the written word part composed of 4 letters. For every letter, the second stage has nominated 3 different letters. In the worst case when all combinations are legal, we get at most $3^4=27$ different possible word-parts. However, the number of different samples created is very large. Thus, we need a fast classification approach to overcome this obstacle. 
-%EMD is a true metric, thus we can utilize a recently developed tool which allow fast (sub linear time) approximate nearest neighbor (NN) named Linear Sensitivity Hashing (LSH) presented by Gionis et al in \cite{gionis1999similarity}. LSH indexes a set of training examples living in a normed space by a number of hash tables, such that the probability of collision is high for similar examples and low for dissimilar ones. In this stage, the system initializes an LSH data structure with the set of word parts generated in the previous stage and use it to efficiently find the most similar word-parts.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Organization of Thesis}
+
+
+%TODOs:
+%----------
+%\begin{enumerate}
+%\item See the section "Overview of Arabic Letters" in \cite{abandah2009analysis}. It talks about letters frequencies and special 
+%\item Talk about the WP and give statistics of WP length as described in {abandah2009analysis}
+%\item Add a table containing the letters in all positions
+%\item See \cite{al2011online}.
+%\item See \cite{abandah2009analysis}
+%\item Review \cite{bahlmann2005advanced} thesis
+%\end{enumerate}
 
 \bibliographystyle{plainnat}
 \bibliography{references}
