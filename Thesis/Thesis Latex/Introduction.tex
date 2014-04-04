@@ -220,46 +220,65 @@ Examples of such languages are Farsi, Urdu, Malay, Housa and Ottoman Turkish.
 However, it must be mentioned that some of those languages are currently using Latin characters, but in general, people can still read the Arabic script.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Literary vs. daily language}}{}
-The literary language is called Modern Standard Arabic or Literary Arabic which it is currently the only official form of Arabic, used in most written documents as well as in formal spoken occasions, such as lectures and news broadcasts. However, the daily spoken Arabic varies drastically from one country to the other.
+Although the spoken Arabic is different from country to country, the written Arabic is standard system used all over the Arab world.
+The literary language is called Modern Standard Arabic or Literary Arabic is which it is currently the only official form of Arabic, used in most written documents as well as in formal spoken occasions, such as lectures and news broadcasts. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The growing interest in the Arabic HWR}}{}
 Despite the fact that Arabic alphabets are used in many languages, Arabic Character Recognition has not received enough interests from researchers, and therefore, little research progress has been achieved as compared to the one done on Latin or Chinese. 
 It has almost only started in 1975 by Nazif \cite{nazif1975system}, while the earlier research efforts in Latin may be traced back to the middle of the 1940s.
 However, recent years have shown a considerable increase in the number of research papers related to Arabic character recognition.
 The challenging nature of handwriting recognition and segmentation has attracted the attention of researchers from industry and academic circles \cite{al2010development}.
-Nevertheless, Arabic character recognition, in both on-line and off-line, is still remains an open problem \cite{zeki2011segmentation}.
+Nevertheless, Arabic HWR, in both on-line and off-line, is still remains an open problem \cite{zeki2011segmentation}.
 
-%\emph{TODO:see the in introduction of \cite{abandah2009analysis}}
-%\emph{See \cite{lorigo2006offline} - motivation section}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{Characteristic of the Arabic writing system}
-Arabic Scripts consists of 28 basic letters, 12 additional special letters, and 8 diacritics. 
-Arabic script is written from right to left in a semi-cursive manner in both printed and handwritten. 
-Most letters are written in four different letter shapes depending on their position in a word, e.g., the letter \RL{`}  (Ain) appears as \RL{`} (isolated), \RL{`-}(initial),\RL{-`-} (medial) and \RL{-`} (final). Among the basic letters, six are Disconnective - \RL{A} (Alef), \RL{d} (Dal), \RL{_d} (Thal), \RL{r} (Reh), \RL{z} (Zain) and \RL{w} (Waw). 
-Disconnective letters do not connect to the following letter and have only two shapes each. 
-The presence of this letters interrupts the continuity of the graphic form of a word. 
-We denote connected letters in a word, as word-part. 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Basic properties}}{}
+Arabic script is written from right to left in a semi-cursive manner in both printed and handwritten.
+It consists of 28 basic letters, 12 additional special letters, and 8 diacritics. \emph{TODO: and a figure}
+Most letters are written in four different letter shapes depending on their position in a word, e.g., the letter \RL{`}  (Ain) appears as \RL{`} (isolated), \RL{`-}(initial),\RL{-`-} (medial) and \RL{-`} (final). 
+Among the basic letters, six are Dis-connective - \RL{A} (Alef), \RL{d} (Dal), \RL{_d} (Thal), \RL{r} (Reh), \RL{z} (Zain) and \RL{w} (Waw). 
+Dis-connective letters do not connect to the following letter and have only two shapes each, isolated and final. 
+The presence of these letters interrupts the continuity of the graphic form of a word, and closes the WP. 
+We denote these connected graphic parts of the word as as word parts (WPs). 
 If the word-part is composed of only one letter, this letter will be in its isolated shape \cite{biadsy2011segmentation}. 
 
-Certain characteristics relating to the obligatory dots and strokes of the Arabic script distinguish it from Roman script, making the recognition of words in Arabic more difficult than in Roman script. First, Most Arabic letters contain dots in addition to the letter body, such as \RL{s} (Sheen) which consists of \RL{s} (Seen) body and three dots above it. In addition to dots, there are stroke that can attach to a letter body creating new letter such as \RL{k}, \RL{.t} and \RL{lA}. These dots and strokes are called delayed strokes since they are usually drawn last in the in handwritten word-part/word. Second, eliminating, adding or moving a dot or stroke could produce a completely different letter and, as a result, produce a word other than the one that was intended (see Table 1). Third, the number of possible variations of delayed strokes is greater than those in Roman scripts, as shown in Figure 2. There are only three such strokes used for English: the cross in the letter t, the slash in x, and the dots in i and j. 
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Additional strokes and diacritics}}{} 
-Small marks (diacritics) are used to indicate short vowels, often heard and in written when using the standard Arabic are seldom used in day-to-day communication and handwriting. \cite{burrow2004arabic}
-Although the spoken Arabic is slightly different from country to country, the written Arabic is standard system used all over the Arab world \cite{saabni2009efficient,jannoud2007automatic}.
-The reason there are some letters in the Arabic script that differ only by dots is the that new letters were created around the 7th century by adding dots to existing Armaic letters \cite{burrow2004arabic}.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Delayed strokes}}{}
+Certain characteristics relating to the obligatory dots and strokes of the Arabic script distinguish it from Latin script, making the recognition of words in Arabic more difficult than in Roman script. 
+These dots and strokes are called \emph{delayed strokes} since they are usually drawn last in the in handwritten WP/word. 
+We will distinguish between two types of delayed strokes, \emph{i'jam} (\RL{A`jAm}) and \emph{harakat} (\RL{.hrkAt}). 
 The old Arabic was written without dots or diacritics. 
-The dots were first introduced by Yahya bin Ya'mur (died around 746 AD) and Nasr bin Asim (died around 707 AD), students of Abu Al-Aswad Al-Du'ali (died around 688 AD) who introduced the diacritics to prevent the Qur'an from being misread by Muslims \cite{zeki2011segmentation}.
-{The Arabic language has some diacritics that are used in the holy book Qur'an and sometimes in teaching material and poetry. These diacritics are small markings used above or below the letters of a word to specify the exact pronunciation of the word. They are not commonly used in the daily, scientific, and business uses, and are not discussed further in this work.\cite{abandah2009analysis}}
+These additional strokes that were added to the Armaic letters, were first introduced by Yahya bin Ya'mur and Nasr bin Asim around the 7th century, to prevent the Qur'an from being misread by Muslims \cite{burrow2004arabic}.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{I'jam}}{}
+The i'jam are the pointing diacritics added to the main body of the letter (called rasm) and their role is to distinguish between various constants. 
+For example, the medial form letters \RL{-b-} /b/, \RL{-t-} /t/, \RL{-_t-} /th/, \RL{-n-} /n/, \RL{-y-} /y/.
+Typically, i'jam are not considered diacritics but part of the letter and consists of one or more dots and lines added above under or inside the letter.
+Eliminating, adding or moving a i'jam produces a completely different letter and as a result a completely different word, thus, they are not omitted in the written documents or in the spoken language.
+Not only dots are used as i'jam, the \RL{'} (hamza) is another type of i'jam that distinguish between the letters \RL{k} /k/ and \RL{l} /l/ in their isolated and final forms.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Harakat}}{}
+Small marks, called harakat, are used to indicate short vowels, often heard and are sometimes written when using the standard Arabic.
+These diacritics are small markings used above or below the letters of a word to specify the exact pronunciation of the word.
+The harakat are used in the holy book Qur'an and are commonly used in teaching material and poetry but are seldom used in day-to-day communication and handwriting neither are in use in the scientific, and business communication.
+
+An example of a fully vocalised Arabic from the Qur'an (Al-Fatiha 1:1):
+
+\begin{center}
+\fullvocalize
+\transtrue
+\begin{RLtext}
+\RL{bismi al-ll_ahi al-rra.hm_ani al-rra.hImi}
+\end{RLtext}
+In the Name of All'ah, the Most Gracious, the Most Merciful...
+\end{center}
+
+Both the i'jam and the harakat are not discussed further in this work.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Word parts count}}{}    
-Saabni and El-sana have explored a large collection of Arabic texts and extracted 300,000 different word combinations of 82,000 different word-parts. Ignoring the additional strokes reduced the number of different word-parts to 40,000 \cite{saabni2009efficient}. 
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Issues with Arabic Handwriting Recognition}}{} 
-One difficulty with the Arabic script is the number and position of diacritic marks associated to Arabic characters.
-{Recognition and segmentation of Arabic handwritten script is a difficult task because the Arabic handwritten characters are naturally both cursive and unconstrained. The analysis of Arabic script is more complicated in comparison with English script \cite{al2010development}}.
-
-
+Saabni and El-sana have explored a large collection of Arabic texts and extracted 300,000 different word combinations of 82,000 different WP. 
+Ignoring the additional strokes reduced the number of different WP to 40,000 \cite{saabni2009efficient}. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Arabic script Segmentation}
@@ -292,7 +311,7 @@ of symbols without incorporating detailed knowledge of the structure of those sy
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Cursive English segmentation - techniques and achievements}}{}
 There are many known method of performing cursive letters segmentation. 
-The broad range of significant real world applications and the considerable difficulty of the task both contribute to the fact that there are many known methods of performing cursive word recognition - one suited better for some applications and some for the others \cite{brodowska2011oversegmentation}
+The broad range of significant real world applications and the considerable difficulty of the task both contribute to the fact that there are many known methods of performing cursive word recognition - one suited better for some applications and some for the others \cite{brodowska2011oversegmentation}.
 However, a correct segmentation rate is not easily achievable.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The three approaches for segmentation}}{}
@@ -346,8 +365,11 @@ The current study is focused on exploration of possible techniques to facilitate
 
 As mentioned before, Arabic is a cursive written language. 
 It contains about 40k possible WP.
-Arabic letters may differ by additional stroke above or beneath the main stroke. For example, the Arabic letter \RL{f} (Fa) contains a single dot above the main stroke, however the letter \RL{q} (Qa), contains double dots, both having identical main body. In our work we recognize and classify the main body of the letter and ignore the additional stroke entirely. As a result, the number of different letters drops from 29 to 18 and the number of different possible word parts decreases to []. It is important to comment that taking the additional strokes into consideration may be exploited to boost the classification rate.
-The Arabic letters system contain 7 sets of letters that have the same body, and are differentiated only by the additional strokes above or under it. The following table describes the sets of similarity:
+In our work we recognize and classify the main body of the letter and ignore the additional stroke entirely. As a result, the number of different letters drops from 29 to 18 and the number of different possible word parts decreases to about 40,000.
+It is important to note that taking the additional strokes into consideration may be exploited to boost the classification rate.
+The Arabic letters system contain 7 sets of letters that have the same body, and are differentiated only by the additional strokes above or under it. 
+
+The following table describes the sets of similarity:
 
 \begin{table}[h]
 \caption{Arabic letters shapes similarities}
@@ -406,6 +428,8 @@ are reported and compared with the previous work done in this area.
 %\item See \cite{al2011online}.
 %\item See \cite{abandah2009analysis}
 %\item Review \cite{bahlmann2005advanced} thesis
+%\item TODO:see the in introduction of \cite{abandah2009analysis}
+%\item See \cite{lorigo2006offline} - motivation section
 %\end{enumerate}
 
 \bibliographystyle{plainnat}
