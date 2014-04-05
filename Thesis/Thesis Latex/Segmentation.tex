@@ -51,32 +51,13 @@
 \emph{see: \cite{al2010development} for Arabic script segmentation problem}
   
 \section{Introduction}
-The proposed method is an analytic approach for handwriting recognition, i.e., it involves segmentation and classification of each part of the text \cite{abdulla2008off, sari2002off, Dinges2011}. 
-Unlike the analytic approach, the holistic approach considers the global properties of the written text and recognizes the input word shape as a whole \cite{biadsy2011segmentation, saabni2009hierarchical}. While having many advantages, the holistic approach requires the classifier to be trained over the entire dictionary, which is impractical for large dictionaries (containing more than 20,000 words) \cite{elanwar2012unconstrained}.
 
-The cursiveness of the Arabic script, prima facie, requires delaying the launch of the recognition process until the completion of the word scribing. 
-However, in this paper, we question the necessity of the requirement by demonstrating the feasibility of approximating the position of the segmentation points (SPs) while the stroke is being written; and by doing so, accelerating the recognition process. 
-Furthermore, the obtained information can be used to significantly reduce the potential dictionary size and facilitate a later holistic recognition process.
 
 In Section \ref{sec:related_work}, we mention related studies done in the field of on-line Arabic recognition. 
 The proposed approach is described in detail in Section \ref{sec:approach}. Experimental results and analysis is given in Section \ref{sec:results}. \\
 
 
-\section{Related Work}
-\label{sec:related_work}
 
-Randa et al. \cite{elanwar2012unconstrained} proposed a two stage on-line Arabic handwritten text segmentation system based on Hidden Markov Model (HMM). 
-In the first stage, SPs were nominated, and then, in a second stage, the nominated points were validated using a rules-based engine. 
-The system was tested using a self-collected database named OHASD.
-
-Digness et al. \cite{Dinges2011} used a segmentation-based recognition approach based on dividing the word into smaller pieces, which were afterwards segmented into candidate letters, and then classified into letter classes, using statistical and structural features. 
-The $k$-NN classifier was used to obtain the final recognition.
-
-A segmentation-based recognition method that operates on the stroke level for on-line Arabic handwritten words recognition was proposed by Daifallah et al. \cite{daifallah2009recognition}. 
-SPs were nominated and then selected by locating semi-horizontal lines moving from right to left. 
-A portion of the SPs is filtered out by applying a certain set of rules. 
-Then, HMM is used to classify the sub-strokes to letters using the Hu feature. 
-The letters candidates and their scoring were used to determine the best set of SPs.\\
 
 \section{Our Approach}
 \label{sec:approach}
