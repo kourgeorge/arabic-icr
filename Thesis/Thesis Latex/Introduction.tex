@@ -294,43 +294,38 @@ Ignoring the delayed strokes reduced the number of different WP to 40,000 \cite{
 \subsection{Arabic script Segmentation}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Definition}}{}
-Character segmentation is the process of splitting the handwritten script into basic units, usually corresponding to single letters or alternatively to different basic units usually named graphems. Grapheme is the smallest semantically distinguishing unit in a written language, analogous to the phonemes of spoken languages.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Importance}}{}
 An integral part of the hand writing recognition process, when the analytic approach is considered, is segmentation, and therefore, it has long been a critical area of the OCR process. 
-The problems of segmentation persist today and its importance is derived from the fact that wrong segmentation will often results in major contribution to the error of the recognition algorithm. 
- \cite{casey1996survey, brodowska2011oversegmentation}
-
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The segmentation - recognition catch-22}}{}
-{It is believed, good segmentation is one reason for high accuracy character recognition. However, the task of segmentation, while usually trivial to a human, is a very challenging pattern recognition problem.
-The Catch 22 in segmentation is as follows: character is a pattern that
-resembles one of the symbols the system is designed to recognize. But to determine such a resemblance
-the pattern must be segmented from the document image. Each stage depends on the other, and in complex
-cases it is paradoxical to seek a pattern that will match a member of the system's recognition alphabet
-of symbols without incorporating detailed knowledge of the structure of those symbols into the process.
-\cite{casey1996survey}}
+As for many pattern recognition problems, the task of segmentation, while usually trivial to a human to perform, is a very challenging pattern recognition problem.
+Segmentation and recognition of cursive text are two tasks intertwined and dependent on each other. It is believed that wrong segmentation will often results in major contribution to the error of the recognition algorithm \cite{brodowska2011oversegmentation}. But in order to determine the segmentation, the system may try to seek a pattern that will math a member of the system's alphabet \cite{casey1996survey}. 
+This paradoxical condition is called ''the segmentation catch 22''.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The context dependent of segmentation}}{}
-{the segmentation decision is not a local decision, independent of previous and subsequent
-decisions. Producing a good match to a library symbol is necessary, but not sufficient, for reliable
-recognition. That is, a poor match on a later pattern can cast doubt on the correctness of the current
-segmentation/recognition result. Even a series of satisfactory pattern matches can be judged incorrect if
-contextual requirements on the system output are not satisfied. For example, the letter sequence "cl" can
-often closely resemble a "d", but usually such a choice will not constitute a contextually valid result.}
+Reliable recognition system requires more than a good matching to a library of letters symbols.
+The segmentation decision is not a local decision, independent of previous and subsequent decisions. 
+That is, a poor match on a later pattern can cast doubt on the correctness of the current segmentation/recognition result. 
+Even a series of satisfactory pattern matches can be judged incorrect if contextual requirements on the system output are not satisfied. 
+For example, the letter sequence "cl" can often closely resemble a "d", but usually such a choice will not constitute a contextually valid result.
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The context dependent of segmentation}}{}
+Several segmentation approaches have been proposed in the literature for Arabic OCR, yet, correct and efficient segmentation of Arabic text is not easily achievable and considered to be a challenging problem even for printed text. 
+A common approach that is followed by many researchers is over-segmentation of the text and validating each such candidate segmentation point by extracting feature vectors representing the segmented parts to some classifier or rules based engine \cite{daifallah2009recognition}.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Cursive English segmentation - techniques and achievements}}{}
-There are many known method of performing cursive letters segmentation. 
-The broad range of significant real world applications and the considerable difficulty of the task both contribute to the fact that there are many known methods of performing cursive word recognition - one suited better for some applications and some for the others \cite{brodowska2011oversegmentation}.
-However, a correct segmentation rate is not easily achievable.
+Methods used by segmentation-based approaches can be mainly classified into two: Dissection and Recognition-Based Segmentation. 
+Dissection techniques learn the characteristic of the segmentation point and attempt to find appropriate candidate points. 
+For instance, local minima in the upper or lower contour is commonly used for segmenting English cursive script. 
+Other widely used feature that characterizes a segmentation point is the low slope of its local environment. 
+The dissection of words into segments do not necessarily correspond to exactly one character per segment, however it could segment the words into components called graphemes, which are a combination of two or three letters, or a part of a letter. 
+The relationship between graphemes and letters is applied in a later phase. 
+The recognition-based techniques operate quite differently. 
+The method includes using a moving window with a predefined width which breaks the word into many overlapping pieces without regard to its content and the attempts to classify those sub-components to find points of interest or trajectories. 
+An iterative or parallel scanning of the words followed by a recognition method is used to search for "satisfactory" classification scoring for joint sub-components usually by generating a lattice of all or many possible combinations. 
+The final decision is determined by the best path through the lattice. While avoiding using complex dissection methods, such techniques rely heavily on the classifier accuracy \cite{casey1996survey}. \\
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The three approaches for segmentation}}{}
 In a comprehensive survey done in \cite{casey1996survey}, the authors has pinpointed three elemental strategies for off-line cursive text segmentation in addition to many approaches that are a combinations of these three. They have noted that much of the literature on segmentation reports methods that can be characterized as a blend of these three mentioned methods.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Dissection}}{}
-The classical approach which is usually named \emph{dissection}. 
-This approach attempts to segment the text into character using "character-like" properties. 
+The classical approach, which is usually named \emph{dissection}, attempts are made to segment the text into character using "character-like" properties. 
 Examples of such properties are height, width, separation from neighboring components, disposition along a baseline, etc.
 Conventional approaches can segment typical words accurately. 
 In this regard, different strategies such as projection profile, bounding box or contour tracing exhibit promising results. 
@@ -342,20 +337,12 @@ The second approach is recognition-based segmentation, in which the system searc
 In this method, the recognition confidence, heavily affects the overall segmentation accuracy.
 The general approach is to split words into segments that should be characters, pass each segment to a classifier and, if the classification results are not satisfactory (e.g. some measure of belief requirements is not met), call segmentation once more with the feedback information about rejecting the previous result. \cite{brodowska2011oversegmentation}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The holistic approach}}{}
-The holistic methods, in which the system seeks to recognize words as a whole, thus avoiding the segmentation process which was previously discussed in Section \ref{[]}.
-
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Over-segmentation}}{}
 The most common methods of character segmentation is initial over - segmentation, i.e, finding some set of potential splitting points in the graphical representation of the word and then attempting to eliminate the improper ones
 The segmentation task of some cursive and unconstrained nature of some languages such Arabic, anneals the segmentation task. 
 The technique requires an over-segmentation stage which partition handwritten words into primitives that may then be processed further to provide the best segmentation.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Issues with segmentation}}{}
-In languages that are commonly written non-cursively, segmentation techniques may be used in HWR systems.
-also may use segmentation techniques since human handwriting 
-touching characters are error prone in segmentation stage that contributes to recognition errors.
-
-A through survey on character segmentation is given in \cite{casey1996survey} and \cite{brodowska2011oversegmentation}.  
+A throughout survey on character segmentation is given in \cite{casey1996survey} and \cite{brodowska2011oversegmentation}.  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
