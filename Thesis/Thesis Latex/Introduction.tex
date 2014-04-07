@@ -106,7 +106,15 @@ A script is a set of icons that have certain basic shapes. These are known as ch
 Each script has its own rules on how letters are combined to form shapes that represent higher level linguistic units \cite{plamondon2000online}.
 Unlike the Latin script, in which non-cursive handwriting, i.e., using isolated characters, is possible and common, Arabic is cursively written in both handwritten and printed text.
 Its unconstrained nature that produces a huge variety in the handwriting of different people, makes the recognition of Arabic script extremely difficult.
+Figure \ref{fig:ha_different} shows some samples of the "Ha" letter written by several writers.
 Text segmentation, that is, the process of dividing a cursive writing into sub-units (typically characters) turns out to be a challenging task.
+
+\begin{figure}
+\centering
+\includegraphics{./figures/ha_different}       
+\caption{Different writing styles of the isolated form of the letter \RL{.h} /.h/.}
+\label{fig:ha_different}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Off-line versus On-line Handwriting Recognition}
@@ -198,7 +206,9 @@ The holistic approach considers the global properties of the written text and re
 Most popular methods among this group are based on analysis of the number and order of ascenders, descenders, loops and vertical strokes; they often rely on heavy dictionary searching that is costly and prone to be mislead by spelling errors \cite{brodowska2011oversegmentation}.
 While it avoids the error-prone segmentation process the holistic approach, the recognition system needs to be trained over all words in the dictionary and to maintain and train models for each word. 
 Using the holistic approach may be possible for small vocabulary of words, however, this is not feasible for large vocabularies (20,000 words or more). 
-Since each word is constructed from a subset of the character alphabet, it is much more efficient to classify words using the analytic approach \cite{elanwar2012unconstrained}.\\
+Since each word is constructed from a subset of the character alphabet, it is much more efficient to classify words using the analytic approach \cite{elanwar2012unconstrained}.
+In addition, a survey done in \cite{al2011online} on Arabic HWR found that the analytic approach, in general, achieve higher recognition rates than the holistic systems, in cases where words are written in cursive manner, such in the Arabic script. 
+This may lead us to conclude that segmentation is a crucial step and that the main problem recognizing Arabic text, especially its handwriting, is its cursiveness.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

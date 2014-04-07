@@ -1,13 +1,15 @@
-%%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
 %% Do not edit unless you really know what you are doing.
-%\documentclass[english]{report}
+%\documentclass[12pt,english]{report}
+%\usepackage{mathptmx}
+%\renewcommand{\familydefault}{\rmdefault}
 %\usepackage[T1]{fontenc}
 %\usepackage[latin9]{inputenc}
-%\setcounter{secnumdepth}{3}
-%\setcounter{tocdepth}{3}
-%\usepackage{setspace}
-%\onehalfspacing
-%\usepackage{babel}
+%\usepackage[a4paper]{geometry}
+%\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+%\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+%\setlength{\parskip}{\medskipamount}
+%\setlength{\parindent}{0pt}
 %\usepackage{verbatim}
 %\usepackage{pdfpages}
 %\usepackage{graphicx}
@@ -17,92 +19,124 @@
 %\usepackage[numbers]{natbib}
 %\usepackage{nomencl}
 %\usepackage{amsthm}
-%\usepackage{bbold}
+%\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{paralist}
+%\usepackage{etoolbox}
+%\newtoggle{edit-mode}
+%\toggletrue{edit-mode}  
+%%%\toggletrue{edit-mode}
+%\iftoggle{edit-mode}{
+%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
+%}{
+%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+%}
 %
 %\makenomenclature
 %
-%% Theorem Styles
+%%% Theorem Styles
 %\newtheorem{theorem}{Theorem}[section]
-%\newtheorem{lemma}[theorem]{Lemma}
-%\newtheorem{proposition}[theorem]{Proposition}
-%\newtheorem{corollary}[theorem]{Corollary}
-%% Definition Styles
+%%% Definition Styles
 %\theoremstyle{definition}
 %\newtheorem{definition}{Definition}[section]
 %\newtheorem{example}{Example}[section]
 %\theoremstyle{remark}
 %\newtheorem{remark}{Remark}
 %
+%\usepackage[linesnumbered]{algorithm2e}
+%
 %\begin{document}
 
 \chapter{Data Collection}
-\label{chap:samples_collection}
-
-The data is the most important part ofearning technique. 
-The quality of the collected data and it's amount is a fundamental
-
-Thus, the data collection stage is an important stage in the development of our system. The Arabic alphabet consists of 29 isolated characters. If we ignore all diacritical marks, which do not carry important information about shape, we obtain 18 shapes.
-
-\begin{figure}
-\centering
-\includegraphics{./figures/arabic_letters}       
-\caption{The set of all distinctive main body Arabic letters.}
-\label{fig:arabic_letters}
-\end{figure}
-
-The writing of these characters was not constrained, leading to a wide variety of size, and orientation. Figure (5) shows some samples of the "Ha" letter written by several writers.
-
-\begin{figure}
-\centering
-\includegraphics{./figures/ha_different}       
-\caption{Different writing styles of the isolated form of the letter \RL{h} (Ha)}
-\label{fig:ha_different}
-\end{figure}
-
-We utilize two sources of letters samples written in different positions and different types of writing. The first is a self-made database of letters that were collected from different age Arabic writers using digitizer tablet. We discuss these two methods in more details below. In both cases the information is a sequence $\pi=[p_1,...,p_n]$ where the vector $p_i=(x_i,y_i)$ denotes the horizontal and vertical coordinates, sampled from the writer's pen movement.
-
-\section{A self-collected letters database}
-We have developed an application, using Matlab, which asks the user to draw a letter on an electronic pad, the $(x,y)$ sequence data of the letter shape was saved as a file on the file system.  The rectangle in which the user was asked to draw the letter is $1\times1$. See image of the GUI below. \emph{[Add an Image of the Matlab data collection UI]}. 
-
-\section{Letters Extraction from the ADAB Database}
-The other source was the ADAB database. The ADAB contains Arabic script samples. The information saved is the strokes information; each stroke contains the sequence of $(x,y)$ coordinates of the pen down to pen up. The challenge was to match each word part to each stroke, and then manually segment each sequence which describes a word-part to letters (subsequences). Another problem we faced was that automatically corresponding each stroke o each word-part was not easy. \emph{[talk more abour it - Wajdi]}
-
+\label{chap:data_collection}
 
 \section{The ADAB Database}
+\label{sec:adab_database}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The data importance}}{}
+The quality of the collected data and it's amount is a fundamental aspect of any supervised learning technique.
+It is used for learning, validation and testing and has a critical effect on the system performance.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Data representation Definition}}{}
+On-line handwriting data is commonly a digitized representation of the pen movement. 
+It may contain sequential information about position, velocity, acceleration, pressure, or even angle and orientation of the pen as a function of time. 
+However, the most basic and used property is the position of the pen. 
+Although the sampling of the pen position is done in a constant time intervals, in most cases, HWR system do not use the temporal information but only consider the ordered set of sequential pen position. 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Lack of databases}}{}
+Unfortunately, there is only a single medium size public corpus of on-line handwriting.
+The reason for this lack in database may be attributed to the fact that the major work done on Arabic handwriting recognition, focused on recognizing off-line script \cite{plamondon2000online}. 
+Another reason is that the most of the work in on-line script recognition field is done for isolated characters such as letters, digits and symbols \cite{al2011online}.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Information about the ADAB database}}{}
+In this work we have chosen to use the ADAB (Arabic DAtaBase) database.
+The ADAB database is de-facto a standard in the on-line Arabic handwriting recognition field.
+It was developed to advance the research and development of Arabic on-line handwritten text recognition systems \cite{el2011line}.
+It is freely available and consists of more than 20k Arabic handwritten words scribed by more than 170 different writers.
+The samples are words that were taken from the 937 Tunisian town/village names, and for this reason, a sample can contain more than a word.
+The information saved in the database is the strokes information in an XML file format. 
+Each stroke, represented as a node in the XML, contains the sequence of $(x,y)$ coordinates of the pen position expands from the pen-down event to the corresponding pen-up event, as can be seen in Figure \ref{fig:adab_inkml}.
+In addition to the strokes positional information, the database contains several properties related to the equipment used to obtain the data and the writer's information, as well as the plot image of the word trajectory as shown in Figure \ref{fig:sample_parts}.
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{./figures/adab_inkml}
+\caption{Trajectory information of a city name sample.}
+\label{fig:adab_inkml}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.65\textwidth]{./figures/sample_parts}
+\caption{Visual demonstration of a test sample parts.}
+\label{fig:sample_parts}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Letters Extraction}
-\begin{itemize}
-\item Discuss the letters extraction from the adab database.
-\item Describe the system developed by Wajdi
-\item mention that the number of samples per class is different from letter to letter
-\end{itemize}
+\label{sec:letters_extraction}
 
-\subsection{Additional strokes detection and removal}
-\emph{TODO: talk about the the need to remove additional strokes. that our thesis considers only the main body. and that there are letters that can be identified only by the additional strokes like \RL{r,z} and that there are combination of letters that may look like othger letter like double \RL{b} and \RL{s}} 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The missing information}}{}
+In order to obtain letter samples required for the training of our letters classifier, manual segmentation of the strokes provided in the ADAB database was required.
+However, no mapping between strokes and letters was provided, thus, extra work was needed to add this information to the database so that it could be used as letters samples source and also as a ground-truth for for validating our segmentation algorithm accuracy.
 
-\emph{see "Removing delayed strokes" section in  \cite{jaeger2001online}}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{How is the data available}}{}
+The challenge was to match each word part to each stroke, and then manually segment each sequence which describes a word-part to letters (subsequences). Another problem we faced was that automatically corresponding each stroke to each word-part was not easy.
 
-{\color{blue}The detection of delayed strokes is performed based on
-their sequential order, location, and size. Delayed strokes
-are detected based on the size and shape of their bounding
-box with respect to the word-part.\cite{saabni2009hierarchical}}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Letters extraction method}}{}
+To extract this additional information, we have created a system that reads the samples from the ADAB database, and employs the skills of a human expert to segment the samples and relate each stroke to the corresponding letter in the WP. 
 
-\section{Data representation Definition}
-On-line handwriting data is commonly a digitized representation of the pen movement. It may contain sequential information about position, velocity, acceleration, pressure, or even angle and orientation of the pen as a function of time. However, the most basic and used property is the position of the pen. In addition, usually in HWR systems the pen position is not given as a function of time, but as an ordered set of sequential pen position. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Additional strokes detection and removal}}{}
+Since additional strokes are not our interest in the segmentation process, the system has automatically filtered out additional strokes. 
+The detection of delayed strokes is performed based on their size and the area of their bounding box. 
+However, in order to avoid unintentionally removing main body of small letters, we preset a low high threshold. 
+Thus, the human expert had to filter out additional strokes manually that could not be identified by the system as such.
 
-A formal definition of the representation of pen position acquired data, the stroke, is given as follows: 
-\begin{definition}
-A stroke $S$ is defined as a sequence points in the two-dimensional space and given as follows:
-\begin{equation}
-S = \left[(x_1,y_1),...,(x_N,y_N)\right]
-\end{equation} 
-where N is the number of samples in the stroke. 
-\end{definition}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The output structure}}{}
+The resulted information was saved in an XML file for each word sample. See figure \ref{fig:adab_segmented_xml}.
+We have manually segmented ~16k samples which consisted about ~40k strokes. 
 
-Let us denote the stroke space of all lengths as $D$ and the space that contains strokes of length $N$ as $D^N$. 
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{./figures/adab_segmented_xml}
+\caption{Trajectory information of a city name sample.}
+\label{fig:adab_segmented_xml}
+\end{figure}
 
-\section{Letters samples statistics}
-number of samples per letter and letter position.
-number of samples used to extract the letters
-
+%\bibliographystyle{plainnat}
+%\bibliography{references}
 %\end{document}
+
+%\begin{itemize}
+%\item Discuss the letters extraction from the adab database.
+%\item Describe the system developed by Wajdi
+%\item mention that the number of samples per class is different from letter to letter
+%\item see "Removing delayed strokes" section in \cite{jaeger2001online}
+%\item extract information from the paper written by raid.
+%\item add images of the segmentation system.
+%\item add an image of the output xml.
+%\end{itemize}
