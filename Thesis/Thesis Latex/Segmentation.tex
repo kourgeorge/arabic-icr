@@ -51,15 +51,6 @@
 
 \emph{see: \cite{al2010development} for Arabic script segmentation problem}
   
-\section{Introduction}
-
-
-In Section \ref{sec:related_work}, we mention related studies done in the field of on-line Arabic recognition. 
-The proposed approach is described in detail in Section \ref{sec:approach}. Experimental results and analysis is given in Section \ref{sec:results}. \\
-
-
-
-
 \section{Our Approach}
 \label{sec:approach}
 
@@ -70,7 +61,7 @@ The parameter $\alpha_{k}$ is defined as:
 \begin{equation}
 \alpha_{k}=\frac{\pi-\phi_{k}}{\frac{\pi}{6}}
 \end{equation}
-where $\phi_k=\angle(\overline{p_{k-1}p_{k}},\overline{p_{k}p_{k+1}})$.\\
+where $\phi_k=\angle(\overline{p_{k-1}p_{k}},\overline{p_{k}p_{k+1}})$.
 
 The proposed approach goes through three stages. 
 In the first stage, \emph{points of interest} (POIs), are continuously nominated while the stroke is being scribed.
@@ -80,7 +71,7 @@ Eventually, the system heuristically determines the final set of SPs based on th
 
 \begin{figure}
 \centering
-\includegraphics[width=1\textwidth]{./figures/system_flow}
+\includegraphics[width=0.8\textwidth]{./figures/system_flow}
 \caption{High level visualization of the system flow.}
 \label{fig:system_flow}
 \end{figure}
@@ -108,7 +99,7 @@ While false positive SPs can be easily removed, missed real SPs cannot be easily
 Therefore, in order to minimize the miss-rate, this process is delicate and allows false HFs to be detected.
 
 In a post processing step, fractions of the same horizontal segment, which were identified as multiple HFs, are rejoined to a single HF. 
-The merging is done by evaluating the complexity measurement across the two consequent HFs, see Figure \ref{fig:candidate_in_no_horizontal}.\\
+The merging is done by evaluating the complexity measurement across the two consequent HFs, see Figure \ref{fig:candidate_in_no_horizontal}.
 
 \begin{figure}
 \centering
@@ -241,11 +232,11 @@ $5$
 \subsection{Second Stage: Candidate points filtering and scoring correction}
 In this stage we re-score subsequences and eliminate redundant POIs based on the following rules:\\
 
-\begin{itemize}
+\begin{compactitem}
 	\item Inner SPs should lie close to the baseline. 
 	\item SPs do not reside in loops.
-	\item The sub-stroke length should be proportional to the length of the containing stroke.\\
-\end{itemize}
+	\item The sub-stroke length should be proportional to the length of the containing stroke.
+\end{compactitem}
 
 \textbf{Baseline detection:} The system determines the baseline by calculating the vertical density histogram of the re-sampled and normalized sub-stroke. 
 The height of the stroke (y-axis) is partitioned into ten equi-length intervals. 
@@ -257,7 +248,7 @@ where $POI_y$ represents the $y$-coordinate of the POI; $|I|$ is the length of a
 In order to reliably determine the baseline, the baseline detection algorithm is activated only after the fourth POI is detected. 
 This process has proven to be very effective in eliminating challenging false POIs that reside in valleys of frequently used final Arabic letters, such as \RL{-q}, \RL{-s} and \RL{-n}. 
 An example of such a POI can be seen in the letter \RL{-n} in Figure \ref{fig:candidate_in_no_horizontal}. 
-The baseline is needed only to verify that the POIs are in a reasonable distance from it, therefore, imprecise valuation of the position or the direction of the baseline is tolerable.\\
+The baseline is needed only to verify that the POIs are in a reasonable distance from it, therefore, imprecise valuation of the position or the direction of the baseline is tolerable.
 
 The third rule is used to penalize unreasonably low scoring given to small sub-strokes, which are unlikely to represent a letter. 
 This is done by calculating the ratio of the sub-stroke length proportional to the entire stroke length.
@@ -340,41 +331,23 @@ $\pi = \{0,L+1\}$\;
 \label{alg:gss}
 \end{algorithm}
 
-Performance evaluation of the mentioned SSA is provided in \ref{subsec:ssa_performance}.\\
-
-
-\section{The ADAB Database}
-\label{sec:database}
-The ADAB database is, de-facto, a standard in the field of on-line Arabic handwriting recognition. It is freely available and consists of more than 20k Arabic handwritten words (937 
-Tunisian town/village names) scribed by more than 170 different writers. 
-Unfortunately, the ADAB only provides data on the strokes for a given city name. 
-No segmentation into letters or \emph{word parts} (WPs) is provided by the database, thus, extra work was needed to add this information in order to use its letter samples and as a ground truth for the segmentation system.
-To provide this information, we employed the skills of a human expert to segment the strokes into letters, and to determine the words and the WP boundaries for each sample. 
-This additional information was saved in an XML file. Delayed strokes were not included in the processed information since it is not considered by the segmentation process.
-We have manually segmented more than 15k samples that contain about 40k strokes. \\
-
-\begin{figure}
-\centering
-\includegraphics[width=0.7\columnwidth]{./figures/sample_parts}
-\caption{The different parts of a sample in the ADAB database.}
-\label{fig:sample_parts}
-\end{figure}
+Performance evaluation of the mentioned SSA is provided in \ref{subsec:ssa_performance}.
 
 \section{Validation}
 \label{sec:validation}
 Related researches usually use a human expert to validate the accuracy of the SPs. However, in this work, we applied an automatic validation process using the ground truth information provided by the database. We discriminate between three types of final SPs. A final SP is classified as true positive if the complexity measure between the identified point and a true SP is less than a preset threshold; otherwise, it is classified as false positive. A false negative (miss), is the case when the system failed to identify a true SP. The different types of SPs can be seen in Figure \ref{fig:sp_types}.
-The validation process was tested on several sets and found to be highly reliable.\\
+The validation process was tested on several sets and found to be highly reliable.
 
 \begin{figure}
 \centering
-\includegraphics[width=1\columnwidth]{./figures/sp_types}
+\includegraphics[width=0.9\textwidth]{./figures/sp_types}
 \caption{SPs types.}
 \label{fig:sp_types}
 \end{figure}
 
 \section{Experimental Results}
 \label{sec:results}
-The system was implemented using Matlab environment. Comparing the performance of the proposed approach to results obtained by in related researches could be difficult due to the different experimental settings, databases and methodology; not to mention the different measures that are used in presenting the results. The usage of the ADAB database, instead of a self-collected database, standardize and reinforces our results. In Table \ref{table:general_stats} we provide basic statistics of our sample set.\\
+The system was implemented using Matlab environment. Comparing the performance of the proposed approach to results obtained by in related researches could be difficult due to the different experimental settings, databases and methodology; not to mention the different measures that are used in presenting the results. The usage of the ADAB database, instead of a self-collected database, standardize and reinforces our results. In Table \ref{table:general_stats} we provide basic statistics of our sample set.
 
 \begin{table}[h]
 \caption{General statistics}
@@ -475,11 +448,11 @@ It is done by gradually increasing the maximal allowed number of samples per cla
  
 The graph in Figure \ref{fig:num_letter_impact} shows convergence of the system's performance when the maximal number of samples is larger than 200 per class. 
 Nevertheless, a miniature degradation can be seen, which is caused, probably, due to the increasing imbalance in the distribution of the training set.
-In addition, it is evident that the recognition rate (RR) is more sensitive to small training set than the segmentation rate (RR).\\
+In addition, it is evident that the recognition rate (RR) is more sensitive to small training set than the segmentation rate (RR).
 
 \begin{figure}
 \centering
-\includegraphics[width=1\columnwidth]{./figures/num_letter_impact}
+\includegraphics[width=0.9\textwidth]{./figures/num_letter_impact}
 \caption{The impact of increasing the maximal number of samples per class on the segmentation and recognition rates.}
 \label{fig:num_letter_impact}
 \end{figure}
