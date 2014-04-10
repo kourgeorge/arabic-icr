@@ -1,51 +1,51 @@
-%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-%% Do not edit unless you really know what you are doing.
-%\documentclass[12pt,english]{report}
-%\usepackage{mathptmx}
-%\renewcommand{\familydefault}{\rmdefault}
-%\usepackage[T1]{fontenc}
-%\usepackage[latin9]{inputenc}
-%\usepackage[a4paper]{geometry}
-%\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-%\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-%\setlength{\parskip}{\medskipamount}
-%\setlength{\parindent}{0pt}
-%\usepackage{verbatim}
-%\usepackage{pdfpages}
-%\usepackage{graphicx}
-%\usepackage{subfig} %% This package has to be here
-%\usepackage{setspace}
-%\usepackage{arabtex}
-%\usepackage[numbers]{natbib}
-%\usepackage{nomencl}
-%\usepackage{amsthm}
-%\usepackage{amsmath}
-%\usepackage{amsfonts}
-%\usepackage{paralist}
-%\usepackage{etoolbox}
-%\newtoggle{edit-mode}
-%\toggletrue{edit-mode}  
-%%%\toggletrue{edit-mode}
-%\iftoggle{edit-mode}{
-%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
-%}{
-%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
-%}
-%
-%\makenomenclature
-%
-%%% Theorem Styles
-%\newtheorem{theorem}{Theorem}[section]
-%%% Definition Styles
-%\theoremstyle{definition}
-%\newtheorem{definition}{Definition}[section]
-%\newtheorem{example}{Example}[section]
-%\theoremstyle{remark}
-%\newtheorem{remark}{Remark}
-%
-%\usepackage[linesnumbered]{algorithm2e}
-%
-%\begin{document}
+% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+% Do not edit unless you really know what you are doing.
+\documentclass[12pt,english]{report}
+\usepackage{mathptmx}
+\renewcommand{\familydefault}{\rmdefault}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[a4paper]{geometry}
+\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{verbatim}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\usepackage{subfig} %% This package has to be here
+\usepackage{setspace}
+\usepackage{arabtex}
+\usepackage[numbers]{natbib}
+\usepackage{nomencl}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{paralist}
+\usepackage{etoolbox}
+\newtoggle{edit-mode}
+\toggletrue{edit-mode}  
+%%\toggletrue{edit-mode}
+\iftoggle{edit-mode}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
+}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+}
+
+\makenomenclature
+
+%% Theorem Styles
+\newtheorem{theorem}{Theorem}[section]
+%% Definition Styles
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\usepackage[linesnumbered]{algorithm2e}
+
+\begin{document}
 
 \chapter{Data Collection}
 \label{chap:data_collection}
@@ -54,19 +54,23 @@
 \label{sec:adab_database}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The data importance}}{}
-The quality of the collected data and it's amount is a fundamental aspect of any supervised learning technique.
-It is used for learning, validation and testing and has a critical effect on the system performance.
+The Data, it's quality and quantity, are fundamental aspects of any pattern recognition technique.
+It is used for learning, validation and testing stages and has a critical effect on the system accuracy and performance.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Data representation Definition}}{}
 On-line handwriting data is commonly a digitized representation of the pen movement. 
 It may contain sequential information about position, velocity, acceleration, pressure, or even angle and orientation of the pen as a function of time. 
-However, the most basic and used property is the position of the pen. 
-Although the sampling of the pen position is done in a constant time intervals, in most cases, HWR system do not use the temporal information but only consider the ordered set of sequential pen position. 
+Nevertheless, the most commonly used property is the pen's position. 
+Although the sampling of the pen position is done in a constant time intervals, the vast majority of HWR system do not use the temporal information but only consider the ordered set of sequential pen position. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Lack of databases}}{}
-Unfortunately, there is only a single medium size public corpus of on-line handwriting.
+Many databases were developed for HWR of English script. 
+Among these we can mention the following popular database: UNIPEN, CEDAR, NIST, IRONOFF , etc.
+However, very few databases were developed for the Arabic script and fewer became publicly available, such as IFN/ENIT and CEDAR. 
+Thus, most researchers had developed their own limited datasets that are not available to the public \cite{saabni2009efficient} 
+There is only a single medium size public corpus of on-line Arabic handwriting.
 The reason for this lack in database may be attributed to the fact that the major work done on Arabic handwriting recognition, focused on recognizing off-line script \cite{plamondon2000online}. 
-Another reason is that the most of the work in on-line script recognition field is done for isolated characters such as letters, digits and symbols \cite{al2011online}.
+Another reason is that most of the work in on-line script recognition field is done for isolated characters such as letters, digits and symbols \cite{al2011online}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Information about the ADAB database}}{}
 In this work we have chosen to use the ADAB (Arabic DAtaBase) database.
@@ -97,46 +101,50 @@ In addition to the strokes positional information, the database contains several
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Letters Extraction}
+\section{Letter Samples Extraction}
 \label{sec:letters_extraction}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The missing information}}{}
-In order to obtain letter samples required for the training of our letters classifier, manual segmentation of the strokes provided in the ADAB database was required.
-However, no mapping between strokes and letters was provided, thus, extra work was needed to add this information to the database so that it could be used as letters samples source and also as a ground-truth for for validating our segmentation algorithm accuracy.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{How is the data available}}{}
-The challenge was to match each word part to each stroke, and then manually segment each sequence which describes a word-part to letters (subsequences). Another problem we faced was that automatically corresponding each stroke to each word-part was not easy.
+The primary task of this stage was to create a sufficiently large database of on-line handwritten Arabic letters to be used by the letter classifier described in Chapter \ref{chap:classification} .
+This data, also required for the validation and testing of the system, was extracted by manually the strokes trajectories provided in the ADAB database.
+As can be seen in Figure \ref{fig:sample_parts}, the only information provided by the ADAB database is the strokes and their order of writing.
+The absence of mapping between the strokes and letters or WP required extra work to add this information to the database so that it could be used as letter samples source and also as a ground-truth for for validating our segmentation algorithm accuracy.
+The database construction included semi-manual matching between each strokes and WPs, and then manual segmentation of each stroke. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Letters extraction method}}{}
-To extract this additional information, we have created a system that reads the samples from the ADAB database, and employs the skills of a human expert to segment the samples and relate each stroke to the corresponding letter in the WP. 
+To ease the tasks mentioned above we've created a user friendly system that reads the samples from the ADAB database, and employs the skills of a human expert to segment the samples and relate each stroke to the corresponding letter in the WP. 
+The graphical user interface of the system is shown in Figure \ref{fig:manual_segmentation}. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{./figures/manual_segmentation}
+\caption{Manual Segmentation System.}
+\label{fig:manual_segmentation}
+\end{figure}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Additional strokes detection and removal}}{}
-Since additional strokes are not our interest in the segmentation process, the system has automatically filtered out additional strokes. 
+Since additional strokes are not our interest in the segmentation process, the system automatically filters out additional strokes. 
 The detection of delayed strokes is performed based on their size and the area of their bounding box. 
-However, in order to avoid unintentionally removing main body of small letters, we preset a low high threshold. 
+However, in order to avoid unintentionally removing the main body of small letters, we preset a low high threshold. 
 Thus, the human expert had to filter out additional strokes manually that could not be identified by the system as such.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The output structure}}{}
-The resulted information was saved in an XML file for each word sample. See figure \ref{fig:adab_segmented_xml}.
-We have manually segmented ~16k samples which consisted about ~40k strokes. 
+The resulted information was saved in an XML file for each word sample. As can be seen in figure \ref{fig:adab_segmented_xml}, the hierarchy of the XML represents the structure of the sample that corresponds to the sample structure as seen in Figure \ref{fig:sample_parts}. 
+This XML is used as the ground truth in both learning, testing and validation processes.
+In order to obtain a sufficient size sample set for both learning and validation, more than 16k samples were manually segmented which consisted of about 40k letters. 
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=1\textwidth]{./figures/adab_segmented_xml}
 \caption{Trajectory information of a city name sample.}
 \label{fig:adab_segmented_xml}
 \end{figure}
 
-%\bibliographystyle{plainnat}
-%\bibliography{references}
-%\end{document}
+\bibliographystyle{plainnat}
+\bibliography{references}
+\end{document}
 
 %\begin{itemize}
-%\item Discuss the letters extraction from the adab database.
-%\item Describe the system developed by Wajdi
 %\item mention that the number of samples per class is different from letter to letter
 %\item see "Removing delayed strokes" section in \cite{jaeger2001online}
-%\item extract information from the paper written by raid.
-%\item add images of the segmentation system.
-%\item add an image of the output xml.
 %\end{itemize}

@@ -1,5 +1,5 @@
 function [arabascii,theLetter] = parseUPX(filename,UpxTarget)
-strfortext=[UpxTarget,'\upx\',filename,'.upx'];
+strfortext=[UpxTarget,filename{1},'.upx'];
 xmlToMatlabStruct = parseXML(strfortext);
 arabascii=xmlToMatlabStruct.Children(1,6).Children(1,2).Children(1,2).Children(1,2).Attributes.Value;
 %arabascii = regexp(xmlToMatlabStruct.Children(1,6).Children(1,2).Children(1,2).Children(1,2).Attributes.Value,';','split');
