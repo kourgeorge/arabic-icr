@@ -1,54 +1,53 @@
-%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-%% Do not edit unless you really know what you are doing.
-%\documentclass[12pt,english]{report}
-%\usepackage{mathptmx}
-%\renewcommand{\familydefault}{\rmdefault}
-%\usepackage[T1]{fontenc}
-%\usepackage[latin9]{inputenc}
-%\usepackage[a4paper]{geometry}
-%\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-%\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-%\setlength{\parskip}{\medskipamount}
-%\setlength{\parindent}{0pt}
-%\usepackage{verbatim}
-%\usepackage{pdfpages}
-%\usepackage{graphicx}
-%\usepackage{subfig} %% This package has to be here
-%\usepackage{setspace}
-%\usepackage{arabtex}
-%\usepackage[numbers]{natbib}
-%\usepackage{nomencl}
-%\usepackage{amsthm}
-%\usepackage{amsmath}
-%\usepackage{amsfonts}
-%\usepackage{etoolbox}
-%\newtoggle{edit-mode}
-%\togglefalse{edit-mode}  
-%\toggletrue{edit-mode}
-%\iftoggle{edit-mode}{
-%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
-%}{
-%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
-%}
-%
-%\makenomenclature
-%
-% %Theorem Styles
-%\newtheorem{theorem}{Theorem}[section]
-% %Definition Styles
-%\theoremstyle{definition}
-%\newtheorem{definition}{Definition}[section]
-%\newtheorem{example}{Example}[section]
-%\theoremstyle{remark}
-%\newtheorem{remark}{Remark}
-%
-%\usepackage[linesnumbered]{algorithm2e}
-%
-%\begin{document}
-%
-%\tableofcontents{}
-%
-%\printnomenclature
+% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+% Do not edit unless you really know what you are doing.
+\documentclass[12pt,english]{report}
+\usepackage{mathptmx}
+\renewcommand{\familydefault}{\rmdefault}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[a4paper]{geometry}
+\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{verbatim}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\usepackage{subfig} %% This package has to be here
+\usepackage{setspace}
+\usepackage{arabtex}
+\usepackage[numbers]{natbib}
+\usepackage{nomencl}
+\usepackage{paralist}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{etoolbox}
+\newtoggle{edit-mode}
+\togglefalse{edit-mode}  
+\toggletrue{edit-mode}
+\iftoggle{edit-mode}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
+}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+}
+
+\makenomenclature
+
+ %Theorem Styles
+\newtheorem{theorem}{Theorem}[section]
+ %Definition Styles
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\usepackage[linesnumbered]{algorithm2e}
+
+\begin{document}
+
+\tableofcontents{}
 
 \chapter{Handwritten Arabic Letters Classifier}
 \label{chap:classification}
@@ -150,66 +149,57 @@ The distance between two points can be defined in many ways as will be detailed 
 
 \section{Samples Preprocessing}
 
-The data obtained by the digitizer is composed of points in the plane that represent the trajectory scribed by the writing instrument on the tablet surface. Usually, samples are taken in time intervals, thus slow pen motion regions are oversampled and fast motion regions are under-sampled. In addition, when such devices are used to capture handwriting strokes, the shapes of the strokes present a jagged form and the obtained data is non-uniform and noisy. Further imperfections are caused by hand vibrations and duplicated sampled points resulted from hesitant writing. This noise should be reduced as much as possible since it influence the further processes, such as feature extraction and classification \cite{al2011online} \cite{huang2009preprocessing}.  
-To overcome the flaws mentioned, preprocessing operations are usually applied. The preprocessing steps imposes certain uniform structure on the data to comply with the input structure required by the latter parts of the system, such that vector length, sequence bounds, etc.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why preprocessing is needed?}}{}
+The data obtained by the digitizer is composed of points in the plane that represent the trajectory scribed by the writing instrument on the digitizer devices surface.
+Such devices generate a jagged form and the obtained data is non-uniform and noisy form \cite{al2011online}.
+Since, usually, samples are taken in constant time intervals, slow pen motion regions are oversampled and fast motion regions are under-sampled.
+Further imperfections are caused by hand vibrations and duplicated sampled points resulted from hesitant writing. 
+This noise should be reduced as much as possible since it negatively influence the further processes, such as feature extraction and classification  \cite{huang2009preprocessing}.
+To overcome the flaws mentioned, preprocessing operations are usually applied. 
+The preprocessing steps imposes certain uniform structure on the data to comply with the input structure required by the latter parts of the system, such that vector length, sequence bounds, etc. \cite{al2011online}.
 
-\emph{TODO: mention other preprocessing approaches mentioned in the literature, like rotation normalization, slant normalization, and missing points interpolation. see \cite{jaeger2001online}.}
+%Many types of preprocessing stages exist in the literature.
+%mention other preprocessing approaches mentioned in the literature, like rotation normalization, slant normalization, and missing points interpolation. see \cite{jaeger2001online}.
+%As seen in Figure \ref{[]} and \ref{[]}, preprocessing is performed in both letters learning and classification of strokes.
+%Preprocessing is also done in the segmentation phase, however, not all steps mentioned in this section are performed. For more information see section \ref{[]}
 
-As seen in Figure \ref{[]} and \ref{[]}, preprocessing is performed in both letters learning and classification of strokes.
-Preprocessing is also done in the segmentation phase, however, not all steps mentioned in this section are performed. For more information see section \ref{[]}
-
-Data samples must be of the same dimension for the system to work properly. Since the collected letters in the database are of varying sizes, they were all resized to some standard size. and re-sampled to to achieve same length sequences.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{same length data}}{}
+Data samples must be of the same dimension, both in term of sequence size and bounding box, for the system to work properly. 
+Since the collected letters in the database are of varying sizes, they were all resized to a uniform standard size, and re-sampled to to achieve same length sequences.
 Our preprocessing phase include three steps in the following order: \emph{Normalization and Translation}, \emph{Noise Elimination} and then \emph{Smoothing and Re-sampling}.
-
-In Figure \ref{fig:D_before_after_preprocessing} we show a sample of the letter \RL{d} sequence before and after preprocessing.
-
-In the next sub-sections we will describe in details each part of the preprocessing procedure.
-
-\begin{figure}
-	\centering
-        \subfloat[]{
-            \label{fig:letter_before_preprocessing}
-            \includegraphics[width=0.5\textwidth]{./figures/letter_before_preprocessing}
-        }
-        \subfloat[]{
-           \label{fig:letter_after_preprocessing}
-           \includegraphics[width=0.5\textwidth]{./figures/letter_after_preprocessing}
-        }        
-    \caption{The letter \RL{d} before (a) and after (b) preprocessing}
-   \label{fig:D_before_after_preprocessing}
-\end{figure}
-
-\emph{refer to the slant and Rotation normalization, i.e., why we don't do it. Is slant common in Arabic?
-}
 
 \subsection{Normalization and Translation}
 
-Size normalization is done to achieve a uniform size of the bounding box surrounding the pattern. This is done to enable the classifier to recognize the sequence pattern even when the stroke is written in different sizes. Shape similarity algorithms tend to be sensitive for non-uniform shapes size, thus this procedure is important and can be found in many approaches in the literature. 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Size and pattern length normalization}}{}
+Size normalization is done to achieve a uniform size of the bounding box surrounding the pattern. 
+This is done to enable the classifier to recognize the sequence pattern even when the stroke is written in different sizes. 
+Shape similarity algorithms tend to be sensitive for non-uniform shapes size, thus this procedure is important and can be found in many approaches in the literature. 
 However, this method could not be applied since normalization is done in our system on the stroke level which could contain a letter, at least.
-In our approach size normalization was applied on each stroke such that all strokes have $[0,1]\times[0,1]$ bounding box but retain their original aspect ratio. We include in this step also translation of the sequence's center of gravity to the origin point $[0,0]$.
-Given the stroke sequence $S=\{p_i\}_{i=1}^{n}$, the normalized sequence $\bar{S}=\{\bar{p_i}\}_{i=1}^{n}$ is calculated by: 
+Size normalization was applied on each stroke such that all strokes have $[0,1]\times[0,1]$ bounding box but retain their original aspect ratio. 
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Pattern translation}}{}
+The features used in this work are location agnostic, that is to say only the pattern relative proportion are considered.
+Nevertheless, this stage include translation of the sequence such that the sequence's center of gravity is located in the origin point, i.e., at $[0,0]$.
+Given the stroke sequence $S=\{p_i\}_{i=1}^{n}=\{(x_i,y_i)\}_{i=1}^{n}$, the normalized sequence $\bar{S}=\{\bar p_i \}_{i=1}^{n}=\{(\bar x_i,\bar y_i)\}_{i=1}^{n}$ is calculated by: 
 \begin{equation}
 {\bar x_i} = {{\left( {{x_i} - {\mu _x}} \right)} \over W},{\bar y_i} = {{\left( {{y_i} - {\mu _y}} \right)} \over W}
 \end{equation}
-Where
+$W = \max (d_x,d_y)$ where $d_x$ and $d_y$ are the width and hight of the pattern and $\mu$ is the center of gravity of the patter, i.e., 
 \begin{equation}
 \mu  = \left( {{\mu _x},{\mu _y}} \right) = \left( {{1 \over N}\sum\limits_{i = 1}^N {{x_i}} ,{1 \over N}\sum\limits_{i = 1}^N {{y_i}} } \right)
 \end{equation}
-\begin{equation}
-W = \max \left( {{d_x},{d_y}} \right)
-\end{equation}
-\begin{equation}
-{d_x} = {x_{\max }} - {x_{\min }};\,\,\,{d_y} = {y_{\max }} - {y_{\min }}
-\end{equation}
-\begin{equation}
-{x_{\max }} = \mathop {\max }\limits_i \left( {{x_i}} \right),\,\,{x_{\min }} = \mathop {\min }\limits_i \left( {{x_i}} \right),\,\,{y_{\min }} = \mathop {\min }\limits_i \left( {{y_i}} \right),\,\,{y_{\min }} = \mathop {\min }\limits_i \left( {{y_i}} \right)
-\end{equation}  
+
 
 \subsection{Noise Elimination}
-The input obtained by the digitizer may contain a large amount of noise which is mainly duplication of points. In this process redundant points are filtered out and a similar sequence with fewer points is obtained.
-In order to eliminate redundant points irrelevant for pattern classification and screening out unwanted noise and vibrations in the letter inscription we have used the \emph{Douglas-Peucker Polyline Simplification algorithm} described in \cite{douglas1973algorithms}. Briefly, it is a line simplification algorithm to reduce the number of vertices in a piecewise linear curve according to a specified tolerance. The algorithm is also known as \emph{Iterative Endpoint Fit}. The resulted curve is a skeletonized angular sequence. The Normalization is done before the Simplification, since we need a constant simplification parameter $\varepsilon$ which was tuned for $1\times1$ bounds. 
-Assuming the stroke presentation is a sequence of points $S$, the sensitivity parameter that was used in our work is:
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The handled noise}}{}
+The input obtained by the digitizer usually contains a large amount of noise irrelevant for pattern classification. 
+This noise consists mainly of redundant successive points duplication, vibrations, 
+The \emph{Douglas-Peucker Polyline Simplification algorithm} described in \cite{douglas1973algorithms}, also known as \emph{Iterative Endpoint Fit} algorithm, was used for eliminating such unwanted noises in the data. 
+Briefly, this is a line simplification algorithm which reduces the number of vertices in a piecewise linear curve given a preset tolerance parameter. 
+and outputs a skeletonized angular version of the original curve. 
+The normalization is performed prior to the simplification operation since the tolerance $\varepsilon$ depends on the the pattern's bounding box dimensions. 
+Assuming the stroke presentation is a sequence of points $S$, the sensitivity parameter that was used in our work is defined as:
 \begin{equation}
 \varepsilon  = {1 \over {200}}\sqrt {{d_x}^2 + {d_y}^2}
 \end{equation}
@@ -217,15 +207,16 @@ Assuming the stroke presentation is a sequence of points $S$, the sensitivity pa
 \begin{figure}
 \centering
 \includegraphics[width=0.7\textwidth]{./figures/ha_simplification}       
-\caption{Non Simplified representation of the letter \RL{.h} (Ha) is shown on the right. A simplified version is shown on the left. \emph{TODO: change the pictures to something better}}
+\caption{Non Simplified representation of the letter \RL{.h}, is shown on the right. A simplified version is shown on the left. \emph{TODO: change the pictures to something better}}
 \label{fig:ha_simplification}
 \end{figure}
 
 \subsection{Smoothing and Re-sampling}
-As a result of the simplification process the points are not distributed uniformly along the stroke trajectory. Naturally, there are less point in relatively straight areas and a higher amount of points in the curved areas of the stroke.
+As a result of the simplification process the points are not distributed uniformly along the stroke trajectory. 
+Naturally, there are less point in relatively straight areas and a higher amount of points in the curved areas of the stroke.
 %if we wont use simplification we can write this: The re-sampling is needed to prevent the unbalanced sampling density, which may be influenced by the sampling rate and the user non-uniform letter drawing. 
 The re-sampling produces equidistant smoothed data sequence. 
-The Re-sampling is performed using splines interpolation as follows:\\
+The Re-sampling is performed using splines interpolation as follows: \\
 Given a stroke $S=\{p_i\}_{i=1}^{n}$ and the re-sampling target number $R$, let $\{X(a_i)\}_{i=1}^{n}$ and $\{Y(a_i)\}_{i=1}^{n}$ represent the x-axis and the y-axis sequences with respect to the parameter $a_i$ which is defined as follows:
 
 \begin{equation}
@@ -233,7 +224,7 @@ a_i=a_{i-1}+arclen(p_{i-1},p_i)
 \end{equation}  
 
 \begin{equation}
-X(a_i)=x_i 
+X(a_i)=x_i
 \end{equation}  
 
 The arc-length of the stroke is given by $L=a_n$.
@@ -241,7 +232,7 @@ The arc-length of the stroke is given by $L=a_n$.
 A piecewise linear interpolations $q_X(a)$ and $q_X(a)$ are created for the $X$ sequence and $Y$ sequence respectively.
 The breaks are the $a_i$ sequence and the coefficient of the linear polynomial are $\alpha_{i} = \frac{X(a_i)-X(a_{i-1})}{a_{i}-a_{i-1}}$ 
 
-\emph{[we use quadratic splines for smoothing and simplification.]}
+\emph {[we use quadratic splines for smoothing and simplification.]}
 
 let $t_i=i\frac{L}{R}$ for $i=0,...,R$.
 The re-sampled sequence is given as follows:
@@ -250,12 +241,6 @@ The re-sampled sequence is given as follows:
 \end{equation}
 
 The target number of points is set to 40. We had to find a number that is good enough for both long and short strokes since strokes can span over a single letter or a whole WP.
-
-\emph{[TODO: show the following images: 1. the scattered stroke, 2. X and Y as a function of t., 3. X and Y resampledm and 3. the stroke resampled. ]}
-
-\emph{[TODO: talk about splines.]}
-
-\emph{TODO: talk about the other smoothing techniques as described in \cite{jaeger2001online} -- Online handwriting recognition: the NPen++ recognizer}
 
 \subsubsection{Approach 1 - Using piecewise linear interpolations}
 
@@ -268,13 +253,34 @@ The target number of points is set to 40. We had to find a number that is good e
 \label{fig:y_resampling}
 \end{figure}
 
-Answer the following:
-\begin{itemize}
-\item Mention that the data in the database was not in the same length therefore normalziation and re-sampling were needed. 
-\item Where preprocessing is used in our system? Letters Learning and strokes classification
-\item What parameters were used for each preprocessing stage and why.
-\item what alternatives were considered.
-\end{itemize}
+%In Figure \ref{fig:D_before_after_preprocessing} we show a sample of the letter \RL{d} sequence before and after preprocessing.
+%
+%\begin{figure}[h]
+%	\centering
+%        \subfloat[]{
+%            \label{fig:letter_before_preprocessing}
+%            \includegraphics[width=0.5\textwidth]{./figures/letter_before_preprocessing}
+%        }
+%        \subfloat[]{
+%           \label{fig:letter_after_preprocessing}
+%           \includegraphics[width=0.5\textwidth]{./figures/letter_after_preprocessing}
+%        }        
+%    \caption{The letter \RL{d} before (a) and after (b) preprocessing}
+%   \label{fig:D_before_after_preprocessing}
+%\end{figure}
+
+%
+%Answer the following:
+%\begin{itemize}
+%\item Refer to the slant and Rotation normalization, i.e., why we don't do it. Is slant common in Arabic?
+%\item Mention that the data in the database was not in the same length therefore normalziation and re-sampling were needed. 
+%\item Where preprocessing is used in our system? Letters Learning and strokes classification
+%\item What parameters were used for each preprocessing stage and why.
+%\item what alternatives were considered.
+%\item talk about splines.
+%\item show the following images: 1. the scattered stroke, 2. X and Y as a function of t., 3. X and Y re-sample and 3. the stroke re-sampled.
+%\item talk about the other smoothing techniques as described in \cite{jaeger2001online}
+%\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -1059,7 +1065,7 @@ The reason for using the constrained version of DTW that the exact calculation o
 
 \emph{TODO: show a diagram of sub-strokes classification process.}
 
-%
-%\bibliographystyle{plainnat}
-%\bibliography{references}
-%\end{document}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+\end{document}
