@@ -157,18 +157,18 @@ Further imperfections are caused by hand vibrations and duplicated sampled point
 This noise should be reduced as much as possible since it negatively influence the further processes, such as feature extraction and classification  \cite{huang2009preprocessing}.
 To overcome the flaws mentioned, preprocessing operations are usually applied. 
 The preprocessing steps imposes certain uniform structure on the data to comply with the input structure required by the latter parts of the system, such that vector length, sequence bounds, etc. \cite{al2011online}.
-
-%Many types of preprocessing stages exist in the literature.
-%mention other preprocessing approaches mentioned in the literature, like rotation normalization, slant normalization, and missing points interpolation. see \cite{jaeger2001online}.
-%As seen in Figure \ref{[]} and \ref{[]}, preprocessing is performed in both letters learning and classification of strokes.
-%Preprocessing is also done in the segmentation phase, however, not all steps mentioned in this section are performed. For more information see section \ref{[]}
+Other commonly used preprocessing steps, such as rotation normalization and slant normalization \cite{jaeger2001online}, were not applied in this work.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{same length data}}{}
 Data samples must be of the same dimension, both in term of sequence size and bounding box, for the system to work properly. 
 Since the collected letters in the database are of varying sizes, they were all resized to a uniform standard size, and re-sampled to to achieve same length sequences.
-Our preprocessing phase include three steps in the following order: \emph{Normalization and Translation}, \emph{Noise Elimination} and then \emph{Smoothing and Re-sampling}.
 
-\subsection{Normalization and Translation}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Usage}}{}
+Our preprocessing phase include three steps in the following order: \emph{Normalization}, \emph{Noise Elimination} and then \emph{Re-sampling}.
+The preprocessing of the data is performed in both the learning and classification of letters, and also by the segmentation algorithm.
+There is no concern of redundancy, since different parts of the preprocessing is applied is the different stages according to the needs and the data available in that stage.
+
+\subsection{Normalization}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Size and pattern length normalization}}{}
 Size normalization is done to achieve a uniform size of the bounding box surrounding the pattern. 
@@ -184,7 +184,7 @@ Given the stroke sequence $S=\{p_i\}_{i=1}^{n}=\{(x_i,y_i)\}_{i=1}^{n}$, the nor
 \begin{equation}
 {\bar x_i} = {{\left( {{x_i} - {\mu _x}} \right)} \over W},{\bar y_i} = {{\left( {{y_i} - {\mu _y}} \right)} \over W}
 \end{equation}
-$W = \max (d_x,d_y)$ where $d_x$ and $d_y$ are the width and hight of the pattern and $\mu$ is the center of gravity of the patter, i.e., 
+$W = \max (d_x,d_y)$ where $d_x$ and $d_y$ are the width and hight of the pattern, respectively, and $\mu$ is the center of gravity of the patter, i.e., 
 \begin{equation}
 \mu  = \left( {{\mu _x},{\mu _y}} \right) = \left( {{1 \over N}\sum\limits_{i = 1}^N {{x_i}} ,{1 \over N}\sum\limits_{i = 1}^N {{y_i}} } \right)
 \end{equation}
@@ -194,80 +194,57 @@ $W = \max (d_x,d_y)$ where $d_x$ and $d_y$ are the width and hight of the patter
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The handled noise}}{}
 The input obtained by the digitizer usually contains a large amount of noise irrelevant for pattern classification. 
-This noise consists mainly of redundant successive points duplication, vibrations, 
-The \emph{Douglas-Peucker Polyline Simplification algorithm} described in \cite{douglas1973algorithms}, also known as \emph{Iterative Endpoint Fit} algorithm, was used for eliminating such unwanted noises in the data. 
-Briefly, this is a line simplification algorithm which reduces the number of vertices in a piecewise linear curve given a preset tolerance parameter. 
-and outputs a skeletonized angular version of the original curve. 
-The normalization is performed prior to the simplification operation since the tolerance $\varepsilon$ depends on the the pattern's bounding box dimensions. 
-Assuming the stroke presentation is a sequence of points $S$, the sensitivity parameter that was used in our work is defined as:
-\begin{equation}
-\varepsilon  = {1 \over {200}}\sqrt {{d_x}^2 + {d_y}^2}
-\end{equation}
+This noise consists mainly of redundant successive points duplication and inadequacies caused by hand vibrations. 
+The \emph{Douglas-Peucker Polyline Simplification algorithm} described in \cite{douglas1973algorithms}, also known as the \emph{Iterative Endpoint Fit} algorithm, was used for eliminating such deficiencies in the data. 
 
-\begin{figure}
-\centering
-\includegraphics[width=0.7\textwidth]{./figures/ha_simplification}       
-\caption{Non Simplified representation of the letter \RL{.h}, is shown on the right. A simplified version is shown on the left. \emph{TODO: change the pictures to something better}}
-\label{fig:ha_simplification}
-\end{figure}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Douglas-Peucker algorithm}}{}
+The Douglas-Peucker Polyline Simplification algorithm is a line simplification procedure which reduces the number of vertices in a piecewise linear curve given a preset tolerance parameter, $\varepsilon$, and outputs a skeletonized angular version of the original curve. 
+In a nutshell, it operates as follows: Initially it marks only the first and the last points to be kept, then it find the furthest point, $p$, from the line segmented with the first and last points as end points. 
+If the distance is smaller that $\varepsilon$, the algorithm returns, else $p$ is kept, and the algorithm recursively operates on the the first point and $p$ and then with $p$ and the last point. 
+When the recursion is completed a new output curve can be generated consisting of all (and only) those points that have been marked as kept.
 
-\subsection{Smoothing and Re-sampling}
-As a result of the simplification process the points are not distributed uniformly along the stroke trajectory. 
-Naturally, there are less point in relatively straight areas and a higher amount of points in the curved areas of the stroke.
-%if we wont use simplification we can write this: The re-sampling is needed to prevent the unbalanced sampling density, which may be influenced by the sampling rate and the user non-uniform letter drawing. 
-The re-sampling produces equidistant smoothed data sequence. 
-The Re-sampling is performed using splines interpolation as follows: \\
-Given a stroke $S=\{p_i\}_{i=1}^{n}$ and the re-sampling target number $R$, let $\{X(a_i)\}_{i=1}^{n}$ and $\{Y(a_i)\}_{i=1}^{n}$ represent the x-axis and the y-axis sequences with respect to the parameter $a_i$ which is defined as follows:
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Douglas-Peucker algorithm}}{}
+In the normal preprocessing flow in which normalization is done prior to the simplification process, we empirically set $\varepsilon  = {1 \over 75}$.
+However, in the cases where normalization is undesirable, such as in the segmentation system, the tolerance parameter dependents on the the pattern's bounding box area and was set as follows: $\varepsilon  = {1 \over {200}}\sqrt {{d_x}^2 + {d_y}^2}$, where $d_x$ and $d_y$ are the width and hight of the pattern, respectively.
 
-\begin{equation}
-a_i=a_{i-1}+arclen(p_{i-1},p_i) 
-\end{equation}  
+\subsection{Re-sampling}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Input/Output}}{}
+The simplification process produces a highly angular, and non-uniform stroke trajectory, in terms of distribution of points along the pattern. 
+Naturally, there are less point in relatively straight areas and a higher density of points in the curved areas stroke. 
+This stages, using splines interpolation method, aims to produce an equidistant smoothed data sequence, given a re-sampling target number of points $R$, which was set to 40. 
 
-\begin{equation}
-X(a_i)=x_i
-\end{equation}  
-
-The arc-length of the stroke is given by $L=a_n$.
-
-A piecewise linear interpolations $q_X(a)$ and $q_X(a)$ are created for the $X$ sequence and $Y$ sequence respectively.
-The breaks are the $a_i$ sequence and the coefficient of the linear polynomial are $\alpha_{i} = \frac{X(a_i)-X(a_{i-1})}{a_{i}-a_{i-1}}$ 
-
-\emph {[we use quadratic splines for smoothing and simplification.]}
-
-let $t_i=i\frac{L}{R}$ for $i=0,...,R$.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{}}{}
+Given a stroke $S=\{(x_i,y_i)\}_{i=1}^{n}$, let $f_{x}(d)$ and $f_{y}(d)$ be the quadratic piecewise interpolations function of $x_i$ and $y_i$ sequences, respectively, with respect to the arc-length of the a given point from the pattern starting point.
+ 
+Let $t_i=i\frac{L}{R}$ for $i=0,...,R$ where L is the arc-length of the pattern.
 The re-sampled sequence is given as follows:
 \begin{equation}
-\widehat{S}=\{(q_X(t_i),q_Y(t_i))\}_{i=1}^{R}
+\widehat{S}=\{(f_x(t_i),f_y(t_i))\}_{i=1}^{R}
 \end{equation}
 
-The target number of points is set to 40. We had to find a number that is good enough for both long and short strokes since strokes can span over a single letter or a whole WP.
-
-\subsubsection{Approach 1 - Using piecewise linear interpolations}
-
-\subsubsection{Approach 2 - Using quadratic splines}
+Figure \ref{fig:before_after_preprocessing} demonstrate the re-sampling steps.
 
 \begin{figure}
-\centering
-\includegraphics{./figures/y_resampling}       
-\caption{Representation of a non-resamples sequence of the letter \RL{y} (Y) is shown in the right. The re-sampled version is shown on the left.}
-\label{fig:y_resampling}
+	\centering
+        \subfloat[]{
+            \label{fig:preprocessing_orig}
+            \includegraphics[width=0.4\textwidth]{./figures/preprocessing_orig}
+        }
+        \subfloat[]{
+           \label{fig:preprocessing_norm}
+           \includegraphics[width=0.4\textwidth]{./figures/preprocessing_norm}
+        }  \\
+        \subfloat[]{
+            \label{fig:preprocessing_simpl}
+            \includegraphics[width=0.4\textwidth]{./figures/preprocessing_simpl}
+        }
+        \subfloat[]{
+           \label{fig:preprocessing_resamp}
+           \includegraphics[width=0.4\textwidth]{./figures/preprocessing_resamp}
+        }       
+    \caption{A sample of the letter \RL{b} before preprocessing (a); after normalization (b); after noise elimination (c) and after re-sampling (d).}
+   \label{fig:before_after_preprocessing}
 \end{figure}
-
-%In Figure \ref{fig:D_before_after_preprocessing} we show a sample of the letter \RL{d} sequence before and after preprocessing.
-%
-%\begin{figure}[h]
-%	\centering
-%        \subfloat[]{
-%            \label{fig:letter_before_preprocessing}
-%            \includegraphics[width=0.5\textwidth]{./figures/letter_before_preprocessing}
-%        }
-%        \subfloat[]{
-%           \label{fig:letter_after_preprocessing}
-%           \includegraphics[width=0.5\textwidth]{./figures/letter_after_preprocessing}
-%        }        
-%    \caption{The letter \RL{d} before (a) and after (b) preprocessing}
-%   \label{fig:D_before_after_preprocessing}
-%\end{figure}
 
 %
 %Answer the following:
