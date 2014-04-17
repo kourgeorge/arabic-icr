@@ -63,11 +63,10 @@ In this chapter we will discuss theoretical aspect as well as implementation det
 Given a stroke sequence, and a position as an input parameter to the classifier, it produces a list of candidate samples from the sample set which are most similar to the given sequence, with a scoring attached to each candidate. Thus, actually, the classifier contains four databases. On for each letter position. This partitioning of the samples to four database, clearly, improve the classification power and the accuracy of the classification and scoring.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Performance}}{}
-The performance of the on-line classifier is a crucial property of the 
-needed classifier since, as mentioned in the overview in chapter \ref{}, the goal of the system is to perform strokes segmentation and letters recognition while the stroke is being written.
+The performance of the on-line classifier is a crucial property of the desired classifier for, as mentioned in the overview in chapter \ref{}, the goal of the system is to perform strokes segmentation and letters recognition while the stroke is being written.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Constructs classification}}{}
-In the on-line text recognition, the classification can be done in several levels. The Recognition system can be built to classify an entire words, Word-parts, letters or even strokes. In this work we chose to work with strokes, since it represent the most basic element a writer can produce after the point, and it contains in most cases a single letter or more.
+In the on-line text recognition, the classification can be done in several levels. The Recognition system can be built to classify an entire words, Word-parts, letters or even strokes. In this work we chose to work with strokes, because it represent the most basic element a writer can produce after the point, and it contains in most cases a single letter or more.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Talk in general about the technique we use - mention each stage in general}}{}
 Text Recognition can be broken down into three main stages: \emph{preprocessing}, \emph{feature extraction} and \emph{classification}. The preprocessing stage usually consists of normalization, re-sampling, noise elimination and smoothing steps to give the a uniform structure and avoid irrelevant information that can negatively affect the recognition. In the feature extraction stage, important information in the data is highlighted and represented as vectors in the feature space which is used by the classifier. The last important step is classification, which identify the class for which the sample belong.
@@ -143,48 +142,41 @@ For the disadvantages for HMM and NN techniques mentioned above and the intuitiv
 In the $k$-NN problem a set of data points in d-dimensional space is given and for a query point q, the nearest or generally k nearest points of P to q can be reported efficiently. 
 The distance between two points can be defined in many ways as will be detailed in Section \ref{[]}. $k$-NN based classification a very basic and common approach for implementing the pattern classification. However, the retrieval of the exact k-Nearest Neighbors for a given query object $q$ and a database of sample set $S$ suffers from bad performance that is mainly caused by two factors. The first, is the total numbers of samples in the data. This issue will be discussed in Section \ref{sec:similarity_search} and the other is the dimensionality of objects in the data (known as the \emph{curse of dimensionality}). Computing exact nearest neighbors in dimensions much higher than 8 seems to be a very difficult task. However, the first issue has much smaller impact on the speed of the nearest neighbor retrieval and can be healed easily by using dimensionality reduction techniques which will be discussed in details in Section \ref{sec:dimensionality_reduction}. However, the first issue, i.e., the size of the sample data, is crucial. The simplest solution to the NN problem is to linearly go over the entire sample set and keep track of the best k best nominates so far. The running time of this algorithm in $O(Nd)$ where $N$ is the cardinality of sample set and d is the dimensionality of the sample set. While looking in the entire database for the $k$-NN is not permissible for most applications. The only advantage of this approach is that it requires no extra space, beyond the amount of the memory needed for keeping the sample set. This issue is will be treated in Section \ref{sec:similarity_search}. 
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Section outline}}{}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Samples Preprocessing}
+\label{sec:preprocessing}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why preprocessing is needed?}}{}
-The data obtained by the digitizer is composed of points in the plane that represent the trajectory scribed by the writing instrument on the digitizer devices surface.
-Such devices generate a jagged form and the obtained data is non-uniform and noisy form \cite{al2011online}.
-Since, usually, samples are taken in constant time intervals, slow pen motion regions are oversampled and fast motion regions are under-sampled.
-Further imperfections are caused by hand vibrations and duplicated sampled points resulted from hesitant writing. 
-This noise should be reduced as much as possible since it negatively influence the further processes, such as feature extraction and classification  \cite{huang2009preprocessing}.
-To overcome the flaws mentioned, preprocessing operations are usually applied. 
-The preprocessing steps imposes certain uniform structure on the data to comply with the input structure required by the latter parts of the system, such that vector length, sequence bounds, etc. \cite{al2011online}.
-Other commonly used preprocessing steps, such as rotation normalization and slant normalization \cite{jaeger2001online}, were not applied in this work.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
+Digitizers tend to generate a jagged and non-uniform sampling of the trajectory scribed on their surface \cite{al2011online}.
+Such devices, normally, sample the input in constant time intervals, thus, slow pen motion regions are over-sampled and fast motion regions are under-sampled.
+Further imperfections are caused by hand vibrations caused by hesitant writing.
+This noise should be reduced as much as possible since it negatively influence the system performance \cite{huang2009preprocessing}.
+To overcome the flaws mentioned, preprocessing operations are usually applied, which impose certain uniform structure on the data to comply with the input structure required for the proper operation of the subsequent parts of the system \cite{al2011online}.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{same length data}}{}
-Data samples must be of the same dimension, both in term of sequence size and bounding box, for the system to work properly. 
-Since the collected letters in the database are of varying sizes, they were all resized to a uniform standard size, and re-sampled to to achieve same length sequences.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Usage}}{}
-Our preprocessing phase include three steps in the following order: \emph{Normalization}, \emph{Noise Elimination} and then \emph{Re-sampling}.
-The preprocessing of the data is performed in both the learning and classification of letters, and also by the segmentation algorithm.
-There is no concern of redundancy, since different parts of the preprocessing is applied is the different stages according to the needs and the data available in that stage.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Overview}}{}
+This work, preprocessing consists of three methods: \emph{normalization}, \emph{noise elimination} and then \emph{re-sampling}.
+The preprocessing of the data is applied in the learning, classification, and segmentation phases. 
+However, while in the learning and classification stages, the three steps were applied on the obtained data, the segmentation system use the different preprocessing steps according to the needs and the data available to the specific step in the segmentation flow as described in Chapter \ref{chap:segmentation}.
+Other commonly used preprocessing steps, such as rotation and slant normalization \cite{jaeger2001online}, were not used in this work due to the complexity involved in implementing such methods, and the small accuracy increase gained from using such methods, usually, in the Arabic script.
 
 \subsection{Normalization}
-
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Size and pattern length normalization}}{}
-Size normalization is done to achieve a uniform size of the bounding box surrounding the pattern. 
-This is done to enable the classifier to recognize the sequence pattern even when the stroke is written in different sizes. 
-Shape similarity algorithms tend to be sensitive for non-uniform shapes size, thus this procedure is important and can be found in many approaches in the literature. 
-However, this method could not be applied since normalization is done in our system on the stroke level which could contain a letter, at least.
-Size normalization was applied on each stroke such that all strokes have $[0,1]\times[0,1]$ bounding box but retain their original aspect ratio. 
+Size normalization is performed to achieve a uniform size of the bounding box surrounding the pattern. 
+It was applied on each stroke so that it will fit into a $[0,1]\times[0,1]$ bounding box without affecting the original aspect ratio. 
+In addition, this stage includes another step of translating the sequence so that the sequence's center of gravity is located in the origin point, i.e., at $[0,0]$.
+Although the features used in this work are agnostic to the pattern size and to it's location, this stage facilitates the task of the segmentation sub-system.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Pattern translation}}{}
-The features used in this work are location agnostic, that is to say only the pattern relative proportion are considered.
-Nevertheless, this stage include translation of the sequence such that the sequence's center of gravity is located in the origin point, i.e., at $[0,0]$.
 Given the stroke sequence $S=\{p_i\}_{i=1}^{n}=\{(x_i,y_i)\}_{i=1}^{n}$, the normalized sequence $\bar{S}=\{\bar p_i \}_{i=1}^{n}=\{(\bar x_i,\bar y_i)\}_{i=1}^{n}$ is calculated by: 
 \begin{equation}
 {\bar x_i} = {{\left( {{x_i} - {\mu _x}} \right)} \over W},{\bar y_i} = {{\left( {{y_i} - {\mu _y}} \right)} \over W}
 \end{equation}
-$W = \max (d_x,d_y)$ where $d_x$ and $d_y$ are the width and hight of the pattern, respectively, and $\mu$ is the center of gravity of the patter, i.e., 
+$W = \max (d_x,d_y)$, where $d_x$ and $d_y$ are the width and hight of the pattern, respectively, and $\mu$ is the center of gravity of the patter, i.e., 
 \begin{equation}
 \mu  = \left( {{\mu _x},{\mu _y}} \right) = \left( {{1 \over N}\sum\limits_{i = 1}^N {{x_i}} ,{1 \over N}\sum\limits_{i = 1}^N {{y_i}} } \right)
 \end{equation}
@@ -198,24 +190,27 @@ This noise consists mainly of redundant successive points duplication and inadeq
 The \emph{Douglas-Peucker Polyline Simplification algorithm} described in \cite{douglas1973algorithms}, also known as the \emph{Iterative Endpoint Fit} algorithm, was used for eliminating such deficiencies in the data. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Douglas-Peucker algorithm}}{}
-The Douglas-Peucker Polyline Simplification algorithm is a line simplification procedure which reduces the number of vertices in a piecewise linear curve given a preset tolerance parameter, $\varepsilon$, and outputs a skeletonized angular version of the original curve. 
-In a nutshell, it operates as follows: Initially it marks only the first and the last points to be kept, then it find the furthest point, $p$, from the line segmented with the first and last points as end points. 
-If the distance is smaller that $\varepsilon$, the algorithm returns, else $p$ is kept, and the algorithm recursively operates on the the first point and $p$ and then with $p$ and the last point. 
-When the recursion is completed a new output curve can be generated consisting of all (and only) those points that have been marked as kept.
+The algorithm reduces the number of vertices in a piecewise linear curve given a preset tolerance parameter $\varepsilon$, which defines the maximum 'dissimalirity' between the original and the reduced curve.
+It outputs a simplified curve, that consists of a subset of the points that defined the original curve.
+Initially, the algorithm marks the first and the last points to be kept, then it find the furthest point, $p$, from the line segmented with the first and last points as end points.
+If the distance is smaller that $\varepsilon$, the algorithm returns. Otherwise, $p$ is kept, and the algorithm recursively operates on the the first point and $p$ and then with $p$ and the last point.
+When the recursion is completed, the kept points define an angular skeletonization of the original curve.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Douglas-Peucker algorithm}}{}
-In the normal preprocessing flow in which normalization is done prior to the simplification process, we empirically set $\varepsilon  = {1 \over 75}$.
-However, in the cases where normalization is undesirable, such as in the segmentation system, the tolerance parameter dependents on the the pattern's bounding box area and was set as follows: $\varepsilon  = {1 \over {200}}\sqrt {{d_x}^2 + {d_y}^2}$, where $d_x$ and $d_y$ are the width and hight of the pattern, respectively.
+In the normal preprocessing flow, in which normalization is done prior to the simplification process, we empirically set $\varepsilon  = {1 \over 75}$.
+However, in cases where normalization is not applicable, such as in the segmentation system, the tolerance parameter has to be dependent on the the pattern's un-normalized bounding box area. 
+In such cases, the tolerance parameter was set as follows: $\varepsilon  = {1 \over {200}}\sqrt {{d_x}^2 + {d_y}^2}$, where $d_x$ and $d_y$ are the width and hight of the pattern, respectively. 
+The devision factors of the both the absolute and relative cases were found empirically. 
+The discrepancy in the devision factor between the two cases can be explained by the difference in the sensitivity required in the different flows. 
 
 \subsection{Re-sampling}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Input/Output}}{}
-The simplification process produces a highly angular, and non-uniform stroke trajectory, in terms of distribution of points along the pattern. 
-Naturally, there are less point in relatively straight areas and a higher density of points in the curved areas stroke. 
+The simplification process produces a highly angular, and non-uniform distribution of points along the stroke trajectory.
+Naturally, there are less point in straight areas and a higher density of points in the curved areas stroke. 
 This stages, using splines interpolation method, aims to produce an equidistant smoothed data sequence, given a re-sampling target number of points $R$, which was set to 40. 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The re-sampling procedure}}{}
 Given a stroke $S=\{(x_i,y_i)\}_{i=1}^{n}$, let $f_{x}(d)$ and $f_{y}(d)$ be the quadratic piecewise interpolations function of $x_i$ and $y_i$ sequences, respectively, with respect to the arc-length of the a given point from the pattern starting point.
- 
 Let $t_i=i\frac{L}{R}$ for $i=0,...,R$ where L is the arc-length of the pattern.
 The re-sampled sequence is given as follows:
 \begin{equation}
@@ -224,7 +219,7 @@ The re-sampled sequence is given as follows:
 
 Figure \ref{fig:before_after_preprocessing} demonstrate the re-sampling steps.
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
         \subfloat[]{
             \label{fig:preprocessing_orig}
@@ -246,17 +241,12 @@ Figure \ref{fig:before_after_preprocessing} demonstrate the re-sampling steps.
    \label{fig:before_after_preprocessing}
 \end{figure}
 
-%
+
 %Answer the following:
 %\begin{itemize}
-%\item Refer to the slant and Rotation normalization, i.e., why we don't do it. Is slant common in Arabic?
-%\item Mention that the data in the database was not in the same length therefore normalziation and re-sampling were needed. 
-%\item Where preprocessing is used in our system? Letters Learning and strokes classification
-%\item What parameters were used for each preprocessing stage and why.
-%\item what alternatives were considered.
-%\item talk about splines.
-%\item show the following images: 1. the scattered stroke, 2. X and Y as a function of t., 3. X and Y re-sample and 3. the stroke re-sampled.
+%\item Fix the sentance talking about slant normalizaion. 
 %\item talk about the other smoothing techniques as described in \cite{jaeger2001online}
+%\item how does these steps applied in different researches, refer related works.
 %\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -961,7 +951,7 @@ Grauman et al. in \cite{grauman2004fast} used PCA to find a low-dimensional subs
 The basic form of PCA is defined over the $L_2$ space. However, the data that is embedded to the wavelet domain was proved to approximate EMD in the $L_1$ space. Although $L_1$-PCA techniques were examined in the literature \cite{kwak2008principal}, we decided to use the basic form of PCA, given that $L_2$ estimate $L_1$ fairly well.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Implementation: PCA}}{}
-In the proposed system, we wanted to exploit the strengthens of both PCA and LDA techniques using the dimensionality reduction process which is outlined as follows: The samples are projected to a subspace $S_1$ using PCA and then to subspace $S_2$ using LDA. In the PCA stage, the target dimensionality, i.e., the number of principal components taken into consideration, is the minimal to achieve data preservation rate of 99\%, i.e., $E=0.99$. As mentioned before, the dimensionality of the original vectors was 3946. The reason we adopted such a high rate is that it was enough to achieve a very major dimensionality reduction. As seen in table \ref{table:dr_dimensions_results}, the dimensionality was reduced by PCA in two orders of magnitude.
+In the proposed system, we wanted to exploit the strengthens of both PCA and LDA techniques using the dimensionality reduction process which is outlined as follows: The samples are projected to a subspace $S_1$ using PCA and then to subspace $S_2$ using LDA. In the PCA stage, the target dimensionality, i.e., the number of principal components taken into consideration, is the minimal to achieve data preservation rate of 99\%, i.e., $E=0.99$. As mentioned before, the dimensionality of the original vectors was 3946. The reason we adopted such a high rate is that it was enough to secure a major dimensionality reduction. As seen in table \ref{table:dr_dimensions_results}, the dimensionality was reduced by PCA in two orders of magnitude.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Implementation: Clustering and LDA}}{}
 Applying LDA directly on the resulted data would have achieved poorer results for the reason that almost all letters in the Arabic writing system have several shapes which are commonly used. See Figure \ref{table:letters_writing_styles}. Furthermore, since LDA regards the labeling of the data samples, trying to group different perceptual shapes in a single class would impinge the dimensionality reduction process. 
