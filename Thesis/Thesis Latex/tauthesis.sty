@@ -392,19 +392,37 @@
 %  options and defaults
 %
 \def\Title#1{\gdef\@Title{#1}}
-\def\Author#1{\gdef\@Author{#1}}
+\def\Author#1{\gdef\@Author{\Large \textbf #1}}
 \def\Year#1{\gdef\@Year{#1}}  \Year{\year}
-\def\Degree#1{\gdef\@Degree{#1}} \Degree{Doctor of Philosophy}
+%% as a supervisor is not necessarily a professor
+\def\Supervisor#1{\gdef\@Supervisor{{#1}}}
+\def\SecondSupervisor#1{\gdef\@SecondSupervisor{{#1}}}
+\def\Degree#1{\gdef\@Degree{#1}}
 
 %%TODO:
 %%  Add code to allow  M.Sc, M.A, M.E, M.FA degrees as well.
 %
-\def\School#1{\gdef\@School{#1}} \School{Tel Aviv University}
+\def\School#1{\gdef\@School{#1}} 
+\def\Faculty#1{\gdef\@Faculty{#1}}
+\def\Department#1{\gdef\@Department{#1}} 
 \def\Degreetext#1{\gdef\@Degreetext{#1}} 
-  \Degreetext{A thesis\\%
-    submitted in partial fulfilment\\%
-    of the requirements for the Degree\\%
-    of\\}
+  \Degreetext{Thesis submitted toward the degree of\\%
+    \@Degree\\%
+    in \@School}
+    
+\def\Header#1{\gdef\@Header{#1}} 
+  \Header{{\Large  \@School} \\ %
+  \MakeUppercase{\@Faculty} \\%
+  \small \@Department}
+
+\def\SupervisionText#1{\gdef\@SupervisionText{#1}}   
+  \SupervisionText {{\small This research was carried out at \@School\\
+      in the \@Department\\
+      Faculty of Engineering\\
+      under the supervision of \@Supervisor\\
+      and \@SecondSupervisor\\}}
+    
+    
 \newcount\@Signatures 
 \def\Signatures#1{\global\@Signatures=#1\relax}
   \Signatures{3} % number of signature lines
@@ -430,30 +448,54 @@
     \begin{tabular}{l l}%
       \@Committee
     \end{tabular}}}
-
- \def\titlepage{                   % Prints the title page
+%%%%%%%%%%%%%  Title %%%%%%%%%%%%%%%
+ \def\titlepage{                  
     \thispagestyle{empty}
-            \centerline{\includegraphics[width=.1\textwidth]{taulogo}}
-    \vspace{84pt}
+    
     \begin{center}
+    \@Header \\
+    \vspace{84pt}
       {\Large
       \lineskip 3ex
-      \@Title\par}                  %% The Title
-      \vskip0pt plus2fill\relax
-      %%\rule{75mm}{0.5pt}
-      \vskip0pt plus2fill\relax
+      \@Title\par}                  
       \large
-      \@Degreetext                  %% A Thesis\ldots of
-      \par%\vskip0pt plus2fill\relax
-      \@Degree                      %% The Degree
-      \par%\vskip0pt plus2fill\relax
+      \@Degreetext                  
+      \par\vskip0pt plus2fill\relax
       \@textofby
-      \par%\vskip0pt plus2fill\relax
-      \@Author                      %% Author
       \par\vskip0pt plus1fill\relax
-      %% \rule{37.5mm}{0.5pt}
+      \@Author                     
+      \par\vskip0pt plus1fill\relax
     \end{center}
-     \vskip0pt plus1fill\relax
+
+    \begin{center}
+      \large
+      \@Year                      
+    \end{center}
+    \mbox{}
+    \let\titlepage\relax}
+
+%%%%%%%%%%%%%  Second Title %%%%%%%%%%%%%%%
+
+  \def\secondtitlepage{  
+    \thispagestyle{empty}
+    \begin{center}
+    \@Header\\
+    \vspace{84pt}
+      {\Large
+      \lineskip 3ex
+      \@Title\par}                  
+      \large
+      \@Degreetext                  
+      \par
+      \par\vskip0pt plus2fill\relax
+      \@textofby
+      \par\vskip0pt plus1fill\relax
+      \par
+      \@Author                      
+      \par\vskip0pt plus1fill\relax
+    \@SupervisionText  
+    \end{center}
+     %\vskip0pt plus1fill\relax
     \ifx\@empty\@Committee         %% The Examining Committee (if known)
     \else
       \ExamCommittee
@@ -461,13 +503,14 @@
     \begin{center}
       \large
       \par\vskip0pt plus2fill\relax
-      \@School                     %% School
-      \par%\vskip0pt plus2fill\relax
+      %\@School                     %% School
+      %\par%\vskip0pt plus2fill\relax
       \@Year                       %% Year
-      \par
+      %\par
     \end{center}
     \mbox{}
-    \let\titlepage\relax}
+    \let\secondtitlepage\relax}
+
 
 %   Quote slip
 %
@@ -651,5 +694,4 @@
 %% room. Thanks Andre Renaud for the fix.
 \fancyfoot[c]{\vspace{4pt}\thepage}
 
-%% as a supervisor is not necessarily a professor
-\def\Supervisor#1{\Professor{#1}}
+
