@@ -152,26 +152,26 @@ The distance between two points can be defined in many ways as will be detailed 
 \label{sec:preprocessing}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
-Digitizers tend to generate a jagged and non-uniform sampling of the trajectory scribed on their surface \cite{al2011online}.
+Digitizers tend to generate a jagged and non-uniform sampling of the trajectory scribed on their surface.
 Such devices, normally, sample the input in constant time intervals, thus, slow pen motion regions are over-sampled and fast motion regions are under-sampled.
-Further imperfections are caused by hand vibrations caused by hesitant writing.
-This noise should be reduced as much as possible since it negatively influence the system performance \cite{huang2009preprocessing}.
-To overcome the flaws mentioned, preprocessing operations are usually applied, which impose certain uniform structure on the data to comply with the input structure required for the proper operation of the subsequent parts of the system \cite{al2011online}.
+Further imperfections are caused by hand vibrations resulted from hesitant writing \cite{huang2009preprocessing}.
+This lack of uniformity in the data, if not deliberately used by the classification system, should be reduced as much as possible as it could negatively influence the classification system performance.
+In order to overcome the flaws mentioned, preprocessing operations are usually needed to impose certain uniform structure on the data, to comply with the input structure required for the proper operation of the subsequent parts of the system \cite{al2011online}.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Overview}}{}
-This work, preprocessing consists of three methods: \emph{normalization}, \emph{noise elimination} and then \emph{re-sampling}.
-The preprocessing of the data is applied in the learning, classification, and segmentation phases. 
-However, while in the learning and classification stages, the three steps were applied on the obtained data, the segmentation system use the different preprocessing steps according to the needs and the data available to the specific step in the segmentation flow as described in Chapter \ref{chap:segmentation}.
-Other commonly used preprocessing steps, such as rotation and slant normalization \cite{jaeger2001online}, were not used in this work due to the complexity involved in implementing such methods, and the small accuracy increase gained from using such methods, usually, in the Arabic script.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Preprocessing steps usage}}{}
+In the current work, preprocessing consists of three methods: \emph{normalization}, \emph{noise elimination} and then \emph{re-sampling}.
+While these three techniques were applied in the mentioned order in both learning and classification of letters, these steps were selectively activated in the segmentation system according to the needs of the specific step, as described in Chapter \ref{chap:segmentation}.
+Other less commonly used preprocessing steps in the field of on-line Arabic HWR, such as rotation and slant normalization \cite{jaeger2001online}, were not implemented in this work. 
+
 
 \subsection{Normalization}
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Size and pattern length normalization}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Goal}}{}
 Size normalization is performed to achieve a uniform size of the bounding box surrounding the pattern. 
 It was applied on each stroke so that it will fit into a $[0,1]\times[0,1]$ bounding box without affecting the original aspect ratio. 
-In addition, this stage includes another step of translating the sequence so that the sequence's center of gravity is located in the origin point, i.e., at $[0,0]$.
-Although the features used in this work are agnostic to the pattern size and to it's location, this stage facilitates the task of the segmentation sub-system.
+This stage includes an additional step of translating the sequence so that the sequence's center of gravity is located in the origin point, i.e., at $[0,0]$.
+Although the features used in this work are agnostic to the pattern's size and location, this step is mostly required to facilitate the task of segmentation.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Pattern translation}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Approach}}{}
 Given the stroke sequence $S=\{p_i\}_{i=1}^{n}=\{(x_i,y_i)\}_{i=1}^{n}$, the normalized sequence $\bar{S}=\{\bar p_i \}_{i=1}^{n}=\{(\bar x_i,\bar y_i)\}_{i=1}^{n}$ is calculated by: 
 \begin{equation}
 {\bar x_i} = {{\left( {{x_i} - {\mu _x}} \right)} \over W},{\bar y_i} = {{\left( {{y_i} - {\mu _y}} \right)} \over W}
@@ -184,19 +184,19 @@ $W = \max (d_x,d_y)$, where $d_x$ and $d_y$ are the width and hight of the patte
 
 \subsection{Noise Elimination}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The handled noise}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
 The input obtained by the digitizer usually contains a large amount of noise irrelevant for pattern classification. 
 This noise consists mainly of redundant successive points duplication and inadequacies caused by hand vibrations. 
 The \emph{Douglas-Peucker Polyline Simplification algorithm} described in \cite{douglas1973algorithms}, also known as the \emph{Iterative Endpoint Fit} algorithm, was used for eliminating such deficiencies in the data. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Douglas-Peucker algorithm}}{}
-The algorithm reduces the number of vertices in a piecewise linear curve given a preset tolerance parameter $\varepsilon$, which defines the maximum 'dissimalirity' between the original and the reduced curve.
+The algorithm reduces the number of vertices in a piecewise linear curve, given a preset tolerance parameter $\varepsilon$, which defines the maximum 'dissimalirity' between the original and the reduced curve.
 It outputs a simplified curve, that consists of a subset of the points that defined the original curve.
 Initially, the algorithm marks the first and the last points to be kept, then it find the furthest point, $p$, from the line segmented with the first and last points as end points.
 If the distance is smaller that $\varepsilon$, the algorithm returns. Otherwise, $p$ is kept, and the algorithm recursively operates on the the first point and $p$ and then with $p$ and the last point.
 When the recursion is completed, the kept points define an angular skeletonization of the original curve.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Douglas-Peucker algorithm}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Different tolerance parameters}}{}
 In the normal preprocessing flow, in which normalization is done prior to the simplification process, we empirically set $\varepsilon  = {1 \over 75}$.
 However, in cases where normalization is not applicable, such as in the segmentation system, the tolerance parameter has to be dependent on the the pattern's un-normalized bounding box area. 
 In such cases, the tolerance parameter was set as follows: $\varepsilon  = {1 \over {200}}\sqrt {{d_x}^2 + {d_y}^2}$, where $d_x$ and $d_y$ are the width and hight of the pattern, respectively. 
@@ -204,13 +204,14 @@ The devision factors of the both the absolute and relative cases were found empi
 The discrepancy in the devision factor between the two cases can be explained by the difference in the sensitivity required in the different flows. 
 
 \subsection{Re-sampling}
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Input/Output}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Goal}}{}
 The simplification process produces a highly angular, and non-uniform distribution of points along the stroke trajectory.
 Naturally, there are less point in straight areas and a higher density of points in the curved areas stroke. 
 This stages, using splines interpolation method, aims to produce an equidistant smoothed data sequence, given a re-sampling target number of points $R$, which was set to 40. 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The re-sampling procedure}}{}
-Given a stroke $S=\{(x_i,y_i)\}_{i=1}^{n}$, let $f_{x}(d)$ and $f_{y}(d)$ be the quadratic piecewise interpolations function of $x_i$ and $y_i$ sequences, respectively, with respect to the arc-length of the a given point from the pattern starting point.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Approach}}{}
+Given a stroke $S=\{(x_i,y_i)\}_{i=1}^{n}$, let $f_{x}(d)$ and $f_{y}(d)$ be the quadratic piecewise interpolations function of $\{x_i\}_{i=1}^{n}$ and $\{y_i\}_{i=1}^{n}$, respectively. 
+$f_{x}(d)$ and $f_{y}(d)$ are functions of the coordinate value with respect to the arc-length distance from the pattern's starting point. 
 Let $t_i=i\frac{L}{R}$ for $i=0,...,R$ where L is the arc-length of the pattern.
 The re-sampled sequence is given as follows:
 \begin{equation}
@@ -219,7 +220,7 @@ The re-sampled sequence is given as follows:
 
 Figure \ref{fig:before_after_preprocessing} demonstrate the re-sampling steps.
 
-\begin{figure}[h]
+\begin{figure}
 	\centering
         \subfloat[]{
             \label{fig:preprocessing_orig}
@@ -244,7 +245,6 @@ Figure \ref{fig:before_after_preprocessing} demonstrate the re-sampling steps.
 
 %Answer the following:
 %\begin{itemize}
-%\item Fix the sentance talking about slant normalizaion. 
 %\item talk about the other smoothing techniques as described in \cite{jaeger2001online}
 %\item how does these steps applied in different researches, refer related works.
 %\end{itemize}
