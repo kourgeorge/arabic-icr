@@ -43,11 +43,6 @@
 \newtoggle{edit-mode}
 \togglefalse{edit-mode}  
 %\toggletrue{edit-mode}
-\iftoggle{edit-mode}{
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
-}{
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
-}
 
 % the following is useful when we have the old nomencl.sty package
 \providecommand{\printnomenclature}{\printglossary}
@@ -59,13 +54,18 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
 \usepackage{tauthesis}
-%\usepackage[font={small,bf}, labelfont={small,bf}, margin=1cm]{caption}
+\iftoggle{edit-mode}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
+}
+
+\usepackage[font={small,bf}, labelfont={small,bf}, margin=1cm]{caption}
 \usepackage{titlesec}
 \newcommand{\hsp}{\hspace{20pt}}
 \titleformat{\chapter}[hang]{\Huge\bfseries}{\thechapter\hsp}{0pt}{\Huge\bfseries}
 
-\School{Tel-Aviv University}
-\Faculty{\uppercase {The Iby and Aladar Fleischman faculty of engineering}}
+\University{Tel Aviv University}
+\Faculty{The Iby and Aladar Fleischman Faculty of Engineering}
+\School{The Zandman-Slaner School of Graduate Studies}
 \Department {Department of Electrical Engineering - Systems}
 \Title{\textbf{ \uppercase {Ongoing Segmentation and Recognition of Arabic On-line Handwritten Script}}}
 \Degree{Master of Science in Electrical and Electronic Engineering}
@@ -89,28 +89,12 @@
 
 %Dedication
 \clearpage
-\thispagestyle{plain}
+\thispagestyle{empty}
 \par\vspace*{.35\textheight}{\centering \em \Large To my parents\par}
 %Dedication 
 
-\acknowledgments{
-This research would not have been possible without the support of many people. 
-I wish to express my gratitude to my supervisor, Professor Dana Ron, for her inspiration, invaluable assistance in this research and her insightful comments on this thesis.
 
-I would like to sincerely thank my second supervisor, Dr. Raid Saabne, for introducing me to this fascinating field; for his endless efforts pushing me forward in and believing in me; for directing me through the hard times and providing me with invaluable advices, which I will take for life.
-
-There is a famous metaphorical Arabic statement, which was used to be written on the walls of schools, that I would like to devote to my instructors and all the teachers during my lifetime, to express my deep appreciation to them.
-
-\begin{center}
-\RL{man `llmny .hrfaN, .srto laho `bdaN Arb`yn `AmaN}\\
-''For him, who has taught me a single letter, I will be a servant for forty years.'' 
-\end{center}
-
-Finally, I wish to express my love and gratitude to my parents, Micheal and Rimona, and to my brothers for their unconditional support and love. 
-Words alone cannot express my deep emotions for them.\\
-
-\hfill \textbf{\em George}
-}
+\include{Acknowledge}
 
 \cleardoublepage
 \setcounter{page}{1} % Start preliminary pages numbering (roman numerals).
@@ -119,11 +103,11 @@ Words alone cannot express my deep emotions for them.\\
 
 \tableofcontents{}
 
+\printnomenclature{}
+
 \listoffigures
 
 \listoftables
-
-\printnomenclature{}
 
 \textpages
 

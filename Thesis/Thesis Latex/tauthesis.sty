@@ -49,11 +49,11 @@
 % margins are approximately 1 inch, except 1.5 inch at the binding
 %
 
-\textheight 610\p@ \textwidth 390\p@
-\oddsidemargin 40\p@ \evensidemargin 22\p@
+\textheight 640\p@ \textwidth 430\p@
+\oddsidemargin 30\p@ \evensidemargin 11\p@
 \marginparwidth 85\p@ \marginparsep 7\p@
-\topmargin 0\p@   \headheight 12\p@ \headsep 36\p@
-\footnotesep=14\p@
+\topmargin 0\p@   \headheight 6\p@ \headsep 18\p@
+\footnotesep=7\p@
 
 \setlength\parindent{1.5em}
 
@@ -175,7 +175,7 @@
    \def\@chapapp{\protect\@textofChapter}
    \def\Thechapter{\Roman{chapter}}        %% Roman chapter headings
    \pagenumbering{arabic}
-   \textheight 610pt  % allow for no footers (vers 1.3)
+   \textheight 650pt  % allow for no footers (vers 1.3)
      \footskip 40pt
    % \ifarchitect \textwidth 614pt \oddsidemargin 36pt \twocolumn\fi
    }
@@ -402,21 +402,21 @@
 %%TODO:
 %%  Add code to allow  M.Sc, M.A, M.E, M.FA degrees as well.
 %
-\def\School#1{\gdef\@School{#1}} 
+\def\University#1{\gdef\@University{#1}} 
+\def\School#1{\gdef\@School{#1}}
 \def\Faculty#1{\gdef\@Faculty{#1}}
 \def\Department#1{\gdef\@Department{#1}} 
 \def\Degreetext#1{\gdef\@Degreetext{#1}} 
-  \Degreetext{Thesis submitted toward the degree of\\%
-    \@Degree\\%
-    in \@School}
+  \Degreetext{A thesis submitted toward the degree of\\%
+    \@Degree}
     
 \def\Header#1{\gdef\@Header{#1}} 
-  \Header{{\Large\textbf{\MakeUppercase{\@School}}}\\ %
-  \MakeUppercase{\@Faculty} \\%
-  \small \@Department}
+  \Header{{\Large\textbf{\MakeUppercase{\@University}}}\\ %
+  \@Faculty \\%
+  \@School}
 
 \def\SupervisionText#1{\gdef\@SupervisionText{#1}}   
-  \SupervisionText {{\small This research was carried out at \@School\\
+  \SupervisionText {{\small This research was carried out at \@University\\
       in the \@Department\\
       Faculty of Engineering\\
       under the supervision of \@Supervisor\\
@@ -448,10 +448,10 @@
     \begin{tabular}{l l}%
       \@Committee
     \end{tabular}}}
+    
 %%%%%%%%%%%%%  Title %%%%%%%%%%%%%%%
  \def\titlepage{                  
-    \thispagestyle{empty}
-    
+    \thispagestyle{empty} 
     \begin{center}
     \@Header \\
     \vspace{84pt}
@@ -459,22 +459,25 @@
       \lineskip 3ex
       \@Title\par}                  
       \large
-      \@Degreetext                  
+      \@Degreetext
+      \par                  
       \par\vskip0pt plus2fill\relax
       \@textofby
       \par\vskip0pt plus1fill\relax
+      \par
       \@Author                     
       \par\vskip0pt plus1fill\relax
     \end{center}
 
     \begin{center}
       \large
+      \par\vskip0pt plus2fill\relax
       \@Year                      
     \end{center}
     \mbox{}
     \let\titlepage\relax}
 
-%%%%%%%%%%%%%  Second Title %%%%%%%%%%%%%%%
+%%%%%%%%%%%%%  Second Title %%%%%%%%%%%
 
   \def\secondtitlepage{  
     \thispagestyle{empty}
@@ -495,16 +498,9 @@
       \par\vskip0pt plus1fill\relax
     \@SupervisionText  
     \end{center}
-     %\vskip0pt plus1fill\relax
-    \ifx\@empty\@Committee         %% The Examining Committee (if known)
-    \else
-      \ExamCommittee
-    \fi
     \begin{center}
       \large
       \par\vskip0pt plus2fill\relax
-      %\@School                     %% School
-      %\par%\vskip0pt plus2fill\relax
       \@Year                       %% Year
       %\par
     \end{center}
@@ -542,7 +538,7 @@
    \addcontentsline{toc}{chapter}{\protect\@textofAbstract}
    \cleardoublepage
    \begin{center}
-%      \@School
+%      \@University
 %      \par\vskip1pc
      \Large
      \@textofAbstract
@@ -567,7 +563,8 @@
 \def\tableofcontents{\cleardoublepage
    \chapter*{\@textofToC\@mkboth{}{}}
    \pagestyle{plain}
-   \thispagestyle{empty}
+   %\thispagestyle{empty} 
+   %Commented to allow numbering of the first page in the TOC
    %\setcounter{page}{1} Commented out 
    {\let\footnotemark\relax  % in case one is in the title
    \@starttoc{toc}
