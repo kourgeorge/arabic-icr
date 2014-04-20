@@ -55,12 +55,13 @@
 \section{Introduction}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Complexity of the Arabic handwriting recognition}}{}
-On-line handwriting recognition is one of the very complex and challenging problems in the pattern recognition field due to the variability of writing styles, cursive writing, text size differences and sampling issues caused by duplicate samples resulted from hesitate writers as well as non-adjacent consecutive samples caused by fast writers \cite{verma2004feature}. The problem that makes the recognition of on-line handwriting recognition difficult is variation of shapes of the characters resulting from writing habits, styles, and the social and educational level of the writer.
-%Correct and precise classification is a fundamental part of any \emph{Optical character recognition} (OCR) system.
+On-line handwriting recognition is one of the very complex and challenging problems in the pattern recognition field.
+This is due to due to the variability of writing styles, cursive writing, text size differences and sampling issues, such as duplicate samples resulted from hesitate writers as well as non-adjacent consecutive samples caused by fast writers \cite{verma2004feature}. 
+The problem that makes the recognition of on-line handwriting recognition difficult is variation of shapes of the characters resulting from writing habits, styles, and the social and educational level of the writer.
 In this chapter we will discuss theoretical aspect as well as implementation details of the classification engine implemented in our system. \emph{TODO: fix this paragraph}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Input-output}}{}
-Given a stroke sequence, and a position as an input parameter to the classifier, it produces a list of candidate samples from the sample set which are most similar to the given sequence, with a scoring attached to each candidate. Thus, actually, the classifier contains four databases. On for each letter position. This partitioning of the samples to four database, clearly, improve the classification power and the accuracy of the classification and scoring.
+Given a stroke sequence and a position as an input parameter to the classifier, our classifier produces a list of candidate samples from the sample set which are most similar to the given sequence, with a scoring attached to each candidate. Thus, actually, the classifier contains four databases. On for each letter position. This partitioning of the samples to four database, clearly, improve the classification power and the accuracy of the classification and scoring.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Performance}}{}
 The performance of the on-line classifier is a crucial property of the desired classifier for, as mentioned in the overview in chapter \ref{}, the goal of the system is to perform strokes segmentation and letters recognition while the stroke is being written.
@@ -872,7 +873,11 @@ On the one hand, as claimed above, leaving the original distribution may result 
 \label{sec:dr}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{What is DR and what techniques are there?}}{}
-\emph{Dimensionality Reduction} is a process of reducing the number of variables taken into consideration in the learning and classification of data. It is a very important process in machine learning since it facilitates classification, efficient storing and visualization of high-dimensional data. The undesired properties of high-dimensional data present many mathematical challenges and practical complications \cite{van2009dimensionality}. First, Analysis of high-dimensional data generally requires a large amount of memory and computation power, which may be impractical for on-line classification systems and obstructive in other applications. In particular, many NN methods such as k-d tree are ineffective when the dimensionality of the data is high.
+\emph{Dimensionality Reduction} is a process of reducing the number of variables taken into consideration in the learning and classification of data. 
+It is a very important process in machine learning since it facilitates classification, efficient storing and visualization of high-dimensional data. 
+The undesired properties of high-dimensional data present many mathematical challenges and practical complications \cite{van2009dimensionality}. 
+First, Analysis of high-dimensional data generally requires a large amount of memory and computation power, which may be impractical for on-line classification systems and obstructive in other applications. 
+In particular, many NN methods such as k-d tree are ineffective when the dimensionality of the data is high.
 Second, the classification algorithm is more likely to overfit the training sample and generalizes poorly to new samples \cite{aida2009word}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{data Intrinsic dimensionality}}{}
@@ -880,13 +885,20 @@ Ideally, the reduced representation should have a dimensionality that correspond
 The intrinsic dimensionality of data is the minimum number of parameters needed to account for the observed properties of the data. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The underlying belief}}{}
-The belief underlying the existence of a compact representation of the external world data is based on the observation that the human brain can instantaneously and precisely recognize an observed apple, smile or a handwritten letter within a short route of neural computations. However, a digital representations of these images may consist of hundreds or thousands of pixels. Thus, clearly, there are much more compact representations of images, sounds, and even text than their native digital formats. Many recently proposed dimensionality reduction techniques are based on the intuition that data lies on or near a complex low-dimensional manifold that is embedded in the high-dimensional space.
+The belief underlying the existence of a compact representation of the external world data is based on the observation that the human brain can instantaneously and precisely recognize an observed apple, smile or a handwritten letter within a short route of neural computations. 
+However, a digital representations of these images may consist of hundreds or thousands of pixels. 
+Thus, clearly, there are much more compact representations of images, sounds, and even text than their native digital formats. 
+Many recently proposed dimensionality reduction techniques are based on the intuition that data lies on or near a complex low-dimensional manifold that is embedded in the high-dimensional space.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The curse of dimensionality}}{}
-The high dimensional data phenomenon is widespread in data analysis and was given the name \emph{the curse of dimensionality}. In many pattern recognition applications, the problem of high dimensional data can arise in different stages of the learning and classification process; 1. the dimensionality of the data may be high in the first place; 2. features calculated on the data may be impractically large; 3. other manipulations performed on the data, such as the embedding used in this work, may produce highly dimensional vectors.
+The high dimensional data phenomenon is widespread in data analysis and was given the name \emph{the curse of dimensionality}. 
+In many pattern recognition applications, the problem of high dimensional data can arise in different stages of the learning and classification process; 1. the dimensionality of the data may be high in the first place; 2. features calculated on the data may be impractically large; 3. other manipulations performed on the data, such as the embedding used in this work, may produce highly dimensional vectors.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Mathematical Definition}}{}
-Mathematically, given $p$-dimensional variable $x \in \mathbb{R}^p$, the dimensionality reduction process finds a lower dimensional representation $s \in \mathbb{R}^k$ with $k \leq p$ which preserves the content of the original data under a given criterion. The reduced dimensionality $p$ is chosen to be as small as possible, but yet sufficiently large to guarantee that the output vector $s$ provide a faithful representation of the input vector $x$. Dimensionality reduction techniques can be classified into linear and non-linear. Linear dimensionality reduction is based on a linear projection of the data assuming the data resides close to a lower dimensional linear subspace. Namely, each of the components in the vector $s$ is a linear combination of the components in the vector $x$, formally:
+Mathematically, given $p$-dimensional variable $x \in \mathbb{R}^p$, the dimensionality reduction process finds a lower dimensional representation $s \in \mathbb{R}^k$ with $k \leq p$ which preserves the content of the original data under a given criterion. 
+The reduced dimensionality $p$ is chosen to be as small as possible, but yet sufficiently large to guarantee that the output vector $s$ provide a faithful representation of the input vector $x$. 
+Dimensionality reduction techniques can be classified into linear and non-linear. Linear dimensionality reduction is based on a linear projection of the data assuming the data resides close to a lower dimensional linear subspace. 
+Namely, each of the components in the vector $s$ is a linear combination of the components in the vector $x$, formally:
 \begin{equation}
 s=Wx
 \end{equation}
@@ -1031,6 +1043,84 @@ The reason for using the constrained version of DTW that the exact calculation o
 \emph{TODO: show a diagram of the letters learning process}
 
 \emph{TODO: show a diagram of sub-strokes classification process.}
+
+\section{Analysis and Results}
+\label{sec:analysis_results}
+
+Mind Map:\\
+------------\\
+1. Show Precision and recall of each letter position\\
+2. Describe the parameters used, precision, recall, F-measure, ROC Area and why we use these parameters\\
+3. What analysis we want to show?
+4. everytime chang a single parameter in the test set, 
+5. before and after dimensionality reduction.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The goal of this experiment}}{}
+1-NN
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The test setup}}{}
+Cross validation with 10 folds.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The classification algorithm}}{}
+1-NN
+
+
+\begin{table}
+\centering
+\begin{tabular}{ | c | c | c | c | c | c |}
+\hline
+Letter position & Total samples number & Precision & Recall & F-measure & ROC Area\\
+\hline                 
+  Ini &  1404  & 0.891   &  0.892  &   0.891    &  0.938 \\ 
+  \hline
+  Mid & 1195 &  0.835  &   0.833  &   0.833   &   0.903  \\ 
+  \hline
+  Fin & 1628 &  0.858   &  0.856   &  0.856   &   0.921 \\ 
+  \hline
+  Iso & 1371 &  0.887  &   0.888   &  0.887   &   0.939 \\ 
+  \hline
+\end{tabular}
+\caption{Sequence (No feature) after dimensionality reduction}
+\label{table:results} 
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{ | c | c | c | c | c | c |}
+\hline
+Letter position & Total samples number & Precision & Recall & F-measure & ROC Area\\
+\hline                 
+  Ini &  1404  & 0.913  &   0.911  &   0.911   &   0.949 \\ 
+  \hline
+  Mid & 1195 & 0.832  &   0.832  &   0.831    &  0.903  \\ 
+  \hline
+  Fin & 1628 & 0.845   &  0.846   &  0.844   &   0.916 \\ 
+  \hline
+  Iso & 1371 &  0.854  &  0.856  &  0.854   &  0.922 \\ 
+  \hline
+\end{tabular}
+\caption{Shape Context after dimensionality reduction}
+\label{table:results} 
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{ | c | c | c | c | c | c |}
+\hline
+Letter position & Total samples number & Precision & Recall & F-measure & ROC Area\\
+\hline                 
+  Ini &  1404  & 0.778  &   0.783   &  0.78     &  0.877 \\ 
+  \hline
+  Mid & 1195 & 0.784  &    0.784   &  0.783   &  0.875  \\ 
+  \hline
+  Fin & 1628 & 0.751   &  0.754   &  0.751     & 0.866 \\ 
+  \hline
+  Iso & 1371 &  0.783  &   0.789  &   0.785   &   0.885 \\ 
+  \hline
+\end{tabular}
+\caption{Multi Angular descriptor after dimensionality reduction}
+\label{table:results} 
+\end{table}
 
 %
 %\bibliographystyle{plainnat}
