@@ -155,7 +155,7 @@ The distance between two points can be defined in many ways as will be detailed 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
 Digitizers tend to generate a jagged and non-uniform sampling of the trajectory scribed on their surface.
 Such devices, normally, sample the input in constant time intervals, thus, slow pen motion regions are over-sampled and fast motion regions are under-sampled.
-Further imperfections are caused by hand vibrations resulted from hesitant writing \cite{huang2009preprocessing}.
+Further imperfections are caused by hand vibrations resulting from hesitant writing \cite{huang2009preprocessing}.
 This lack of uniformity in the data, if not deliberately used by the classification system, should be reduced as much as possible as it could negatively influence the classification system performance.
 In order to overcome the flaws mentioned, preprocessing operations are usually needed to impose certain uniform structure on the data, to comply with the input structure required for the proper operation of the subsequent parts of the system \cite{al2011online}.
 
@@ -177,7 +177,7 @@ Given the stroke sequence $S=\{p_i\}_{i=1}^{n}=\{(x_i,y_i)\}_{i=1}^{n}$, the nor
 \begin{equation}
 {\bar x_i} = {{\left( {{x_i} - {\mu _x}} \right)} \over W},{\bar y_i} = {{\left( {{y_i} - {\mu _y}} \right)} \over W}
 \end{equation}
-$W = \max (d_x,d_y)$, where $d_x$ and $d_y$ are the width and hight of the pattern, respectively, and $\mu$ is the center of gravity of the patter, i.e., 
+where $W = \max (d_x,d_y)$, $d_x$ and $d_y$ are the width and hight of the pattern, respectively, and $\mu$ is the center of gravity of the patter, i.e., 
 \begin{equation}
 \mu  = \left( {{\mu _x},{\mu _y}} \right) = \left( {{1 \over N}\sum\limits_{i = 1}^N {{x_i}} ,{1 \over N}\sum\limits_{i = 1}^N {{y_i}} } \right)
 \end{equation}
@@ -193,7 +193,7 @@ The \emph{Douglas-Peucker Polyline Simplification algorithm} described in \cite{
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Douglas-Peucker algorithm}}{}
 The algorithm reduces the number of vertices in a piecewise linear curve, given a preset tolerance parameter $\varepsilon$, which defines the maximum 'dissimalirity' between the original and the reduced curve.
 It outputs a simplified curve, that consists of a subset of the points that defined the original curve.
-Initially, the algorithm marks the first and the last points to be kept, then it find the furthest point, $p$, from the line segmented with the first and last points as end points.
+Initially, the algorithm marks the first and the last points to be kept, then it finds the furthest point, $p$, from the line segmented with the first and last points as end points.
 If the distance is smaller that $\varepsilon$, the algorithm returns. Otherwise, $p$ is kept, and the algorithm recursively operates on the the first point and $p$ and then with $p$ and the last point.
 When the recursion is completed, the kept points define an angular skeletonization of the original curve.
 
@@ -207,8 +207,8 @@ The discrepancy in the devision factor between the two cases can be explained by
 \subsection{Re-sampling}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Goal}}{}
 The simplification process produces a highly angular, and non-uniform distribution of points along the stroke trajectory.
-Naturally, there are less point in straight areas and a higher density of points in the curved areas stroke. 
-This stages, using splines interpolation method, aims to produce an equidistant smoothed data sequence, given a re-sampling target number of points $R$, which was set to 40. 
+Naturally, there are less points in straight areas and a higher density of points in the curved areas stroke. 
+This stage, using splines interpolation method, aims to produce an equidistant smoothed data sequence, given a re-sampling target number of points $R$, which was set to 40. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Approach}}{}
 Given a stroke $S=\{(x_i,y_i)\}_{i=1}^{n}$, let $f_{x}(d)$ and $f_{y}(d)$ be the quadratic piecewise interpolations function of $\{x_i\}_{i=1}^{n}$ and $\{y_i\}_{i=1}^{n}$, respectively. 
@@ -1122,7 +1122,7 @@ Letter position & Total samples number & Precision & Recall & F-measure & ROC Ar
 \label{table:results} 
 \end{table}
 
-%
+
 %\bibliographystyle{plainnat}
 %\bibliography{references}
 %\end{document}
