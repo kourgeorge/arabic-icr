@@ -9,7 +9,7 @@
 \usepackage{amssymb}
 \usepackage[linesnumbered]{algorithm2e}
 
-%\linespread{1}
+\linespread{0.98}
 %\raggedbottom
 %\abovedisplayskip{0.96}
 
@@ -101,6 +101,7 @@ Eventually, the system heuristically determines the final set of SPs based on th
 \includegraphics[width=1\columnwidth]{./figures/system_flow}
 \caption{High level visualization of the system flow.}
 \label{fig:system_flow}
+\vspace{-15pt}
 \end{figure}
 
 \subsection{First Stage: POIs Nomination and Sub-strokes Scoring}
@@ -127,11 +128,11 @@ While false positive SPs can be easily removed, missed real SPs cannot be easily
 Therefore, in order to minimize the miss-rate, this process is delicate and allows false HFs to be detected.
 
 In a post processing step, fractions of the same horizontal segment, which were identified as multiple HFs, are rejoined to a single HF. 
-The merging is done by evaluating the complexity measurement between the two consequent HFs.
+The merge decision is made by evaluating the complexity measurement between the two consequent HFs.\\
 
 \textbf{Sub-strokes scoring:}
 Let $S=\{p_{i}\}_{i=1}^{n}$ be a sequence representing a handwritten stroke in which $L$ POIs were detected. 
-Let $KP=\{KP_{i}\}_{i=0}^{L+1}$ (Key points) be the ordered set of POIs, in addition to the first and the last points of the stroke positioned as the first and the last items in the set.
+Let $KP=\{KP_{i}\}_{i=0}^{L+1}$ (Key points) be the ordered set of POIs, in addition to the first and the last points of the stroke positioned as the first and the last items in the set as demonstrated in Figure \ref{fig:candidate_points}.
 Formally, we define: 
 \begin{equation}
 KP_{i} =\begin{cases}    1		, & \mbox{if } i=0 \\
@@ -154,7 +155,7 @@ We argue that sub-strokes representing a letter will achieve, in most cases, bet
 \begin{figure}
 \centering
 \includegraphics[width=0.6\columnwidth]{./figures/candidate_points}
-\caption{KPs of the word \RL{lbyh} (Lbyh). POIs are colored in red. The first and last key points (KPs) are colored in green. }
+\caption{KPs of the word \RL{lbyh} (Lbyh). POIs are colored in red. The first and last KPs are colored in green.}
 \label{fig:candidate_points}
 \end{figure}
 
@@ -163,12 +164,12 @@ It receives a sequence of points representing the sub-stroke and a letter positi
 The real-time nature of the segmentation technique strictly requires the classifier to be extremely fast.
 The compliance with the high performance demand was made possible by using a state-of-the-art method for fast computation of the approximate $k$-NN, based on the technique proposed in \cite{saabni2013efficient}.
 The relative location of the sub-stroke in the stroke, was used to avoid accessing all the four databases. 
-As can be seen in Table \ref{table:subsequences_types}, we differentiate between four types of subsequences. 
+As detailed in Table \ref{table:subsequences_types}, we differentiate between four types of subsequences. 
 For each type, we indicate the set of databases that need to be examined, i.e., the possible letter positions the sub-stroke may represent. 
 
 \begin{table}
 \centering
-\renewcommand{\arraystretch}{1.5}
+\renewcommand{\arraystretch}{1.3}
 \caption{A mapping between the subsequence types and the possible letter positions. $S$ denotes a stroke containing $L$ POIs. $S_i^j$ is defined in Equation \ref{eq:substroke_definition}, $m>0$ and $k<L+1$. }
 \begin{tabular}{| c |c | c |}
 \hline
@@ -184,11 +185,11 @@ For each type, we indicate the set of databases that need to be examined, i.e., 
 \hline
 \end{tabular}
 \label{table:subsequences_types}
+\vspace{-10pt}
 \end{table}
-
-The relation between the cells in the matrix $D$ and the sub-stroke type is given in matrix $D_p$  (Equation \ref{eq:positions_matrix}). 
-The type of the sub-stroke can be determined while the stroke is being scribed.
+Determining the sub-stroke type is performed while the stroke is being written according to the mapping given in matrix $D_p$ (Equation \ref{eq:positions_matrix}). 
 The last column and row are added on the "pen up" event.
+
 \begin{equation}
 D_{p}=
 \left( 
@@ -203,7 +204,7 @@ D_{p}=
 \label{eq:positions_matrix}
 \end{equation}
 
-For a given input (sequence and position), the recognition system returns the $K$ nearest neighbors with different labeling, where the labeling is defined as the tuple (letter, position). In our implementation, we set $K=3$.
+For a given input (sequence and position), the recognition system returns the $K$ nearest neighbors with different labeling, where the labeling is defined as the tuple (letter, position). In our implementation, we set $K=3$.\\
 
 \begin{figure}
 \centering
@@ -245,36 +246,40 @@ $5$
    & N/A & N/A & N/A & N/A & N/A & N/A \\
 \hline
 \end{tabular}
-\caption{A tabular representation of the $D$ matrix that corresponds the KPs showed in Figure \ref{fig:candidate_points}. Each cell visually demonstrates the corresponding sub-stroke colored in red.}
+\caption{A tabular representation of the $D$ matrix that corresponds the KPs showed in Figure \ref{fig:candidate_points}. Each cell contains the corresponding sub-stroke colored in red.}
 \label{table:substrokes_demo} 
+\vspace{-20pt}
 \end{figure}
 
 \subsection{Second Stage: Candidate points filtering and scoring correction}
-In this stage we re-score subsequences and eliminate redundant POIs based on the following rules:
+In this stage we re-score subsequences and eliminate redundant POIs based on the following rules:\\
 
 \begin{enumerate}
 	\item Inner SPs should lie close to the baseline. 
 	\item SPs do not reside in loops.
 	\item The sub-stroke length should be proportional to the length of the containing stroke.
 \end{enumerate}
-
+\newpage
 \textbf{Baseline detection:} The system determines the baseline by calculating the vertical density histogram of the re-sampled and normalized sub-stroke. 
 The height of the stroke (y-axis) is partitioned into ten equi-length intervals. 
 A POI is filtered out if it does not satisfy the following condition:
+\vspace{-20pt}
 \begin{equation}
 |POI_y-I_{max}| \leq 2*max{({|I|},0.15)}
+\vspace{-20pt}
 \end{equation}
 where $POI_y$ represents the $y$-coordinate of the POI, $|I|$ is the length of an interval, and $I_{max}$ denotes the center of the most inhabited interval. 
 In order to reliably determine the baseline, the algorithm is activated only after the fourth POI is detected. 
-This process has proven to be very effective in eliminating challenging false POIs that reside in valleys of frequently used final Arabic letters, such as \RL{-q}, \RL{-s} and \RL{-n}. 
-An example of such a POI can be seen in the letter \RL{-n} in Figure. 
+This process has proven to be very effective in eliminating challenging false POIs that reside in valleys that appear in several final Arabic letters, such as \RL{-q}, \RL{-s} and \RL{-n}. 
+An example can be seen in the letter \RL{-n} in Figure \ref{fig:candidate_in_no_horizontal}. 
 The baseline is needed only to verify that the POIs are in a reasonable distance from it, therefore, imprecise valuation of the position or the direction of the baseline is tolerable.\\
 
 The third rule is used to penalize unreasonably low scoring given to small sub-strokes, which are unlikely to represent a letter. 
 This is done by calculating the ratio of the sub-stroke length proportional to the entire stroke length.
 For instance, it is common to add a small, hook-like, extension to the suffix of the letter \RL{d} that may look very similar to the letter \RL{-a} during the stroke scribing; and thus under-scored by the recognition system, and eventually, result in over-segmenting the letter \RL{d}. 
-%In some cases, POIs are incorrectly nominated on non-horizontal areas. This is caused due to noises in the data and the fact that the nomination is done while the word is being scribed. 
-Our filtering algorithm should be corrected, in a future work, to handle this case.
+In some cases, POIs are incorrectly nominated on non-horizontal areas. 
+This is caused due to noises in the data and the fact that the nomination is done while the word is being scribed. 
+Our filtering algorithm should be corrected, in a future work, to handle this case.\\
 
 \subsection{Third Stage: Segmentation Selection}
 The goal of this phase is to select the \emph{final segmentation points} (FSP) among the POIs. 
@@ -290,7 +295,7 @@ However, greedily selecting the outgoing edge with the minimal weight will mostl
 
 Several \emph{segmentation selection algorithms} (SSAs) for finding the best segmentation path are proposed in this work.
 Here we describe two algorithms that were given the names \emph{Forward Segmentation Selection} (FSS) and \emph{Backward Segmentation Selection} (BSS) which operate quite similarly. 
-A pseudo-code of FSS algorithm can be seen in Algorithm \ref{alg:fss}. 
+A pseudo-code of the FSS algorithm is given in Algorithm \ref{alg:fss}. 
 FSS starts with the first point, $KP_0$, advancing toward the end of the stroke. 
 In Each step, it tries to find the next best KP by selecting the adjacent subsequence $S_i^j$ with the best scoring (as can be seen in line 5). 
 BSS operates similarly but starts from the last point and advances toward the beginning of the stroke. 
@@ -381,6 +386,7 @@ The validation process was tested on several sets and found to be highly reliabl
 %\includegraphics[width=0.9\columnwidth]{./figures/sp_types}
 %\caption{SPs types.}
 %\label{fig:sp_types}
+%\vspace{-15pt}
 %\end{figure}
 
 \section{Experimental Results}
@@ -478,8 +484,9 @@ In addition, differentiating between the main body of the letter \RL{-s-} and th
 
 \subsection{Segmentation Selection Algorithms Performance}
 \label{subsec:ssa_performance}
-As can be seen in Table \ref{table:ss_algorithms_results}, the SSA crucially effect on the system's performance. 
-We tried different combinations of two SSAs in which the FSP is done by running both SSAs independently and selecting the segmentation path with the smallest scoring. 
+It is apparent from the data in Table \ref{table:ss_algorithms_results}, that the SSA has a crucial effect on the system's performance. 
+We tested several combinations of two SSAs in which the FSP is found by executing both SSAs independently and selecting the segmentation path with the smallest scoring. 
+
 In Table \ref{table:ss_algorithms_results}, a combination of two algorithms is denoted by $\oplus$.
 
 \begin{table}
@@ -504,6 +511,7 @@ SSA & WP SR & WP RR & SP Precision & SP Recall\\
 \end{tabular}
 \centering
 \label{table:ss_algorithms_results} 
+\vspace{-10pt}
 \end{table}
 
 \subsection{Sample set size and distribution}
@@ -514,7 +522,7 @@ In the following experiment, we measure the effect of a large and imbalanced tra
 It is done by gradually increasing the maximal allowed number of samples per class (letter and position).
  
 The graph in Figure \ref{fig:num_letter_impact} shows convergence of the system's performance when the maximal number of samples is larger than 200 per class. 
-Nevertheless, a miniature degradation can be seen, which is caused, probably, due to the increasing imbalance in the distribution of the training set.
+Nevertheless, a miniature degradation is apparent, which is caused, probably, due to the increasing imbalance in the distribution of the training set.
 In addition, it is evident that the recognition rate (RR) is more sensitive to small training set than the segmentation rate (SR).
 
 \begin{figure}
@@ -522,6 +530,7 @@ In addition, it is evident that the recognition rate (RR) is more sensitive to s
 \includegraphics[width=1\columnwidth]{./figures/num_letter_impact}
 \caption{The impact of increasing the maximal number of samples per class on the segmentation and recognition rates.}
 \label{fig:num_letter_impact}
+\vspace{-10pt}
 \end{figure}
 
 \section{Summary and Future Work}
@@ -536,8 +545,9 @@ The system has demonstrated promising results.
 In future work, we will expand the process by adding a later holistic WP recognizer that exploits the proposed segmentation and the scoring information to inspect a limited number of potential WPs.
 
 \section*{Acknowledgment}
-The authors would like to thank Professor Dana Ron, from the Tel-Aviv University, for her invaluable help in this research and her insightful comments on this paper. 
+The authors would like to thank Professor Dana Ron, from the Tel-Aviv University, for her invaluable help in this research and her insightful comments on this paper. \\
 
+\linespread{0.9}
 \bibliographystyle{IEEEtran}
 \bibliography{IEEEabrv,bibliography}
 
