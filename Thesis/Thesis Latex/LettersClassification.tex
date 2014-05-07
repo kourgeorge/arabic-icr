@@ -58,19 +58,22 @@
 On-line handwriting recognition is one of the very complex and challenging problems in the pattern recognition field.
 This is due to due to the variability of writing styles, cursive writing, text size differences and sampling issues, such as duplicate samples resulted from hesitate writers as well as non-adjacent consecutive samples caused by fast writers \cite{verma2004feature}. 
 The problem that makes the recognition of on-line handwriting recognition difficult is variation of shapes of the characters resulting from writing habits, styles, and the social and educational level of the writer.
-In this chapter we will discuss theoretical aspect as well as implementation details of the classification engine implemented in our system. \emph{TODO: fix this paragraph}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Input-output}}{}
-Given a stroke sequence and a position as an input parameter to the classifier, our classifier produces a list of candidate samples from the sample set which are most similar to the given sequence, with a scoring attached to each candidate. Thus, actually, the classifier contains four databases. On for each letter position. This partitioning of the samples to four database, clearly, improve the classification power and the accuracy of the classification and scoring.
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction to teh chapter}}{}
+%In this chapter we will discuss theoretical aspects as well as implementation details of the classification engine implemented in our system. 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Performance}}{}
-The performance of the on-line classifier is a crucial property of the desired classifier for, as mentioned in the overview in chapter \ref{}, the goal of the system is to perform strokes segmentation and letters recognition while the stroke is being written.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Constructs classification}}{}
 In the on-line text recognition, the classification can be done in several levels. The Recognition system can be built to classify an entire words, Word-parts, letters or even strokes. In this work we chose to work with strokes, because it represent the most basic element a writer can produce after the point, and it contains in most cases a single letter or more.
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Performance}}{}
+The performance of the on-line classifier is a crucial property of the desired classifier for the goal of the system is to perform strokes segmentation and letters recognition while the stroke is being written.
+
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Talk in general about the technique we use - mention each stage in general}}{}
 Text Recognition can be broken down into three main stages: \emph{preprocessing}, \emph{feature extraction} and \emph{classification}. The preprocessing stage usually consists of normalization, re-sampling, noise elimination and smoothing steps to give the a uniform structure and avoid irrelevant information that can negatively affect the recognition. In the feature extraction stage, important information in the data is highlighted and represented as vectors in the feature space which is used by the classifier. The last important step is classification, which identify the class for which the sample belong.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Input-output}}{}
+Given a stroke sequence and a position as an input to the classifier, our classifier produces a list of candidate samples from the sample set which are most similar to the given sequence, with a scoring attached to each candidate. Thus, actually, the classifier contains four databases. On for each letter position. This partitioning of the samples to four database, clearly, improve the classification power and the accuracy of the classification and scoring.
 
 %We will start our discussion by giving the required background to pattern recognition, in general, and to the handwritten text recognition field in particular.
 
@@ -102,7 +105,7 @@ Since no such partition on the raw data space is known. We try to find the menti
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Types of approaches in the supervised Learning.}}{}
 %In machine learning, pattern recognition is the assignment of a label to a given input value. 
-Many supervised learning approaches and algorithms were proposed to solve the classification problem. Decision trees, artificial neural networks, support vector machines, Bayesian networks and nearest neighbor are few well-known learning techniques. A review on the supervised classification algorithms is given by Mohamed Aly in \cite{aly2005survey}.The role of the machine learning specialist is to identify the type of the learning problem and meet the needs of the problem by stitching the best solution for it. The classification process is usually contains several steps. These preliminary steps include normalization, noise removal, feature extraction, dimensionality reduction, etc. emph{[fix]}
+Many supervised learning approaches and algorithms were proposed to solve the classification problem. Decision trees, artificial neural networks, support vector machines, Bayesian networks and nearest neighbor are few well-known learning techniques. A review on the supervised classification algorithms is given by Mohamed Aly in \cite{aly2005survey}. The role of the machine learning specialist is to identify the type of the learning problem and meet the needs of the problem by stitching the best solution for it. The classification process is usually contains several steps. These preliminary steps include normalization, noise removal, feature extraction, dimensionality reduction, etc. emph{[fix]}
 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Classification techniques in HW recognition}}{}
@@ -568,11 +571,11 @@ It have been proved relatively efficient and effective for shape matching of han
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{DTW Speedup}}{}
 One drawback of DTW is its quadratic time and space complexity, i.e., $O(mn)$ where $m$ and $n$ are the time series lengths. Therefore, several speedup methods have evolved. These methods fall into the following categories:
-\begin{enumerate}
+\begin{compactitem}
 \item Constraints Enforcing: Limiting the amount of calculated cells in the accumulated distance matrix.
 \item Data Abstraction: Running the DTW algorithm on an abstract representation of the data.
 \item Pruning: Reducing the times DTW needs to run when determining similarity of time series.
-\end{enumerate}
+\end{compactitem}
 
 \paragraph{Constraints Enforcing:} 
 In some cases DTW tends to create an unrealistic correspondence between time-series features by aligning short features from one of the series to the long features on the second time series. To avoid this undesired phenomenon, constrains can be imposed on the possible correspondence between several consecutive points on the warping path. Two such constraints are the Sakoe-Chuba Band \cite{sakoe1978dynamic} and he Itakura parallelogram \cite{itakura1975minimum} (Figure \ref{fig:dtw_dequence_demo}). The grayed out area is the cells of the $D$ matrix that are filled by the DTW algorithm for each constraint. The warping path is looked for in the constraint window. The width of the window is specified by a parameter. Note that such constrains limit the amount of calculation needed for computing DTW, however, the speedup factor is a constant and the DTW complexity remains quadratic. Furthermore, if the warping path is does not reside in the constraint window, it will not be found by DTW, thus, such method is usually used when the warping path is expected to be in the constrain window.
@@ -1044,83 +1047,109 @@ The reason for using the constrained version of DTW that the exact calculation o
 
 \emph{TODO: show a diagram of sub-strokes classification process.}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Analysis and Results}
 \label{sec:analysis_results}
 
-Mind Map:\\
-------------\\
-1. Show Precision and recall of each letter position\\
-2. Describe the parameters used, precision, recall, F-measure, ROC Area and why we use these parameters\\
-3. What analysis we want to show?
-4. everytime chang a single parameter in the test set, 
-5. before and after dimensionality reduction.
+%Mind Map:\\
+%------------\\
+%1. Show Precision and recall of each letter position\\
+%2. Describe the parameters used, precision, recall, F-measure, ROC Area and why we use these parameters\\
+%3. What analysis we want to show?
+%4. everytime chang a single parameter in the test set, 
+%5. before and after dimensionality reduction.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}
+In order to assess the contribution and the importance of each stage to the classifier, we have conducted a series of experiment.
+In each experiment we skip a stage in the recognition system and then measure the classifier performance.
+The tree main stages in the classifier are: 1. the feature extraction stage; 2. the EMD embedding; and 3. the Dimensionality reduction.
+In each following subsection, we show the results obtained from skipping the corresponding stage and analyze the results.
+Then in subsection \ref{} we attempt to realize the affect of the sample size performance on the overall system performance.
+In subsection \ref{} we measure the system time performce and drill down to give the user an insight what were the most expensive stages in time performance. 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Cross validation}}{}
+Measuring the system accuracy and performance in all the subsection below were done using cross validation. {Cross-validation, sometimes called rotation estimation, is a model validation technique for assessing how the results of a statistical analysis will generalize to an independent data set.  It is mainly used in settings where the goal is prediction, and one wants to estimate how accurately a predictive model will perform in practice. One round of cross-validation involves partitioning a sample of data into complementary subsets, performing the analysis on one subset (called the training set), and validating the analysis on the other subset (called the validation set or testing set). To reduce variability, multiple rounds of cross-validation are performed using different partitions, and the validation results are averaged over the rounds. In k-fold cross-validation, the original sample is randomly partitioned into k equal size subsamples. Of the k subsamples, a single subsample is retained as the validation data for testing the model, and the remaining k - 1 subsamples are used as training data. The cross-validation process is then repeated k times (the folds), with each of the k subsamples used exactly once as the validation data. The k results from the folds can then be averaged (or otherwise combined) to produce a single estimation. The advantage of this method over repeated random sub-sampling (see below) is that all observations are used for both training and validation, and each observation is used for validation exactly once. 10-fold cross-validation is commonly used,[6] but in general k remains an unfixed parameter [1].}
+ 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Precision and recall}}{}
+{In pattern recognition and information retrieval with binary classification, precision (also called positive predictive value) is the fraction of retrieved instances that are relevant, while recall (also known as sensitivity) is the fraction of relevant instances that are retrieved. Both precision and recall are therefore based on an understanding and measure of relevance. Suppose a program for recognizing dogs in scenes from a video identifies 7 dogs in a scene containing 9 dogs and some cats. If 4 of the identifications are correct, but 3 are actually cats, the program's precision is 4/7 while its recall is 4/9. When a search engine returns 30 pages only 20 of which were relevant while failing to return 40 additional relevant pages, its precision is 20/30 = 2/3 while its recall is 20/60 = 1/3.
+Precision can be seen as a measure of exactness or quality, whereas recall is a measure of completeness or quantity.
+
+The Precision and recall measures are defined as follows:
+\begin{equation}
+\text{Precision}=\frac{tp}{tp+fp}
+\end{equation}
+\begin{equation}
+\text{Recall}=\frac{tp}{tp+fn}  
+\end{equation}
+}
+where $tp$ denotes \emph{True Positive} classification, $fp$ denotes \emph{False Positive} and $fn$ denotes \emph{False Negative}.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{F-measure}}{}
+{The F-measure can be interpreted as a weighted average of the precision and recall, where an F-measure reaches its best value at 1 and worst score at 0.
+
+The traditional F-measure is the harmonic mean of precision and recall:
+\begin{equation}
+F_1 = 2 \cdot \frac{\mathrm{precision} \cdot \mathrm{recall}}{\mathrm{precision} + \mathrm{recall}}.
+\end{equation}
+}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The sample set}}{}
+In all the experiments below the sample set used was distributed as seen in table \ref{}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ | c | c | c | c |}
+\hline                 
+  Ini & Mid & Fin & Iso \\ 
+  \hline
+  1404 & 1195 & 1628 & 1371 \\
+  \hline
+\end{tabular}
+\caption{Sample size and distribution}
+\label{table:results} 
+\end{table}
+
+
+\subsection{Feature Extraction}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The goal of this experiment}}{}
-1-NN
+The goal of this experiment is to provide a restricted evaluation to the two feature extraction techniques that were used in this work.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The test setup}}{}
-Cross validation with 10 folds.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The classification algorithm}}{}
-1-NN
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Setup}}{}
+For each position letter database (Ini, Mid, Fin and Iso) we ran a 10-folded cross validation process. In the first experiment, no feature extraction technique was used, i.e., the stroke sequence was directly used. The results can be seen in Table \ref{}.
+In the second experiment, Shape context was used, and in table \ref{} we show the experiment results in which Multi angular descriptor was used. 
 
 
-\begin{table}
+\begin{table}[h]
 \centering
 \begin{tabular}{ | c | c | c | c | c | c |}
 \hline
-Letter position & Total samples number & Precision & Recall & F-measure & ROC Area\\
+Feature & Precision & Recall & F-measure & ROC Area\\
 \hline                 
-  Ini &  1404  & 0.891   &  0.892  &   0.891    &  0.938 \\ 
+  Sequence  (None) &  0.87 & 0.87 & 0.867 & 0.93 \\
   \hline
-  Mid & 1195 &  0.835  &   0.833  &   0.833   &   0.903  \\ 
+  Shape Context & 0.86 & 0.86 & 0.86 & 0.92 \\ 
   \hline
-  Fin & 1628 &  0.858   &  0.856   &  0.856   &   0.921 \\ 
-  \hline
-  Iso & 1371 &  0.887  &   0.888   &  0.887   &   0.939 \\ 
+  MAD & 0.77 & 0.78 & 0.77 & 0.88 \\ 
   \hline
 \end{tabular}
-\caption{Sequence (No feature) after dimensionality reduction}
+\caption{Features comparison}
 \label{table:results} 
 \end{table}
 
-\begin{table}
-\centering
-\begin{tabular}{ | c | c | c | c | c | c |}
-\hline
-Letter position & Total samples number & Precision & Recall & F-measure & ROC Area\\
-\hline                 
-  Ini &  1404  & 0.913  &   0.911  &   0.911   &   0.949 \\ 
-  \hline
-  Mid & 1195 & 0.832  &   0.832  &   0.831    &  0.903  \\ 
-  \hline
-  Fin & 1628 & 0.845   &  0.846   &  0.844   &   0.916 \\ 
-  \hline
-  Iso & 1371 &  0.854  &  0.856  &  0.854   &  0.922 \\ 
-  \hline
-\end{tabular}
-\caption{Shape Context after dimensionality reduction}
-\label{table:results} 
-\end{table}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Segmentation rate}}{}
+See if the segmentation and recognition rate in the entire system also has a better performance with no feature extraction.
 
-\begin{table}
-\centering
-\begin{tabular}{ | c | c | c | c | c | c |}
-\hline
-Letter position & Total samples number & Precision & Recall & F-measure & ROC Area\\
-\hline                 
-  Ini &  1404  & 0.778  &   0.783   &  0.78     &  0.877 \\ 
-  \hline
-  Mid & 1195 & 0.784  &    0.784   &  0.783   &  0.875  \\ 
-  \hline
-  Fin & 1628 & 0.751   &  0.754   &  0.751     & 0.866 \\ 
-  \hline
-  Iso & 1371 &  0.783  &   0.789  &   0.785   &   0.885 \\ 
-  \hline
-\end{tabular}
-\caption{Multi Angular descriptor after dimensionality reduction}
-\label{table:results} 
-\end{table}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Analysis}}{}
+We were surprised to see that the sequence has achieved a better recognition rate.
+
+\subsection{Dimensionality Reduction}
+
+\subsection{EMD embedding}
 
 
 %\bibliographystyle{plainnat}
