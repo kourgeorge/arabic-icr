@@ -54,34 +54,34 @@
 
 \section{Introduction}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Complexity of the Arabic handwriting recognition}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Complexity of the Arabic handwriting recognition - In general}}{} 
 On-line handwriting recognition is one of the very complex and challenging problems in the pattern recognition field.
-This is due to due to the variability of writing styles, cursive writing, text size differences and sampling issues, such as duplicate samples resulted from hesitate writers as well as non-adjacent consecutive samples caused by fast writers \cite{verma2004feature}. 
-The problem that makes the recognition of on-line handwriting recognition difficult is variation of shapes of the characters resulting from writing habits, styles, and the social and educational level of the writer.
-
-%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction to teh chapter}}{}
-%In this chapter we will discuss theoretical aspects as well as implementation details of the classification engine implemented in our system. 
-
+This is, mainly, due to the variation of shapes of the characters resulting from writing habits, styles, and the social and educational level of the writer.
+Other factors which implicate the recognition is the variability of writing styles, cursive writing, text size differences and sampling issues, such as duplicate samples resulted from hesitate writers as well as non-adjacent consecutive samples caused by fast writers \cite{verma2004feature}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Constructs classification}}{}
-In the on-line text recognition, the classification can be done in several levels. The Recognition system can be built to classify an entire words, Word-parts, letters or even strokes. In this work we chose to work with strokes, because it represent the most basic element a writer can produce after the point, and it contains in most cases a single letter or more.
+In the on-line text recognition, the classification can be done in several levels and thus the recognition system can be built to classify an entire words, WP, letters or even strokes. 
+The classifier in this work is done on the stroke level, since, it represent the most basic element a writer can produce, and it contains, in most cases, a single letter or more.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Performance}}{}
-The performance of the on-line classifier is a crucial property of the desired classifier for the goal of the system is to perform strokes segmentation and letters recognition while the stroke is being written.
+The performance of the on-line classifier is a crucial property of the desired classifier for the goal of the system is to perform strokes segmentation and letters recognition on-line, while the stroke is being written.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Talk in general about the technique we use - mention each stage in general}}{}
 Text Recognition can be broken down into three main stages: \emph{preprocessing}, \emph{feature extraction} and \emph{classification}. The preprocessing stage usually consists of normalization, re-sampling, noise elimination and smoothing steps to give the a uniform structure and avoid irrelevant information that can negatively affect the recognition. In the feature extraction stage, important information in the data is highlighted and represented as vectors in the feature space which is used by the classifier. The last important step is classification, which identify the class for which the sample belong.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Input-output}}{}
-Given a stroke sequence and a position as an input to the classifier, our classifier produces a list of candidate samples from the sample set which are most similar to the given sequence, with a scoring attached to each candidate. Thus, actually, the classifier contains four databases. On for each letter position. This partitioning of the samples to four database, clearly, improve the classification power and the accuracy of the classification and scoring.
-
-%We will start our discussion by giving the required background to pattern recognition, in general, and to the handwritten text recognition field in particular.
+The classifier contains four databases, one for each letter position (Ini, Mid, Fin and Iso). 
+It receives a sequence of points representing the sub-stroke and a letter position, and outputs a list of sample candidates and their scoring which indicates the similarity measure between the sequence and the candidate.
+The real-time nature of the segmentation technique strictly requires the classifier to be extremely fast.
+The compliance with the high performance demand was made possible by using a state-of-the-art method for fast computation of the approximate $k$-NN.
+The partitioning of the samples to four database, clearly, improve the classification power and the accuracy of the classification and scoring.
 
 %\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Types of learning problems.}}{}
 %Machine learning is a branch in computer science of getting computers to act without being explicitly programmed. 
 %The are mainly three types of learning: supervised, unsupervised and reinforcement learning.
 %In the supervised learning, as seen above, a set of classified samples is given. In the unsupervised learning case, unlabeled data is given and the goal is to find a hidden structure in it. The reinforcement learning is a type of learning inspired by behaviorist psychology, concerned with how software agents ought to take actions in an environment so as to maximize some notion of cumulative reward. The handwriting recognition in most of it's implementation is a supervised learning problem.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning problem.}}{}
 In \emph{supervised learning}, classification is the problem of identifying to which of a set of classes a new observation belongs. It is done on the basis of a training set of data containing instances for which the their class membership is known.
 Formally, the supervised learning problem is defined as follows:
@@ -147,6 +147,7 @@ In the $k$-NN problem a set of data points in d-dimensional space is given and f
 The distance between two points can be defined in many ways as will be detailed in Section \ref{[]}. $k$-NN based classification a very basic and common approach for implementing the pattern classification. However, the retrieval of the exact k-Nearest Neighbors for a given query object $q$ and a database of sample set $S$ suffers from bad performance that is mainly caused by two factors. The first, is the total numbers of samples in the data. This issue will be discussed in Section \ref{sec:similarity_search} and the other is the dimensionality of objects in the data (known as the \emph{curse of dimensionality}). Computing exact nearest neighbors in dimensions much higher than 8 seems to be a very difficult task. However, the first issue has much smaller impact on the speed of the nearest neighbor retrieval and can be healed easily by using dimensionality reduction techniques which will be discussed in details in Section \ref{sec:dimensionality_reduction}. However, the first issue, i.e., the size of the sample data, is crucial. The simplest solution to the NN problem is to linearly go over the entire sample set and keep track of the best k best nominates so far. The running time of this algorithm in $O(Nd)$ where $N$ is the cardinality of sample set and d is the dimensionality of the sample set. While looking in the entire database for the $k$-NN is not permissible for most applications. The only advantage of this approach is that it requires no extra space, beyond the amount of the memory needed for keeping the sample set. This issue is will be treated in Section \ref{sec:similarity_search}. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Section outline}}{}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
