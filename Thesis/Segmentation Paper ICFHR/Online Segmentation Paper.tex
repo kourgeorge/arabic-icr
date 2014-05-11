@@ -29,9 +29,10 @@ Email: saabni@cs.bgu.ac.il}
 \maketitle
 
 \begin{abstract}
-Real-time performance is required in applications involving on-line handwriting recognition, however, conventional approaches, abundantly, wait until the entire curve is traced out before starting the analysis, inevitably causing delays in the recognition process. 
+Real-time performance is necessary in applications involving on-line handwriting recognition. 
+However, conventional approaches usually wait until the entire curve is traced out before starting the analysis, inevitably causing delays in the recognition process. 
 In regards to the Arabic script, the postponed analysis may be attributed to the cursive and unconstrained nature of the Arabic writing system, in both printed and handwritten forms. 
-Nevertheless, this paper proposes a real-time recognition-based segmentation technique of the on-line Arabic script.
+Nevertheless, this paper proposes a real-time recognition-based segmentation technique of on-line Arabic script.
 It demonstrate the feasibility of carrying out the most time consuming tasks, required for the segmentation process, during the course of writing. 
 The system has been designed and tested using the ADAB Database, and promising results were obtained.\\
 \end{abstract}
@@ -50,7 +51,7 @@ Research in this field has established two main approaches; the analytic approac
 While having many advantages, the holistic approach requires the classifier to be trained over the entire dictionary, which is impractical for large dictionaries (containing more than 20,000 words) \cite{elanwar2012unconstrained}.
 
 The cursiveness of the Arabic script, prima facie, requires delaying the launch of the recognition process until the completion of the word scribing. 
-However, in this paper, we question the necessity of this requirement by demonstrating the feasibility of approximating the position of the segmentation points (SPs) while the stroke is being written; and by doing so, accelerating the segmentation and, consequently, the recognition process. 
+However, in this paper, we question the necessity of this requirement by demonstrating the feasibility of approximating the position of the \emph{segmentation points} (SPs) while the stroke is being written; and by doing so, accelerating the segmentation and, consequently, the recognition process. 
 The resulted segmentation and letters classification information can be used to significantly reduce the potential dictionary size and accelerate a later holistic recognition process.
 
 In Section \ref{sec:related_work}, we mention related studies.
@@ -60,7 +61,6 @@ Experimental results and analysis is given in Section \ref{sec:results}.
 
 \section{Related Work}
 \label{sec:related_work}
-
 The research on on-line handwriting recognition started in the 1960's and has been receiving a great interest from the 1980's \cite{tagougui2013online}. 
 One of the earliest studies on On-line Arabic script recognition was carried out by El-Wakil and Shoukry in 1989 \cite{el1989line}.
 
@@ -77,7 +77,7 @@ A portion of the SPs is filtered out by applying a certain set of rules.
 Then, HMM is used to classify the sub-strokes to letters using the Hu feature. 
 The letters candidates and their scoring were used to determine the best set of SPs.
 
-A recent survey, done by Tagougui et al. \cite{tagougui2013online}, reviews the status of research in on-line Arabic handwriting recognition field. 
+A recent survey done by Tagougui et al. \cite{tagougui2013online} reviews the status of research in the on-line Arabic handwriting recognition field. 
 
 \section{Our Approach}
 \label{sec:approach}
@@ -560,10 +560,12 @@ The system has demonstrated promising results.
 
 In future work, we will expand the process by adding a later holistic WP recognizer that exploits the proposed segmentation and the scoring information to inspect a limited number of potential WPs.
 
-\section*{Acknowledgment}
-The authors would like to thank Professor Dana Ron, from the Tel-Aviv University, for her invaluable help in this research and her insightful comments on this paper.\\
 
-\linespread{0.9}
+
+\section*{Acknowledgment}
+The authors would like to thank Professor Dana Ron, from the Tel-Aviv University, for her invaluable help in this research and her insightful comments on this paper. This work has been supported in part by the German Research Foundation under grant no. FI 1494/3-2.
+
+\linespread{0.88}
 
 \bibliographystyle{IEEEtran}
 \bibliography{IEEEabrv,bibliography}
