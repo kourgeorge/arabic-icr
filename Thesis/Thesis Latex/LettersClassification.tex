@@ -150,6 +150,10 @@ For the disadvantages for HMM and NN techniques mentioned above and the intuitiv
 In the $k$-NN problem a set of data points in d-dimensional space is given and for a query point q, the nearest or generally k nearest points of P to q can be reported efficiently. 
 The distance between two points can be defined in many ways as will be detailed in Section \ref{[]}. $k$-NN based classification a very basic and common approach for implementing the pattern classification. However, the retrieval of the exact k-Nearest Neighbors for a given query object $q$ and a database of sample set $S$ suffers from bad performance that is mainly caused by two factors. The first, is the total numbers of samples in the data. This issue will be discussed in Section \ref{sec:similarity_search} and the other is the dimensionality of objects in the data (known as the \emph{curse of dimensionality}). Computing exact nearest neighbors in dimensions much higher than 8 seems to be a very difficult task. However, the first issue has much smaller impact on the speed of the nearest neighbor retrieval and can be healed easily by using dimensionality reduction techniques which will be discussed in details in Section \ref{sec:dimensionality_reduction}. However, the first issue, i.e., the size of the sample data, is crucial. The simplest solution to the NN problem is to linearly go over the entire sample set and keep track of the best k best nominates so far. The running time of this algorithm in $O(Nd)$ where $N$ is the cardinality of sample set and d is the dimensionality of the sample set. While looking in the entire database for the $k$-NN is not permissible for most applications. The only advantage of this approach is that it requires no extra space, beyond the amount of the memory needed for keeping the sample set. This issue is will be treated in Section \ref{sec:similarity_search}. 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{The Classifier Overview}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Classification level}}{}
@@ -166,7 +170,25 @@ The real-time nature of the segmentation technique strictly requires the classif
 The compliance with the high performance demand was made possible by using a state-of-the-art method for fast computation of the approximate $k$-NN.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Section outline}}{}
+Figure \ref{fig:letters_classifier_learning_flow} shows the general high level flow of the classifier's learning process.
+As mentioned before, the learning process is done on each letter position. 
+The process is repeated four times four times, for each letter position.
+Actually the output of this process is 4 data-structures.
+Each structure contain the following fields:
+\begin{compactitem}
+\item k-dtree datastructure
+\item dimensionality reduction Coefficient matrix
+\end{compactitem}
 
+Given a query object, it undergoes almost the same process of preproessing, feature extraction,embedding and dimensionality reduction and classified by the k-dtree.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{./figures/letters_classifier_learning_flow}       
+\caption{High level diagram of the classifier learning flow for a letter position.}
+\label{fig:letters_classifier_learning_flow}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -279,7 +301,6 @@ Figure \ref{fig:before_after_preprocessing} demonstrate the re-sampling steps.
 
 \section{Features Extraction}
 \label{sec:feature_extraction}
-
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
 Feature extraction is certainly one of the important parts of any pattern classification system and plays an important role in the overall process of handwriting recognition. 
 It aims is to cull informative parameters for learning and recognition of patterns. 
@@ -865,33 +886,37 @@ Our system uses a built-in Matlab implementation for k-d tree which is available
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Sample set Redistribution}
-\label{sec:sample_set_redistribution}
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}  
-On the one hand a large and verified sample set is crucial for every learning algorithm, in particular, it is important in the handwritten pattern classification because of the variety of styles between people in their handwriting. On the other hand, a large sample set can harm the performance of the NN based recognition system, and even harm the accuracy of the recognition because of outliers. 
-As can be seen in Section \ref{[]}, for some letters positions many samples were collected. And for other letters smaller set of samples were collected. On the one hand, we would like to maintain the underlying letters distribution since the distribution of our sample set has a high correlation to the real world letter distribution. On the other hand, as we have mentioned before, a non proportional sample size for some letters may harm our recognition process.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
-Cluster analysis is a common approach used in both supervised and unsupervised learning. It aims to partition a set of objects  into groups in such a way that objects in the same group (called a cluster) are more similar (in some sense or another) to each other than to those in other groups.
-Clustering has two main uses; the first is deriving a reduced representation of the full data set. the second use is deducing new insights into the structure of the data.
-Since a cluster is a notion that cannot be precisely defined, thus there is no objectively correct clustering and this is the reason there are so many clustering algorithms.
-There are many clustering models. By models we mean the basic concept on which the clustering is based upon. The most prominent models are the \emph{Connectivity models}. In this group we can find the hierarchical clustering. Another widely used set of models is the \emph{Centroids models} which contain such as well known k-means algorithm. Cluster analysis is used for various goals. In non-supervised learning, when the class label are not available, this technique enable the classification system to impose classes on the sample set. In the supervised learning, it can be used to impose a hierarchy on the sample set and by doing so improving the classification performance and accuracy.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{What type of clustering did we use, and why. $L_1$ K-medoids}}{}
-The problem of disproportional number of samples per letter class we solved by using the clustering k-medoids algorithm. the k-medoids algorithm aims to break up the dataset into k clusters. A medoid is a representative object of a cluster whose average dissimilarity to all the objects in the cluster is minimal. The k-medoids algorithm finds the k medoids of a dataset. 
-k-medoids can work with an arbitrary matrix of distances between data points. In our case the distance function is $L_1$. 
-Our decision to use the k-medoids algorithm rather than the common k-means algorithm is derived from obtain a digest of the dataset. Thus the returned $k$ objects by the k-medoids algorithm will function as the representatives of the samples in a given class.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Short description of the k-medoids algorithm}}{}
-k-medoids operates as follows: first it selects $k$ objects in random, named $M$ of the in datapoints and associate each datapoint to the closest object in $M$. Then, for each element $m$ in $M$ and for each object $o$ in the data set, swap $m$ and $o$ and compute the total cost of of the configuration, and select the configuration, with the lowest cost. Repeat the mentioned until the is no change in the set $M$. \emph{TODO: fix this flabby description.}
-
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{When it is applied? How did we determine the number of clusters per each letter, and the number of elements in each cluster.}}{}
-As mentioned before, the number of sample instances per class may greatly affect the classification result. Thus, we would like that the number of samples of each class will be distributed correspondingly to the apriory probability of the appearance of the letter in a given text. Since the letters were taken from the same database as the test set, it could have achieved optimistic results since the lexicon is the same lexicon of ~930 Tunisian cities. Thus the redistribution of letters according there apriori probability to the general Arabic text probability. We pretend to to be context free, thus this step is necessary. In addition to the fact the we have achieved very disproportion of class representative in the sample set.    
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{How did affect our results.}}{}  
-On the one hand, as claimed above, leaving the original distribution may result in a too good results since it will distributed according the letters aproiri probability appearance. On the other hand the classification results may be hurt because of outliers that affect the NN algorithm. Here we would like to show classification results of before and after samples redistribution. In the following table we show the results of the test we have conducted as follows: We have created a test set of letters and reported the percentage of the recognition rate.
+%\section{Sample set Redistribution}
+%\label{sec:sample_set_redistribution}
+%
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}  
+%On the one hand a large and verified sample set is crucial for every learning algorithm, in particular, it is important in the handwritten pattern classification because of the variety of styles between people in their handwriting. 
+%On the other hand, a large sample set can harm the performance of the NN based recognition system. 
+%A high unequal distribution of samples can negatively affect the classifier.
+%As can be seen in Section \ref{[]}, for some letters positions many samples were collected. And for other letters smaller set of samples were collected. On the one hand, we would like to maintain the underlying letters distribution since the distribution of our sample set has a high correlation to the real world letter distribution. On the other hand, as we have mentioned before, a non proportional sample size for some letters may harm our recognition process.
+%
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
+%Cluster analysis is a common approach used in both supervised and unsupervised learning. It aims to partition a set of objects  into groups in such a way that objects in the same group (called a cluster) are more similar (in some sense or another) to each other than to those in other groups.
+%Clustering has two main uses; the first is deriving a reduced representation of the full data set. the second use is deducing new insights into the structure of the data.
+%Since a cluster is a notion that cannot be precisely defined, thus there is no objectively correct clustering and this is the reason there are so many clustering algorithms.
+%There are many clustering models. By models we mean the basic concept on which the clustering is based upon. The most prominent models are the \emph{Connectivity models}. In this group we can find the hierarchical clustering. Another widely used set of models is the \emph{Centroids models} which contain such as well known k-means algorithm. Cluster analysis is used for various goals. In non-supervised learning, when the class label are not available, this technique enable the classification system to impose classes on the sample set. In the supervised learning, it can be used to impose a hierarchy on the sample set and by doing so improving the classification performance and accuracy.
+%
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{What type of clustering did we use, and why. $L_1$ K-medoids}}{}
+%The problem of disproportional number of samples per letter class we solved by using the clustering k-medoids algorithm. the k-medoids algorithm aims to break up the dataset into k clusters. 
+%A medoid is a representative object of a cluster whose average dissimilarity to all the objects in the cluster is minimal. The k-medoids algorithm finds the k medoids of a dataset. 
+%k-medoids can work with an arbitrary matrix of distances between data points. 
+%In our case the distance function is $L_1$. 
+%Our decision to use the k-medoids algorithm rather than the common k-means algorithm is derived from obtain a digest of the dataset. Thus the returned $k$ objects by the k-medoids algorithm will function as the representatives of the samples in a given class.
+%
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Short description of the k-medoids algorithm}}{}
+%k-medoids operates as follows: first it selects $k$ objects in random, named $M$ of the in datapoints and associate each datapoint to the closest object in $M$. Then, for each element $m$ in $M$ and for each object $o$ in the data set, swap $m$ and $o$ and compute the total cost of of the configuration, and select the configuration, with the lowest cost. Repeat the mentioned until the is no change in the set $M$. \emph{TODO: fix this flabby description.}
+%
+%
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{When it is applied? How did we determine the number of clusters per each letter, and the number of elements in each cluster.}}{}
+%As mentioned before, the number of sample instances per class may greatly affect the classification result. Thus, we would like that the number of samples of each class will be distributed correspondingly to the apriory probability of the appearance of the letter in a given text. Since the letters were taken from the same database as the test set, it could have achieved optimistic results since the lexicon is the same lexicon of ~930 Tunisian cities. Thus the redistribution of letters according there apriori probability to the general Arabic text probability. We pretend to to be context free, thus this step is necessary. In addition to the fact the we have achieved very disproportion of class representative in the sample set.    
+%
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{How did affect our results.}}{}  
+%On the one hand, as claimed above, leaving the original distribution may result in a too good results since it will distributed according the letters aproiri probability appearance. On the other hand the classification results may be hurt because of outliers that affect the NN algorithm. Here we would like to show classification results of before and after samples redistribution. In the following table we show the results of the test we have conducted as follows: We have created a test set of letters and reported the percentage of the recognition rate.
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -1067,25 +1092,12 @@ Once the classifier is provided a sequence to be classified and the position, it
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The recognition process - justification}}{}
 The reason for using the constrained version of DTW that the exact calculation of EMD on the nearest neighbors is that it has proved to be result in better recognition results as seen in table \ref{}.
 
-
-\emph{TODO: show a diagram of the letters learning process}
-
-\emph{TODO: show a diagram of sub-strokes classification process.}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Analysis and Results}
 \label{sec:analysis_results}
-
-%Mind Map:\\
-%------------\\
-%1. Show Precision and recall of each letter position\\
-%2. Describe the parameters used, precision, recall, F-measure, ROC Area and why we use these parameters\\
-%3. What analysis we want to show?
-%4. everytime chang a single parameter in the test set, 
-%5. before and after dimensionality reduction.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}
 Quantify the contribution and importance of each stage in the classification required us to conduct a series of experiments.
@@ -1112,16 +1124,16 @@ In the following paragraph we give a short description of each of the mentioned 
 More information can be found in \cite{labatut2012accuracy}.
 
 In binary classification, each sample is belongs to one of two classes, the positive class or the negative class.
-A \emph{true positive} (tp) instance is a positive sample classified correctly as positive by the classification system.
+A \emph{true positive} (tp) instance is an actual positive sample classified correctly as positive by the classification system.
 Similarly, a \emph{true negative} (tn) instance is the case of a negative sample classified correctly.  
 The cases where a positive sample mistakenly classified as negative or a negative sample classified as as belonging to the positive class, are called \emph{false positive} (fp) and \emph{false negative} (fn), respectively.
 
-Precision (also called positive predictive value) is the fraction of true positive instances among all the instances classified as positive. See Equation \ref{eq:percision}.
+\emph{Precision} (also called \emph{true positive rate}) is the fraction of true positive among all the instances classified as positive. See Equation \ref{eq:percision}.
 \begin{equation}
 \text{Precision}=\frac{tp}{tp+fp}
 \label{eq:percision}
 \end{equation}
-Recall (also known as sensitivity) is the fraction of true positive instances among all the positive samples, as described in Equation \ref{eq:recall}.
+The measure \emph{Recall} (also known as sensitivity or true negative rate) is the fraction of instances correctly classified as positive among all the positive samples, as described in Equation \ref{eq:recall}.
 \begin{equation}
 \text{Recall}=\frac{tp}{tp+fn}  
 \label{eq:recall}
@@ -1129,7 +1141,7 @@ Recall (also known as sensitivity) is the fraction of true positive instances am
 Both precision and recall are therefore based on an understanding and measure of relevance. 
 Precision can be seen as a measure of exactness or quality, whereas recall is a measure of completeness or quantity.
 
-Calculating the precision and recall in the case of multi-class classification system, is done by calculating the weighted average of each class. 
+Calculating the precision and recall in the case of multi-class classification system, is done by calculating the weighted average of each class.
 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{F-measure}}{}
@@ -1170,15 +1182,15 @@ In the second experiment, Shape context was used, and in table \ref{} we show th
 
 \begin{table}
 \centering
-\begin{tabular}{ | c | c | c | c | c | c |}
+\begin{tabular}{ | c | c | c | c | c |}
 \hline
-Feature & Precision & Recall & F-measure & ROC Area\\
+Feature & Precision & Recall & F-measure \\%& ROC Area\\
 \hline                 
-  Sequence  (None) &  0.87 & 0.87 & 0.867 & 0.93 \\
+  Sequence  (None) &  0.87 & 0.87 & 0.867 \\%& 0.93 \\
   \hline
-  Shape Context & 0.86 & 0.86 & 0.86 & 0.92 \\ 
+  Shape Context & 0.86 & 0.86 & 0.86 \\%& 0.92 \\ 
   \hline
-  MAD & 0.77 & 0.78 & 0.77 & 0.88 \\ 
+  MAD & 0.77 & 0.78 & 0.77 \\%& 0.88 \\ 
   \hline
 \end{tabular}
 \caption{Features comparison}
@@ -1186,7 +1198,10 @@ Feature & Precision & Recall & F-measure & ROC Area\\
 \end{table}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Segmentation rate}}{}
-See if the segmentation and recognition rate in the entire system also has a better performance with no feature extraction.
+In Table \ref{table:features_comparison}, it can be seen that the Sequence, i.e. using no feature extraction, have achieved almost the same accuracy results as when using SC.
+Although at first glance it can make doubting the necessity the feature extraction stage, we will see in later that the use of SC improved the segmentation and recognition results considerably.\\
+\emph{It boosted the SR from 75\% to 81\% and the RR from 72\% to 76\%}
+
 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Analysis}}{}
@@ -1196,33 +1211,34 @@ We were surprised to see that using the sequence feature has achieved a better r
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{DR}}{}
 As detailed in Section \ref{sec:dr} the role of the DR process is to reduce the number of variables taken into consideration by the classifier in order to avoid problem caused by the "curse of dimensionality", without affecting much the system accuracy.
-The results in Table \ref{table:dr_embedding_comparison} shows a very small affect on the accuracy measures.
+Table \ref{table:dr_embedding_comparison} shows the results of the experiment that uses SC as the feature.
+The results in Table \ref{table:dr_embedding_comparison} shows that the dimensionality reduction technique implemented in this work almost does not affect the system performance.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Embedding}}{}
-Accessing the embedding on the classification process 
+Assessing the embedding on the classification process 
+
 
 \begin{table}
 \centering
 \begin{tabular}{ | c | c | c | c | c | c |}
   \hline
-  Experiment & Precision & Recall & F-measure & ROC Area\\
+  Experiment & Precision & Recall & F-measure\\ % & ROC Area\\
   \hline                 
-  Baseline &  0.87 & 0.87 & 0.867 & 0.93 \\
+  Baseline &  0.87 & 0.87 & 0.867 \\% & 0.93 \\
   \hline
-  No DR & 0.91 & 0.9 & 0.90 & 0.94 \\  
+  No DR & 0.91 & 0.9 & 0.90 \\% & 0.94 \\  
   \hline
-  No embedding (Sequence) & 0.89 & 0.89 & 0.89 & 0.94 \\
-  \hline
-  No embedding (SC) & 0.89 & 0.89 & 0.89 & 0.94 \\
+  No embedding & 0.89 & 0.89 & 0.89 \\ %& 0.94 \\
   \hline
 \end{tabular}
-\caption{Different Experiments }
+\caption{Different Experiments}
 \label{table:dr_embedding_comparison} 
 \end{table}
 
 
 And here we performed the same experiment on a data that did not went through embedding.
 
+\emph{Comparing results with other researches.}
 
 
 \bibliographystyle{plainnat}
