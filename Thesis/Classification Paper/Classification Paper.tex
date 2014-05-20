@@ -21,7 +21,7 @@
 
 \begin{document}
 
-\title{Fast On-line Arabic Letters Classification and Scoring Using Earth Movers Distance Embedded to Wavelets Coefficients Domain }
+\title{Fast technique for On-line Arabic Character Classification Using Earth Movers Distance Embedding to Wavelets Domain}
 
 \author{\IEEEauthorblockN{George Kour}
 \IEEEauthorblockA{Faculty of Engineering\\
@@ -53,8 +53,17 @@ Arabic script segmentation; handwriting recognition; on-line text segmentation;
 \item Concentrate on the idea of embedding the letters into the wavelet domain
 \item The reason for doing so is to achieve a huge speedup in the recognition without giving up accuracy.
 \item Maybe it brings back the k-NN 
+\item talk about the segmentation paper, for which this classification system was used.
 \item How to test the accuracy of the scoring??? 
 \end{enumerate}
+
+The set of limitations
+\begin{enumerate}
+\item No additional strokes are taken into considerations.
+\item letters written in the same stroke.
+\end{enumerate}
+
+This study investigates classification of On-line Arabic characters using EMD Approximation techniques.
 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{General motivation and importance}}{}
@@ -73,6 +82,12 @@ The compliance with the high performance demand was made possible by using a sta
 
 \section{Related Work}
 \label{sec:related_work}
+
+\begin{itemize}
+\item Raid's paper on EMD embedding
+\item papers cited by Raid's paper for letters classification.
+\item \cite{Dinges2011}, \cite{abdulla2008off}, \cite{al2010development}
+\end{itemize}
 
 \section{Our Approach}
 \label{sec:approach}
@@ -120,7 +135,7 @@ The input obtained by the digitizer usually contains a large amount of noise irr
 This noise consists mainly of redundant successive points duplication and inadequacies caused by hand vibrations. 
 The \emph{Douglas-Peucker Polyline Simplification algorithm} described in \cite{douglas1973algorithms}, also known as the \emph{Iterative Endpoint Fit} algorithm, was used for eliminating such deficiencies in the data. 
 
-The algorithm reduces the number of vertices in a piecewise linear curve, given a preset tolerance parameter $\varepsilon$, which defines the maximum 'dissimalirity' between the original and the reduced curve.
+The algorithm reduces the number of vertices in a piecewise linear curve, given a preset tolerance parameter $\varepsilon$, which defines the maximum 'dissimilarity' between the original and the reduced curve.
 It outputs a simplified curve, that consists of a subset of the points that defined the original curve.
 In this work the tolerance parameter $\varepsilon$ was empirically set to ${1 \over 75}$.
 
@@ -187,8 +202,6 @@ Shape Context can be calculated in $O(N^3)$ time using the Hungarian method.
 \label{fig:shape_context_demo}
 \end{figure}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{MAD}}{}
-Multi Angular Descriptor (MAD).
 The other feature set is the \emph{Multi Angular Descriptor} (MAD) that was proposed by Saabni in \cite{saabni2013multi}. 
 It captures the angular view to multi resolution rings in different heights. 
 The shape is treated as a two dimensional set of points and the different rings are upper view points from rings around the shape centroid with different sizes and heights. 
@@ -206,63 +219,57 @@ Figure \ref{fig:mad_demo} provides a visual demonstration of the MAD feature whe
 
 \subsection{Metric Embedding}
 \subsubsection{The Earth Mover's Distance}
-
-The \emph{Earth Mover's Distance} (EMD), introduced by Rubner et al. in \cite{rubner2000earth}, is a measure of the dissimilarity between histograms. 
-It was experimentally verified to capture well the perceptual notion of a difference between images and is commonly used in content-based image retrieval to compute distances between the color histograms of two digital images \cite{grauman2004fast}.
-
-Histogram based descriptors, such as the Shape Context, are in many cases compared using a bin-wise dissimilarity techniques such as the Minkowski distance (as defined in Equation \ref{eq:minkowski}) or the $\chi^2$ statistic as defined below.
+Histogram based descriptors, such as the Shape Context, are in many cases compared using a bin-wise dissimilarity techniques such as the Minkowski distance or the $\chi^2$ statistic.
 Bin-wise dissimilarity measures can be computed very fast due to the fact that they measure dissimilarities between the content of corresponding bins of the two histograms and discard information across bins. 
-However, they usually fail to consider local and global variations. 
-These variations, which would be perceived as minor by a human, may result in a large dissimilarity values between two histograms.
+Thus, they usually fail to consider local and global variations. 
+These variations, which would be perceived as minor by a human, may result in a large dissimilarity values between two histograms. 
 
-Generally speaking, the distance between two histograms can be viewed as a special case of the well-known \emph{transportation problem}, a.k.a the Monge-Kantorovich problem \cite{rachev1985monge}. 
-The EMD is based on the solution to the transportation problem, for which efficient algorithms are available.
+Generally speaking, the distance between two histograms can be viewed as a special case of the well-known \emph{transportation problem}, a.k.a the Monge-Kantorovich problem \cite{rachev1985monge}.
+The \emph{Earth Mover's Distance} (EMD), introduced by Rubner et al. in \cite{rubner2000earth}, is a solution to the transportation problem which can be used as a measure of the dissimilarity between histograms. 
+EMD was experimentally verified to capture well the perceptual notion of a difference between images and is commonly used in content-based image retrieval to compute distances between the color histograms of two digital images \cite{grauman2004fast}.
+EMD was used by Saabne in \cite{saabni2013efficient} to measure similarity between shapes for recognizing and searching Arabic words. 
+However, for the best of our knowledge, this is the first use of EMD for on-line handwriting recognition.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD drawback}}{}
 The major hurdle in using EMD is its $O\left( {{N^3}\log N} \right)$ computational complexity (for an $N$-bin histogram). The complexity is magnified when the task is to search for similar shapes (nearest neighbors) in a large database. 
 In this case, a linear scan of the database would require computing a comparison of superpolynomial complexity for each database member against the query shape \cite{grauman2004fast}. 
-Greatly reducing the EMD calculation time can be achieved using approximation technique ...
+Greatly reducing the EMD calculation time can be achieved using approximation technique. 
+One Such approximation technique will be discussed later in this paper. 
 
-%EMD was used by Saabne in \cite{saabni2013efficient} to measure similarity between shapes for recognizing and searching Arabic words. 
-%However, for the best of our knowledge, this is the first use of EMD for on-line handwriting recognition.
 
 \subsubsection{Approximating EMD using Embedding}
 \label{subsec:approximating_emd_using_embedding}
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Indyk and Thaper Embedding}}{}
 Several approximation algorithms have been proposed to speedup the computation of EMD. 
-Indyk and Thaper \cite{indyk2003fast} proposed a technique for embedding the un-normed EMD metric into the $L_1$ space so that the EMD distance between the two objects is comparable to the Manhattan distance between the two points which represent the embedding of the two objects.  
-Given two points sets $A$ and $B$, both of cardinality $N$ and containing points in $L_2^d$ space, the embedding given in \cite{indyk2003fast} is into the $L_1^d$ norm (i.e., the space of vectors in $\mathbb{R}^d$ equipped with the Manhattan norm) and can be described by the following: 
-The general idea of the embedding is to compute and concatenate several weighted histograms of decreasing resolution for a given point set. Let us assume that the smallest distance between any two points is $1$ and $\Delta$ is the diameter of $C=A \bigcup B$, the embedding can be described as imposing hierarchy of grids $G_i$ having side length $2^i$ on the space $\mathbb{R}^d$, where $-1 \leq i \leq \log \Delta$. It is required that each grid $G_{i}$ be a refinement of the grid $G_{i+1}$. 
-Each grid is translated by a vector chosen randomly from $[0, \Delta]^d$. For each grid $G_i$, the vector $v_i(A)$ contains a single coordinate per cell that contains the number of points in the corresponding cell. In fact, for every $i$, $v_i(A)$ forms a histogram of A. The embedding, denoted as $f_{EMD}(A)$, is then defined as the concatenated vector of the $v_i$'s, scaled by the grid side lengths. Formally,
-\begin{equation}
-f_{EMD}(A) = [v_{-1}(A)/2, v_0(A), 2v_1(A), 4v_2(A),..., 2^iv_i(A),...]
-\end{equation} 
-Figure \ref{[]} provides a visual demonstration of the embedding.
-
+Indyk and Thaper \cite{indyk2003fast} proposed a technique for embedding the un-normed EMD metric into the $L_1$ space so that the EMD distance between the two objects is comparable to the Manhattan distance between the two points which represent the embedding of the two objects.
 Approximating the EMD distance between the set $A$ and $B$ is then done by calculating the Manhattan distance between the two corresponding embedding vectors, i.e.,
 \begin{equation}
 EMD_{approx.}=|f_{EMD}(A) - f_{EMD}(B)|
 \end{equation}  
+The time complexity of the embedding is $O(Nd \log{\Delta})$, where $\Delta$ ...
+The distortion of the embedding has an upper bound of $O(\log \Delta)$. 
+A detailed proof is provided in \cite{indyk2003fast}.
+However, the proved theoretical distortion can only provide a weak practical instrument. 
+Nevertheless, experimental validation performed on a dataset of $20,000$ objects showed a $(1+\epsilon)-approximate$ nearest neighbor, with $\epsilon < 20\%$ achieved by the embedding compared to the exact EMD in \cite{indyk2003fast}. Grauman and Darrel \cite{grauman2004fast} have used this embedding for contour matching and experimentally validated the quality of retrieval. 
+They have found that the accuracy reduction is less than $10\%$ compared to the exact EMD.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Performance}}{} 
-The time complexity of the embedding is $O(Nd \log{\Delta})$. The distortion of the embedding has an upper bound of $O(\log \Delta)$. A detailed proof is provided in \cite{indyk2003fast}. However, the proved theoretical distortion can only provide a weak practical instrument. Nevertheless, experimental validation performed on a dataset of $20,000$ objects showed a $(1+\epsilon)-approximate$ nearest neighbor, with $\epsilon < 20\%$ achieved by the embedding compared to the exact EMD in \cite{indyk2003fast}. Grauman and Darrel \cite{grauman2004fast} have used this embedding for contour matching and experimentally validated the quality of retrieval. They have found that the accuracy reduction is less than $10\%$ compared to the exact EMD.
+In a subsequent work done by Shirdhonkar and Jacobs \cite{shirdhonkar2008approximate}, the authors proposed a method for approximating the EMD between two low dimensional histograms using the weighted wavelet coefficients of the difference histogram. 
+The approximation is done by transforming the histograms into the $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. 
+They proved the ratio of EMD to wavelet EMD is bounded by constants. 
 
-\subsubsection{EMD Embedding using the wavelet Coefficients Domain}
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Wavelet embedding}}{}
-In a subsequent work done by Shirdhonkar and Jacobs \cite{shirdhonkar2008approximate}, the authors proposed a method for approximating the EMD between two low dimensional histograms using the weighted wavelet coefficients of the difference histogram. The approximation is done by transforming the histograms into the $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. They proved the ratio of EMD to wavelet EMD is bounded by constants. In the following, a background on wavelets is required and the user is referred to Appendix A for a brief introduction on the subject.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD embedding to the wavelet domain}}{}
 Shirdhonkar and Jacobs showed that the embedding of the difference histogram approximates the EMD between two histograms. It is done by calculating the $L_1$ norm of the coefficients vector of the embedding as given in Equation \ref{eq:emd_embedding}.
 \begin{equation}
 d(p)_{wemd}= \sum\limits_{\lambda} 2^{-j(1+n/2)}|p_{\lambda}|
 \label{eq:emd_embedding}
 \end{equation}
-where $p$ is the n-dimensional difference histogram and $p_{\lambda}$ is the wavelet transform coefficients. The index $\lambda$ includes both shifts and the scale j.
+where $p$ is the n-dimensional difference histogram and $p_{\lambda}$ is the wavelet transform coefficients. 
+The index $\lambda$ includes both shifts and the scale j.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Intuitive explanation}}{}
-Intuitively, the wavelet transform splits up the difference histogram according to scale and location where each coefficient represents the solution to the EMD subproblem. For a single wavelet, the mass to be moved is proportional to the volume of $|\psi_j(x)|$, i.e., to $2^{-jn/2}$ and the distance to be traveled is proportional to the span of the wavelet, i.e $2^{-j}$. The sum of all distances is an approximation to EMD, as formally defined in Equation \ref{eq:emd_embedding}. 
-This can be viewed as similar to the way packages are shipped over large distances. The route is broken into several pieces which are large and small distances. Packages from nearby places are merged at the end of the short distance route piece to travel together. Then another merge is done of packages from the entire country to be shipped together to the destination country. The sum of the distances traveled is an approximation to the actual distance. See Figure \ref{fig:emd_wavelet}.
+Intuitively, the wavelet transform splits up the difference histogram according to scale and location where each coefficient represents the solution to the EMD subproblem. 
+For a single wavelet, the mass to be moved is proportional to the volume of $|\psi_j(x)|$, i.e., to $2^{-jn/2}$ and the distance to be travelled is proportional to the span of the wavelet, i.e $2^{-j}$. The sum of all distances is an approximation to EMD, as formally defined in Equation \ref{eq:emd_embedding}. 
+This can be viewed as similar to the way packages are shipped over large distances. 
+The route is broken into several pieces which are large and small distances. 
+Packages from nearby places are merged at the end of the short distance route piece to travel together. 
+Then another merge is done of packages from the entire country to be shipped together to the destination country. 
+The sum of the distances travelled is an approximation to the actual distance. See Figure \ref{fig:emd_wavelet}.
 
 \begin{figure}
 \centering
@@ -271,68 +278,35 @@ This can be viewed as similar to the way packages are shipped over large distanc
 \label{fig:emd_wavelet} 
 \end{figure}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Embedding the histograms rather than the difference histogram}}{}
-However, in our application, where the histogram descriptors are to be stored rather than the difference histogram, the computation of EMD can be partitioned into two parts. First the histograms are converted into the wavelet domain and their coefficients are scaled according to Equation \ref{eq:emd_embedding}. 
+However, in our application, where the histogram descriptors are to be stored rather than the difference histogram, the computation of EMD can be partitioned into two parts. 
+First the histograms are converted into the wavelet domain and their coefficients are scaled according to Equation \ref{eq:emd_embedding}. 
 Computing the EMD distance, in the next step, is done by calculating the Manhattan distance between the scaled coefficients of the corresponding histograms.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{shirdhonkar - theoretical and empirical bounds}}{}
-They provided both theoretical and experimental bounds. The theoretical approximation is based on Theorem 2 in \cite{shirdhonkar2008approximate}. Using a large dataset, they were able to experimentally establish that the proposed approximation follows the true EMD closely empirically and can be alternatively used without any significant difference in performance. The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity. The authors tested few wavelets and showed that the Coif-lets of order 3 and the Symmetric Daubechies wavelets of order 5 have lowest error rates. We followed their results and have chosen to work with the order 3 Coif-lets.
+They provided both theoretical and experimental bounds. 
+The theoretical approximation is based on Theorem 2 in \cite{shirdhonkar2008approximate}. 
+Using a large dataset, they were able to experimentally establish that the proposed approximation follows the true EMD closely empirically and can be alternatively used without any significant difference in performance. 
+The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity. 
+The authors tested few wavelets and showed that the Coif-lets of order 3 and the Symmetric Daubechies wavelets of order 5 have lowest error rates. 
+We followed their results and have chosen to work with the order 3 Coif-lets.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Performance - Indyk vs. shirdhonkar}}{}
 Empirically, the normalized RMS error obtained by using the wavelet embedding was between in 13\% and 20\% compared to the embedding proposed by Indyk and Thaper which achieved 43\% in the same experiment. In addition, the wavelet embedding surpassed the Indyk and Thaper embedding in time performance. Note that the embedding process requires histograms, thus the vectors in the feature space need to be normalized before using this method.
 
 \subsection{Dimensionality Reduction}
 \label{subsec:dr}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{What is DR and what techniques are there?}}{}
 \emph{Dimensionality Reduction} is a process of reducing the number of variables taken into consideration in the learning and classification of data. 
-It is a very important process in machine learning since it facilitates classification, efficient storing and visualization of high-dimensional data. 
 The undesired properties of high-dimensional data present many mathematical challenges and practical complications \cite{van2009dimensionality}. 
-First, Analysis of high-dimensional data generally requires a large amount of memory and computation power, which may be impractical for on-line classification systems and obstructive in other applications. 
-In particular, many NN methods such as k-d tree are ineffective when the dimensionality of the data is high.
-Second, the classification algorithm is more likely to overfit the training sample and generalizes poorly to new samples \cite{aida2009word}.
+Ideally, the reduced representation should have a dimensionality that corresponds to the intrinsic dimensionality of the data \cite{van2009dimensionality} which is the minimum number of parameters needed to account for the observed properties of the data. 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{data Intrinsic dimensionality}}{}
-Ideally, the reduced representation should have a dimensionality that corresponds to the intrinsic dimensionality of the data \cite{van2009dimensionality}.
-The intrinsic dimensionality of data is the minimum number of parameters needed to account for the observed properties of the data. 
+The need for employing dimensionality reduction in this work emerged from the sparse vectors produces by the EMD embedding of the feature vectors into the wavelet coefficient domain which produced vectors in $R^{3946}$. 
+The wish to employ k-d trees, which is very sensitive to high dimensional data, was the main reason for using dimensionality reduction. 
+An alternative was to use a $k$-NN data-structure that performs well with high dimensional data such as LSH \cite{gionis1999similarity}. 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The underlying belief}}{}
-The belief underlying the existence of a compact representation of the external world data is based on the observation that the human brain can instantaneously and precisely recognize an observed apple, smile or a handwritten letter within a short route of neural computations. 
-However, a digital representations of these images may consist of hundreds or thousands of pixels. 
-Thus, clearly, there are much more compact representations of images, sounds, and even text than their native digital formats. 
-Many recently proposed dimensionality reduction techniques are based on the intuition that data lies on or near a complex low-dimensional manifold that is embedded in the high-dimensional space.
+In this work we have used a new technique that applies \emph{principle component analysis} (PCA) and \emph{linear discrimination analysis} (LDA) sequentially in order to obtain linearly discriminative information efficiently.
+PCA is unsupervised in the sense that the labelling of the data do not effect the determination of the transformation function. 
+It produces an orthogonal linear transformation that transforms the data to a new coordinate system such that the greatest variance by any projection of the data comes to lie on the first coordinate (the first principal component), the second greatest variance on the second coordinate, and so on.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The curse of dimensionality}}{}
-The high dimensional data phenomenon is widespread in data analysis and was given the name \emph{the curse of dimensionality}. 
-In many pattern recognition applications, the problem of high dimensional data can arise in different stages of the learning and classification process; 1. the dimensionality of the data may be high in the first place; 2. features calculated on the data may be impractically large; 3. other manipulations performed on the data, such as the embedding used in this work, may produce highly dimensional vectors.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Mathematical Definition}}{}
-Mathematically, given $p$-dimensional variable $x \in \mathbb{R}^p$, the dimensionality reduction process finds a lower dimensional representation $s \in \mathbb{R}^k$ with $k \leq p$ which preserves the content of the original data under a given criterion. 
-The reduced dimensionality $p$ is chosen to be as small as possible, but yet sufficiently large to guarantee that the output vector $s$ provide a faithful representation of the input vector $x$. 
-Dimensionality reduction techniques can be classified into linear and non-linear. Linear dimensionality reduction is based on a linear projection of the data assuming the data resides close to a lower dimensional linear subspace. 
-Namely, each of the components in the vector $s$ is a linear combination of the components in the vector $x$, formally:
-\begin{equation}
-s=Wx
-\end{equation}
-where $W_{k \times p}$ is the linear transformation.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Linear DR}}{}
-\emph{Principal component analysis} (PCA) and \emph{linear discrimination analysis} (LDA) are traditional linear dimensionality reduction techniques.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Non-Linear DR}}{}
-In some cases, linear dimensionality reduction techniques perform poorly and a more powerful approach is required to provide the mapping from the high dimensional space to the low dimensional space. In such cases, non-linear techniques is are used. Yet, the drawback of such technique is concealed in its generality which may cause over-fitting the sample set and not really capture the true underlying coordinate system. Commonly used non-linear technique include \emph{Kernel PCA}, \emph{Isometric Feature Mapping} (ISOMAP) and \emph{Locally-linear embedding} (LLE).
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why do we need DR?}}{}
-The need for employing dimensionality reduction in this work emerged from the sparse vectors produces by the EMD embedding of the feature vectors into the wavelet domain procedure which was described in Section \ref{subsec:approximating_emd_using_embedding}. This process produced vectors in $R^{3946}$. The wish to employ k-d trees, which is very sensitive to high dimensional data, was the main reason for using dimensionality reduction. An alternative was to use a $k$-NN data-structure that performs well with high dimensional data such as LSH \cite{gionis1999similarity}. However, it would be less accurate since LSH is an approximate NN search method, unlike k-d tree which finds the exact $k$-NN samples.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{What DR we use?}}{}
-In this thesis we have chosen to work only with linear dimensionality reduction techniques. PCA and LDA were applied sequentially in order to obtain linearly discriminative information in an efficient manner.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{PCA}}{}
-\emph{Principle Component Analysis} (PCA) was invented in 1901 by Karl Pearson. Although there are many linear dimensionality reduction techniques, PCA is by far the most popular. PCA is unsupervised in the sense that the labeling of the data do not effect the determination of the transformation function. It produces an orthogonal linear transformation that transforms the data to a new coordinate system such that the greatest variance by any projection of the data comes to lie on the first coordinate (the first principal component), the second greatest variance on the second coordinate, and so on (as seen in Figure \ref{fig:pca_demo}). The principal components as a whole form an orthogonal basis for the space of the projected data. Given a multivariate dataset visualized as a set of coordinates in a high-dimensional data space, PCA obtains the "shadow" of that dataset when viewed from its most informative viewpoints by projecting the dataset into a lower-dimensional space. This is done by using only the first few principal components.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{PCA formulation}}{}
-In computational terms the principal components are found by calculating the eigenvectors and eigenvalues of the data covariance matrix. This process is equivalent to finding the axis system in which the co-variance matrix is diagonal. The eigenvector with the largest eigenvalue is the direction of greatest variation, the one with the second largest eigenvalue is the (orthogonal) direction with the next highest variation and so on. The eigenvalues represent the distribution of the source data's energy among each of the eigenvectors, where the eigenvectors form a basis for the data. The representation content $g$ for the $j^{th}$ eigenvector is the sum of the energy content across all of the eigenvalues $\lambda_k$ from 1 through $j$ :
+The representation content $g$ for the $j^{th}$ eigenvector is the sum of the energy content across all of the eigenvalues $\lambda_k$ from 1 through $j$ :
 \begin{equation}
 g[j]=\sum_{k=1}^{j}\lambda_k  for  j=1,...,d
 \end{equation}
@@ -343,41 +317,44 @@ E[L] = \frac{g[L]}{g[d]}
 \label{eq:dr_energy} 
 \end{equation} 
 
-The goal is to find the smallest possible value of $L$ that achieves $E[L]$ value which rise above a preset threshold $e$, usually larger than 0.9. This approach is a well-known dimensionality estimation technique known as the \emph{eigenvalue-based dimensionality estimator}. It is a member of the \emph{global dimensionality estimator} family. Later on in this section we will mention other type of dimensionality estimator family named \emph{local dimensionality estimator}.
+The goal is to find the smallest possible value of $L$ that achieves $E[L]$ value which rise above a pre-set threshold $e$, usually larger than 0.9. 
+This approach is a well-known dimensionality estimation technique known as the \emph{eigenvalue-based dimensionality estimator}. 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{LDA}}{}
-The major drawback of PCA is that it is an unsupervised technique and as such does not use label information of the data. The following example, given by Welling in \cite{welling2005fisher}, demonstrates the problem in using PCA: in Figure \ref{fig:cigarettes_data}, we see two cigar like clusters. The samples in the upper cigar are classified as $y=1$ and the samples in the other cigar are classified as $y=-1$. The cigars are parallel and very close to each other. The variance of the entire sample set, disregarding the labels, is in the direction of the cigars. Projecting the sample set on the principal component, in this case, would be terribly mix the samples. Clearly, a better projection would be orthogonal to the cigars, namely in the direction of least overall variance, which would perfectly separate the two classes.
-LDA, a descendant of the original Fisher-LDA that was proposed by Fisher in \cite{fisher1936use}, overcomes this problem. Unlike PCA, LDA is a supervised technique, i.e., it explicitly attempts to model the difference between classes of data based on the samples labeling. In this method, variability among the feature vectors of the same class is minimized and the variability among the feature vectors of different classes is maximized. LDA performs dimensionality reduction while preserving as much of the class discriminatory information as possible. A brief tutorial on LDA is given in \cite{balakrishnama1998linear}. Without going into the math, in order to find a good projection vector, we need to define a measure of separation between the projections. The solution proposed by Fisher is to maximize a function that represents the difference between the means, normalized by a measure of the within-class scatter. LDA has three main drawbacks; the first is that it assumes that the data resides in $L_2$; second, LDA assumes that the distribution of the samples in each class is Gaussian which is not necessarily true for our samples; third, it is much slower to calculate compared to PCA.
+The major drawback of PCA is that it is an unsupervised technique and as such does not use label information of the data
+which may cause ...
 
-\emph{TODO: LDA demo image.}\\
+LDA, a descendant of the original Fisher-LDA that was proposed by Fisher in \cite{fisher1936use}, overcomes this problem. Unlike PCA, LDA is a supervised technique. 
+LDA performs dimensionality reduction while preserving as much of the class discriminatory information as possible. 
+LDA has three main drawbacks; the first is that it assumes that the data resides in $L_2$; second, LDA assumes that the distribution of the samples in each class is Gaussian which is not necessarily true for our samples; third, it is much slower to calculate compared to PCA.
+Even though LDA is preferred in many application, it does not always outperform PCA. 
+In order to optimize discrimination performance in a more generative way, a hybrid dimension reduction model combining PCA and LDA is used in this work.
 
-\begin{figure}
-\centering
-\includegraphics[width=0.3\columnwidth]{./figures/cigarettes_data}       
-\caption{A cigarettes like samples data spread. In this case PCA performs badly.}
-\label{fig:cigarettes_data}
-\end{figure}
+Grauman et al. in \cite{grauman2004fast} used PCA to find a low-dimensional subspace based on a large sample of the shape context histogram. 
+PCA yields the set of bases that define a low-dimensional "shape context manifold". 
+Only then the approximate EMD embedding is performed. 
+However, we have chosen to perform the stages in a different order. 
+First, approximate EMD embedding is performed on the feature vectors, and only then, dimensionality reduction procedure is applied to reduce the dimensionality of the sparse embedded vectors since we would still result in a large sparse vectors constructed by the embedding process.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why do we use both LDA and PCA?}}{}
-Even though LDA is preferred in many application, it does not always outperform PCA. In order to optimize discrimination performance in a more generative way, a hybrid dimension reduction model combining PCA and LDA is used in this work.
+The basic form of PCA is defined over the $L_2$ space. 
+However, the data that is embedded to the wavelet domain was proved to approximate EMD in the $L_1$ space. 
+Although $L_1$-PCA techniques were examined in the literature \cite{kwak2008principal}, we decided to use the basic form of PCA, given that $L_2$ estimate $L_1$ fairly well.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{When to perform the DR?}}{}
-Grauman et al. in \cite{grauman2004fast} used PCA to find a low-dimensional subspace based on a large sample of the shape context histogram. PCA yields the set of bases that define a low-dimensional "shape context manifold". Only then the approximate EMD embedding is performed. However, we have chosen to perform the stages in a different order. First, approximate EMD embedding is performed on the feature vectors, and only then, dimensionality reduction procedure is applied to reduce the dimensionality of the sparse embedded vectors. The reason we have chosen to perform the stages in this order is that if we were to apply the order suggested by Grauman, we would still result in a large sparse vectors constructed by the embedding process.
-  
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Usage of PCA in the $L_1$ space.}}{}
-The basic form of PCA is defined over the $L_2$ space. However, the data that is embedded to the wavelet domain was proved to approximate EMD in the $L_1$ space. Although $L_1$-PCA techniques were examined in the literature \cite{kwak2008principal}, we decided to use the basic form of PCA, given that $L_2$ estimate $L_1$ fairly well.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Implementation: PCA}}{}
 In the proposed system, we wanted to exploit the strengthens of both PCA and LDA techniques using the dimensionality reduction process which is outlined as follows: The samples are projected to a subspace $S_1$ using PCA and then to subspace $S_2$ using LDA. In the PCA stage, the target dimensionality, i.e., the number of principal components taken into consideration, is the minimal to achieve data preservation rate of 99\%, i.e., $E=0.99$. As mentioned before, the dimensionality of the original vectors was 3946. The reason we adopted such a high rate is that it was enough to secure a major dimensionality reduction. As seen in table \ref{table:dr_dimensions_results}, the dimensionality was reduced by PCA in two orders of magnitude.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Implementation: Clustering and LDA}}{}
-Applying LDA directly on the resulted data would have achieved poorer results for the reason that almost all letters in the Arabic writing system have several shapes which are commonly used. See Figure \ref{table:letters_writing_styles}. Furthermore, since LDA regards the labeling of the data samples, trying to group different perceptual shapes in a single class would impinge the dimensionality reduction process. 
-In order to overcome this obstacle, we have done the following preprocessing steps: each class, namely the tuple $(letter, position)$, was clustered into four clusters using $L_1$-k-medoids algorithm. Each cluster received a different class label. This new artificially labeled data was given as input to LDA.
+Applying LDA directly on the resulted data would have achieved poorer results for the reason that almost all letters in the Arabic writing system have several shapes which are commonly used. 
+Furthermore, since LDA regards the labeling of the data samples, trying to group different perceptual shapes in a single class would impinge the dimensionality reduction process. 
+In order to overcome this obstacle, we have done the following preprocessing steps: each class was was partitioned into four clusters using $L_1$-k-medoids algorithm and received a different class label, and only then LDA was applied.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{LDA target dimensionality}}{}
-As aforementioned, the target number of dimensions of the PCA step were determined according to the data preservation rate parameter which was preset to $E=0.99$. This, as shown before, can be calculated easily using the eigenvalues of the covariance matrix. However, in the LDA step we have adopted a different approach to determine the target number of dimensions. \emph{Intrinsic dimensionality estimation} methods are traditional techniques for estimating the intrinsic dimensionality of a data. While there are many techniques, many use the same basic concept. They are based on the observation that for a given data point $x_i$, the number of sample points covered by a hypersphere around the data point with radius $r$ grows proportional to $r^d$, where $d$ is the intrinsic dimensionality of the data manifold around that data sample.  
+As aforementioned, the target number of dimensions of the PCA step were determined according to the data preservation rate parameter which was preset to $E=0.99$. 
+This can be calculated easily using the eigenvalues of the covariance matrix. 
+However, in the LDA step we have adopted a different approach to determine the target number of dimensions. 
+\emph{Intrinsic dimensionality estimation} methods are traditional techniques for estimating the intrinsic dimensionality of a data. 
+While there are many techniques, many use the same basic concept. They are based on the observation that for a given data point $x_i$, the number of sample points covered by a hypersphere around the data point with radius $r$ grows proportional to $r^d$, where $d$ is the intrinsic dimensionality of the data manifold around that data sample.  
 The function that estimates this relation for a given data point $x_i$ is named \emph{local estimator}.
 The estimated intrinsic dimensionality $\hat{d}$ of the dataset is then calculated by averaging over the local estimators of the entire sample set \cite{van2007introduction}.
+
+The dimensionality of the data samples is shown in Figure \ref{table:dr_dimensions_results} for every database. The original data set dimensionality is 3946. The PCA column shows dimensionality of the data after applying PCA. The PCA+LDA column shows the dimensionality of the data after applying LDA subsequently after LDA as described.
 
 \begin{table}
 \centering
@@ -394,51 +371,47 @@ Letter position & Number of samples & PCA & PCA+LDA\\
   Fin & 1629 & 27 & 7 \\ 
   \hline
 \end{tabular}
-\caption{The dimensionality of the data samples is shown for every database. The original data set dimensionality is 3946. The PCA column shows dimensionality of the data after applying PCA. The PCA+LDA column shows the dimensionality of the data after applying LDA subsequently after LDA as described.}
+\caption{Dimensionality Reduction results}
 \label{table:dr_dimensions_results} 
 \end{table}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The DR package}}{}
-\emph{Matlab Toolbox for Dimensionality Reduction} described in \cite{van2007introduction} was used as Matlab wrapper for the dimensionality reduction techniques used in this work.
-
-\subsection{Classification}
 \subsection{Metric Indexing}
 \label{subsec:metric_indexing}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}
-Distance function approximation techniques alone cannot avoid linear scan of the entire dataset when searching for the nearest neighbors of a query object. In order to speedup queries, index structures should be build over the dataset. The main goal of an index method is to enable efficient search, either asymptotically or simply in real wall-clock time. The time cost involved in building the index is amortized over the series of queries, and is usually ignored when considering search cost \cite{hetland2009basic}.
+Distance function approximation techniques alone cannot avoid linear scan of the entire dataset when searching for the nearest neighbors of a query object. 
+In order to speedup queries, index structures are usually built over the dataset. 
+The main goal of an index method is to enable efficient search, either asymptotically or simply in real wall-clock time. The time cost involved in building the index is amortized over the series of queries, and is usually ignored when considering search cost \cite{hetland2009basic}.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
-Efficient data retrieval in a metric dataset requires building a \emph{metric index}. Indexing techniques partition the dataset into equivalent classes such that each equivalent class contains objects that are sufficiently close to each other. However, this does not assure that close objects will always be contained in the same equivalent class. Each class is bounded by a hypersphere covering all the objects in the class. Consequently, at query time the metric index is efficiently searched to locate the equivalent classes which cover the areas where the closest objects may be contained. These classes are then exhaustively checked for the relevant objects.
-This allows discarding classes that surely does not contain relevant objects. In order for the metric indexing to work correctly and efficiently, the distance function is required to satisfy the triangle equality.
- 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Exact vs. Approximate Indexing}}{}
-Indexing techniques are split into two types: exact and approximate. Exact techniques are guaranteed to return the same result as  scanning the entire database. Approximate indexing methods return good matches but not necessarily the best matches. Exact methods do not allow false positives or false negatives, i.e., all of the relevant objects are required to be returned in the query result, and only them. However, the approximate methods relax this strong requirement so that a small number of false negatives is acceptable \cite{keogh2005exact}. Many methods were proposed to solve the $k$-NN problem that are significantly better than a brute-force computation over the entire database. However, computing nearest neighbors approximately, can achieve significantly faster retrieval with a relatively small actual errors. \emph{Approximate nearest neighbor} (ANN) techniques also allow the user to specify a maximum approximation error bound, thus enabling the user to control the trade-off between accuracy and running time.
+ANN methods such as k-d trees (will be described later) and Locality Sensitive Hashing (LSH) \cite{gionis1999similarity} have been successfully applied on a variety of fast similarity retrieval problems. 
+The key assumption in these procedures is that the objects in the dataset lie in a metric space, i.e., the space satisfies the triangle equality. 
+As mentioned in chapter \ref{sec:similarity_measures}, this assumption is not valid for many similarity measure techniques. 
+In the case of k-d tree, it requires a more specific $L_p$ metric space for its operation.
+While the worst case scenario complexity is $O(N)$, the expected complexity of a single $k$-NN query using k-d tree is $O(\log N)$.
 
-\begin{figure}
-\centering
-\includegraphics[width=0.7\columnwidth]{./figures/indexing}       
-\caption{Metric Indexing. \emph{Add citation}}
-\label{fig:indexing}
-\end{figure}
-
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Examples of Exact and Approximate Indexing}}{}
-ANN methods such as k-d trees (will be described later) and Locality Sensitive Hashing (LSH) \cite{gionis1999similarity} have been successfully applied on a variety of fast similarity retrieval problems. The key assumption in these procedures is that the objects in the dataset lie in a metric space, i.e., the space satisfies the triangle equality. As mentioned in chapter \ref{sec:similarity_measures}, this assumption is not valid for many similarity measure techniques. In the case of k-d tree, it requires a more specific $L_p$ metric space for its operation. While the worst case scenario complexity is $O(N)$, the expected complexity of a single $k$-NN query using k-d tree is $O(\log N)$.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{This work}}{}
-In our framework, sub-strokes classification is done by finding sample letters in the training set that are similar to the shape of the sub-stroke. Our feature vectors were embedded into the $L_1$ space by using the wavelet embedding technique described earlier and thus metric indexing methods can be applied. While the advantage of LSH is that it performs better than k-d tree in high dimensional spaces, k-d tree can be used both as an exact and approximate $k$-NN technique. In this work, we have chosen to work with k-d tree since we could obtain, after applying dimensionality reduction techniques, a low dimensional data space.
+In our work, sub-strokes classification is done by finding sample letters in the training set that are similar to the shape of the sub-stroke. 
+Our feature vectors were embedded into the $L_1$ space by using the wavelet embedding technique described earlier and thus metric indexing methods can be applied. 
+While the advantage of LSH is that it performs better than k-d tree in high dimensional spaces, k-d tree can be used both as an exact and approximate $k$-NN technique. 
+In this work, we have chosen to work with k-d tree since we could obtain, after applying dimensionality reduction techniques, a low dimensional data space.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{EMD Indexing using k-d tree}
 \label{subsubsec:kd_tree}
 
-\iftoggle{edit-mode}{\hspace{0pt}\hspace{0pt}\marginpar{A short introduction to k-d tree}}{} 
-k-d tree, a special case of binary space partitioning trees, is a data structure for storing a finite set of points from a $k$-dimensional space. It was proposed by Bentley in \cite{bentley1975multidimensional}. It aims at solving the problem of searching $k$-NN in a large set of multi-dimensional points by first building a data structure based on the set of reference points. Then, given a query object, it extracts the $k$-NN using this structure.
+k-d tree, a special case of binary space partitioning trees, is a data structure for storing a finite set of points from a $k$-dimensional space. It was proposed by Bentley in \cite{bentley1975multidimensional}. 
+It aims at solving the problem of searching $k$-NN in a large set of multi-dimensional points by first building a data structure based on the set of reference points. Then, given a query object, it extracts the $k$-NN using this structure.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{How it works, how the data is saved and extracted}}{} 
-The k-d tree is formed as follows: Every point is either a branch node or is contained in a leaf node. Every branch node in the tree is associated with one of the k-dimensions and can be though of an hyperplane that divides the space into two half spaces in that dimension. Points to the left of this hyperplane are represented by the left subtree of that node and points to the right of the hyperplane are represented by the right subtree, see Figure \ref{fig:kd_tree}. A desired property of the partition is to be as equal as possible. The selection of the pivot point (i.e,  the point that function as a branch node) in every level has a great impact on the balance of the tree. The most common way is to find the medial point of a number of points in the subtree. The number of points in a leaf node is also customizable and is mostly affected by the cardinality of the points in the database and $k$, which is a predefined in many applications.
+The k-d tree is formed as follows: Every point is either a branch node or is contained in a leaf node. 
+Every branch node in the tree is associated with one of the k-dimensions and can be though of an hyperplane that divides the space into two half spaces in that dimension. Points to the left of this hyperplane are represented by the left subtree of that node and points to the right of the hyperplane are represented by the right subtree, see Figure \ref{fig:kd_tree}. A desired property of the partition is to be as equal as possible. The selection of the pivot point (i.e,  the point that function as a branch node) in every level has a great impact on the balance of the tree. The most common way is to find the medial point of a number of points in the subtree. The number of points in a leaf node is also customizable and is mostly affected by the cardinality of the points in the database and $k$, which is a predefined in many applications.
 
+
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{How the NN are found?}}{}
+The approximation of the $k$-NN using k-d tree is done by initially finding the leaf node that represents the class that the query point belongs to. Although it is probable that the $k$ nearest neighbors are all contained in a single leaf node, it is not necessarily the case. Adjacent leafs may be examined by recursively explore the other child nodes and look for near neighbors. Precise details of the algorithm can be found in \cite{bentley1975multidimensional}.
+ 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Expected time complexity}}{}
+The construction time of the k-d tree is O($k N \log N$), where $k$ is the dimensionality of the data space and $N$ is the cardinality of the dataset. We can afford this high complexity of the construction since the this process is done off-line, and theoretically will be executed mostly several times. However, this tax pays off when it comes to the enhancement we achieve in the k-$NN$ query evaluation. While the worst case scenario the running time of $k$-NN is $O(N^{d^2})$, the amortized running time is $O(\log N)$.
 \begin{figure}
 \centering
 \includegraphics[width=0.7\columnwidth]{./figures/kd_tree}       
@@ -446,22 +419,15 @@ The k-d tree is formed as follows: Every point is either a branch node or is con
 \label{fig:kd_tree}
 \end{figure}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{How the NN are found?}}{}
-The approximation of the $k$-NN using k-d tree is done by initially finding the leaf node that represents the class that the query point belongs to. Although it is probable that the $k$ nearest neighbors are all contained in a single leaf node, it is not necessarily the case. Adjacent leafs may be examined by recursively explore the other child nodes and look for near neighbors. Precise details of the algorithm can be found in \cite{bentley1975multidimensional}.
- 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Expected time complexity}}{}
-The construction time of the k-d tree is O($k N \log N$), where $k$ is the dimensionality of the data space and $N$ is the cardinality of the dataset. We can afford this high complexity of the construction since the this process is done off-line, and theoretically will be executed mostly several times. However, this tax pays off when it comes to the enhancement we achieve in the k-$NN$ query evaluation. While the worst case scenario the running time of $k$-NN is $O(N^{d^2})$, the amortized running time is $O(\log N)$.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Matlab library}}{} 
-Our system uses a built-in Matlab implementation for k-d tree which is available in the statistical toolbox and introduced in Matlab R2013B. The library allows configuring the distance function (Euclidean, Manhattan, Mankowski, etc...) and the size of the leaf node. The library provides implementation for the exact version of k-d tree.
-
+\subsection{Classification and Scoring}
 
 \subsection{Data Collection}
 
 \section{Results and Analysis}
 
 \emph{TODO: compare with other letter classifiers or digits.}
-
+\emph{TODO: compare the performance of classification without using our approach}
 
 \section{Summary and Future Work}
 
