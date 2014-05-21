@@ -50,11 +50,10 @@ Arabic script segmentation; handwriting recognition; on-line text segmentation;
 \section{Introduction}
 
 \begin{enumerate}
-\item Concentrate on the idea of embedding the letters into the wavelet domain
-\item The reason for doing so is to achieve a huge speedup in the recognition without giving up accuracy.
+\item Concentrate on the idea of embedding the letters into the wavelet domain. The reason for doing so is to achieve a huge speedup in the recognition without giving up accuracy.
 \item Maybe it brings back the k-NN 
 \item talk about the segmentation paper, for which this classification system was used.
-\item How to test the accuracy of the scoring??? 
+\item How to test the accuracy of the scoring.
 \end{enumerate}
 
 The set of limitations
@@ -86,7 +85,6 @@ The compliance with the high performance demand was made possible by using a sta
 \begin{itemize}
 \item Raid's paper on EMD embedding
 \item papers cited by Raid's paper for letters classification.
-\item \cite{Dinges2011}, \cite{abdulla2008off}, \cite{al2010development}
 \end{itemize}
 
 \section{Our Approach}
@@ -100,6 +98,22 @@ The classifier in the work receives a sequence of points representing the letter
 The classifier contains four databases, one for each letter position (Ini, Mid, Fin and Iso). 
 The partitioning of the samples to four database, clearly, improve the classification power and the accuracy of the classification and scoring.
 In Figure \ref{fig:letters_classifier_learning_flow} we give a high level flow visualization of our letters classifier.
+
+A stroke $S$ is represented by a sequence of points on the 2-dimensional space, $p_{i}=(x,y)$ 
+\begin{equation}
+S=\{p_{i}\}_{i=1}^{n}
+\end{equation}
+Let $KP$ (Key Points) be zero based ordered set containing the CPs found in the previous sub-stage and that also include the first and the last point of the stroke $S$. Assuming $L$ CPs were found in the stroke $S$, $KP$'s definition is as follows:
+%\begin{equation}
+%KP_{i} =\begin{cases}    1		, & \mbox{if } i=0 \\
+%							   CP_{i}	, & \mbox{if } 1\leq i \leq L \\
+%							   n    , & \mbox{if } i=L+1 
+%			\end{cases}				
+%\end{equation}
+A sub-stroke $S_{i}^{j}$ is a sub-sequence of the stroke $S$ that starts at $KP_{i}$ and ends at $KP_{j}$, formally:
+\begin{equation}
+S_{i}^{j}=(p_{k})_{k=KP_{i}}^{KP_{j}}; i<j
+\end{equation}
 
 \begin{figure}
 \centering
@@ -119,15 +133,15 @@ In order to overcome the flaws mentioned, preprocessing operations are usually n
 Size normalization is performed to achieve a uniform size of the bounding box surrounding the pattern. 
 It was applied on each stroke so that it will fit into a $[0,1]\times[0,1]$ bounding box without affecting the original aspect ratio. 
 This stage includes an additional step of translating the sequence so that the sequence's center of gravity is located in the origin point, i.e., at $[0,0]$.
-Given the stroke sequence $S=\{p_i\}_{i=1}^{n}=\{(x_i,y_i)\}_{i=1}^{n}$, the normalized sequence $\bar{S}=\{\bar p_i \}_{i=1}^{n}=\{(\bar x_i,\bar y_i)\}_{i=1}^{n}$ is calculated by: 
-\begin{equation}
-{\bar x_i} = {{\left( {{x_i} - {\mu _x}} \right)} \over W},{\bar y_i} = {{\left( {{y_i} - {\mu _y}} \right)} \over W}
-\end{equation}
-where $W = \max (d_x,d_y)$, $d_x$ and $d_y$ are the width and hight of the pattern, respectively, and $\mu$ is the center of gravity of the patter, i.e., 
-\begin{equation}
-\mu  = \left( {{\mu _x},{\mu _y}} \right) = \left( {{1 \over N}\sum\limits_{i = 1}^N {{x_i}} ,{1 \over N}\sum\limits_{i = 1}^N {{y_i}} } \right)
-\end{equation}
-
+%
+%Given the stroke sequence $S=\{p_i\}_{i=1}^{n}=\{(x_i,y_i)\}_{i=1}^{n}$, the normalized sequence $\bar{S}=\{\bar p_i \}_{i=1}^{n}=\{(\bar x_i,\bar y_i)\}_{i=1}^{n}$ is calculated by: 
+%\begin{equation}
+%{\bar x_i} = {{\left( {{x_i} - {\mu _x}} \right)} \over W},{\bar y_i} = {{\left( {{y_i} - {\mu _y}} \right)} \over W}
+%\end{equation}
+%where $W = \max (d_x,d_y)$, $d_x$ and $d_y$ are the width and hight of the pattern, respectively, and $\mu$ is the center of gravity of the patter, i.e., 
+%\begin{equation}
+%\mu  = \left( {{\mu _x},{\mu _y}} \right) = \left( {{1 \over N}\sum\limits_{i = 1}^N {{x_i}} ,{1 \over N}\sum\limits_{i = 1}^N {{y_i}} } \right)
+%\end{equation}
 
 \subsubsection{Noise Elimination}
 
@@ -375,43 +389,27 @@ Letter position & Number of samples & PCA & PCA+LDA\\
 \label{table:dr_dimensions_results} 
 \end{table}
 
-\subsection{Metric Indexing}
-\label{subsec:metric_indexing}
+\subsection{Fast k-nearest Neighbour approximation}
+In order to speedup queries, index structures are usually built over the sample set. 
+The main goal of an index method is to enable efficient retrieval and similarity search, either asymptotically or simply in real wall-clock time. 
+It aims at solving the problem of searching $k$-NN in a large set of multi-dimensional points by first building a data structure based on the set of reference points. Then, given a query object, it extracts the $k$-NN using this structure.
+The time cost involved in building the index is amortized over the series of queries, and is usually ignored when considering search cost \cite{hetland2009basic}.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}
-Distance function approximation techniques alone cannot avoid linear scan of the entire dataset when searching for the nearest neighbors of a query object. 
-In order to speedup queries, index structures are usually built over the dataset. 
-The main goal of an index method is to enable efficient search, either asymptotically or simply in real wall-clock time. The time cost involved in building the index is amortized over the series of queries, and is usually ignored when considering search cost \cite{hetland2009basic}.
-
-ANN methods such as k-d trees (will be described later) and Locality Sensitive Hashing (LSH) \cite{gionis1999similarity} have been successfully applied on a variety of fast similarity retrieval problems. 
-The key assumption in these procedures is that the objects in the dataset lie in a metric space, i.e., the space satisfies the triangle equality. 
-As mentioned in chapter \ref{sec:similarity_measures}, this assumption is not valid for many similarity measure techniques. 
-In the case of k-d tree, it requires a more specific $L_p$ metric space for its operation.
+ANN methods such as k-d trees and Locality Sensitive Hashing (LSH) \cite{gionis1999similarity} have been successfully applied on a variety of fast similarity retrieval problems. 
+However, the key assumption in these procedures is that the objects in the dataset lie in a metric space, i.e., the space satisfies the triangle equality, however, this assumption is not valid for many similarity measure techniques, such as EMD.
+In the case of k-d tree, it requires the $L_p$ norm for its operation, which is even a more specific demand.
 While the worst case scenario complexity is $O(N)$, the expected complexity of a single $k$-NN query using k-d tree is $O(\log N)$.
 
-In our work, sub-strokes classification is done by finding sample letters in the training set that are similar to the shape of the sub-stroke. 
-Our feature vectors were embedded into the $L_1$ space by using the wavelet embedding technique described earlier and thus metric indexing methods can be applied. 
-While the advantage of LSH is that it performs better than k-d tree in high dimensional spaces, k-d tree can be used both as an exact and approximate $k$-NN technique. 
-In this work, we have chosen to work with k-d tree since we could obtain, after applying dimensionality reduction techniques, a low dimensional data space.
+The embedding of the deature vectors into the $L_1$ space these metric indexing methods can be applied. 
+In our work, sub-strokes classification is done by finding sample letters in the training set that are similar to the shape of the sub-stroke.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{EMD Indexing using k-d tree}
-\label{subsubsec:kd_tree}
+k-d tree, a special case of binary space partitioning trees, is a data structure for storing a finite set of points from a $k$-dimensional space. 
+It was proposed by Bentley in \cite{bentley1975multidimensional}. 
+The approximation of the $k$-NN using k-d tree is done by initially finding the leaf node that represents the class that the query point belongs to. 
+Although it is probable that the $k$ nearest neighbors are all contained in a single leaf node, it is not necessarily the case. 
+Adjacent leafs may be examined by recursively explore the other child nodes and look for near neighbours. 
+Precise details of the algorithm can be found in \cite{bentley1975multidimensional}.
 
-k-d tree, a special case of binary space partitioning trees, is a data structure for storing a finite set of points from a $k$-dimensional space. It was proposed by Bentley in \cite{bentley1975multidimensional}. 
-It aims at solving the problem of searching $k$-NN in a large set of multi-dimensional points by first building a data structure based on the set of reference points. Then, given a query object, it extracts the $k$-NN using this structure.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{How it works, how the data is saved and extracted}}{} 
-The k-d tree is formed as follows: Every point is either a branch node or is contained in a leaf node. 
-Every branch node in the tree is associated with one of the k-dimensions and can be though of an hyperplane that divides the space into two half spaces in that dimension. Points to the left of this hyperplane are represented by the left subtree of that node and points to the right of the hyperplane are represented by the right subtree, see Figure \ref{fig:kd_tree}. A desired property of the partition is to be as equal as possible. The selection of the pivot point (i.e,  the point that function as a branch node) in every level has a great impact on the balance of the tree. The most common way is to find the medial point of a number of points in the subtree. The number of points in a leaf node is also customizable and is mostly affected by the cardinality of the points in the database and $k$, which is a predefined in many applications.
-
-
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{How the NN are found?}}{}
-The approximation of the $k$-NN using k-d tree is done by initially finding the leaf node that represents the class that the query point belongs to. Although it is probable that the $k$ nearest neighbors are all contained in a single leaf node, it is not necessarily the case. Adjacent leafs may be examined by recursively explore the other child nodes and look for near neighbors. Precise details of the algorithm can be found in \cite{bentley1975multidimensional}.
- 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Expected time complexity}}{}
-The construction time of the k-d tree is O($k N \log N$), where $k$ is the dimensionality of the data space and $N$ is the cardinality of the dataset. We can afford this high complexity of the construction since the this process is done off-line, and theoretically will be executed mostly several times. However, this tax pays off when it comes to the enhancement we achieve in the k-$NN$ query evaluation. While the worst case scenario the running time of $k$-NN is $O(N^{d^2})$, the amortized running time is $O(\log N)$.
 \begin{figure}
 \centering
 \includegraphics[width=0.7\columnwidth]{./figures/kd_tree}       
@@ -420,9 +418,26 @@ The construction time of the k-d tree is O($k N \log N$), where $k$ is the dimen
 \end{figure}
 
 
-\subsection{Classification and Scoring}
+\subsection{Candidates Scoring}
+For each subsequence, the recognition system returns a set of K potential letters candidates, with their resemblance scoring. 
+In the current implementation we consider only the candidate with the best (minimal) scoring, however, any function taking into consideration the scoring returned by the classifier for all the candidate can be used to determine the final scoring of the cell.
+
+Once the set of candidates determined by the closeness found by the k-d tree based on the coefficients vector in the $L_1$ space. The scoring is performed as follows:
+
+The scoring of the candidates is done by averaging the score of the $L_1$ distance between the query object and the candidate in the sample set, and the score of the DTW distance between the feature vector and the 
+Let us the denote the feature vector of the query object by $q$ and the feature vector the candidate $i$ by $c_i$.
+\begin{equation}
+Scoring(c_1)=\frac{EMD_{approx.}(q,c_i)+DTW(q,c_i)}{2} 
+\end{equation}
+
+This gives an equal weigth to the DTW and the EMD approximation.
+We have found the constraint DTW performs using the unconstrained DTW.
+The weights given for each similarity measure technique was determined empirically.
+
 
 \subsection{Data Collection}
+The data is one of the most important part of any supervised learning technique. The data is used for learning, validation and testing. It has a critical effect on the system performance. In this work we have chosen to use the ADAB database. The ADAB database is de-facto a standard in the on-line Arabic handwriting recognition research field. It is freely available and consists of more than 20k Arabic handwritten words scribed by more than 170 different writers. The words are taken from the 937 Tunisian town/village names. It contains the trajectory information and a plot image of the word trajectory. A sample can contain more than a word. In figure \ref{fig:sample_parts} we show the parts of a sample. The ADAB database v.1 is divided to 3 sets. Details about the number of files, words, characters, and writers are given in \cite{el2009icdar}. Our training, validation and testing set both are taken from this database. 
+No information relating the strokes to letters or to word-parts is provided, thus, extra work was needed to add this information to the database so that it could be used as letters samples source and also a ground-truth for the segmentation abilities of the system. To provide this additional information, we have created a system that reads the samples from the ADAB database, and employ the skills of a human expert to segment the samples and relate each stroke to the corresponding letter in the WP. The resulted information was saved in an xml file for each word sample. Since additional strokes are not our interest in the segmentation process, the system has automatically filtered out additional strokes. Nevertheless, the human expert had the ability to filter out additional strokes that could not be identified by the system as such. We have manually segmented ~16k samples which consisted about ~40k strokes. 
 
 \section{Results and Analysis}
 
