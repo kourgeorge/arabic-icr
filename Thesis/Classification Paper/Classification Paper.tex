@@ -5,16 +5,6 @@
 \usepackage{arabtex}
 \usepackage[cmex10]{amsmath}
 
-%packages that were not copied from the IEEE template - need to check if it is valid to add them
-\usepackage{amssymb}
-\usepackage[linesnumbered]{algorithm2e}
-
-%\usepackage{etoolbox}
-%\newtoggle{edit-mode}
-%\togglefalse{edit-mode}  
-%\toggletrue{edit-mode}
-
-
 \begin{document}
 
 \title{Fast Classification of Handwritten On-line Arabic Characters}
@@ -35,110 +25,102 @@ Email: saabni@cs.bgu.ac.il}
 \maketitle
 
 \begin{abstract}
-Delaying the launch of the handwriting recognition process until the completion of the word scribing is an obstacle preventing on-line recognition technique to meet the highly responsiveness and real-time demands.
-In addition, being able to recognize script while being written facilitates implementing advanced feature such as word completion.
-This paper proposes a fast classification of individual handwritten Arabic characters technique used by the real-time recognition based segmentation system proposed in \cite{kour2014real}.
-The system was trained and tested on characters extracted from the ADAB database, and promising accuracy and performance results were obtained.
+Delaying the launch of the handwriting recognition process until the completion of the word scribing prevents on-line recognition technique to meet the highly responsiveness and real-time demands.
+Advanced features techniques of input typing, such as automatic word completion and real-time automatic spelling are not possible when real-time analysis techniques are not considered. 
+This paper proposes an efficient recognition of handwritten Arabic characters method, employed on a real-time words segmentation and techniques described in \cite{kour2014real}.
+We use the Shape Context and the Multi Angular Descriptor to extract features from each significant point on the stroke. 
+PCA and LDA based dimensionality reduction process followed by an embedding to a normed wavelet coefficients domain are used to approximate the Earth Movers Distance Metric as shape similarity function for sub linear time process of character classification. 
+In the next step, results of the top ranked shapes of each predicted character are used to generate a list of candidate shapes of Arabic word parts in a filter and refine approach to enable real-time yet accurate results of recognition in a dictionary-free environment.
+The system was trained and tested on characters and word parts extracted from the ADAB database, and promising accuracy and performance results were achieved.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Arabic character recognition; handwriting recognition; on-line script recognition; 
+Arabic character recognition; handwriting recognition; on-line script recognition; real-time handwriting segmentation;
 \end{IEEEkeywords}
 
-%The set of limitations
-%\begin{enumerate}
-%\item No additional strokes are taken into considerations.
-%\item letters written in the same stroke.
-%\end{enumerate}
-
 \section{Introduction}
-The growing use of keyboard-less electronic devices, such as smart-phones and tablets, and the fact that handwriting remains the most commonly used mean for information recording and communication, gave rise to a significant increase in interest in On-line handwriting recognition.
+The growing use of keyboard-less electronic devices, such as smart-phones and tablets, and the fact that handwriting remains the most commonly used mean for information recording and communication, gave rise to a significant increase in interest in on-line handwriting recognition.
 
 The Arabic script is written from right to left in a semi-cursive manner in both printed and handwritten. 
 Most letters are written in four different letter shapes depending on their position in a word.
-Among the basic letters, six are Dis-connective which do not connect to the following letter and have only two shapes each. 
-The presence of dis-connective letters interrupts the continuity of the graphic form of a word and closes the \emph{word-part} (WP).
+Among the basic letters, six are dis-connective which do not connect to the following letter and have only two shapes each. 
+The presence of dis-connective letters interrupts the continuity of the graphic form of a word and closes the \emph{word part} (WP).
 
 The cursiveness of the Arabic script, prima facie, requires delaying the launch of the recognition process until the completion of the word scribing.
-However, a recognition-based segmentation approach was proposed in \cite{kour2014real}, demonstrating the feasibility of segmenting word-parts while the stroke is being written.
+However, a recognition-based segmentation approach was proposed in \cite{kour2014real}, demonstrating the feasibility of segmenting WPs while the stroke is being written.
+The resulted segmentation and letters classification information can be used to significantly reduce the potential dictionary size and accelerate a later holistic recognition process.
 The real-time nature of the segmentation technique, strictly requires the characters classifier to be extremely fast.
 
 The unconstrained nature of the Arabic handwriting requires the letters classification system to be trained over a large set of samples that cover the large variation of letters forms.
-Similarity measure techniques that imitate the human intuition, such as the well known \emph{dynamic time warping} (DTW) and the \emph{earth mover's distance} (EMD) or, may took more than few hours on an average personal computer to find the most similar object in a large dataset to a query object.
-Therefore, to reduce the time needed for searching a shape within a large sample set, it is desirable to make as few as possible distance calculations to candidates.
-In this case sub-linear distance calculations is preferable.
-This paper we propose technique that workout the these issues and demonstrate a high performance letters classification. 
+Similarity measure techniques that imitate the human intuition, such as the well known \emph{dynamic time warping} (DTW) and the \emph{earth mover's distance} (EMD), are computationally expensive and may took more than a few hours to find, for a given query object, the most similar objects in a large sample set, on an average personal computer.
+Thus, it is desirable to make as few as possible such distance calculations.
+A well known technique for achieving this speed-up is by embedding the compared objects into a space equipped with an efficient metric which approximate the distance function in the original space.
+
+In this paper, we propose an efficient character classifier using the EMD metric as the similarity measure. 
+Linear time embedding algorithm for approximating EMD \cite{shirdhonkar2008approximate} is employed to transform the feature vectors to a normed space and facilitating the use of fast nearest neighbours search techniques.
+Then, a $k$-NN classifier is used to produces a short list of candidates enabling us to apply expensive matching methods, such as DTW, yet keep sub-linear searching time.
 
 The rest of the paper is organized is follows. 
 In Section \ref{sec:related_work} we mention related works. 
-The character classifier is described in detail in Section \ref{sec:approach}. 
-Demonstrating and discussing the results is done in Section \ref{sec:results_analysis}
+The character classifier is described in Section \ref{sec:approach}. 
+In Section \ref{sec:samples_collection} we describe the letter samples extraction from the ADAB database.
+Demonstrating and discussing the results is done in Section \ref{sec:results_analysis}.
+Summary and future direction are presented in Section \ref{sec:summary_future_work}. 
 
 \section{Related Work}
 \label{sec:related_work}
 
-Literature in cursive handwriting recognition has established two main approaches: the analytic approach, which involves segmenting words into individual characters and then classifying each character\cite{abdulla2008off, sari2002off, Dinges2011}, and the holistic approach, which considers the global properties of the written text and recognizes the input word shape as a whole \cite{biadsy2011segmentation, saabni2009hierarchical}. 
+Literature in the field of cursive handwriting recognition has established two main approaches: the analytic approach, which involves segmenting words into individual characters and then classifying each character\cite{abdulla2008off, sari2002off, Dinges2011}, and the holistic approach, which considers the global properties of the written text and recognizes the input word shape as a whole \cite{biadsy2011segmentation, saabni2009hierarchical}. 
 The holistic approach, while having many advantages, requires the classifier to be trained over the entire dictionary, which is impractical for large dictionaries (containing more than 20,000 words) \cite{elanwar2012unconstrained}.
 
 One of the earliest studies on On-line Arabic isolated character recognition was carried out by El-Wakil and Shoukry in 1989 \cite{el1989line}.
-Since them many classification classification techniques were studied in the field of Arabic character recognition such as Artificial neural networks \cite{alijla2012oiahcr,ismail2012online}, fuzzy logic, decision trees \cite{ismail2012online}, Hidden Markov Models \cite{biadsy2006online}, and K-NN \cite{elglaly2011isolated}.
-It appears that currently the $k$-nearest neighbours is among the leading techniques \cite{elglaly2011isolated}.
+Many types of classification techniques were investigated since then, including artificial neural networks \cite{alijla2012oiahcr,ismail2012online}, decision trees \cite{ismail2012online}, Hidden Markov Models \cite{biadsy2006online} and $k$-NN \cite{elglaly2011isolated}.
+It appears that currently the $k$-NN is one of the leading techniques.
 
-Linearly scanning the sample set to obtain the $k$-nearest neighbours may be an inhibitor when real-time performance is required, therefore fast $k$-NN search techniques are usually employed.
-However, the key assumption for using such techniques requires that objects in the dataset lie in a metric space, i.e., the similarity measure (the distance) satisfies the triangle equality.
-This assumption is not valid for many similarity measure techniques, such as EMD.
-This can be partially solved by applying embedding techniques   
-The embedding is required to preserve distances, in a way such that the distance in the embedding space should approximate the similarity measure of the patterns in the feature space.
-
-The \emph{earth movers distance} (EMD) is a natural and intuitive metric to measure similarity between two histograms.
-EMD was used by Saabne in \cite{saabni2013efficient} to measure similarity between shapes for recognizing and searching Arabic words. 
-
-{The embedding used in this paper is performed using a linear time algorithm for approximating EMD, introduced in \cite{shirdhonkar2008approximate}, that uses the sum of absolute values of the weighted wavelet coefficients of the difference histogram. 
-The embedding of the feature vectors to a normed space facilitate the use of fast nearest neighbours search techniques.
-Finding the approximate $k$-nearest neighbours produces a short list which enables aplying expensive matching methods, such as DTW, yet keep sub-linear searching time.}
-
-A recent survey done by Tagougui, Kherallah and Alimi \cite{tagougui2013online} reviews the status of research in the on-line Arabic handwriting recognition field. 
+EMD is a natural and intuitive metric to measure similarity between histograms. 
+It has been successfully used in many fields of image matching and retrieval \cite{grauman2004fast, rubner2000earth}.
+A significant speed-up can be achieved by embedding vectors from one space with an expensive distance measure into another space equipped with an easy-to-compute distance function \cite{saabni2013efficient}. 
+Much work has been done on embedding the EMD metric into a normed space, usually the $l_p$ norm, in order to facilitate efficient and fast nearest neighbour extraction using indexing techniques \cite{bourgain1985lipschitz}. 
+The efficient embedding of the EMD metric proposed by \cite{shirdhonkar2008approximate} to a normed space has been used in \cite{saabni2013efficient} for efficient word image retrieval.
+A previous embedding technique described by \cite{indyk2003fast} was used by Grauman and Darrell \cite{grauman2004fast} for contour based shape matching.
 
 \section{Our Approach}
 \label{sec:approach}
-In the presented work, we propose an implementation for a fast and highly accurate classification technique for Arabic characters required in real-time script recognition systems, as the one described in \cite{kour2014real}.
-In Figure \ref{fig:letters_classifier_learning_flow} we give a high level flow visualization of our letters classifier.
+In the presented work, we present a fast and accurate classification technique for Arabic characters.
+In Figure \ref{fig:letters_classifier_learning_flow} we give a high level flow visualization of the classification system.
 The classifier receives a sequence of points $S=\{p_{i}\}_{i=1}^{n}$ representing the letter trajectory and a letter position $\phi \in \{Ini, Mid, Fin, Iso\}$.
-The query sequence goes through  5 stages: preprocessing, feature extraction, embedding to $L_1$, dimensionality reduction and then classification. 
-Eventually the classifier outputs the $k$ nearest neighbours as scoring which indicates the similarity measure between the sequence and the candidate. 
-The labelling of the candidates are then determine the query sequence classification.
-In the coming Sub sections we will discuss each stage.
-
+Similarly to the process performed on the training character trajectory sequences, the query sequence goes through 5 stages: preprocessing, feature extraction, embedding, dimensionality reduction and then classification. 
+Eventually the classifier outputs a short list of candidates and their scoring, which indicates the perceptual similarity between the sequence and the candidates. 
+Each stage will be discussed in details in the following subsections.
 
 \begin{figure}
 \centering
-\includegraphics[width=1\columnwidth]{./figures/letters_classifier_learning_flow}       
-\caption{High level diagram of the classifier learning flow for a letter position.}
+\includegraphics[width=1\columnwidth]{./figures/letters_classifier_learning_flow2}       
+\caption{High level diagram of the classifier data flow.}
 \label{fig:letters_classifier_learning_flow}
 \end{figure}
  
 \subsection{Preprocessing}
-Digitizers tend to generate a jagged and non-uniform sampling of the trajectory scribed on their surface
-Preprocessing operations are usually needed to impose certain uniform structure on the data, to comply with the input structure required for the proper operation of the subsequent parts of the system \cite{al2011online}. 
-In the current work, preprocessing consists of three methods: \emph{normalization}, \emph{noise elimination} and then \emph{re-sampling}.
+Digitizers tend to generate a jagged and non-uniform sampling of the trajectory scribed on their surface, therefore, preprocessing operations are usually needed to impose certain uniform structure on the data, to comply with the structure required by the subsequent parts of the system \cite{al2011online}. 
+The preprocessing stage consists of three methods: \emph{normalization}, \emph{noise elimination} and \emph{re-sampling}.
 
 Size normalization is performed to achieve a uniform size of the bounding box surrounding the pattern so that it will fit into a $[0,1]\times[0,1]$ bounding box without affecting the original aspect ratio. 
 
 Then, the \emph{Douglas-Peucker Polyline Simplification algorithm} \cite{douglas1973algorithms} is employed for eliminating points duplication and inadequacies caused by hand vibrations. 
-It reduces the number of vertices in a piecewise linear curve, given a preset tolerance parameter $\varepsilon$, and outputs a simplified curve, that consists of a subset of the points that defined the original curve.
+It reduces the number of vertices in a piecewise linear curve, given a pre-set tolerance parameter $\varepsilon$, and outputs a simplified curve, that consists of a subset of the points that defined the original curve.
 In this work the tolerance parameter $\varepsilon$ was empirically set to ${1 \over 75}$.
 
-The previous simplification process produces a highly angular, and non-uniform distribution of points along the stroke trajectory.
-This stage, using splines interpolation method, aims at producing an equidistant smoothed data sequence, given a re-sampling target number of points $R$, which was set to 40. 
+The simplification process produces a highly angular, and non-uniform distribution of points along the stroke trajectory.
+This step, using splines interpolation, aims at producing an equidistant smoothed data sequence, given a re-sampling target number of points $R$, which was set to 40. 
 Given a stroke $S=\{(x_i,y_i)\}_{i=1}^{n}$, let $f_{x}(d)$ and $f_{y}(d)$ be the quadratic piecewise interpolations function of $\{x_i\}_{i=1}^{n}$ and $\{y_i\}_{i=1}^{n}$, respectively. 
-$f_{x}(d)$ and $f_{y}(d)$ are functions of the coordinate value with respect to the arc-length distance from the pattern's starting point. 
+$f_{x}(d)$ and $f_{y}(d)$ are functions of the coordinate values with respect to the arc-length distance from the pattern's starting point. 
 Let $t_i=i\frac{L}{R}$ for $i=0,...,R$ where L is the arc-length of the pattern.
 The re-sampled sequence is given as follows:
 \begin{equation}
 \widehat{S}=\{(f_x(t_i),f_y(t_i))\}_{i=1}^{R}
 \end{equation}
 
-Figure \ref{fig:before_after_preprocessing} show the resulting sequence after applying the preprocessing method on a sequence of the letter \RL{b}. 
+Figure \ref{fig:before_after_preprocessing} visually demonstrates the resulting sequence after applying each step in the preprocessing stage on a trajectory sequence of the letter \RL{b}. 
 
 \begin{figure}
 	\centering
@@ -163,39 +145,31 @@ Figure \ref{fig:before_after_preprocessing} show the resulting sequence after ap
 \end{figure}
 
 \subsection{Feature Extraction}
-Two shape descriptors were employed in this work, the \emph{Shape Context} \cite{belongie2002shape} proposed by Belongie et al., and the Multi-Angular descriptor (MAD) that was proposed by Saabni in \cite{saabni2013multi}.
-The Shape context is a point matching approach intended to be a way of describing shapes that allows for measuring shape similarity and the recovering of point correspondences. 
-It describes the distribution of all points in the shape with respect to each single point on the shape.
-The shape context descriptor of each single point on the shape computes the histogram of relative polar coordinate and have proved to be one of the efficient features for matching shapes.
-This distribution over relative positions is robust and compact, yet highly discriminative descriptor
+Two shape descriptors were employed in this work, the \emph{Shape Context} \cite{belongie2002shape} and the \emph{Multi Angular Descriptor} (MAD) \cite{saabni2013multi}.
+The shape context descriptor can be considered as a point matching approach intended to be a way of describing shapes that allows measuring shapes similarity. 
+It has been proved to be one of the efficient features for shapes matching.
 
-The other shape descriptor used in this thesis is the Multi Angular Descriptor (MAD) that was proposed by Saabni in \cite{saabni2013multi}. 
-It captures the angular view to multi resolution rings in different heights. 
+MAD captures the angular view to multi resolution rings in different heights. 
 The shape is treated as a two dimensional set of points and the different rings are upper view points from rings around the shape centroid with different sizes and heights. 
 To enables scale and translation invariance, the sizes and heights of these rings are calculated using the diameter and centroid of the shape.
 
 \subsection{The Earth Mover's Distance Embedding}
-Histogram based descriptors, such as the Shape Context, are in many cases compared using a bin-wise dissimilarity techniques such as the Euclidean distance or the $\chi^2$ statistic.
+Histogram based descriptors, such as the shape context, are in many cases compared using a bin-wise dissimilarity techniques such as the Euclidean distance or the $\chi^2$ statistic.
 While such dissimilarity measures can be computed very fast, they usually fail to consider local and global small variations. 
 These variations, which would be perceived as minor by a human, may result in a large dissimilarity values between two histograms. 
 Generally speaking, the distance between two histograms can be viewed as a special case of the well-known \emph{transportation problem}, a.k.a the Monge-Kantorovich problem \cite{rachev1985monge}.
-The \emph{Earth Mover's Distance} (EMD), introduced by Rubner et al. in \cite{rubner2000earth}, is a solution to the transportation problem which can be used as a measure of the dissimilarity between histograms. 
+The \emph{Earth Mover's Distance} (EMD), introduced by Rubner et al. in \cite{rubner2000earth}, is a solution to the transportation problem which was experimentally verified to capture well the perceptual notion of a difference between images \cite{grauman2004fast}.
 
 Given two distributions, one can be seen as piles of sand and the other as a collection of holes. 
-The EMD measures the least word needed to fill the holes with the sand, where a unit of work corresponds to the transporting a unit of sand from one pile to the hole depending of their distance.
-EMD was experimentally verified to capture well the perceptual notion of a difference between images and is commonly used in content-based image retrieval to compute distances between the color histograms of two digital images \cite{grauman2004fast}.
-
+The EMD measures the least work needed to fill the holes with the sand, where a unit of work corresponds to the transporting a unit of sand from one pile to the hole depending of their distance.
 The major hurdle in using EMD is its $O\left( {{N^3}\log N} \right)$ computational complexity (for an $N$-bin histogram). 
-The complexity is magnified when the task is to search for similar shapes (nearest neighbours) in a large database. 
-In this case, a linear scan of the database would require computing a comparison of super-polynomial complexity for each database member against the query shape \cite{grauman2004fast}. 
+Thus, searching for similar shapes (nearest neighbours) in a large database, is almost impractical since a linear scan of the database would require computing a comparison of super-polynomial complexity for each database member against the query shape \cite{saabni2013efficient}. 
+
 Greatly reducing the EMD calculation time can be achieved using metric approximation technique.  
-
 Several approximation algorithms have been proposed to speed-up the computation of EMD. 
-Indyk and Thaper \cite{indyk2003fast} proposed a technique for embedding the un-normed EMD metric into the $L_1$ space so that the EMD distance between the two objects is comparable to the Manhattan distance between the two points which represent the embedding of the two objects.
-In a subsequent work done by Shirdhonkar and Jacobs \cite{shirdhonkar2008approximate}, the authors proposed a method for approximating the EMD between two low dimensional histograms using the weighted wavelet coefficients of the difference histogram. 
-The approximation is done by transforming the histograms into the $L_1$ space so that the distance between the two vectors in the wavelet domain is the EMD approximation. 
-Similarly to the embedding proposed by Indyk and Thaper, the EMD distance between two histograms is done by calculating the $L_1$ norm of the coefficients vector of the embedding as given in Equation \ref{eq:emd_embedding}.
-
+Indyk and Thaper \cite{indyk2003fast} presented a technique for embedding the un-normed EMD metric into the $L_1$ space so that the EMD distance between the two objects is comparable to the Manhattan distance between the two points which represent the embedding of the two objects.
+In a subsequent work done by Shirdhonkar and Jacobs \cite{shirdhonkar2008approximate}, the authors proposed a method for approximating the EMD between two histograms using the weighted wavelet coefficients of the difference histogram. 
+It is done by calculating the $L_1$ norm of the coefficients vector of the embedding as given in Equation \ref{eq:emd_embedding}.
 \begin{equation}
 d(p)_{wemd}= \sum\limits_{\lambda} 2^{-j(1+n/2)}|p_{\lambda}|
 \label{eq:emd_embedding}
@@ -211,24 +185,22 @@ Then another merge is done of packages from the entire country to be shipped tog
 The sum of the distances travelled is an approximation to the actual distance.
 
 \subsection{Dimensionality Reduction}
-Dimensionality reduction methods aims to reducing the number of variables taken into consideration for the reason that high-dimensional data present many practical complications and performance issues. 
+\label{subsec:dimensionality_reduction}
+Dimensionality reduction methods aims at reducing the number of variables taken into consideration in order to avoid practical complications and performance issues. 
 Ideally, the reduced representation should have a dimensionality that corresponds to the intrinsic dimensionality of the data \cite{van2009dimensionality} which is the minimum number of parameters needed to account for.
 The need for employing dimensionality reduction in this work emerged from the sparse vectors produces by the EMD embedding of the feature vectors into the wavelet coefficient domain.
-For example, when employed the shape context descriptor the embedding produced lengthy sparse vectors in $R^{3946}$. 
+For instance, when we employed the shape context descriptor, the embedding produced sparse vectors in $\mathbf{R}^{3946}$. 
 
-PCA is unsupervised technique that transforms the data to a new coordinate system such that the greatest variance by any projection of the data comes to lie on the first coordinate (the first principal component), the second greatest variance on the second coordinate, and so on.
-The number of principle components to consider can be calculated easily using the sum of the eigenvalues of the covariance matrix \emph{TODO: add reference}.
-The major drawback of PCA is that it is an unsupervised technique, namely, it does not takes into consideration the labeling information of the data and heavily rely on the assumption that most information is contained in those directions where input data variance is maximum.
-Thus PCA is appropriate in cases when the samples are taken from a single class.
+\emph{Principle component analysis} (PCA) followed by \emph{linear discrimination analysis} (LDA) is a commonly used technique in fields where the feature space is highly dimensional such as image recognition \cite{yu2001direct,yang2003can}, exploiting the efficiency of PCA and the discrimination power of LDA.
+The number of principle components in the PCA to consider, can be calculated easily using the sum of the eigenvalues of the covariance matrix.
+The major drawback of the PCA is that it is an unsupervised technique, namely, it does not take into consideration the labelling information of the data and heavily rely on the assumption that most information is contained in those directions where input data variance is maximum.
 On the contrary, \emph{linear discrimination analysis} (LDA) \cite{fisher1936use} is a supervised technique performing dimensionality reduction while preserving as much of the class discriminatory information as possible. 
-
-PCA followed by LDA is a commonly used technique in fields where the feature space is highly dimensional such as image recognition \ref{yu2001direct,yang2003can}
-In this work the samples are projected to the PCA space where the target dimensionality, i.e., the number of principal components taken into consideration, is the minimal to achieve data preservation rate of 99\%.
+In the first step, the embedded vectors are projected to the PCA space where the target dimensionality, i.e., the number of principal components taken into consideration, is the minimal to achieve data preservation rate of 98\%.
 As seen in table \ref{table:dr_dimensions_results}, the dimensionality was reduced by PCA in two orders of magnitude.
 
-Since there is a large variation in handwritten letters in the Arabic script, trying to group different perceptual shapes in a single class would negatively effect the dimensionality reduction process.
-Thus, before applying LDA, each class was partitioned into four clusters using $L_1$-k-medoids algorithm and received a different sub-labelling. 
-This sub-labeling was then used by the LDA where the target number of dimensions determined using \emph{Intrinsic dimensionality estimation} method described in\cite{van2007introduction}.
+Since there is a large variation in handwritten letters in the Arabic script, the grouping different perceptual shapes in a single class would negatively effect the dimensionality reduction process.
+Thus, before applying LDA, each character class was partitioned into four clusters, using $L_1$-k-medoids algorithm, and for each cluster a unique sub-label was assigned. 
+This sub-labeling was then used by the LDA, where the target number of dimensions was estimated using the \emph{maximum likelihood estimation} method described in \cite{levina2004maximum}.
 
 \begin{table}
 \centering
@@ -245,124 +217,120 @@ Letter position & Number of samples & PCA & PCA+LDA\\
   Fin & 1629 & 27 & 7 \\ 
   \hline
 \end{tabular}
-\caption{Dimensionality Reduction results.The original data set dimensionality is 3946. The PCA column shows dimensionality of the data after applying PCA. The PCA+LDA column shows the dimensionality of the data after applying LDA subsequently after LDA as described.}
+\caption{The dimensionality of the different datasets after applying PCA and PCA+LDA.}
 \label{table:dr_dimensions_results} 
 \end{table}
 
-\subsection{Fast k-nearest Neighbour Retrieval}
-
-In the case of k-d tree, it requires the $L_p$ norm for its operation, which is even a more specific demand.
-
-
-The embedding of the sample set into a normed space facilitate the usage of Approximate k-NN techniques such as k-d trees \cite{bentley1975multidimensional}, and Locality Sensitive Hashing (LSH) \cite{gionis1999similarity} which have been successfully applied on a variety of fast similarity retrieval problems. 
-
-$k$-d tree aims at solving the problem of searching $k$-NN in a large set of multi-dimensional points by building a data structure based on the set of reference points.
-The $k$-d tree construction time can be ignored since it is performed Off-line.
-
-While the worst case scenario complexity is $O(N)$, the expected complexity of a single $k$-NN query using k-d tree is $O(\log N)$.
+The embedding of the sample set into a normed space facilitates the usage of Approximate k-NN techniques such as k-d tree \cite{bentley1975multidimensional}, and Locality Sensitive Hashing (LSH) \cite{gionis1999similarity} which have been successfully applied on a variety of fast similarity retrieval problems.
+These Indexing techniques solve the problem of searching $k$-NN in a large set and avoid linear scan of the entire dataset.
+However, due to the limited size dataset used in this work, there was no real need to use these methods.
 
 \subsection{Candidates Scoring}
-For each subsequence, the recognition system returns a set of K potential letters candidates, with their resemblance scoring. 
-In the current implementation we consider only the candidate with the best (minimal) scoring, however, any function taking into consideration the scoring returned by the classifier for all the candidate can be used to determine the final scoring of the cell.
-Once the set of candidates determined by the closeness found by the k-d tree based on the coefficients vector in the $L_1$ space. The scoring is performed as follows:
-
-The scoring of the candidates is done by averaging the score of the $L_1$ distance between the query object and the candidate in the sample set, and the score of the DTW distance between the feature vector and the 
-Let us the denote the feature vector of the query object by $q$ and the feature vector the candidate $i$ by $c_i$.
+Given a unseen letter sample, the $k$-NN classifier returns a set of $k$ potential letters candidates, $\{c\}_{i=1}^{k}$ from the sample set.
+The scoring of the candidates is done by averaging the $L_1$ distance between the query object and the candidate in the in the EMD space, and the DTW distance of their feature vectors.
+The constrained version of DTW using the Sakoe-Chuba Band \cite{sakoe1978dynamic} achieved better results than using the unconstrained DTW.
 \begin{equation}
-Scoring(c_1)=\frac{EMD_{approx.}(q,c_i)+DTW(q,c_i)}{2} 
+Scoring(q,c_i)=\frac{\|E(c_i)-E(q)\|_1+DTW_{cons.}(c_i,q)}{2}
 \end{equation}
+where $q$ and $c_i$ denote the feature vectors of the query sequence and the candidate $i$, respectively. 
+$E(\cdot)$ denotes the dimensionality reduced embedded vector in the coefficient wavelet domain. 
 
-This gives an equal weigth to the DTW and the EMD approximation.
-We have found the constraint DTW performs using the unconstrained DTW.
-The weights given for each similarity measure technique was determined empirically.
-
-\emph{check other scoring techniques, such as DTW alone, EMD alone, DTW+Approximation}
-
+\section{Samples Collection}
+\label{sec:samples_collection}
+The character samples used in this work were extracted form the ADAB database,\cite{el2009icdar}, which is a de-facto standard in the field of on-line Arabic handwriting recognition. 
+It is freely available and consists of more than 20k Arabic handwritten words (937 Tunisian town/village names) scribed by more than 170 different writers. 
+A manual segmentation of the samples in the database was needed to extract the letter samples.
+Using a public and not a self collected samples gives our results a further firmness.
+We've used a small validation set distributed as follows: 1404 initial form samples, 1195 medial, 1628 final and 1371 isolated letter samples. 
+The extracted  set was used for both training the system and testing the performance of the classifier.
 
 \section{Results and Analysis}
 \label{sec:results_analysis}
 
-%\begin{enumerate}
-%\item compare with other letter classifiers or digits.
-%\item compare the performance of classification without using our approach.
-%\item show the affect of the number of the sample set on the classification rate. If we show that the larger the sample set, the less is the recognition rate, it will contradict what wwe have said in the introduction about the need in a large training set.
-%\end{enumerate}
+The system was implemented and tested using the Matlab environment.
+We have measured the accuracy and performance of the classifier using 10-fold cross-validation.
+In the following experiments, the candidates scoring was not taken into consideration, i.e., the candidates were ranked solely according to the distance in the EMD space.
+We have noted that using the scoring information have raised the correct segmentation rate significantly.
 
-
-The character samples used in this work are taken form the ADAB database,\cite{el2009icdar}, which is a de-facto standard in the field of on-line Arabic handwriting recognition. 
-It is freely available and consists of more than 20k Arabic handwritten words (937 Tunisian town/village names) scribed by more than 170 different writers. 
-A manual segmentation of the samples in the database was needed to extract the letters samples.
-Using a public and not a self collected samples gives our results a further firmness.
-We've used a small validation set distributed as follows: 1404 Initial form samples, 1195 Medial, 1628 Final and 1371 Isolated letter samples. 
-The extracted  set was used for both training the system and testing the performance of the classifier.
-Measuring the system accuracy and performance in all the experiments below were done using 10-fold cross-validation for each position letter database (Ini, Mid, Fin and Iso) independently.
-The values calculated for the accuracy measures in the following experiments are done by weighted average of the performance of each position.
-
-The results shown in table \ref{table:features_comparison} compares the two feature extraction techniques used in this work and compare it to the results obtained when none is used, namely, using the letter sequence as the vectors in the feature space.
-It can be seen that the Sequence, i.e. using no feature extraction, have achieved almost the same accuracy results as when using SC.
-Although at first glance it can make doubting the necessity the feature extraction stage, we will see in later that the use of SC improved the segmentation results considerably when performing the on-line segmentation and recognition.
-It boosted the SR from 75\% to 81\% and the RR from 72\% to 76\%.
-This may be explained by the fact that although the same accuracy results in letters classification, the scoring given to candidates is more accurate.
-
-
-\emph{notes: Try to tune the MAD or else drop it.}
-\begin{table}
-\centering
-\begin{tabular}{ | c | c | c | c | c |}
-\hline
-Feature & Precision & Recall & F-measure \\
-\hline                 
-  Sequence  (None) &  0.87 & 0.87 & 0.867 \\
-  \hline
-  Shape Context & 0.86 & 0.86 & 0.86 \\
-  \hline
-  MAD & 0.77 & 0.78 & 0.77 \\
-  \hline
-\end{tabular}
-\caption{Features comparison. }
-\label{table:features_comparison} 
-\end{table}
-
-The next series of experiments aims to quantifying the contribution and importance of each stage in the classification required us to conduct a series of experiments.
-In each experiment, we skip a stage in the recognition system and then measure the classifier performance.
-The three main stages in the classifier are: 1. the feature extraction stage; 2. the EMD embedding; and 3. the Dimensionality reduction.
-As detailed in Section \ref{sec:dr} the role of the DR process is to reduce the number of variables taken into consideration by the classifier in order to avoid problem caused by the "curse of dimensionality", without affecting much the system accuracy.
-Table \ref{table:dr_embedding_comparison} shows the results of the experiment that uses SC as the feature.
-The results in Table \ref{table:dr_embedding_comparison} shows that the dimensionality reduction technique implemented in this work almost does not affect the system performance.
-
+We have implemented a series of experiments aims at quantifying the contribution and importance of each stage in the classification process.
+The three main stages in the classifier are: 1. the feature extraction stage; 2. the EMD embedding; and 3. the dimensionality reduction stage.
+In each experiment, we skip a single stage then measure the classifier performance in terms of accuracy and time.
+The results are shown in Table \ref{table:dr_embedding_comparison}.  Shape context was used in all configurations.
+It can be noted that the dimensionality reduction stage did not affect the system performance in terms of accuracy but improved the time performance significantly.
+Using k-d tree, due to its known sensitivity to high dimensional data, would result in even a lager performance degradation, if the dimensionality reduction stage is skipped.
+In addition, it can be noted that while in the configuration in which no EMD embedding is performed, the correct classification rate is higher than the baseline, when considering the top candidate, when the top three candidates are considered, The embedding performs considerably better.
+We can conclude that the candidate list obtained by the classifier is more qualitative compared to the list obtained when the nearest neighbours is applied on the shape context space.
 
 \begin{table}
 \centering
-\begin{tabular}{ | c | c | c | c | c | c |}
+\begin{tabular}{ | c | c | c | c |}
   \hline
-  Experiment & Precision & Recall & F-measure\\
+  Experiment  & CCR [Top 1]  & CCR [Top 3] & Time [ms]\\
   \hline                 
-  Baseline &  0.87 & 0.87 & 0.867 \\
+  Baseline & 86\% & 95\% & 0.22 \\
   \hline
-  No DR & 0.91 & 0.9 & 0.90 \\
+  No DR & 86\% & 95\% & 6.2 \\ 
   \hline
-  No embedding & 0.89 & 0.89 & 0.89 \\
+  No embedding & 90\% &  90\% & 0.41 \\
   \hline
 \end{tabular}
-\caption{Different Experiments}
+\caption{CCR and time performance of the different configuration. 
+The First row shows the results of the proposed classifier (Baseline) compared to the classifier without the Dimensionality reduction (No Dr) step and without the embedding (No Embedding).}
 \label{table:dr_embedding_comparison} 
 \end{table}
 
-\subsubsection{Sample set size and distribution}
-The letters is our training set are extracted from a database with a limited words diversity, thus, the distribution of the samples between the different classes is imbalanced. 
-On one hand, it can be regarded as an advantage; since, the training set distribution reflects the a-priory probability of a letter appearance in the test set. 
-On the other hand, a highly imbalanced training set is known to negatively affect many classification algorithms.
-In the following experiment, we measure the effect of a large and imbalanced training set on the WP segmentation and recognition rates. 
-It is done by gradually increasing the maximal allowed number of samples per class (letter and position).
- 
-The graph in Figure \ref{fig:num_letter_impact} shows convergence of the system's performance when the maximal number of samples is larger than 200 per class. 
-Nevertheless, a miniature degradation is apparent, which is caused, probably, due to the increasing imbalance in the distribution of the training set.
-In addition, it is evident that the recognition rate (RR) is more sensitive to small training set than the segmentation rate (SR).
+The results shown in Table \ref{table:features_comparison} compare the performance of the shape context and the MAD descriptors to the results obtained when none is used.
+
+\begin{table}
+\centering
+\begin{tabular}{ | c | c | c |}
+\hline
+	Shape Descriptor  & CCR [Top 1]  & CCR [Top 3] \\
+	\hline 
+	Shape Context & 86\% & 95\%  \\                
+  	\hline
+  	MAD & 76\% & 78\% \\
+  	\hline
+  	None & 86\% &  87\% \\
+  	\hline
+\end{tabular}
+\caption{Comparing the correct classification rate of the different feature extraction techniques.}
+\label{table:features_comparison} 
+\end{table}
+
+The segmentation and classification information obtained by the real-time segmentation system described in \cite{kour2014real}, can be used to significantly reduce the potential dictionary size and accelerate a later holistic recognition process.
+In the following experiment we evaluate the claimed advantage.
+Following the results of the character segmentation and recognition process, the $10$ top scored candidates of each character are recorded. 
+In the next step these shapes are used to generate a complete list of all possible shape concatenation of the retrieved candidates. 
+The shapes of each candidate character many times contain different shapes of the same letter producing multiple shapes of the same WP. 
+The cardinality of the generated list is $10^p$ where p is the predicted number of characters in the PAW using the segmentation process. 
+Because of large the size of the generated list which may exceed $100,000$ shapes, the same previous process of embedding and dimensionality reduction is used to generate a short list of candidates. 
+The short list of candidates in the next step is matched against the queried WP using the original expensive and more accurate matching process. 
+Using the proposed approach the $10$ top results yield a $98.1\%$ recognition rate. 
+The recognition rate of the first top candidate dropped down to $90.8\%$. 
+Using a voting process within the top five results gave a $94.7\%$ recognition rate. 
+
+Analysing the failures of the misclassified samples shows that most recognition errors occur as a result of misclassifying only one character. 
+In most cases the misclassified character is confused with a character with a very similar shape, which can be corrected using information retrieved by the associated additional stroke such as the case of the letter \RL{-l} and the letter \RL{-n}.
 
 \section{Summary and Future Work}
+\label{sec:summary_future_work}
+In this paper we propose a high-performance approach for Arabic handwritten letters classification.
+Shape context and MAD feature sets were evaluated. 
+Using an efficient EMD embedding into the wavelet coefficient domain, the feature vectors were translated into the $L_1$, facilitating fast computation of the EMD approximation by calculating the Manhattan distance between the embedded vectors.
+Fast retrieval of the $k$ nearest neighbours of a given query character was then possible.
+A combination of PCA and LDA was employed to reduce the dimensionality of the sparse vectors generated by the embedding function, and DTW was used to refine the similarity scoring of the candidates.
+We have have evaluated the importance of each stage in the classification flow to the accuracy of the system.
+
+
+In a future work we will expand the classifier to consider the additional strokes to improve the discrimination power of the classifier. 
+We believe that this will significantly improve the segmentation and classification results.
 
 \section*{Acknowledgment}
-The authors would like to thank Professor Dana Ron, from the Tel-Aviv University, for her invaluable help in this research and her insightful comments on this paper. This work has been supported in part by the German Research Foundation under grant no. FI 1494/3-2.
+We would like to thank Professor Dana Ron, from the Tel-Aviv University, for her valuable help in this research. 
+This work has been supported in part by the German Research Foundation under grant no. FI 1494/3-2.
+
+%\linespread{0.88}
 
 \bibliographystyle{IEEEtran}
 \bibliography{IEEEabrv,bibliography}
