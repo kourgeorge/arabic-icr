@@ -157,7 +157,7 @@ The distance between two points can be defined in many ways as will be detailed 
 \section{The Classifier Overview}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Classification level}}{}
-In the on-line text recognition, the classification can be done in several levels and thus the recognition system can be built to classify an entire words, WP, letters or even strokes. 
+The on-line text recognition can be performed in several levels and thus the recognition system can be built to classify an entire words, WP, letters or even strokes. 
 The classifier in this work is done on the stroke level, since, it represent the most basic element a writer can produce, and it contains, in most cases, a single letter or more.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Input-output}}{}
@@ -324,7 +324,7 @@ Many shape descriptors have been developed in order to improve the segmentation 
 %\emph{TODO: review "Local vs. global Features" (p. 30) in \cite{connell2000online} }
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Using off-line shape descriptors for on-line handwriting recognition}}{}
-Many of the well known and powerful features operate on the shape's contour. This is because many descriptors were developed for off-line handwriting recognition. However, the input data in the on-line case is a sequence of points and no contour is involved. Using features in on-line handwriting recognition that we originally developed for the off-line case is common. Saabne and El-Sanna employed the \emph{Shape Context} (SC) descriptor, a global shape descriptor that was originally developed for contour based shapes,  on-line handwriting recognition in \cite{saabni2009hierarchical}. Multi Scale shape context is used by Hu and Zanibbi in \cite{husegmenting} for on-line handwritten mathematical expressions segmentation. The original definition of the mentioned features is given on the contour of the shape. However to use it in the on-line writing recognition case, the features are applied upon the stroke sequence.
+Many of the well known and powerful features operate on the shape's contour. This is because many descriptors were developed for off-line handwriting recognition. However, the input data in the on-line case is a sequence of points and no contour is involved. Using features in on-line handwriting recognition that we originally developed for the off-line case is common. Saabne and El-Sanna employed the \emph{Shape Context} (SC) descriptor, a global shape descriptor that was originally developed for contour based shapes, on-line handwriting recognition in \cite{saabni2009hierarchical}. Multi Scale shape context is used by Hu and Zanibbi in \cite{husegmenting} for on-line handwritten mathematical expressions segmentation. The original definition of the mentioned features is given on the contour of the shape. However to use it in the on-line writing recognition case, the features are applied upon the stroke sequence.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Selected Descriptors}}{}
 In this work we have chosen to work with two shape descriptors, the Shape context descriptor, MAD and  the tangent angle feature. The reason for this choice is that we wanted to investigate how both global and local features effectiveness in our proposed process. More information about these features are given below.

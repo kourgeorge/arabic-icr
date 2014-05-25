@@ -97,6 +97,8 @@ LettersDS.Ini.LettersMap = LettersGroups;
 LettersDS.Ini.Struct = IniStruct;
 LettersDS.Ini.FeaturesSpaceVectors = FeaturesSpaceVectors;
 
+csvwrite('C:\IniVectors.csv',[ReducedFeaturesMatrix';NumericGroups']');
+
 [FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, NumericGroups] = ExpandLettersStructForSVM( MidStruct );
 %MidSVMStruct = MultiSVMTrain(MidLettersSamples,MidLettersGroups);
 [ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction2( WaveletSpaceVectors, LettersGroups, 0.98);
@@ -107,6 +109,9 @@ LettersDS.Mid.KdTree = createns(ReducedFeaturesMatrix,'NSMethod','kdtree','Dista
 LettersDS.Mid.LettersMap = LettersGroups;
 LettersDS.Mid.Struct = MidStruct;
 LettersDS.Mid.FeaturesSpaceVectors = FeaturesSpaceVectors;
+
+csvwrite('C:\MidVectors.csv',[ReducedFeaturesMatrix';NumericGroups']');
+
 
 [FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, NumericGroups]  = ExpandLettersStructForSVM( FinStruct );
 %FinSVMStruct = MultiSVMTrain(FinLettersSamples,FinLettersGroups);
@@ -119,6 +124,8 @@ LettersDS.Fin.LettersMap = LettersGroups;
 LettersDS.Fin.Struct = FinStruct;
 LettersDS.Fin.FeaturesSpaceVectors = FeaturesSpaceVectors;
 
+csvwrite('C:\FinVectors.csv',[ReducedFeaturesMatrix';NumericGroups']');
+
 [FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, NumericGroups] = ExpandLettersStructForSVM( IsoStruct );
 %IsoSVMStruct = MultiSVMTrain(Iso,IsoLettersSamples);
 [ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction2( WaveletSpaceVectors, LettersGroups, 0.98);
@@ -129,6 +136,8 @@ LettersDS.Iso.KdTree = createns(ReducedFeaturesMatrix,'NSMethod','kdtree','Dista
 LettersDS.Iso.LettersMap = LettersGroups;
 LettersDS.Iso.Struct = IsoStruct;
 LettersDS.Iso.FeaturesSpaceVectors = FeaturesSpaceVectors;
+
+csvwrite('C:\IsoVectors.csv',[ReducedFeaturesMatrix';NumericGroups']');
 
 TargetFilePath = [TargetFolder,'\', 'LettersDS'];
 save(TargetFilePath, 'LettersDS', 'FeatureType','ResampleSize');

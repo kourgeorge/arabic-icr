@@ -21,10 +21,11 @@ A.data = tempReducedFeaturesMatrix;
 
 Labeling = double(Labeling);
 %%%%%%%%%%%%%%Fix LDA labeling%%%%%%%%%%%%%%%%%%%
+%IA - returns the index of the first occurrence of each repeated value.
 [~,IA,IC] = unique (Labeling);
 for i=1:size(IA,1)
-    ClassNumber = IA(i);
-    indexes_of_class = find(IC==ClassNumber);
+    ClassNumber = Labeling(IA(i));
+    indexes_of_class = find(Labeling==ClassNumber);
     if (size(indexes_of_class,1)<20)
         continue;
     end
@@ -32,11 +33,12 @@ for i=1:size(IA,1)
     NumOfInnerClusters = 4; %clusters estimations alg.
     [label, ~, ~] = kmedoidsL1(vectors',NumOfInnerClusters,5);
 
-    Labeling(indexes_of_class) = Labeling(indexes_of_class)+1000+label'; 
+    Labeling(indexes_of_class) = Labeling(indexes_of_class)*100+label'; 
 
 end
-A.labels =  Labeling;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+A.labels =  Labeling;
+
 dims = intrinsic_dim(tempReducedFeaturesMatrix, 'MLE');
 NumOfPCs = ceil(dims);
 

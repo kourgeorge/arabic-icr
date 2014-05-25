@@ -3,7 +3,7 @@ function TestCityNameRecognizer()
 global LettersDataStructure;
 global Statistics;
 LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
-CityNamesXMLFolder  = 'C:\Users\kour\Second Degree\Hand Writing recognition\Arabic ICR\Data\TestSet';
+CityNamesXMLFolder  = 'C:\Users\kour\Second Degree\Hand Writing recognition\arabic-icr\Data\TestSet';
 
 Comments = input('Enter Experiment comments\n','s');
 OutputFolder = ['C:\OCRData\StrokesSegmentationOutput (',Comments,')'];
