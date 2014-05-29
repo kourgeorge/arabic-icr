@@ -11,10 +11,17 @@
 %\begin{document}
 
 \chapter*{Abstract}
-The cursive and unconstrained nature of the Arabic script, in both printed and handwritten forms, anneals the tasks of segmentation and recognition. 
-While real-time performance is required in applications involving on-line handwriting recognition, most techniques for handwriting recognition wait until the entire curve is traced out before starting the analysis, inevitably causing delays in the recognition process. 
-This Work proposes a novel, ongoing, recognition-based segmentation approach for the on-line Arabic script. 
-by carrying out the most time consuming recognition process while the stroke is being scribed. 
+ 
+Correct and efficient recognition of handwritten Arabic text is considered to be an essential problem due to the the cursive and unconstrained nature of the Arabic script.
+While real-time performance is necessary in applications involving on-line handwriting recognition, conventional approaches usually wait until the entire curve is traced out before starting the analysis, inevitably causing delays in the recognition process. 
+Delaying the analysis launch until the completion of the handwritten word scribing, restricts on-line recognition techniques to meet the highly responsiveness demands expected from such systems, and prevents implementing advanced features of input typing, such as automatic word completion and real-time automatic spelling.
+
+This work proposes an analytic real-time approach for segmentation and recognition of handwritten on-line Arabic script.
+We demonstrate the feasibility of segmenting and classifying while the stroke is being written.
+The system is implemented using two sub-components, the real-time stroke segmentation system and the fast letter classifier.
+The real-time segmentation is facilitated using a fast letters classifier employing linear time embedding technique of advanced similarity measure techniques into the wavelet coefficient normed space, allowing fast similarity search.
+The resulted segmentation and letters classification information is then used to significantly reduce the potential dictionary size and accelerate a later holistic recognition process.
+
 The system has been designed and tested using the ADAB Database, and promising results were obtained.
  
 %\end{document}

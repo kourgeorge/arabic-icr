@@ -1,53 +1,53 @@
-% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-% Do not edit unless you really know what you are doing.
-\documentclass[12pt,english]{report}
-\usepackage{mathptmx}
-\renewcommand{\familydefault}{\rmdefault}
-\usepackage[T1]{fontenc}
-\usepackage[latin9]{inputenc}
-\usepackage[a4paper]{geometry}
-\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-\setlength{\parskip}{\medskipamount}
-\setlength{\parindent}{0pt}
-\usepackage{verbatim}
-\usepackage{pdfpages}
-\usepackage{graphicx}
-\usepackage{subfig} %% This package has to be here
-\usepackage{setspace}
-\usepackage{arabtex}
-\usepackage[numbers]{natbib}
-\usepackage{nomencl}
-\usepackage{paralist}
-\usepackage{amsthm}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{etoolbox}
-\newtoggle{edit-mode}
-\togglefalse{edit-mode}  
-\toggletrue{edit-mode}
-\iftoggle{edit-mode}{
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
-}{
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
-}
-
-\makenomenclature
-
- %Theorem Styles
-\newtheorem{theorem}{Theorem}[section]
- %Definition Styles
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[section]
-\newtheorem{example}{Example}[section]
-\theoremstyle{remark}
-\newtheorem{remark}{Remark}
-
-\usepackage[linesnumbered]{algorithm2e}
-
-\begin{document}
-
-\tableofcontents{}
+%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+%\documentclass[12pt,english]{report}
+%\usepackage{mathptmx}
+%\renewcommand{\familydefault}{\rmdefault}
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
+%\usepackage[a4paper]{geometry}
+%\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+%\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+%\setlength{\parskip}{\medskipamount}
+%\setlength{\parindent}{0pt}
+%\usepackage{verbatim}
+%\usepackage{pdfpages}
+%\usepackage{graphicx}
+%\usepackage{subfig} %% This package has to be here
+%\usepackage{setspace}
+%\usepackage{arabtex}
+%\usepackage[numbers]{natbib}
+%\usepackage{nomencl}
+%\usepackage{paralist}
+%\usepackage{amsthm}
+%\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{etoolbox}
+%\newtoggle{edit-mode}
+%\togglefalse{edit-mode}  
+%\toggletrue{edit-mode}
+%\iftoggle{edit-mode}{
+%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
+%}{
+%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+%}
+%
+%\makenomenclature
+%
+% %Theorem Styles
+%\newtheorem{theorem}{Theorem}[section]
+% %Definition Styles
+%\theoremstyle{definition}
+%\newtheorem{definition}{Definition}[section]
+%\newtheorem{example}{Example}[section]
+%\theoremstyle{remark}
+%\newtheorem{remark}{Remark}
+%
+%\usepackage[linesnumbered]{algorithm2e}
+%
+%\begin{document}
+%
+%\tableofcontents{}
 
 \chapter{Handwritten Arabic Letters Classifier}
 \label{chap:classification}
@@ -1087,10 +1087,20 @@ After discussing in details the theory underline each stage of the recognition p
 We will split our description into the learning process and the classification process, starting with the learning process. Letters samples obtained by the ADAB databases were split into four group according to their position: Ini, Med, Fin and Iso. Four databases were created corresponding to the four positions. The samples were preprocessed as described in Section \ref{}, then feature vectors were extracted using the Shape context. Then, the samples were embedded to $L_1$ by extracting the scaled coefficients of the wavelet transformation as described in Section \ref{}. Using a process that consists of PCA, LDA and dimensionality estimation techniques are applied to reduce the dimensionality of the high dimensional vectors produced by the embedding and to create the transformation matrix o be used to reduce the dimensionality of query samples in the recognition stage. Clustering using $L_1$ $k$-means clustering is applied to compress the dataset to avoid redundant samples. In this stage dataset is a coherent low dimensional collection of samples. This enable the construction of the metric indexing data-structure to enable fast similarity search. The usage of k-d tree enabled us to find the most similar object in sub-linear time complexity. A schematic description of the learning process can be shown in Figure \ref{}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The recognition process}}{}
-Once the classifier is provided a sequence to be classified and the position, it produces a preprocessed version of the stroke. The corresponding feature vector is extracted and then wavelet domain embedding is performed to obtain the coefficient vector. This vector is then multiplied by the dimensionality reduction matrix, so that the vector will be transformed to the compact space defined in the learning process. The reduced dimensionality vector is then function as the query object in the k-d tree data-structure. At this stage the ten sample objects are nominated by the k-d tree. Different candidates are allowed to have the same labeling at this stage. Note that also the nearest neighbor classification is based on the reduced wavelet coefficient vector, each sample holds all the different representation of it, including the original sequence, the feature vector, etc. Using the constrained version of DTW, the distance between feature vector of the candidates and the feature vector representation of the query object are calculated to select the best three candidates having different labeling. See Figure \ref{}.
+Once the classifier is provided a sequence to be classified and the position, it produces a preprocessed version of the stroke. The corresponding feature vector is extracted and then wavelet domain embedding is performed to obtain the coefficient vector. This vector is then multiplied by the dimensionality reduction matrix, so that the vector will be transformed to the compact space defined in the learning process. The reduced dimensionality vector is then function as the query object in the k-d tree data-structure. At this stage the ten sample objects are nominated by the k-d tree. Different candidates are allowed to have the same labeling at this stage. Note that also the nearest neighbour classification is based on the reduced wavelet coefficient vector, each sample holds all the different representation of it, including the original sequence, the feature vector, etc. Using the constrained version of DTW, the distance between feature vector of the candidates and the feature vector representation of the query object are calculated to select the best three candidates having different labelling. See Figure \ref{}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The recognition process - justification}}{}
 The reason for using the constrained version of DTW that the exact calculation of EMD on the nearest neighbors is that it has proved to be result in better recognition results as seen in table \ref{}.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{From the paper}}{}
+Given an unlabelled sequence $q$, the $k$-NN classifier returns a set of $k$ potential letter candidates from the sample set, $\{c\}_{i=1}^{k}$.
+The scoring of the candidates is done by averaging the $L_1$ distance between the query object and the candidate in the EMD space, and the DTW distance of their feature vectors, as seen in Equation \ref{eq:candidate_scoring}.
+The constrained version of DTW using the Sakoe-Chuba Band \cite{sakoe1978dynamic} was used since it has achieved better results the basic version of DTW.
+\begin{equation}
+Scoring(c_i,q)=\frac{\|E(c_i)-E(q)\|_1+DTW_{cons.}(c_i,q)}{2}
+\label{eq:candidate_scoring}
+\end{equation}
+where $E(\cdot)$ denotes the vector produced from the the process described earlier, i.e., preprocessing followed feature extraction, embedding into the coefficient wavelet domain, and finally, dimensionality reduction.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -1100,64 +1110,16 @@ The reason for using the constrained version of DTW that the exact calculation o
 \label{sec:analysis_results}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}
-Quantify the contribution and importance of each stage in the classification required us to conduct a series of experiments.
-In each experiment, we skip a stage in the recognition system and then measure the classifier performance.
-The three main stages in the classifier are: 1. the feature extraction stage; 2. the EMD embedding; and 3. the Dimensionality reduction.
-In addition, in subsection \ref{} we attempt to realize the affect of the sample size performance on the overall system performance.
-In subsection \ref{} we measure the system time performance and drill down to give the user an insight what were the most expensive stages in time performance. 
+In this section, we give a detailed evaluation of the classifier performance in terms of accuracy and running time.
+Using a series of experiments, we aim at quantifying the contribution and importance of each stage to the classification process.
+
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The sample set}}{}
+The experiments described in the chapter were all performed using a letters sample set distributed as shown in Table \ref{table:sample_set}.
+As previously mentioned, the classifier contains four internal databases. 
+It accepts as an input a sample and a position, and returns the classification of the sample in that corresponding database according to the input position.
+The values calculated for the accuracy measures in the following experiments are done by weighted average according to the letters distribution in the test set, with respect to their position.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Cross validation}}{}
-Measuring the system accuracy and performance in all the experiments below were done using 10-fold cross-validation.
-In general, cross-validation is a technique for assessing how the results of a statistical analysis model will generalize and perform in practice.  
-A round of cross-validation involves partitioning a sample set into two disjoint subsets, one used as the training set and the other as the testing set.
-Performing multiple rounds of cross-validation using different partitions helps in obtaining a better firmness of the results. 
-In the k-fold cross-validation, the original sample is randomly partitioned into k equal size sub-samples. 
-$k$ rounds of cross validation are performed. In each round, a single sub-sample is used to test the model and all the other $k-1$ sub-samples are used as the training set.
-The k results are then averaged to produce a single estimation.
-The advantage of this method over repeated random sub-sampling is that all observations are used for both training and validation, and each observation is used for validation exactly once.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Precision and recall}}{}
-There is no standard uniform measure for assessing the accuracy of classification system.
-However, there are four commonly used accuracy measurements used to asses the performance of a classification algorithm:\emph{precision}, \emph{recall}, \emph{$F_1$-measure} and \emph{ROC area}.
-In the following paragraph we give a short description of each of the mentioned measures.
-More information can be found in \cite{labatut2012accuracy}.
-
-In binary classification, each sample is belongs to one of two classes, the positive class or the negative class.
-A \emph{true positive} (tp) instance is an actual positive sample classified correctly as positive by the classification system.
-Similarly, a \emph{true negative} (tn) instance is the case of a negative sample classified correctly.  
-The cases where a positive sample mistakenly classified as negative or a negative sample classified as as belonging to the positive class, are called \emph{false positive} (fp) and \emph{false negative} (fn), respectively.
-
-\emph{Precision} (also called \emph{true positive rate}) is the fraction of true positive among all the instances classified as positive. See Equation \ref{eq:percision}.
-\begin{equation}
-\text{Precision}=\frac{tp}{tp+fp}
-\label{eq:percision}
-\end{equation}
-The measure \emph{Recall} (also known as sensitivity or true negative rate) is the fraction of instances correctly classified as positive among all the positive samples, as described in Equation \ref{eq:recall}.
-\begin{equation}
-\text{Recall}=\frac{tp}{tp+fn}  
-\label{eq:recall}
-\end{equation}
-Both precision and recall are therefore based on an understanding and measure of relevance. 
-Precision can be seen as a measure of exactness or quality, whereas recall is a measure of completeness or quantity.
-
-Calculating the precision and recall in the case of multi-class classification system, is done by calculating the weighted average of each class.
-
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{F-measure}}{}
-The $F_1$-measure is defined as the harmonic mean of precision and recall as seen in Equation \ref{eq:f_measure}
-$F_1$-measure reaches its best value at 1 and worst score at 0.
-\begin{equation}
-F_1 = 2 \cdot \frac{\mathrm{precision} \cdot \mathrm{recall}}{\mathrm{precision} + \mathrm{recall}}
-\label{eq:f_measure}
-\end{equation}
-
-
-All the experiments below was performed on the sample set distributes as shown in table \ref{table:sample_set}.
-As mentioned in Section, the system use four databases, in accepts as an input a sample and a position, and returns the classification of the sample in that corresponding position database, thus, table \ref{table:sample_set} shows the distribution of samples among the four databases.
-The values calculated for the accuracy measures in the following experiments are done by weighted average of the performance of each position.
-
-\begin{table}
+\begin{table}[b]
 \centering
 \begin{tabular}{ | c | c | c | c |}
 \hline                 
@@ -1170,7 +1132,81 @@ The values calculated for the accuracy measures in the following experiments are
 \label{table:sample_set} 
 \end{table}
 
-\subsection{Feature Extraction}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Cross validation}}{}
+Measuring the system performance was performed by running 10-fold cross-validation model validation.
+In general, cross-validation is a technique for assessing how the results of a statistical analysis model will generalize and perform in practice.  
+A round of cross-validation involves partitioning a sample set into two disjoint subsets, one used as the training set and the other as the testing set.
+Performing multiple rounds of cross-validation using different partitions helps in obtaining a better firmness of the results. 
+In the k-fold cross-validation, the original sample is randomly partitioned into k equal size sub-samples. 
+$k$ rounds of cross validation are performed. In each round, a single sub-sample is used to test the model and all the other $k-1$ sub-samples are used as the training set.
+The k results are then averaged to produce a single estimation.
+The advantage of this method over repeated random sub-sampling is that all observations are used for both training and validation, and each observation is used for validation exactly once.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Experiments}}{}
+The three main stages in the classifier are: 1. the feature extraction stage; 2. the EMD embedding; and 3. the dimensionality reduction stage.
+In the first configuration, named Baseline, we evaluate the classifier as presented in this work.
+In the second (No DR) and the third (No Embedding) configurations, dimensionality reduction and embedding were skipped, respectively.
+For each configuration, the classifier performance was measured in terms of accuracy, by calculating the \emph{Correct Classification Rate} (CCR), and running time.
+Table \ref{table:dr_embedding_comparison} shows the results of three configurations, all using shape context as the shape descriptor.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The scoring contribution}}{}
+We have noted that although the candidates scoring according to the formula given in Equation \ref{eq:candidate_scoring} has raised the correct segmentation rate significantly, it had a limited effect on the classification accuracy. 
+Thus, in the experiments above, the candidates scoring was not taken into consideration, i.e., the candidates were ranked solely according to the distance in the EMD space.
+
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Precision and recall}}{}
+%There is no standard uniform measure for assessing the accuracy of classification system.
+%However, there are four commonly used accuracy measurements used to asses the performance of a classification algorithm:\emph{precision}, \emph{recall}, \emph{$F_1$-measure} and \emph{ROC area}.
+%In the following paragraph we give a short description of each of the mentioned measures.
+%More information can be found in \cite{labatut2012accuracy}.
+%
+%In binary classification, each sample is belongs to one of two classes, the positive class or the negative class.
+%A \emph{true positive} (tp) instance is an actual positive sample classified correctly as positive by the classification system.
+%Similarly, a \emph{true negative} (tn) instance is the case of a negative sample classified correctly.  
+%The cases where a positive sample mistakenly classified as negative or a negative sample classified as as belonging to the positive class, are called \emph{false positive} (fp) and \emph{false negative} (fn), respectively.
+%
+%\emph{Precision} (also called \emph{true positive rate}) is the fraction of true positive among all the instances classified as positive. See Equation \ref{eq:percision}.
+%\begin{equation}
+%\text{Precision}=\frac{tp}{tp+fp}
+%\label{eq:percision}
+%\end{equation}
+%The measure \emph{Recall} (also known as sensitivity or true negative rate) is the fraction of instances correctly classified as positive among all the positive samples, as described in Equation \ref{eq:recall}.
+%\begin{equation}
+%\text{Recall}=\frac{tp}{tp+fn}  
+%\label{eq:recall}
+%\end{equation}
+%Both precision and recall are therefore based on an understanding and measure of relevance. 
+%Precision can be seen as a measure of exactness or quality, whereas recall is a measure of completeness or quantity.
+%
+%Calculating the precision and recall in the case of multi-class classification system, is done by calculating the weighted average of each class.
+%
+%
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{F-measure}}{}
+%The $F_1$-measure is defined as the harmonic mean of precision and recall as seen in Equation \ref{eq:f_measure}
+%$F_1$-measure reaches its best value at 1 and worst score at 0.
+%\begin{equation}
+%F_1 = 2 \cdot \frac{\mathrm{precision} \cdot \mathrm{recall}}{\mathrm{precision} + \mathrm{recall}}
+%\label{eq:f_measure}
+%\end{equation}
+
+
+\begin{table}
+\centering
+\begin{tabular}{ | c | c | c | c |}
+  \hline
+  Experiment  & CCR [Top 1]  & CCR [Top 3] & Time [ms]\\
+  \hline                 
+  Baseline & 86\% & 95\% & 0.22 \\
+  \hline
+  No DR & 86\% & 95\% & 6.2 \\ 
+  \hline
+  No embedding & 90\% &  90\% & 0.41 \\
+  \hline
+\end{tabular}
+\caption{CCR and time performance of the different configuration. 
+The First row shows the results of the proposed classifier (Baseline) compared to the classifier without the Dimensionality reduction (No Dr) step and without the embedding (No Embedding).}
+\label{table:dr_embedding_comparison} 
+\end{table}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The goal of this experiment}}{}
 The goal of this experiment is to provide a restricted evaluation to the two feature extraction techniques that were used in this work and compare it to the results obtained if none is used, namely, the stroke using the original stroke sequence.
@@ -1179,35 +1215,48 @@ The goal of this experiment is to provide a restricted evaluation to the two fea
 For each position letter database (Ini, Mid, Fin and Iso) we ran a 10-folded cross validation process. In the first experiment, no feature extraction technique was used, i.e., the stroke sequence was directly used. The results can be seen in Table \ref{}.
 In the second experiment, Shape context was used, and in table \ref{} we show the experiment results in which Multi angular descriptor was used. 
 
+The results shown in Table \ref{table:features_comparison} compare the performance of the shape context and the MAD descriptors to the results obtained when none is used.
 
 \begin{table}
 \centering
-\begin{tabular}{ | c | c | c | c | c |}
+\begin{tabular}{ | c | c | c |}
 \hline
-Feature & Precision & Recall & F-measure \\%& ROC Area\\
-\hline                 
-  Sequence  (None) &  0.87 & 0.87 & 0.867 \\%& 0.93 \\
-  \hline
-  Shape Context & 0.86 & 0.86 & 0.86 \\%& 0.92 \\ 
-  \hline
-  MAD & 0.77 & 0.78 & 0.77 \\%& 0.88 \\ 
-  \hline
+	Shape Descriptor  & CCR [Top 1]  & CCR [Top 3] \\
+	\hline 
+	Shape Context & 86\% & 95\%  \\                
+  	\hline
+  	MAD & 76\% & 78\% \\
+  	\hline
+  	None & 86\% &  87\% \\
+  	\hline
 \end{tabular}
-\caption{Features comparison}
+\caption{Comparing the correct classification rate of the different feature extraction techniques.}
 \label{table:features_comparison} 
 \end{table}
+
+
+%\begin{table}
+%\centering
+%\begin{tabular}{ | c | c | c | c | c |}
+%\hline
+%Feature & Precision & Recall & F-measure \\
+%\hline                 
+%  Sequence  (None) &  0.87 & 0.87 & 0.867 \\
+%  \hline
+%  Shape Context & 0.86 & 0.86 & 0.86 \\
+%  \hline
+%  MAD & 0.77 & 0.78 & 0.77 \\
+%  \hline
+%\end{tabular}
+%\caption{Features comparison}
+%\label{table:features_comparison} 
+%\end{table}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Segmentation rate}}{}
 In Table \ref{table:features_comparison}, it can be seen that the Sequence, i.e. using no feature extraction, have achieved almost the same accuracy results as when using SC.
 Although at first glance it can make doubting the necessity the feature extraction stage, we will see in later that the use of SC improved the segmentation and recognition results considerably.\\
 \emph{It boosted the SR from 75\% to 81\% and the RR from 72\% to 76\%}
 
-
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Analysis}}{}
-We were surprised to see that using the sequence feature has achieved a better recognition rate.
-
-\subsection{Dimensionality Reduction and EMD Embedding}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{DR}}{}
 As detailed in Section \ref{sec:dr} the role of the DR process is to reduce the number of variables taken into consideration by the classifier in order to avoid problem caused by the "curse of dimensionality", without affecting much the system accuracy.
@@ -1217,30 +1266,33 @@ The results in Table \ref{table:dr_embedding_comparison} shows that the dimensio
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Embedding}}{}
 Assessing the embedding on the classification process 
 
-
-\begin{table}
-\centering
-\begin{tabular}{ | c | c | c | c | c | c |}
-  \hline
-  Experiment & Precision & Recall & F-measure\\ % & ROC Area\\
-  \hline                 
-  Baseline &  0.87 & 0.87 & 0.867 \\% & 0.93 \\
-  \hline
-  No DR & 0.91 & 0.9 & 0.90 \\% & 0.94 \\  
-  \hline
-  No embedding & 0.89 & 0.89 & 0.89 \\ %& 0.94 \\
-  \hline
-\end{tabular}
-\caption{Different Experiments}
-\label{table:dr_embedding_comparison} 
-\end{table}
+%\begin{table}
+%\centering
+%\begin{tabular}{ | c | c | c | c | c | c |}
+%  \hline
+%  Experiment & Precision & Recall & F-measure\
+%  \hline                 
+%  Baseline &  0.87 & 0.87 & 0.867 \\
+%  \hline
+%  No DR & 0.91 & 0.9 & 0.90 \\ 
+%  \hline
+%  No embedding & 0.89 & 0.89 & 0.89 \\
+%  \hline
+%\end{tabular}
+%\caption{Different Experiments}
+%\label{table:dr_embedding_comparison} 
+%\end{table}
 
 
 And here we performed the same experiment on a data that did not went through embedding.
 
-\emph{Comparing results with other researches.}
+TODO:\\
+--------\\
+\begin{itemize}
+\item Comparing results with other researches.
+\item evaluate the speed affect of the kd-dtree.
+\end{itemize}
 
-
-\bibliographystyle{plainnat}
-\bibliography{references}
-\end{document}
+%\bibliographystyle{plainnat}
+%\bibliography{references}
+%\end{document}
