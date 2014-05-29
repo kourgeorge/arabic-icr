@@ -52,41 +52,49 @@ for i = 3:length(LettersSamplesFolderList)
         
         %Ini - Not all letters has Ini Form
         if (~isempty(LetterInAllPositions.Ini))
+            SequenceFeature = repmat({0}, 1, size(LetterInAllPositions.Ini,2));
+            LetterSequences = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Ini,SequenceFeature,'UniformOutput', false);
             Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Ini,2));
             LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Ini,Feature,'UniformOutput', false);
             LetterWavelets = cellfun(@CreateWaveletFromFV, LetterFeatures ,'UniformOutput', false);
-            IniStruct = [IniStruct;FolderName , {LetterFeatures}, {LetterWavelets}];
+            IniStruct = [IniStruct;FolderName , {LetterFeatures}, {LetterWavelets}, {LetterSequences}];
         end
         
         %Mid - Not all letters has Mid Form
         if (~isempty(LetterInAllPositions.Mid))
+            SequenceFeature = repmat({0}, 1, size(LetterInAllPositions.Mid,2));
+            LetterSequences = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Mid,SequenceFeature,'UniformOutput', false);
             Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Mid,2));
             LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Mid,Feature,'UniformOutput', false);
             LetterWavelets = cellfun(@CreateWaveletFromFV, LetterFeatures ,'UniformOutput', false);
-            MidStruct = [MidStruct;FolderName , {LetterFeatures}, {LetterWavelets}];
+            MidStruct = [MidStruct;FolderName , {LetterFeatures}, {LetterWavelets}, {LetterSequences}];
         end
         
         %Fin
         if (~isempty(LetterInAllPositions.Fin))
+            SequenceFeature = repmat({0}, 1, size(LetterInAllPositions.Fin,2));
+            LetterSequences = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Fin,SequenceFeature,'UniformOutput', false);
             Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Fin,2));
             LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Fin,Feature,'UniformOutput', false);
             LetterWavelets = cellfun(@CreateWaveletFromFV, LetterFeatures ,'UniformOutput', false);
-            FinStruct = [FinStruct;FolderName , {LetterFeatures}, {LetterWavelets}];
+            FinStruct = [FinStruct;FolderName , {LetterFeatures}, {LetterWavelets}, {LetterSequences}];
         end
         
         
         %Iso
         if (~isempty(LetterInAllPositions.Iso))
-            Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Iso,2));
+            SequenceFeature = repmat({0}, 1, size(LetterInAllPositions.Iso,2));
+            LetterSequences = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Iso,SequenceFeature,'UniformOutput', false);
+            Feature = repmat({FeatureType}, 1, size(LetterInAllPositions.Iso,2));            
             LetterFeatures = cellfun(@CreateFeatureVectorFromContour,LetterInAllPositions.Iso,Feature,'UniformOutput', false);
             LetterWavelets = cellfun(@CreateWaveletFromFV, LetterFeatures ,'UniformOutput', false);
-            IsoStruct = [IsoStruct;FolderName , {LetterFeatures}, {LetterWavelets}];
+            IsoStruct = [IsoStruct;FolderName , {LetterFeatures}, {LetterWavelets}, {LetterSequences}];
         end
     end
     
 end
 DistanceType = 'cityblock';
-[FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, NumericGroups] = ExpandLettersStructForSVM( IniStruct );
+[FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, NumericGroups, SequencesArray] = ExpandLettersStructForSVM( IniStruct );
 %IniSVMStruct = MultiSVMTrain(IniLettersSamples,IniLettersGroups);
 [ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction2( WaveletSpaceVectors, LettersGroups, 0.98);
 SVMStruct = svmtrain1 ([], NumericGroups, ReducedFeaturesMatrix,'-q');
@@ -96,10 +104,12 @@ LettersDS.Ini.KdTree = createns(ReducedFeaturesMatrix,'NSMethod','kdtree','Dista
 LettersDS.Ini.LettersMap = LettersGroups;
 LettersDS.Ini.Struct = IniStruct;
 LettersDS.Ini.FeaturesSpaceVectors = FeaturesSpaceVectors;
+LettersDS.Ini.SequencesArray = SequencesArray;
+
 
 csvwrite('C:\IniVectors.csv',[ReducedFeaturesMatrix';NumericGroups']');
 
-[FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, NumericGroups] = ExpandLettersStructForSVM( MidStruct );
+[FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, NumericGroups,SequencesArray] = ExpandLettersStructForSVM( MidStruct );
 %MidSVMStruct = MultiSVMTrain(MidLettersSamples,MidLettersGroups);
 [ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction2( WaveletSpaceVectors, LettersGroups, 0.98);
 SVMStruct = svmtrain1 ([], NumericGroups, ReducedFeaturesMatrix,'-q');
@@ -109,11 +119,12 @@ LettersDS.Mid.KdTree = createns(ReducedFeaturesMatrix,'NSMethod','kdtree','Dista
 LettersDS.Mid.LettersMap = LettersGroups;
 LettersDS.Mid.Struct = MidStruct;
 LettersDS.Mid.FeaturesSpaceVectors = FeaturesSpaceVectors;
+LettersDS.Mid.SequencesArray = SequencesArray;
 
 csvwrite('C:\MidVectors.csv',[ReducedFeaturesMatrix';NumericGroups']');
 
 
-[FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, NumericGroups]  = ExpandLettersStructForSVM( FinStruct );
+[FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, NumericGroups,SequencesArray]  = ExpandLettersStructForSVM( FinStruct );
 %FinSVMStruct = MultiSVMTrain(FinLettersSamples,FinLettersGroups);
 [ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction2( WaveletSpaceVectors, LettersGroups, 0.98);
 SVMStruct = svmtrain1 ([], NumericGroups, ReducedFeaturesMatrix,'-q');
@@ -123,10 +134,11 @@ LettersDS.Fin.KdTree = createns(ReducedFeaturesMatrix,'NSMethod','kdtree','Dista
 LettersDS.Fin.LettersMap = LettersGroups;
 LettersDS.Fin.Struct = FinStruct;
 LettersDS.Fin.FeaturesSpaceVectors = FeaturesSpaceVectors;
+LettersDS.Fin.SequencesArray = SequencesArray;
 
 csvwrite('C:\FinVectors.csv',[ReducedFeaturesMatrix';NumericGroups']');
 
-[FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, NumericGroups] = ExpandLettersStructForSVM( IsoStruct );
+[FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, NumericGroups,SequencesArray] = ExpandLettersStructForSVM( IsoStruct );
 %IsoSVMStruct = MultiSVMTrain(Iso,IsoLettersSamples);
 [ReducedFeaturesMatrix, COEFF, NumOfPCs] = DimensionalityReduction2( WaveletSpaceVectors, LettersGroups, 0.98);
 SVMStruct = svmtrain1 ([], NumericGroups, ReducedFeaturesMatrix,'-q');
@@ -136,6 +148,7 @@ LettersDS.Iso.KdTree = createns(ReducedFeaturesMatrix,'NSMethod','kdtree','Dista
 LettersDS.Iso.LettersMap = LettersGroups;
 LettersDS.Iso.Struct = IsoStruct;
 LettersDS.Iso.FeaturesSpaceVectors = FeaturesSpaceVectors;
+LettersDS.Iso.SequencesArray = SequencesArray;
 
 csvwrite('C:\IsoVectors.csv',[ReducedFeaturesMatrix';NumericGroups']');
 
