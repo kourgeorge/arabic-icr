@@ -3,7 +3,8 @@ function [ flattenedArray ] = FlattenFeatureVectors( FeatureVectors )
 %   flattened = FlattenFeatureVectors( FeaturesSpaceVectors );
 
 
-flattenedArray = zeros(size(FeatureVectors,1),2400);
+flattenVectorLength = size(FeatureVectors{1},1)*size(FeatureVectors{1},2);
+flattenedArray = zeros(size(FeatureVectors,1),flattenVectorLength);
 for i=1:size(FeatureVectors,1)
     sample = FeatureVectors{i};
     flattenedArray(i,:) = reshape(sample,1,[]);
