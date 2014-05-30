@@ -196,7 +196,7 @@ The number of principle components in the PCA to consider, can be calculated eas
 The major drawback of the PCA is that it is an unsupervised technique, namely, it does not take into consideration the labelling information of the data and heavily rely on the assumption that most information is contained in those directions where input data variance is maximum.
 On the contrary, \emph{linear discrimination analysis} (LDA) \cite{fisher1936use} is a supervised technique performing dimensionality reduction while preserving as much of the class discriminatory information as possible. 
 In the first step, the embedded vectors are projected into the PCA space where the target dimensionality, i.e., the number of principal components taken into consideration, is the minimal to achieve data preservation rate of 98\%.
-As seen in table \ref{table:dr_dimensions_results}, the dimensionality was reduced by PCA in two orders of magnitude.
+As seen in Table \ref{table:dr_dimensions_results}, the dimensionality was reduced by PCA in two orders of magnitude.
 
 Since there is a large variation in handwritten letters in the Arabic script, the grouping different perceptual shapes in a single class would negatively affect the supervised dimensionality reduction process.
 Thus, before applying LDA, each character class was partitioned into four clusters, using $L_1$-k-medoids algorithm, and for each cluster a unique sub-label was assigned. 
@@ -256,7 +256,7 @@ We have implemented a series of experiments aiming at quantifying the contributi
 The three main stages in the classifier are: 1. the feature extraction stage; 2. the EMD embedding; and 3. the dimensionality reduction stage.
 Table \ref{table:dr_embedding_comparison} shows the results of three configurations, all using shape context as the shape descriptor.
 In the first configuration, named Baseline, we evaluate the classifier as presented in this work.
-In the second (No DR) and the third (No Embedding) configurations, dimensionality reduction and embedding were skipped, respectively,
+In the second (No DR) and the third (No Embedding) configurations, dimensionality reduction and embedding were skipped, respectively.
 For each configuration, the classifier performance was measured in terms of accuracy, by calculating the \emph{Correct Classification Rate} (CCR), and running time.
 It can be noted that the dimensionality reduction stage did not affect the system performance in terms of accuracy but improved the time performance significantly.
 Using k-d tree, due to its known sensitivity to high dimensional data, would result in lager performance degradation, if the dimensionality reduction stage is skipped.
@@ -277,8 +277,7 @@ Thus, we can conclude that the candidates list obtained in the Baseline is more 
   No embedding & 90\% &  90\% & 0.41 \\
   \hline
 \end{tabular}
-\caption{CCR and time performance of the different configuration. 
-The First row shows the results of the proposed classifier (Baseline) compared to the classifier without the Dimensionality reduction (No Dr) step and without the embedding (No Embedding).}
+\caption{CCR and time performance of the different configurations.}
 \label{table:dr_embedding_comparison} 
 \end{table}
 
