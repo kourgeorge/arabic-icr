@@ -1,53 +1,53 @@
-% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-% Do not edit unless you really know what you are doing.
-\documentclass[12pt,english]{report}
-\usepackage{mathptmx}
-\renewcommand{\familydefault}{\rmdefault}
-\usepackage[T1]{fontenc}
-\usepackage[latin9]{inputenc}
-\usepackage[a4paper]{geometry}
-\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-\setlength{\parskip}{\medskipamount}
-\setlength{\parindent}{0pt}
-\usepackage{verbatim}
-\usepackage{pdfpages}
-\usepackage{graphicx}
-\usepackage{subfig} %% This package has to be here
-\usepackage{setspace}
-\usepackage{arabtex}
-\usepackage[numbers]{natbib}
-\usepackage{nomencl}
-\usepackage{paralist}
-\usepackage{amsthm}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{etoolbox}
-\newtoggle{edit-mode}
-\togglefalse{edit-mode}  
-\toggletrue{edit-mode}
-\iftoggle{edit-mode}{
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
-}{
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
-}
-
-\makenomenclature
-
- %Theorem Styles
-\newtheorem{theorem}{Theorem}[section]
- %Definition Styles
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[section]
-\newtheorem{example}{Example}[section]
-\theoremstyle{remark}
-\newtheorem{remark}{Remark}
-
-\usepackage[linesnumbered]{algorithm2e}
-
-\begin{document}
-
-\tableofcontents{}
+%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+%\documentclass[12pt,english]{report}
+%\usepackage{mathptmx}
+%\renewcommand{\familydefault}{\rmdefault}
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
+%\usepackage[a4paper]{geometry}
+%\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+%\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+%\setlength{\parskip}{\medskipamount}
+%\setlength{\parindent}{0pt}
+%\usepackage{verbatim}
+%\usepackage{pdfpages}
+%\usepackage{graphicx}
+%\usepackage{subfig} %% This package has to be here
+%\usepackage{setspace}
+%\usepackage{arabtex}
+%\usepackage[numbers]{natbib}
+%\usepackage{nomencl}
+%\usepackage{paralist}
+%\usepackage{amsthm}
+%\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{etoolbox}
+%\newtoggle{edit-mode}
+%\togglefalse{edit-mode}  
+%\toggletrue{edit-mode}
+%\iftoggle{edit-mode}{
+%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
+%}{
+%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+%}
+%
+%\makenomenclature
+%
+% %Theorem Styles
+%\newtheorem{theorem}{Theorem}[section]
+% %Definition Styles
+%\theoremstyle{definition}
+%\newtheorem{definition}{Definition}[section]
+%\newtheorem{example}{Example}[section]
+%\theoremstyle{remark}
+%\newtheorem{remark}{Remark}
+%
+%\usepackage[linesnumbered]{algorithm2e}
+%
+%\begin{document}
+%
+%\tableofcontents{}
 
 \chapter{Handwritten Arabic Character Classifier}
 \label{chap:characters_classification}
@@ -147,8 +147,8 @@ Several machine learning problems, especially those having a large number of cla
 For the disadvantages for HMM and NN techniques mentioned above and the intuitive and simplicity of the and for my personal interest in similarity measure techniques that can be integrated classifier, we have chosen to use Nearest Neighbor classifier classification.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{NN classification}}{}
-In the $k$-NN problem a set of data points in d-dimensional space is given and for a query point q, the nearest or generally k nearest points of P to q can be reported efficiently. 
-The distance between two points can be defined in many ways as will be detailed in Section \ref{[]}. $k$-NN based classification a very basic and common approach for implementing the pattern classification. However, the retrieval of the exact k-Nearest Neighbors for a given query object $q$ and a database of sample set $S$ suffers from bad performance that is mainly caused by two factors. The first, is the total numbers of samples in the data. This issue will be discussed in Section \ref{sec:similarity_search} and the other is the dimensionality of objects in the data (known as the \emph{curse of dimensionality}). Computing exact nearest neighbors in dimensions much higher than 8 seems to be a very difficult task. However, the first issue has much smaller impact on the speed of the nearest neighbor retrieval and can be healed easily by using dimensionality reduction techniques which will be discussed in details in Section \ref{sec:dimensionality_reduction}. However, the first issue, i.e., the size of the sample data, is crucial. The simplest solution to the NN problem is to linearly go over the entire sample set and keep track of the best k best nominates so far. The running time of this algorithm in $O(Nd)$ where $N$ is the cardinality of sample set and d is the dimensionality of the sample set. While looking in the entire database for the $k$-NN is not permissible for most applications. The only advantage of this approach is that it requires no extra space, beyond the amount of the memory needed for keeping the sample set. This issue is will be treated in Section \ref{sec:similarity_search}. 
+In the $k$-NN problem a set of data points in $d$-dimensional space is given and for a query point $q$, the nearest or generally $k$ nearest points of $P$ to $q$ can be reported efficiently. 
+The distance between two points can be defined in many ways as will be detailed in Section \ref{sec:similarity_measures}. $k$-NN based classification a very basic and common approach for implementing the pattern classification. However, the retrieval of the exact k-Nearest Neighbors for a given query object $q$ and a database of sample set $S$ suffers from bad performance that is mainly caused by two factors. The first, is the total numbers of samples in the data. This issue will be discussed in Section \ref{sec:similarity_search} and the other is the dimensionality of objects in the data (known as the \emph{curse of dimensionality}). Computing exact nearest neighbors in dimensions much higher than 8 seems to be a very difficult task. However, the first issue has much smaller impact on the speed of the nearest neighbor retrieval and can be healed easily by using dimensionality reduction techniques which will be discussed in details in Section \ref{sec:dr}. However, the first issue, i.e., the size of the sample data, is crucial. The simplest solution to the NN problem is to linearly go over the entire sample set and keep track of the best k best nominates so far. The running time of this algorithm in $O(Nd)$ where $N$ is the cardinality of sample set and d is the dimensionality of the sample set. While looking in the entire database for the $k$-NN is not permissible for most applications. The only advantage of this approach is that it requires no extra space, beyond the amount of the memory needed for keeping the sample set. This issue is will be treated in Section \ref{sec:similarity_search}. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -190,6 +190,27 @@ Given a query object, it undergoes almost the same process of preproessing, feat
 \label{fig:letters_classifier_learning_flow}
 \end{figure}
 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
+After discussing in details the theory underline each stage of the recognition process, in this sub section we will provide a high level description of the system and show how all the elements integrate together to build the recognizer. 
+Also, we will drill down to describe the parameters used in every stage that were tunned to obtain the achieve the best results. 
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning stage}}{}
+We will split our description into the learning process and the classification process, starting with the learning process. 
+Letters samples obtained by the ADAB databases were split into four group according to their position: Ini, Med, Fin and Iso. 
+Four databases were created corresponding to the four positions. 
+The samples were preprocessed as described in Section \ref{sec:preprocessing}, then feature vectors were extracted using the Shape context. 
+Then, the samples were embedded to $L_1$ metric space by extracting the scaled coefficients of the wavelet transformation as described in Section \ref{subsec:metric_embedding}. 
+Using a process that consists of PCA, LDA and dimensionality estimation techniques are applied to reduce the dimensionality of the high dimensional vectors produced by the embedding and to create the transformation matrix o be used to reduce the dimensionality of query samples in the recognition stage. 
+Clustering using $L_1$ $k$-means clustering is applied to compress the dataset to avoid redundant samples. 
+In this stage dataset is a coherent low dimensional collection of samples. 
+This enable the construction of the metric indexing data-structure to enable fast similarity search. The usage of k-d tree enabled us to find the most similar object in sub-linear time complexity. 
+
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The recognition process}}{}
+Once the classifier is provided a sequence to be classified and the position, it produces a preprocessed version of the stroke. The corresponding feature vector is extracted and then wavelet domain embedding is performed to obtain the coefficient vector. This vector is then multiplied by the dimensionality reduction matrix, so that the vector will be transformed to the compact space defined in the learning process. The reduced dimensionality vector is then function as the query object in the k-d tree data-structure. At this stage the ten sample objects are nominated by the k-d tree. Different candidates are allowed to have the same labeling at this stage. Note that also the nearest neighbour classification is based on the reduced wavelet coefficient vector, each sample holds all the different representation of it, including the original sequence, the feature vector, etc. Using the constrained version of DTW, the distance between feature vector of the candidates and the feature vector representation of the query object are calculated to select the best three candidates having different labelling. 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -206,7 +227,7 @@ In order to overcome the flaws mentioned, preprocessing operations are usually n
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Preprocessing steps usage}}{}
 In the current work, preprocessing consists of three methods: \emph{normalization}, \emph{noise elimination} and then \emph{re-sampling}.
-While these three techniques were applied in the mentioned order in both learning and classification of letters, these steps were selectively activated in the segmentation system according to the needs of the specific step, as described in Chapter \ref{chap:segmentation}.
+While these three techniques were applied in the mentioned order in both learning and classification of letters, these steps were selectively activated in the segmentation system according to the needs of the specific step.
 Other less commonly used preprocessing steps in the field of on-line Arabic HWR, such as rotation and slant normalization \cite{jaeger2001online}, were not implemented in this work. 
 
 
@@ -462,7 +483,9 @@ Given a data space $D$, a distance function $dist$ is a \textbf{metric} if in ad
 \end{definition}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Efficiency and Triangularity}}{}
-Besides the importance of qualitatively capturing the similarity between two objects (i.e., effectiveness), similarity search efficiency is another aspect related to distance functions. The execution time of a query mainly affected by the number of distance function computations. The triangle inequality is a property that facilitate fast retrieval by using indexing and lower bounding \cite{chen2005similarity}. Efficient Similarity search techniques will be discussed in details in Section \ref{sec:similarity_search}.
+Besides the importance of qualitatively capturing the similarity between two objects (i.e., effectiveness), similarity search efficiency is another aspect related to distance functions. The execution time of a query mainly affected by the number of distance function computations. 
+The triangle inequality is a property that facilitate fast retrieval by using indexing and lower bounding \cite{chen2005similarity}. 
+Efficient Similarity search techniques will be discussed in details in Section \ref{sec:similarity_search}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Advanced distance measure techniques}}{}
 To overcome the drawbacks of the basic Minkowski distance, many distance functions have been proposed in the literature for various application. Here we mention a few that are used mostly in handwriting recognition applications and time series patterns: \emph{Data Time Warping} (DTW), \emph{Earth Mover's Distance} (EMD), \emph{Longest Common Subsequences} (LCSS) and \emph{Edit distance}. Each method has its strengthens and weaknesses. Each application should choose the similarity function that best fit its needs.
@@ -638,7 +661,7 @@ In some cases DTW tends to create an unrealistic correspondence between time-ser
 
 \paragraph{Data Abstraction:} Speedup using data abstraction is performed by running DTW on a reduced presentation of the data thus reducing the cell numbers that need to be computed. The warp path is calculated on the reduced resolution matrix and mapped back to the original (full) cost matrix. \emph{FastDTW} which was proposed in \cite{salvador2007toward} is an example of such approach. 
  
-\paragraph{Pruning:} Searching the most similar time series in the database given a template time series can be done more efficiently using lower bound functions than using DTW to compare the template to every series in the database. A lower-bounding is cheap and approximate. However, it underestimates the actual cost determined by DTW. It is used to avoid comparing series by DTW when the lower-bounding estimate indicates that the time series is worse match than the current best match \cite{rath2003word} (lower bounding benefits will be discussed in more details in Section \ref{subsec:lower_bounding_indexing}).
+\paragraph{Pruning:} Searching the most similar time series in the database given a template time series can be done more efficiently using lower bound functions than using DTW to compare the template to every series in the database. A lower-bounding is cheap and approximate. However, it underestimates the actual cost determined by DTW. It is used to avoid comparing series by DTW when the lower-bounding estimate indicates that the time series is worse match than the current best match \cite{rath2003word} (lower bounding benefits will be discussed in more details in Section \ref{subsec:lower_bounding}).
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{How DTW is used in this work?}}{}
 In this work, DTW is used for candidates scoring (described in chapter \ref{sec:candidates_scoring}) rather than similar samples spotting. Actually, nearest neighbors are found among the entire dataset based on the EMD metric. Next, DTW is employed for measuring the similarity between the test sample and its nearest neighbors
@@ -1080,26 +1103,11 @@ Letter position & Number of samples & PCA & PCA+LDA\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\section{Letters Classification and Candidates Scoring}
+\section{Candidates Scoring}
 \label{sec:candidates_scoring}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
-After discussing in details the theory underline each stage of the recognition process, in this sub section we will provide a high level description of the system and show how all the elements integrate together to build the recognizer. 
-Also, we will drill down to describe the parameters used in every stage that were tunned to obtain the achieve the best results. 
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning stage}}{}
-We will split our description into the learning process and the classification process, starting with the learning process. 
-Letters samples obtained by the ADAB databases were split into four group according to their position: Ini, Med, Fin and Iso. 
-Four databases were created corresponding to the four positions. 
-The samples were preprocessed as described in Section \ref{}, then feature vectors were extracted using the Shape context. 
-Then, the samples were embedded to $L_1$ metric space by extracting the scaled coefficients of the wavelet transformation as described in Section \ref{}. 
-Using a process that consists of PCA, LDA and dimensionality estimation techniques are applied to reduce the dimensionality of the high dimensional vectors produced by the embedding and to create the transformation matrix o be used to reduce the dimensionality of query samples in the recognition stage. Clustering using $L_1$ $k$-means clustering is applied to compress the dataset to avoid redundant samples. In this stage dataset is a coherent low dimensional collection of samples. This enable the construction of the metric indexing data-structure to enable fast similarity search. The usage of k-d tree enabled us to find the most similar object in sub-linear time complexity. A schematic description of the learning process can be shown in Figure \ref{}.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The recognition process}}{}
-Once the classifier is provided a sequence to be classified and the position, it produces a preprocessed version of the stroke. The corresponding feature vector is extracted and then wavelet domain embedding is performed to obtain the coefficient vector. This vector is then multiplied by the dimensionality reduction matrix, so that the vector will be transformed to the compact space defined in the learning process. The reduced dimensionality vector is then function as the query object in the k-d tree data-structure. At this stage the ten sample objects are nominated by the k-d tree. Different candidates are allowed to have the same labeling at this stage. Note that also the nearest neighbour classification is based on the reduced wavelet coefficient vector, each sample holds all the different representation of it, including the original sequence, the feature vector, etc. Using the constrained version of DTW, the distance between feature vector of the candidates and the feature vector representation of the query object are calculated to select the best three candidates having different labelling. See Figure \ref{}.
-
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The recognition process - justification}}{}
-The reason for using the constrained version of DTW that the exact calculation of EMD on the nearest neighbors is that it has proved to be result in better recognition results as seen in table \ref{}.
+The reason for using the constrained version of DTW that the exact calculation of EMD on the nearest neighbours is that it has proved to be result in better recognition results.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{From the paper}}{}
 Given an unlabelled sequence $q$, the $k$-NN classifier returns a set of $k$ potential letter candidates from the sample set, $\{c\}_{i=1}^{k}$.
@@ -1112,6 +1120,6 @@ Scoring(c_i,q)=\frac{\|E(c_i)-E(q)\|_1+DTW_{cons.}(c_i,q)}{2}
 where $E(\cdot)$ denotes the vector produced from the the process described earlier, i.e., preprocessing followed feature extraction, embedding into the coefficient wavelet domain, and finally, dimensionality reduction.
 
 
-\bibliographystyle{plainnat}
-\bibliography{references}
-\end{document}
+%\bibliographystyle{plainnat}
+%\bibliography{references}
+%\end{document}

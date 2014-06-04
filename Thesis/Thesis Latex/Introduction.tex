@@ -1,39 +1,39 @@
-% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-% Do not edit unless you really know what you are doing.
-\documentclass[12pt,english]{report}
-\usepackage{mathptmx}
-\renewcommand{\familydefault}{\rmdefault}
-\usepackage[T1]{fontenc}
-\usepackage[latin9]{inputenc}
-\usepackage[a4paper]{geometry}
-\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-\setlength{\parskip}{\medskipamount}
-\setlength{\parindent}{0pt}
-\usepackage{verbatim}
-\usepackage{pdfpages}
-\usepackage{graphicx}
-\usepackage{subfig} %% This package has to be here
-\usepackage{setspace}
-\usepackage{arabtex}
-\usepackage[numbers]{natbib}
-\usepackage{nomencl}
-\usepackage{amsthm}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{paralist}
-\usepackage{etoolbox}
-\newtoggle{edit-mode}
-\toggletrue{edit-mode}  
-%%\toggletrue{edit-mode}
-\iftoggle{edit-mode}{
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
-}{
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
-}
-
-
-\begin{document}
+%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+%\documentclass[12pt,english]{report}
+%\usepackage{mathptmx}
+%\renewcommand{\familydefault}{\rmdefault}
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
+%\usepackage[a4paper]{geometry}
+%\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+%\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+%\setlength{\parskip}{\medskipamount}
+%\setlength{\parindent}{0pt}
+%\usepackage{verbatim}
+%\usepackage{pdfpages}
+%\usepackage{graphicx}
+%\usepackage{subfig} %% This package has to be here
+%\usepackage{setspace}
+%\usepackage{arabtex}
+%\usepackage[numbers]{natbib}
+%\usepackage{nomencl}
+%\usepackage{amsthm}
+%\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{paralist}
+%\usepackage{etoolbox}
+%\newtoggle{edit-mode}
+%\toggletrue{edit-mode}  
+%%%\toggletrue{edit-mode}
+%\iftoggle{edit-mode}{
+%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
+%}{
+%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+%}
+%
+%
+%\begin{document}
  
 \chapter{Introduction}
 
@@ -176,7 +176,7 @@ The advantage of this approach is that it requires to maintain only a small set 
 However, the absence of consistent baselines, large variations in writing styles, and seamless connection between letters (connection is done with almost no ligatures) makes segmentation into individual letters very challenging \cite{saabni2009hierarchical}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The analytic approach}}{}
-Many types of techniques were investigated for classifying Arabic characters, including artificial neural networks \cite{alijla2012oiahcr,ismail2012online}, decision trees \cite{ismail2012online}, Hidden Markov Models \cite{biadsy2006online} and $k$-NN \cite{elglaly2011isolated}.
+Many types of techniques were investigated for classifying Arabic characters, including artificial neural networks \cite{alijla2012oiahcr}, decision trees \cite{ismail2012online}, Hidden Markov Models \cite{biadsy2006online} and $k$-NN \cite{elglaly2011isolated}.
 It appears that currently the $k$-NN is one of the leading techniques.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The holistic approach}}{}
@@ -328,7 +328,8 @@ While avoiding using complex dissection methods, such techniques rely heavily on
 Randa et al. \cite{elanwar2012unconstrained} proposed a two stage on-line Arabic handwritten text segmentation system based on Hidden Markov Model (HMM). 
 In the first stage, SPs were nominated, and then, in a second stage, the nominated points were validated using a rules-based engine. 
 The system was tested using a self-collected database named OHASD.
-Digness et al. \cite{Dinges2011} used a segmentation-based recognition approach based on dividing the word into smaller pieces, which were afterwards segmented into candidate letters, and then classified into letter classes, using statistical and structural features. 
+Segmentation-based recognition approach based on dividing the word into smaller pieces was proposed in \cite{dinge2011offine}. 
+The words were afterwards segmented into candidate letters, and then classified into letter classes, using statistical and structural features. 
 A $k$ nearest neighbor ($k$-NN) classifier was used to obtain the final recognition.
 A segmentation-based recognition method that operates on the stroke level for on-line Arabic handwritten words recognition was proposed by Daifallah et al. \cite{daifallah2009recognition}. 
 SPs were nominated and then selected by locating semi-horizontal lines moving from right to left. 
@@ -360,6 +361,6 @@ A summary and future work are proposed in Chapter \ref{chap:summary}.
 Another main contribution of this work is the creation of Arabic characters database extracted from a de-facto a standard database for on-line Arabic Handwritten script which provides a large sample set of handwritten words written, named ADAB. 
 The manual segmentation process performed on the ADAB database in order to obtain letters samples are given in Appendix \ref{app:data_collection}. 
 
-\bibliographystyle{plainnat}
-\bibliography{references}
-\end{document}
+%\bibliographystyle{plainnat}
+%\bibliography{references}
+%\end{document}
