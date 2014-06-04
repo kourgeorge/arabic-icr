@@ -1,92 +1,83 @@
-%%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-%%% Do not edit unless you really know what you are doing.
-%\documentclass[12pt,english]{report}
-%\usepackage{mathptmx}
-%\renewcommand{\familydefault}{\rmdefault}
-%\usepackage[T1]{fontenc}
-%\usepackage[latin9]{inputenc}
-%\usepackage[a4paper]{geometry}
-%\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-%\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-%\setlength{\parskip}{\medskipamount}
-%\setlength{\parindent}{0pt}
-%\usepackage{verbatim}
-%\usepackage{pdfpages}
-%\usepackage{graphicx}
-%\usepackage{subfig} %% This package has to be here
-%\usepackage{setspace}
-%\usepackage{arabtex}
-%\usepackage[numbers]{natbib}
-%\usepackage{nomencl}
-%\usepackage{paralist}
-%\usepackage{amsthm}
-%\usepackage{amsmath}
-%\usepackage{amsfonts}
-%\usepackage{etoolbox}
-%\newtoggle{edit-mode}
-%\togglefalse{edit-mode}  
+%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[12pt,english]{report}
+\usepackage{mathptmx}
+\renewcommand{\familydefault}{\rmdefault}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[a4paper]{geometry}
+\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{verbatim}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\usepackage{subfig} %% This package has to be here
+\usepackage{setspace}
+\usepackage{arabtex}
+\usepackage[numbers]{natbib}
+\usepackage{nomencl}
+\usepackage{paralist}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{etoolbox}
+\newtoggle{edit-mode}
+\togglefalse{edit-mode}  
 %\toggletrue{edit-mode}
-%\iftoggle{edit-mode}{
-%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
-%}{
-%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
-%}
-%
-%\makenomenclature
-%
-%% Theorem Styles
-%\newtheorem{theorem}{Theorem}[section]
-%% Definition Styles
-%%\theoremstyle{definition}
-%\newtheorem{definition}{Definition}[section]
-%\newtheorem{example}{Example}[section]
-%\theoremstyle{remark}
-%\newtheorem{remark}{Remark}
-%
-%\usepackage[linesnumbered]{algorithm2e}
-%
-%\begin{document}
+\iftoggle{edit-mode}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
+}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+}
 
-\chapter{Ongoing Strokes Segmentation}
-\label{chap:segmentation}
 
-\emph{see: \cite{al2010development} for Arabic script segmentation problem}
-  
-\section{The Proposed Segmentation Approach}
-\label{sec:approach}
+% Theorem Styles
+\newtheorem{theorem}{Theorem}[section]
+% Definition Styles
+%\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
 
-\textbf{Complexity measure:} this value indicates the curvature degree of a given 2-D trajectory $T=\{p_i\}_{i=1}^{n}$. 
-Preprocessing steps, which include simplification and re-sampling, are required to ensure invariance under scaling and data imperfections. 
-The complexity measure is calculated by summing the parameters $\alpha_{k}$ computed for each inner point $p_k$ in $T$ for $2 \leq k \leq n-1$, i.e., $CM(T)=\sum_{k=2}^{n-1}{\alpha_k}$.
-The parameter $\alpha_{k}$ is defined as:
-\begin{equation}
-\alpha_{k}=\frac{\pi-\phi_{k}}{\frac{\pi}{6}}
-\end{equation}
-where $\phi_k=\angle(\overline{p_{k-1}p_{k}},\overline{p_{k}p_{k+1}})$.
+\usepackage[linesnumbered]{algorithm2e}
 
-The proposed approach goes through three stages. 
+\begin{document}
+
+\chapter{Real-time On-line Strokes Segmentation}
+\label{chap:strokes_segmentation}
+
+In this chapter we describe a recognition-based segmentation approach for on-line Arabic script.
+The segmentation is done in the stroke level in real-time, i.e., the segmentation is performed while the stroke is being written using the fast Arabic characters classification technique, described in Chapter \ref{chap:characters_classification}.
+
+The content is based on an accepted conference paper published in the "14'th International Conference on Frontiers in Handwriting Recognition".
+
+The proposed approach goes through three stages.
 In the first stage, \emph{points of interest} (POIs), are continuously nominated while the stroke is being scribed.
-The sub-strokes imposed by these POIs are scored by an Arabic letter classifier. 
+The sub-strokes imposed by these POIs are scored by the Arabic characters classifier. 
 In the second stage, once the entire stroke is available, a rules-based process is used to refine the set of POIs and re-score the sub-strokes. 
 Eventually, the system heuristically determines the final set of SPs based on the sub-strokes scoring. See Figure \ref{fig:system_flow}. 
 
-\begin{figure}
+\begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{./figures/system_flow}
+\includegraphics[width=0.5\textwidth]{./figures/system_flow}
 \caption{High level visualization of the system flow.}
 \label{fig:system_flow}
 \end{figure}
 
-\subsection{First Stage: POIs Nomination and Sub-strokes Scoring}
+\section{First Stage: POIs Nomination and Sub-strokes Scoring}
 
-\textbf{Horizontal fragment identification:} in this stage, the system attempts to identify \emph{horizontal fragments} (HFs) that join pairs of connected letters. 
+\subsection{Horizontal fragment identification} 
+In this stage, the system attempts to identify \emph{horizontal fragments} (HFs) that join pairs of connected letters. 
 These handlers are horizontal, directed right to left and located near the baseline (see Figure  \ref{fig:horizontal_fragments}). 
 Using a smoothed version of the trajectory helps the process to ignore undesired small horizontal regions that are frequently caused by the digitizer's imperfection.  
 A point $p_{i}$ is defined as a "horizontal point" if the slope of the line $\overline{p_{i-1}p_{i}}$ is less than a preset value $\delta$, which was empirically tuned to $0.6$. The same exact value for this parameter was found independently in \cite{daifallah2009recognition}.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.4\columnwidth]{./figures/horizontal_fragments}
+\includegraphics[width=0.3\columnwidth]{./figures/horizontal_fragments}
 \caption{Horizontal Fragments [HF] of the word \RL{jbl} (JABAL).}
 \label{fig:horizontal_fragments}
 \end{figure}
@@ -102,21 +93,34 @@ Therefore, in order to minimize the miss-rate, this process is delicate and allo
 In a post processing step, fractions of the same horizontal segment, which were identified as multiple HFs, are rejoined to a single HF. 
 The merging is done by evaluating the complexity measurement across the two consequent HFs, see Figure \ref{fig:candidate_in_no_horizontal}.
 
+
+
+\begin{definition}
+\textbf{Complexity measure} is a value that indicates the curvature degree of a given 2-D trajectory $T=\{p_i\}_{i=1}^{n}$. 
+Preprocessing steps, which include simplification and re-sampling, are required to ensure invariance under scaling and data imperfections. 
+The complexity measure is calculated by summing the parameters $\alpha_{k}$ computed for each inner point $p_k$ in $T$ for $2 \leq k \leq n-1$, i.e., 
+\begin{equation}
+CM(T)=\sum_{k=2}^{n-1}{\alpha_k}.
+\end{equation}
+where the parameter $\alpha_{k}$ is defined as $\alpha_{k}=\frac{\pi-\phi_{k}}{\frac{\pi}{6}}$ and $\phi_k=\angle(\overline{p_{k-1}p_{k}},\overline{p_{k}p_{k+1}})$.
+
+\end{definition}
+
 \begin{figure}
 \centering
-\includegraphics[width=0.4\textwidth]{./figures/candidate_in_no_horizontal}
+\includegraphics[width=0.3\textwidth]{./figures/candidate_in_no_horizontal}
 \caption{The main body of Arabic word \RL{`yn} (AIN). POIs are colored in cyan. The green areas indicate merge between two subsequent HFs. Three types of false POIs can be seen: 1. A POI at the beginning of a stroke. 2. A POI that is caused by a bad HF. 3. A POI that resides in a letter's valley. }
 \label{fig:candidate_in_no_horizontal}
 \end{figure}
 
-\textbf{Sub-strokes scoring:}
+\subsection{Sub-strokes scoring}
 Let $S=\{p_{i}\}_{i=1}^{n}$ be a sequence representing a handwritten stroke in which $L$ POIs were detected. 
 Let $KP=\{KP_{i}\}_{i=0}^{L+1}$ (Key points) be the ordered set of POIs, in addition to the first and the last points of the stroke positioned as the first and the last items in the set.
 Formally, we define: 
 \begin{equation}
 KP_{i} =\begin{cases}    1		, & \mbox{if } i=0 \\
-							   POI_{i}	, & \mbox{if } 1\leq i \leq L \\
-							   n    , & \mbox{if } i=L+1 
+					  POI_{i}	, & \mbox{if } 1\leq i \leq L \\
+					       n    , & \mbox{if } i=L+1 
 			\end{cases}				
 \end{equation}
 A sub-stroke $S_{i}^{j}$ is a sub-sequence of the stroke $S$ that starts at $KP_{i}$ and ends at $KP_{j}$, formally:
@@ -132,7 +136,7 @@ We argue that sub-strokes representing a letter will achieve, in most cases, bet
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{./figures/candidate_points}
+\includegraphics[width=0.4\textwidth]{./figures/candidate_points}
 \caption{KPs of the word \RL{lbyh} (Lbyh). POIs are colored in red. The first and last key points (KPs) are colored in green. }
 \label{fig:candidate_points}
 \end{figure}
@@ -145,21 +149,21 @@ As can be seen in Table \ref{table:subsequences_types}, we differentiate between
 For each type, we indicate the set of databases that need to be examined, i.e., the possible letter positions the sub-stroke may represent. 
 In Table \ref{table:subsequences_types}, $S$ denotes a stroke containing $L$ POIs where $m>0$ and $k<L+1$.
 
-\begin{table}
+\begin{table}[b]
 \centering
 \renewcommand{\arraystretch}{1.3}
 \caption{A mapping between the subsequence types and the possible letter positions}
 \begin{tabular}{| c |c | c |}
 \hline
-  Name     & Subsequence    & Letter Position    \\
+  Name     & Subsequence    & Letter Position     \\
 \hline
-  $\alpha$ & $S_0^{k}$         & $Ini$ or $Mid$  \\
+  $\alpha$ & $S_0^{k}$      & $Ini$ or $Mid$      \\
 \hline
-  $\beta$  & $S_{m}^{k}$     & $Mid$              \\
+  $\beta$  & $S_{m}^{k}$    & $Mid$               \\
 \hline
-  $\chi$    & $S_{m}^{L+1}$ & $Mid$ or $Fin$   \\
+  $\chi$   & $S_{m}^{L+1}$ & $Mid$ or $Fin$       \\
 \hline
-  $\delta$ & $S_0^{L+1}$     & All                   \\
+  $\delta$ & $S_0^{L+1}$    & All                 \\
 \hline
 \end{tabular}
 \label{table:subsequences_types}
@@ -174,12 +178,12 @@ The last column and row are added on the "pen up" event.
 D_{p}=
 \left( 
 \begin{array}{ccccccc}
-\infty 	& \alpha & \alpha & \alpha  & \cdots & \alpha & \delta \\
-\infty  & \infty  & \beta   & \beta   & \cdots  & \beta  & \chi    \\
+\infty 	& \alpha & \alpha & \alpha  & \cdots & \alpha & \delta      \\
+\infty  & \infty  & \beta   & \beta   & \cdots  & \beta  & \chi     \\
 \infty  & \infty  & \infty   & \beta   & \cdots  & \beta  & \chi    \\
-\vdots & \vdots & \vdots  & \vdots & \ddots  & \vdots & \vdots \\
-\infty  & \infty  & \infty   & \infty   & \cdots  & \beta  & \chi    \\
-\infty  & \infty  & \infty   & \infty   & \cdots  & \infty  & \chi    \\
+\vdots & \vdots & \vdots  & \vdots & \ddots  & \vdots & \vdots      \\
+\infty  & \infty  & \infty   & \infty   & \cdots  & \beta  & \chi   \\
+\infty  & \infty  & \infty   & \infty   & \cdots  & \infty  & \chi  \\
 \infty  & \infty  & \infty   & \infty   & \cdots  & \infty  & \infty \end{array} \right)
 \label{eq:positions_matrix}
 \end{equation}\\
@@ -188,7 +192,6 @@ For a given input (sequence and position), the recognition system returns the $K
 
 \begin{figure}
 \centering
-\renewcommand{\arraystretch}{1.1}
 \begin{tabular}{| c |c | c | c| c | c | c |}
 \hline
      & $0$ & $1$ & $2$ & $3$ & $4$ & $5$\\
@@ -230,7 +233,7 @@ $5$
 \label{table:substrokes_demo} 
 \end{figure}
 
-\subsection{Second Stage: Candidate points filtering and scoring correction}
+\section{Second Stage: POI Filtering and Scoring Correction}
 In this stage we re-score subsequences and eliminate redundant POIs based on the following rules:\\
 
 \begin{compactitem}
@@ -239,7 +242,7 @@ In this stage we re-score subsequences and eliminate redundant POIs based on the
 	\item The sub-stroke length should be proportional to the length of the containing stroke.
 \end{compactitem}
 
-\textbf{Baseline detection:} The system determines the baseline by calculating the vertical density histogram of the re-sampled and normalized sub-stroke. 
+The system determines the baseline by calculating the vertical density histogram of the re-sampled and normalized sub-stroke. 
 The height of the stroke (y-axis) is partitioned into ten equi-length intervals. 
 A POI is filtered out if it does not satisfy the following condition:
 \begin{equation}
@@ -251,12 +254,15 @@ This process has proven to be very effective in eliminating challenging false PO
 An example of such a POI can be seen in the letter \RL{-n} in Figure \ref{fig:candidate_in_no_horizontal}. 
 The baseline is needed only to verify that the POIs are in a reasonable distance from it, therefore, imprecise valuation of the position or the direction of the baseline is tolerable.
 
+In order to determine that a given SP resides inside a loop we have employed a Matlab package that includes an implementation for polygons intersection algorithm.
+
+
 The third rule is used to penalize unreasonably low scoring given to small sub-strokes, which are unlikely to represent a letter. 
 This is done by calculating the ratio of the sub-stroke length proportional to the entire stroke length.
 For instance, it is common to add a small, hook-like, extension to the suffix of the letter \RL{d}. 
 This extension may look very similar to the letter \RL{-a} during the stroke scribing; and thus under-scored by the recognition system, and eventually, result in over-segmenting the letter \RL{d}. In some cases, POIs are incorrectly nominated on non-horizontal areas. This is caused due to noises in the data and the fact that the nomination is done while the word is being scribed. Our filtering algorithm should be corrected, in a future work, to handle this case.
 
-\subsection{Third Stage: Segmentation Selection}
+\section{Third Stage: Segmentation Selection}
 The goal of this phase is to select the set of SPs among the POIs. 
 This set will be referred to as the \emph{final segmentation points} (FSP). 
 It is performed by finding the \emph{segmentation path} in $D$ with the best scoring possible. 
@@ -334,20 +340,7 @@ $\pi = \{0,L+1\}$\;
 
 Performance evaluation of the mentioned SSA is provided in \ref{subsec:ssa_performance}.
 
-\section{Validation}
-\label{sec:validation}
-Related researches usually use a human expert to validate the accuracy of the SPs. However, in this work, we applied an automatic validation process using the ground truth information provided by the database. We discriminate between three types of final SPs. A final SP is classified as true positive if the complexity measure between the identified point and a true SP is less than a preset threshold; otherwise, it is classified as false positive. A false negative (miss), is the case when the system failed to identify a true SP. The different types of SPs can be seen in Figure \ref{fig:sp_types}.
-The validation process was tested on several sets and found to be highly reliable.
+\bibliographystyle{plainnat}
+\bibliography{references}
 
-\begin{figure}
-\centering
-\includegraphics[width=0.9\textwidth]{./figures/sp_types}
-\caption{SPs types.}
-\label{fig:sp_types}
-\end{figure}
-
-
-%\bibliographystyle{plainnat}
-%\bibliography{references}
-%
-%\end{document}
+\end{document}

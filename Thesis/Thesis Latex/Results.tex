@@ -1,48 +1,48 @@
-% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-% Do not edit unless you really know what you are doing.
-\documentclass[12pt,english]{report}
-\usepackage{mathptmx}
-\renewcommand{\familydefault}{\rmdefault}
-\usepackage[T1]{fontenc}
-\usepackage[latin9]{inputenc}
-\usepackage[a4paper]{geometry}
-\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-\setlength{\parskip}{\medskipamount}
-\setlength{\parindent}{0pt}
-\usepackage{verbatim}
-\usepackage{pdfpages}
-\usepackage{graphicx}
-\usepackage{subfig} %% This package has to be here
-\usepackage{setspace}
-\usepackage{arabtex}
-\usepackage[numbers]{natbib}
-\usepackage{nomencl}
-\usepackage{amsthm}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{paralist}
-\usepackage{etoolbox}
-\newtoggle{edit-mode}
-\toggletrue{edit-mode}  
-%%\toggletrue{edit-mode}
-\iftoggle{edit-mode}{
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
-}{
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
-}
-
-\begin{document}
+%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+%\documentclass[12pt,english]{report}
+%\usepackage{mathptmx}
+%\renewcommand{\familydefault}{\rmdefault}
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
+%\usepackage[a4paper]{geometry}
+%\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+%\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+%\setlength{\parskip}{\medskipamount}
+%\setlength{\parindent}{0pt}
+%\usepackage{verbatim}
+%\usepackage{pdfpages}
+%\usepackage{graphicx}
+%\usepackage{subfig} %% This package has to be here
+%\usepackage{setspace}
+%\usepackage{arabtex}
+%\usepackage[numbers]{natbib}
+%\usepackage{nomencl}
+%\usepackage{amsthm}
+%\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{paralist}
+%\usepackage{etoolbox}
+%\newtoggle{edit-mode}
+%\toggletrue{edit-mode}  
+%%%\toggletrue{edit-mode}
+%\iftoggle{edit-mode}{
+%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
+%}{
+%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+%}
+%
+%\begin{document}
 
 \chapter{Experimental Results}
 \label{chap:results}
-The presented work consisted of two main sub-components; the fast Arabic characters classifier and the on-line segmentation system.
+The two main subcomponent in this work are the fast Arabic characters classifier and the on-line segmentation system.
 The recognition-based approach taken in this work depend heavily on the character fast character classification system which is required to provide a high quality list of candidates and their corresponding scoring, for the classifier to work accurately.
 
 In order to give a high level resolution of the overall system's performance, the two sections below provide detailed evaluation of the classification results achieved by the letters classifier and the segmentation results of the real-time segmentation system.
 
 
-\section{Letters Classification}
+\section{Letters Classification Results}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}
 Using a series of experiments, we aim at quantifying the contribution and importance of each stage to the classification process and to give  a detailed evaluation of the classifier performance in terms of accuracy and running time.
 
@@ -148,7 +148,7 @@ In addition we noted that the usage of the shape context raised the segmentation
 Comparing the results obtained by the proposed classifier to other classification techniques that can be found in the literature, we found that results obtained by our classifier are promising given the constrained that our classifier is required to perform 
 
 
-\section{On-line Segmentation}
+\section{Segmentation Results}
 
 Comparing the performance of the proposed approach to results obtained by related researches could be difficult due to the different experimental settings, databases and methodology; not to mention the different measures used to present the results. 
 The usage of the ADAB database, instead of a self-collected database, standardize and reinforces our results. 
@@ -197,41 +197,9 @@ Table \ref{table:results} summarizes the system's performance.
 \label{table:results} 
 \end{table}
 
-%\begin{table}[h]
-%\caption{General statistics and results}
-%\renewcommand{\arraystretch}{1.2}
-%\begin{tabular}{ | c | c | }
-%  \hline
-%  Number of test samples (city names) & 319 \\
-%  \hline
-%  Number of WPs & 1148 \\
-%  \hline
-%  Number of Strokes & 1237 \\
-%  \hline
-%  Strokes segmentation rate (SR) &  83\% \\ 
-%  \hline
-%  Strokes recognition rate (RR) &  78\% \\ 
-% \hline
-%  Total number of true SPs & 1081 \\
-%  \hline
-%  Valid SPs (True Positive) & 85.3\% \\
-%    \hline
-%  Missing SPs (False Negative) & 14.7\% \\
-%  \hline
-%  Invalid SPs (False Positive) & 119 (11\%) \\
-%  \hline                                    
-%  SPs Precision & 88.6\% \\ 
-% \hline
-%  SPs Recall &  85.3\% \\ 
-%  \hline
-%\end{tabular}
-%\centering
-%\label{table:general_stats_results} 
-%\end{table}
-
 \begin{figure}
 \centering
-\includegraphics[width=0.5\columnwidth]{./figures/candidate_in_no_horizontal}
+\includegraphics[width=0.5\textwidth]{./figures/candidate_in_no_horizontal}
 \caption{The main body of Arabic word \RL{`yn} (AIN). POIs are colored in cyan. 
 The green areas indicate merge between two subsequent HFs. 
 Three types of false POIs can be seen: 
@@ -240,6 +208,18 @@ Three types of false POIs can be seen:
 3. A POI inside a letter's valley. }
 \label{fig:candidate_in_no_horizontal}
 \vspace{-10pt}
+\end{figure}
+
+\subsection{Validation}
+\label{subsec:validation}
+Related researches usually use a human expert to validate the accuracy of the SPs. However, in this work, we applied an automatic validation process using the ground truth information provided by the database. We discriminate between three types of final SPs. A final SP is classified as true positive if the complexity measure between the identified point and a true SP is less than a preset threshold; otherwise, it is classified as false positive. A false negative (miss), is the case when the system failed to identify a true SP. The different types of SPs can be seen in Figure \ref{fig:sp_types}.
+The validation process was tested on several sets and found to be highly reliable.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.6\textwidth]{./figures/sp_types}
+\caption{SPs types.}
+\label{fig:sp_types}
 \end{figure}
 
 \subsection{Analysis}
@@ -309,7 +289,7 @@ In addition, it is evident that the recognition rate (RR) is more sensitive to s
 \label{fig:num_letter_impact}
 \end{figure}
 
-\end{document}
+%\end{document}
 
 %TODO:\\
 %--------\\

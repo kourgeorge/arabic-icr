@@ -1,56 +1,56 @@
-%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-%% Do not edit unless you really know what you are doing.
-%\documentclass[12pt,english]{report}
-%\usepackage{mathptmx}
-%\renewcommand{\familydefault}{\rmdefault}
-%\usepackage[T1]{fontenc}
-%\usepackage[latin9]{inputenc}
-%\usepackage[a4paper]{geometry}
-%\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-%\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-%\setlength{\parskip}{\medskipamount}
-%\setlength{\parindent}{0pt}
-%\usepackage{verbatim}
-%\usepackage{pdfpages}
-%\usepackage{graphicx}
-%\usepackage{subfig} %% This package has to be here
-%\usepackage{setspace}
-%\usepackage{arabtex}
-%\usepackage[numbers]{natbib}
-%\usepackage{nomencl}
-%\usepackage{paralist}
-%\usepackage{amsthm}
-%\usepackage{amsmath}
-%\usepackage{amsfonts}
-%\usepackage{etoolbox}
-%\newtoggle{edit-mode}
-%\togglefalse{edit-mode}  
-%\toggletrue{edit-mode}
-%\iftoggle{edit-mode}{
-%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
-%}{
-%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
-%}
-%
-%\makenomenclature
-%
-% %Theorem Styles
-%\newtheorem{theorem}{Theorem}[section]
-% %Definition Styles
-%\theoremstyle{definition}
-%\newtheorem{definition}{Definition}[section]
-%\newtheorem{example}{Example}[section]
-%\theoremstyle{remark}
-%\newtheorem{remark}{Remark}
-%
-%\usepackage[linesnumbered]{algorithm2e}
-%
-%\begin{document}
-%
-%\tableofcontents{}
+% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+% Do not edit unless you really know what you are doing.
+\documentclass[12pt,english]{report}
+\usepackage{mathptmx}
+\renewcommand{\familydefault}{\rmdefault}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[a4paper]{geometry}
+\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{verbatim}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\usepackage{subfig} %% This package has to be here
+\usepackage{setspace}
+\usepackage{arabtex}
+\usepackage[numbers]{natbib}
+\usepackage{nomencl}
+\usepackage{paralist}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{etoolbox}
+\newtoggle{edit-mode}
+\togglefalse{edit-mode}  
+\toggletrue{edit-mode}
+\iftoggle{edit-mode}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
+}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+}
 
-\chapter{Handwritten Arabic Letters Classifier}
-\label{chap:classification}
+\makenomenclature
+
+ %Theorem Styles
+\newtheorem{theorem}{Theorem}[section]
+ %Definition Styles
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\usepackage[linesnumbered]{algorithm2e}
+
+\begin{document}
+
+\tableofcontents{}
+
+\chapter{Handwritten Arabic Character Classifier}
+\label{chap:characters_classification}
 
 \section{Introduction}
 \label{sec:classication_introduction}
@@ -402,7 +402,7 @@ The pair $(D,dist)$ is called a \textbf{distance space}.
 \end{definition}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Distance function selection}}{}
-The distance function should be selected to best suit the  application and the data representation it handles. It needs to be carefully designed to fit the problem domain.
+The distance function should be selected to best suit the application and the data representation it handles. It needs to be carefully designed to fit the problem domain.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Previous research}}{}
 Significant amount of research has been carried out on similarity measure methods, both in terms of defining the appropriate distance function and their efficient evaluation. Much of the previous research was done on similarity measure of time series and distributions. In this research, despite the fact we do not consider the temporal information of the written stroke we use a distance function that was originally designed for time series.
@@ -488,7 +488,8 @@ In the following two subsections (\ref{subsec:emd} and \ref{subsec:dtw}) we will
 \label{subsec:emd}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction to EMD}}{}
-The \emph{Earth Mover's Distance} (EMD), introduced by Rubner et al. in \cite{rubner2000earth}, is a measure of the dissimilarity between histograms. It was experimentally verified to capture well the perceptual notion of a difference between images. It is commonly used in content-based image retrieval to compute distances between the color histograms of two digital images \cite{grauman2004fast}.
+The \emph{Earth Mover's Distance} (EMD), introduced by Rubner et al. in \cite{rubner2000earth}, is a measure of the dissimilarity between histograms. 
+It was captures well the perceptual notion of a difference between images and has been successfully used in many fields of image matching and retrieval \cite{grauman2004fast, rubner2000earth}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Binwise based measures}}{}
 Histogram based descriptors, such as SC, are in many cases compared using a bin-wise dissimilarity techniques such as the Minkowski distance (as defined in Equation \ref{eq:minkowski}) or the $\chi^2$ statistic as defined below.
@@ -547,6 +548,8 @@ EMD was used by Saabne in \cite{saabni2013efficient} to measure similarity betwe
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD drawback}}{}
 The major hurdle to using EMD is its $O\left( {{N^3}\log N} \right)$ computational complexity (for an $N$-bin histogram). The complexity is magnified when the task is to search for similar shapes (nearest neighbors) in a large database. In this case, a linear scan of the database would require computing a comparison of superpolynomial complexity for each database member against the query shape \cite{grauman2004fast}. In Section \ref{subsec:approximating_emd_using_embedding}, we will discuss an EMD embedding technique which greatly reduces the computation effort in approximating the EMD distance between two objects and also facilitates the application of indexing which spares the linear scan of the entire database.
+
+
 
 \subsection{Data Time Warping}
 \label{subsec:dtw}
@@ -1081,10 +1084,16 @@ Letter position & Number of samples & PCA & PCA+LDA\\
 \label{sec:candidates_scoring}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
-After discussing in details the theory underline each stage of the recognition process, in this sub section we will provide a high level description of the system and show how all the elements integrate together to build the recognizer. Also, we will drill down to describe the parameters used in every stage that were tunned to obtain the achieve the best results. 
+After discussing in details the theory underline each stage of the recognition process, in this sub section we will provide a high level description of the system and show how all the elements integrate together to build the recognizer. 
+Also, we will drill down to describe the parameters used in every stage that were tunned to obtain the achieve the best results. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning stage}}{}
-We will split our description into the learning process and the classification process, starting with the learning process. Letters samples obtained by the ADAB databases were split into four group according to their position: Ini, Med, Fin and Iso. Four databases were created corresponding to the four positions. The samples were preprocessed as described in Section \ref{}, then feature vectors were extracted using the Shape context. Then, the samples were embedded to $L_1$ by extracting the scaled coefficients of the wavelet transformation as described in Section \ref{}. Using a process that consists of PCA, LDA and dimensionality estimation techniques are applied to reduce the dimensionality of the high dimensional vectors produced by the embedding and to create the transformation matrix o be used to reduce the dimensionality of query samples in the recognition stage. Clustering using $L_1$ $k$-means clustering is applied to compress the dataset to avoid redundant samples. In this stage dataset is a coherent low dimensional collection of samples. This enable the construction of the metric indexing data-structure to enable fast similarity search. The usage of k-d tree enabled us to find the most similar object in sub-linear time complexity. A schematic description of the learning process can be shown in Figure \ref{}.
+We will split our description into the learning process and the classification process, starting with the learning process. 
+Letters samples obtained by the ADAB databases were split into four group according to their position: Ini, Med, Fin and Iso. 
+Four databases were created corresponding to the four positions. 
+The samples were preprocessed as described in Section \ref{}, then feature vectors were extracted using the Shape context. 
+Then, the samples were embedded to $L_1$ metric space by extracting the scaled coefficients of the wavelet transformation as described in Section \ref{}. 
+Using a process that consists of PCA, LDA and dimensionality estimation techniques are applied to reduce the dimensionality of the high dimensional vectors produced by the embedding and to create the transformation matrix o be used to reduce the dimensionality of query samples in the recognition stage. Clustering using $L_1$ $k$-means clustering is applied to compress the dataset to avoid redundant samples. In this stage dataset is a coherent low dimensional collection of samples. This enable the construction of the metric indexing data-structure to enable fast similarity search. The usage of k-d tree enabled us to find the most similar object in sub-linear time complexity. A schematic description of the learning process can be shown in Figure \ref{}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The recognition process}}{}
 Once the classifier is provided a sequence to be classified and the position, it produces a preprocessed version of the stroke. The corresponding feature vector is extracted and then wavelet domain embedding is performed to obtain the coefficient vector. This vector is then multiplied by the dimensionality reduction matrix, so that the vector will be transformed to the compact space defined in the learning process. The reduced dimensionality vector is then function as the query object in the k-d tree data-structure. At this stage the ten sample objects are nominated by the k-d tree. Different candidates are allowed to have the same labeling at this stage. Note that also the nearest neighbour classification is based on the reduced wavelet coefficient vector, each sample holds all the different representation of it, including the original sequence, the feature vector, etc. Using the constrained version of DTW, the distance between feature vector of the candidates and the feature vector representation of the query object are calculated to select the best three candidates having different labelling. See Figure \ref{}.
@@ -1103,6 +1112,6 @@ Scoring(c_i,q)=\frac{\|E(c_i)-E(q)\|_1+DTW_{cons.}(c_i,q)}{2}
 where $E(\cdot)$ denotes the vector produced from the the process described earlier, i.e., preprocessing followed feature extraction, embedding into the coefficient wavelet domain, and finally, dimensionality reduction.
 
 
-%\bibliographystyle{plainnat}
-%\bibliography{references}
-%\end{document}
+\bibliographystyle{plainnat}
+\bibliography{references}
+\end{document}

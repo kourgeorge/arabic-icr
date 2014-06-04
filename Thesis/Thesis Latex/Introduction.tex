@@ -1,84 +1,53 @@
-%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-%% Do not edit unless you really know what you are doing.
-%\documentclass[12pt,english]{report}
-%\usepackage{mathptmx}
-%\renewcommand{\familydefault}{\rmdefault}
-%\usepackage[T1]{fontenc}
-%\usepackage[latin9]{inputenc}
-%\usepackage[a4paper]{geometry}
-%\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-%\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
-%\setlength{\parskip}{\medskipamount}
-%\setlength{\parindent}{0pt}
-%\usepackage{verbatim}
-%\usepackage{pdfpages}
-%\usepackage{graphicx}
-%\usepackage{subfig} %% This package has to be here
-%\usepackage{setspace}
-%\usepackage{arabtex}
-%\usepackage[numbers]{natbib}
-%\usepackage{nomencl}
-%\usepackage{amsthm}
-%\usepackage{amsmath}
-%\usepackage{amsfonts}
-%\usepackage{paralist}
-%\usepackage{etoolbox}
-%\newtoggle{edit-mode}
-%\toggletrue{edit-mode}  
-%%%\toggletrue{edit-mode}
-%\iftoggle{edit-mode}{
-%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
-%}{
-%\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
-%}
-%
-%\makenomenclature
-%
-%%% Theorem Styles
-%\newtheorem{theorem}{Theorem}[section]
-%%% Definition Styles
-%\theoremstyle{definition}
-%\newtheorem{definition}{Definition}[section]
-%\newtheorem{example}{Example}[section]
-%\theoremstyle{remark}
-%\newtheorem{remark}{Remark}
-%
-%\usepackage[linesnumbered]{algorithm2e}
-%
-%\begin{document}
-%\printnomenclature{}
-%
-%\tableofcontents{}
+% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+% Do not edit unless you really know what you are doing.
+\documentclass[12pt,english]{report}
+\usepackage{mathptmx}
+\renewcommand{\familydefault}{\rmdefault}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[a4paper]{geometry}
+\setcounter{secnumdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setcounter{tocdepth}{2} % Changed from 3 to 2. 0-chapter 1-section 2-subsection 
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{verbatim}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\usepackage{subfig} %% This package has to be here
+\usepackage{setspace}
+\usepackage{arabtex}
+\usepackage[numbers]{natbib}
+\usepackage{nomencl}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{paralist}
+\usepackage{etoolbox}
+\newtoggle{edit-mode}
+\toggletrue{edit-mode}  
+%%\toggletrue{edit-mode}
+\iftoggle{edit-mode}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=6cm,headheight=1cm,headsep=1cm,footskip=1cm, marginparwidth=5cm}
+}{
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
+}
 
-%Instructions - How to write an introduction:
-%-------------------------------------------------
-%You can't write a good introduction until you know what the body of the paper says. Consider writing the introductory section(s) after you have completed the rest of the paper, rather than before.
-%Be sure to include a hook at the beginning of the introduction. This is a statement of something sufficiently interesting to motivate your reader to read the rest of the paper, it is an important/interesting scientific problem that your paper either solves or addresses. You should draw the reader in and make them want to read the rest of the paper.
-%
-%The next paragraphs in the introduction should cite previous research in this area. It should cite those who had the idea or ideas first, and should also cite those who have done the most recent and relevant work. You should then go on to explain why more work was necessary (your work, of course.) 
-% 
-%What else belongs in the introductory section(s) of your paper? 
-%A statement of the goal of the paper: why the study was undertaken, or why the paper was written. Do not repeat the abstract. 
-%Sufficient background information to allow the reader to understand the context and significance of the question you are trying to address. 
-%Proper acknowledgement of the previous work on which you are building. Sufficient references such that a reader could, by going to the library, achieve a sophisticated understanding of the context and significance of the question. 
-%The introduction should be focused on the thesis question(s).  All cited work should be directly relevent to the goals of the thesis.  This is not a place to summarize everything you have ever read on a subject.
-%Explain the scope of your work, what will and will not be included. 
-%A verbal "road map" or verbal "table of contents" guiding the reader to what lies ahead. 
-%Is it obvious where introductory material ("old stuff") ends and your contribution ("new stuff") begins? 
-%Remember that this is not a review paper. We are looking for original work and interpretation/analysis by you. Break up the introduction section into logical segments by using subheads.
+
+\begin{document}
  
 \chapter{Introduction}
 
-\section{Background}
+\section{Background and Previous Work}
 
 \subsection{Handwriting Recognition}
 
 \nomenclature{$HWR$}{Handwriting recognition}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR Motivation 1 - handwriting importance and survival}}{}
-Writing, which has made much of the culture and civilization possible, was developed as a mean to expand human memory and to facilitate communication. 
-Despite the long standing prediction that digital computers will challenge its future, handwriting persists. 
-Nowadays, handwriting remains a commonly used mean for communication and recording of information in the daily life, and therefore, a growing interest in the \emph{handwriting recognition} (HWR) field has emerged in recent years, and has now been a topic of research for over four decades .
-Producing documents has been hugely simplified by computers, however, the pen and paper are still the natural medium for many important tasks such as notes taking in class.
+Writing has made much of the culture and civilization possible.
+It was developed as a mean to expand human memory and to facilitate communication. 
+Despite the long standing prediction that digital computers will challenge its future, handwriting remains a commonly used mean for communication and recording of information in the daily life; the pen and paper are still the natural medium for many important tasks such as notes taking in class. 
+Therefore, a growing interest in the \emph{handwriting recognition} (HWR) field has emerged in recent years, and has now been a topic of research for over four decades.
+
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR Motivation 2 - ease of digital representation and Keyboard-less devices}}{}
 Converting handwritten script into its digital analogous is highly motivated by the ease and convenience of the digital representation.
@@ -93,6 +62,7 @@ However, since many experiments of new ideas in pattern recognition were conduct
 OCR is considered one of the best applications of machine vision and one of the most successful research branches in pattern recognition theory. 
 Although considered a well developed technological field, OCR remains an area of active scientific research and creative engineering \cite{borovikov2004survey}.
 Besides recognition, handwriting is associated with other types of analysis, such as signature verification, writer identification, etc.
+
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Levels of difficulties in HWR}}{}
 There are different types of problems with varying complexity within HWR, depending on how the data is presented to the recognition system, at what level the data can be unambiguously broke into pieces (e.g. individual characters or words), and the transcription complexity of the language used \cite{bahlmann2005advanced}. 
@@ -138,6 +108,10 @@ Figure \ref{fig:offline_vs_online} shows typical input signals that can be analy
     \caption{An on-line vs. an off-line representation of a word \cite{plamondon2000online}.}
    \label{fig:offline_vs_online}
 \end{figure}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Literature}}{}
+The research on on-line handwriting recognition started in the 1960's and has been receiving a great interest from the 1980's \cite{tagougui2013online}.
+One of the earliest studies on On-line Arabic script recognition was carried out by El-Wakil and Shoukry in 1989 \cite{el1989line}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Similarities and advantages of on-line and off-line}}{}
 Off-line HWR techniques can be applied to on-line data by constructing a static image of the on-line script. 
@@ -196,10 +170,14 @@ Yet, their accuracy is still far below those relying on a small vocabulary \cite
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{problems imposed by the open vocabulary}}{}
 While there exists a wide variety of approaches to cursive script recognition, research in this field has established two main approaches, one is the analytic approach \cite{abdulla2008off, sari2002off, dinges2011offine, elanwar2012unconstrained}, and the other is the holistic approach \cite{biadsy2011segmentation}. 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The analytic approach}}{}
+
 The analytic approach involves segmentation of the input curve into basic units and the classification of each individual unit.
 The advantage of this approach is that it requires to maintain only a small set of trained models - one for each letter shape - to handle large vocabulary. 
 However, the absence of consistent baselines, large variations in writing styles, and seamless connection between letters (connection is done with almost no ligatures) makes segmentation into individual letters very challenging \cite{saabni2009hierarchical}.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The analytic approach}}{}
+Many types of techniques were investigated for classifying Arabic characters, including artificial neural networks \cite{alijla2012oiahcr,ismail2012online}, decision trees \cite{ismail2012online}, Hidden Markov Models \cite{biadsy2006online} and $k$-NN \cite{elglaly2011isolated}.
+It appears that currently the $k$-NN is one of the leading techniques.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The holistic approach}}{}
 The holistic approach considers the global properties of the written text and recognizes the input word shape as a whole. 
@@ -237,6 +215,7 @@ The first work on Arabic character recognition is by Nazif \cite{nazif1975system
 However, considerable increase in the number of research papers related to Arabic character recognition is evident in recent years.
 The challenging nature of handwriting recognition and segmentation has attracted the attention of researchers from industry and academic circles \cite{al2010development}.
 Despite the growing interest, the challenging problems of Arabic handwriting recognition and segmentation, in both on-line and off-line forms, remain open \cite{zeki2011segmentation}.
+A recent survey done by Tagougui et al. \cite{tagougui2013online} reviews the status of research in the on-line Arabic handwriting recognition field. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -345,135 +324,42 @@ Then, an iterative or parallel recognition method is used to search for "satisfa
 The final decision is determined by the best path through the lattice. 
 While avoiding using complex dissection methods, such techniques rely heavily on the classifier accuracy which heavily affects the overall segmentation accuracy \cite{casey1996survey}.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage{}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Related Work}
-\label{sec:related_work}
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Segmentation paper}}{}
-The research on on-line handwriting recognition started in the 1960's and has been receiving a great interest from the 1980's \cite{tagougui2013online}. 
-One of the earliest studies on On-line Arabic script recognition was carried out by El-Wakil and Shoukry in 1989 \cite{el1989line}.
-
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Literature Review}}{}
 Randa et al. \cite{elanwar2012unconstrained} proposed a two stage on-line Arabic handwritten text segmentation system based on Hidden Markov Model (HMM). 
 In the first stage, SPs were nominated, and then, in a second stage, the nominated points were validated using a rules-based engine. 
 The system was tested using a self-collected database named OHASD.
-
 Digness et al. \cite{Dinges2011} used a segmentation-based recognition approach based on dividing the word into smaller pieces, which were afterwards segmented into candidate letters, and then classified into letter classes, using statistical and structural features. 
 A $k$ nearest neighbor ($k$-NN) classifier was used to obtain the final recognition.
-
 A segmentation-based recognition method that operates on the stroke level for on-line Arabic handwritten words recognition was proposed by Daifallah et al. \cite{daifallah2009recognition}. 
 SPs were nominated and then selected by locating semi-horizontal lines moving from right to left. 
 A portion of the SPs is filtered out by applying a certain set of rules. 
 Then, HMM is used to classify the sub-strokes to letters using the Hu feature. 
 The letters candidates and their scoring were used to determine the best set of SPs.
 
-A recent survey done by Tagougui et al. \cite{tagougui2013online} reviews the status of research in the on-line Arabic handwriting recognition field. 
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Classification paper}}{}
-Literature in the field of cursive handwriting recognition has established two main approaches: the analytic approach, which involves segmenting words into individual characters and then classifying each character\cite{abdulla2008off, sari2002off, Dinges2011}, and the holistic approach, which considers the global properties of the written text and recognizes the input word shape as a whole \cite{biadsy2011segmentation, saabni2009hierarchical}. 
-The holistic approach, while having many advantages, requires the classifier to be trained over the entire dictionary, which is impractical for large dictionaries (containing more than 20,000 words) \cite{elanwar2012unconstrained}.
-
-One of the earliest studies on On-line Arabic isolated character recognition was carried out by El-Wakil and Shoukry in 1989 \cite{el1989line}.
-Many types of classification techniques were investigated since then, including artificial neural networks \cite{alijla2012oiahcr,ismail2012online}, decision trees \cite{ismail2012online}, Hidden Markov Models \cite{biadsy2006online} and $k$-NN \cite{elglaly2011isolated}.
-It appears that currently the $k$-NN is one of the leading techniques.
-
-EMD is a natural and intuitive metric to measure similarity between histograms. 
-It has been successfully used in many fields of image matching and retrieval \cite{grauman2004fast, rubner2000earth}.
-A significant speed-up can be achieved by embedding vectors from one space with an expensive distance measure into another space equipped with an easy-to-compute distance function \cite{saabni2013efficient}. 
-Much work has been done on embedding the EMD metric into a normed space, usually the $l_p$ norm, in order to facilitate efficient and fast nearest neighbour extraction using indexing techniques \cite{bourgain1985lipschitz}. 
-The efficient embedding of the EMD metric proposed by \cite{shirdhonkar2008approximate} to a normed space has been used in \cite{saabni2013efficient} for efficient word image retrieval.
-A previous embedding technique described by \cite{indyk2003fast} was used by Grauman and Darrell \cite{grauman2004fast} for contour based shape matching.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Scope and Overview}
+\section{Thesis Scope and Outline}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Scope}}{}
 The cursiveness of the Arabic script, prima facie, requires delaying the launch of the recognition process until the completion of the word scribing. 
-However, in this study, we question the necessity of the requirement by demonstrating the feasibility of approximating the position of the segmentation points (SPs) while the stroke is being written; and by doing so, accelerating the recognition process. 
-Furthermore, the obtained information can be used to significantly reduce the potential dictionary size and facilitate a later holistic recognition process.
-The proposed method is an analytic approach for handwriting recognition, i.e., it involves segmentation and classification of each part of the text. 
-The system operate on the stroke level enabling analysis task related to segmentation and recognition of the stroke into letters to be done while the stroke is being written.
+However, in this study, we question the necessity of the requirement by demonstrating the feasibility of determining the position of the segmentation points (SPs) while the stroke is being written; and by doing so, accelerating the recognition process.
+The proposed segmentation method is performed in the strokes level enabling analysis task related to segmentation and recognition of the stroke into letters to be done while the stroke is being written. 
+The proposed segmentation technique is detailed in Chapter \ref{chap:strokes_segmentation}.
+We demonstrate how segmentation points are nominated while the stroke is being scribed, aplly rules based filtering engine and propose several algorithms for selecting the final segmentation set of segmentation points.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Goal}}{}
-The emphasis was on finding workable segmentation technique, rather than on the recognition rate.
+Its real-time nature of the recognition-based segmentation method required the development and employing an extremely fast and accurate characters classifier that employs state of the Art similarity measure and search techniques for fast classification of characters bast on nearest neighbours.
+The method include a pre-reprocessing task; compared feature extraction techniques are discussed; and an embedding to the wavelet domain is exploited in order to enable fast classification using nearest neighbours classification. 
+The Arabic Letters classifier is detailed in Chapter \ref{chap:characters_classification} and a brief explanation on wavelets and the wavelet transform is given in Appendix \ref{app:wavelets}.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Overview of the system}}{}
-The system consists of two main module, one that handles the segmentation and the other handles recognition. 
+The results obtained by the classification system and the segmentation process are given in Chapter \ref{chap:results}.
+ 
+A summary and future work are proposed in Chapter \ref{chap:summary}. 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Overview of the system}}{}
-The main contributions of the thesis are as follows:
-1. create a letters database from the ADAB Database
-2. propose a fast trajectory recognition systems
-3. propose an an ongoing recognition technique
+Another main contribution of this work is the creation of Arabic characters database extracted from a de-facto a standard database for on-line Arabic Handwritten script which provides a large sample set of handwritten words written, named ADAB. 
+The manual segmentation process performed on the ADAB database in order to obtain letters samples are given in Appendix \ref{app:data_collection}. 
 
-%The system general flow is seen below:
-%\begin{figure}
-%\centering
-%\includegraphics[width=0.8\textwidth]{./figures/system_flow}
-%\caption{High level visualization of the system flow.}
-%\label{fig:system_flow}
-%\end{figure}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage{}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Thesis Outline}
-The organization of the thesis is as follows. 
-Chapter \ref{chap:samples_collection} presents the letters extraction process performed on the ADAB database in order to obtain letters samples.
-
-A novel method for Arabic letters classifier is discussed in Chapter \ref{chap:classification}. 
-The nearest neighbors classification method is proposed and high performance of the proposed system facilitates it to be used ongoing while the script is being written. The method include a pre-reprocessing task; different feature extraction techniques are discussed; and an embedding to the wavelet domain is exploited in order to renable fast classification using nearest neighbours classification. 
-
-Chapter \ref{chap:segmentation} shows how is the stroke are segmentation point is nominated while the stroke is being scribed, and describe several algorithms for selecting the final segmentation is selected. 
-
-Finally, a summary and future work are proposed in Chapter \ref{conclusions}. 
-
-%\bibliographystyle{plainnat}
-%\bibliography{references}
-%\end{document}
-
-%TODOs:
-%----------
-%\begin{enumerate}
-%\item See the section "Overview of Arabic Letters" in \cite{abandah2009analysis}. It talks about letters frequencies and special 
-%\item Talk about the WP and give statistics of WP length as described in {abandah2009analysis}
-%\item Add a table containing the letters in all positions
-%\item See \cite{al2011online}.
-%\item See \cite{abandah2009analysis}
-%\item Review \cite{bahlmann2005advanced} thesis
-%\item TODO:see the in introduction of \cite{abandah2009analysis}
-%\item See \cite{lorigo2006offline} - motivation section
-%\end{enumerate}
-
-
-%The full list is given in table \ref{table:same_rasm_letters} 
-%
-%\begin{table}[h]
-%\begin{tabular}{ | c | c |}
-%\hline
-%Letter Set & Positions of similarity\\
-%\hline                 
-%  \RL{b}, \RL{t}, \RL{_t} & All Positions\\ 
-%  \hline
-%  \RL{`}, \RL{.g} & All Positions\\
-%  \hline
-%  \RL{.h}, \RL{j}, \RL{x} & All Positions\\
-%  \hline
-%  \RL{f}, \RL{q} & All Positions (very slight differences\\ 
-%   					&in Isolated mode, the valley of the letter \RL{q} is deeper)\\
-%  \hline
-%  \RL{r}, \RL{z} & Isolated\\
-%  \hline
-%  \RL{h}, \RL{T} & Isolated\\
-%  \hline
-%\end{tabular}
-%\centering
-%\label{table:same_rasm_letters} 
-%\caption{Arabic letters with the same rasm that are diffrentiated by the I'jam}
-%\end{table}
+\bibliographystyle{plainnat}
+\bibliography{references}
+\end{document}
