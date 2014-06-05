@@ -49,13 +49,11 @@
 %
 %\tableofcontents{}
 
-\chapter{Handwritten Arabic Character Classifier}
+\chapter{Fast Handwritten Arabic Characters Classification}
 \label{chap:characters_classification}
 
 \section{Introduction}
 \label{sec:classication_introduction}
-
-\subsection{The learning problem}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning problem.}}{}
 In \emph{supervised learning}, classification is the problem of identifying to which of a set of classes a new observation belongs. 
@@ -86,16 +84,14 @@ Many supervised learning approaches and algorithms were proposed to solve the cl
 Decision trees, artificial neural networks (ANN), support vector machines (SVMs), Bayesian networks and nearest neighbor (NN) are few well-known learning techniques. 
 A review on the supervised classification algorithms is given by Mohamed Aly in \cite{aly2005survey}. 
 The role of the machine learning specialist is to identify the type of the learning problem and meet the needs of the problem by stitching the best solution for it. 
-The classification process is usually contains several steps. 
-These preliminary steps include normalization, noise removal, feature extraction, dimensionality reduction, etc.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Pattern Recognition high level}}{}
-Pattern recognition, in general, can be broken down into three main stages: \emph{preprocessing}, \emph{feature extraction} and \emph{classification}. 
-The preprocessing stage usually consists of normalization, re-sampling, noise elimination and smoothing steps to give the a uniform structure and avoid irrelevant information that can negatively affect the recognition. 
-In the feature extraction stage, important information in the data is highlighted and represented as vectors in the feature space which is used by the classifier. 
-The last important step is classification, which identify the class for which the sample belong.
 
-\subsection{Letters Classification}
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Pattern Recognition high level}}{}
+%Pattern recognition, in general, can be broken down into three main stages: \emph{preprocessing}, \emph{feature extraction} and \emph{classification}. 
+%The preprocessing stage usually consists of normalization, re-sampling, noise elimination and smoothing steps to give the a uniform structure and avoid irrelevant information, which can negatively affect the recognition. 
+%In the feature extraction stage, important information in the data is highlighted and represented as vectors in the feature space which is used by the classifier. 
+%The last important step is classification, which identify the class for which the sample belong.
+
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR Complexity}}{} 
 On-line handwriting recognition is one of the very complex and challenging problems in the pattern recognition field.
@@ -156,59 +152,32 @@ The distance between two points can be defined in many ways as will be detailed 
 
 \section{The Classifier Overview}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Classification level}}{}
-The on-line text recognition can be performed in several levels and thus the recognition system can be built to classify an entire words, WP, letters or even strokes. 
-The classifier in this work is done on the stroke level, since, it represent the most basic element a writer can produce, and it contains, in most cases, a single letter or more.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning process}}{}
+Letters samples obtained by the ADAB databases were split into four group according to their position: Ini, Med, Fin and Iso. 
+The set of samples in each position undergone a learning process that contains five main stages.
+First, the samples are preprocessed as described in Section \ref{sec:preprocessing}.
+Second, feature vectors were extracted.
+The features used in this work are given in \ref{sec:feature_extraction}.
+Third, the samples were embedded to $L_1$ metric space by extracting the scaled coefficients of the wavelet transformation as presented in Section \ref{sec:similarity_measures}. 
+Then, in Section \ref{sec:dr}, we outline a process that consists of PCA, LDA and dimensionality estimation techniques are applied to reduce the dimensionality of the high dimensional vectors produced by the embedding and to create the transformation matrix to be used to reduce the dimensionality of query samples. 
+Clustering using $L_1$ $k$-means clustering is applied to compress the dataset to avoid redundant samples. 
+In the last stage, described in section \ref{sec:similarity_search} construction of the metric indexing data-structure is performed to enable finding the most similar object in sub-linear time complexity.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Input-output}}{}
-The classifier contains four databases, one for each letter position (Ini, Mid, Fin and Iso). 
-It receives a sequence of points representing the sub-stroke and a letter position, and outputs a list of sample candidates and their scoring which indicates the similarity measure between the sequence and the candidate.
-The partitioning of the samples to four database, clearly, improve the classification power and the accuracy of the classification and scoring.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The recognition process}}{}
+Given an un-labelled query sequence, its classification process corresponds to the learning process.
+The sequence undergoes preprocessing and feature vector extraction  and embedding.
+The resulted embedded vector is then multiplied by the dimensionality reduction matrix, so that the vector will be transformed to the compact space defined in the learning process. 
+The reduced dimensionality vector is then classified using a fast $k$-NN Indexing data-structure which nominate ten sample objects. 
+Different candidates are allowed to have the same labelling at this stage. 
+Note that also the nearest neighbour classification is based on the reduced wavelet coefficient vector, each sample holds all the different representation of it, including the original sequence, the feature vector, etc. 
+Using the constrained version of DTW, the distance between feature vector of the candidates and the feature vector representation of the query object are calculated to select the best three candidates having different labelling. 
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Performance}}{}
-The real-time nature of the segmentation technique strictly requires the classifier to be extremely fast, since the goal of the system is to perform strokes segmentation and letters recognition on-line, i.e., while the stroke is being written.
-The compliance with the high performance demand was made possible by using a state-of-the-art method for fast computation of the approximate $k$-NN.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Section outline}}{}
-Figure \ref{fig:letters_classifier_learning_flow} shows the general high level flow of the classifier's learning process.
-As mentioned before, the learning process is done on each letter position. 
-The process is repeated four times four times, for each letter position.
-Actually the output of this process is 4 data-structures.
-Each structure contain the following fields:
-\begin{compactitem}
-\item k-dtree datastructure
-\item dimensionality reduction Coefficient matrix
-\end{compactitem}
-
-Given a query object, it undergoes almost the same process of preproessing, feature extraction,embedding and dimensionality reduction and classified by the k-dtree.
-
-
-\begin{figure}[h]
+\begin{figure}
 \centering
-\includegraphics[width=1\textwidth]{./figures/letters_classifier_learning_flow}       
+\includegraphics[width=0.6\textwidth]{./figures/letters_classifier_learning_flow}       
 \caption{High level diagram of the classifier learning flow for a letter position.}
 \label{fig:letters_classifier_learning_flow}
 \end{figure}
-
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
-After discussing in details the theory underline each stage of the recognition process, in this sub section we will provide a high level description of the system and show how all the elements integrate together to build the recognizer. 
-Also, we will drill down to describe the parameters used in every stage that were tunned to obtain the achieve the best results. 
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning stage}}{}
-We will split our description into the learning process and the classification process, starting with the learning process. 
-Letters samples obtained by the ADAB databases were split into four group according to their position: Ini, Med, Fin and Iso. 
-Four databases were created corresponding to the four positions. 
-The samples were preprocessed as described in Section \ref{sec:preprocessing}, then feature vectors were extracted using the Shape context. 
-Then, the samples were embedded to $L_1$ metric space by extracting the scaled coefficients of the wavelet transformation as described in Section \ref{subsec:metric_embedding}. 
-Using a process that consists of PCA, LDA and dimensionality estimation techniques are applied to reduce the dimensionality of the high dimensional vectors produced by the embedding and to create the transformation matrix o be used to reduce the dimensionality of query samples in the recognition stage. 
-Clustering using $L_1$ $k$-means clustering is applied to compress the dataset to avoid redundant samples. 
-In this stage dataset is a coherent low dimensional collection of samples. 
-This enable the construction of the metric indexing data-structure to enable fast similarity search. The usage of k-d tree enabled us to find the most similar object in sub-linear time complexity. 
-
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The recognition process}}{}
-Once the classifier is provided a sequence to be classified and the position, it produces a preprocessed version of the stroke. The corresponding feature vector is extracted and then wavelet domain embedding is performed to obtain the coefficient vector. This vector is then multiplied by the dimensionality reduction matrix, so that the vector will be transformed to the compact space defined in the learning process. The reduced dimensionality vector is then function as the query object in the k-d tree data-structure. At this stage the ten sample objects are nominated by the k-d tree. Different candidates are allowed to have the same labeling at this stage. Note that also the nearest neighbour classification is based on the reduced wavelet coefficient vector, each sample holds all the different representation of it, including the original sequence, the feature vector, etc. Using the constrained version of DTW, the distance between feature vector of the candidates and the feature vector representation of the query object are calculated to select the best three candidates having different labelling. 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

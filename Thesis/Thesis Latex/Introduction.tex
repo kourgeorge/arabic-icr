@@ -343,7 +343,6 @@ The letters candidates and their scoring were used to determine the best set of 
 
 \section{Thesis Scope and Outline}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Scope}}{}
 The cursiveness of the Arabic script, prima facie, requires delaying the launch of the recognition process until the completion of the word scribing. 
 However, in this study, we question the necessity of the requirement by demonstrating the feasibility of determining the position of the segmentation points (SPs) while the stroke is being written; and by doing so, accelerating the recognition process.
 The proposed segmentation method is performed in the strokes level enabling analysis task related to segmentation and recognition of the stroke into letters to be done while the stroke is being written. 
@@ -360,6 +359,12 @@ A summary and future work are proposed in Chapter \ref{chap:summary}.
 
 Another main contribution of this work is the creation of Arabic characters database extracted from a de-facto a standard database for on-line Arabic Handwritten script which provides a large sample set of handwritten words written, named ADAB. 
 The manual segmentation process performed on the ADAB database in order to obtain letters samples are given in Appendix \ref{app:data_collection}. 
+
+The system has several assumptions that are not always true when considering Arabic handwriting. 
+First, it does not regard additional strokes.
+However, it was shown that using this information can be used to improve the classification results.
+Second, since the classification is performed independently in the stroke level, it is assumed that letters cannot be written in more than one stroke, which is a very reasonable assumption but not always true. 
+Our future work will focus on waiving these limitations. 
 
 %\bibliographystyle{plainnat}
 %\bibliography{references}
