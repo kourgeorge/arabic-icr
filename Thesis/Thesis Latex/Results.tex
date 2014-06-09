@@ -197,19 +197,6 @@ Table \ref{table:results} summarizes the system's performance.
 \label{table:results} 
 \end{table}
 
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth]{./figures/candidate_in_no_horizontal}
-\caption{The main body of Arabic word \RL{`yn} (AIN). POIs are colored in cyan. 
-The green areas indicate merge between two subsequent HFs. 
-Three types of false POIs can be seen: 
-1. A POI at the beginning of a stroke. 
-2. A POI caused by a bad HF. 
-3. A POI inside a letter's valley. }
-\label{fig:candidate_in_no_horizontal}
-\vspace{-10pt}
-\end{figure}
-
 \subsection{Validation}
 \label{subsec:validation}
 Related researches usually use a human expert to validate the accuracy of the SPs. However, in this work, we applied an automatic validation process using the ground truth information provided by the database. We discriminate between three types of final SPs. A final SP is classified as true positive if the complexity measure between the identified point and a true SP is less than a preset threshold; otherwise, it is classified as false positive. A false negative (miss), is the case when the system failed to identify a true SP. The different types of SPs can be seen in Figure \ref{fig:sp_types}.

@@ -1,5 +1,3 @@
-%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
-%% Do not edit unless you really know what you are doing.
 %\documentclass[12pt,english]{report}
 %\usepackage{mathptmx}
 %\renewcommand{\familydefault}{\rmdefault}
@@ -52,106 +50,6 @@
 \chapter{Fast Handwritten Arabic Characters Classification}
 \label{chap:characters_classification}
 
-\section{Introduction}
-\label{sec:classication_introduction}
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning problem.}}{}
-In \emph{supervised learning}, classification is the problem of identifying to which of a set of classes a new observation belongs. 
-It is done on the basis of a training set of data containing instances for which the their class membership is known.
-Formally, the supervised learning problem is defined as follows:
-\begin{definition}
-Given a domain space $X$, a target space $Y$ and a training set $S=\{(x_i,y_i)\}_{i=1}^{m}$ where $x_1,x_2,..,x_n\in X$ and $y_1,y_2,...,y_n \in Y$. Let us assume that there is an unknown target function $f$ for which $f : X\rightarrow Y$. A Learning algorithm $A$ produces hypothesis function $h$ based on $S$ such that $h \approx f$, i.e., the function $h$ is an approximation for the target function $f$ and $h \in H$, the hypotheses set. 
-\end{definition}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth]{./figures/machine_learning_diagram}       
-\caption{A learning algorithm scheme}
-\label{fig:machine_learning_diagram}
-\end{figure}
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The classification problem}}{}
-In many cases, the learning problem is actually a classification problem. 
-For any given classification problem, there is an intuitive belief that there exist a space to which the samples can be transformed and in which can be portioned into regions that represent categories. 
-Accordingly, the problem of classification is basically the problem of portioning the sample space into regions. 
-Having done that, classifying a new unlabelled observation is done by determining the partition it belongs to. 
-Ideally, one would like to arrange this partitioning so that none of the decisions is ever wrong. 
-When this cannot be done, one would like to minimize the probability of error \cite{duda1973pattern}.
-Since no such partition on the raw data space is unknown, we attempt to find the mentioned space in the feature space and to approximate the mentioned partitioning.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Types of approaches in the supervised Learning.}}{}
-Many supervised learning approaches and algorithms were proposed to solve the classification problem. 
-Decision trees, artificial neural networks (ANN), support vector machines (SVMs), Bayesian networks and nearest neighbor (NN) are few well-known learning techniques. 
-A review on the supervised classification algorithms is given by Mohamed Aly in \cite{aly2005survey}. 
-The role of the machine learning specialist is to identify the type of the learning problem and meet the needs of the problem by stitching the best solution for it. 
-
-
-%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Pattern Recognition high level}}{}
-%Pattern recognition, in general, can be broken down into three main stages: \emph{preprocessing}, \emph{feature extraction} and \emph{classification}. 
-%The preprocessing stage usually consists of normalization, re-sampling, noise elimination and smoothing steps to give the a uniform structure and avoid irrelevant information, which can negatively affect the recognition. 
-%In the feature extraction stage, important information in the data is highlighted and represented as vectors in the feature space which is used by the classifier. 
-%The last important step is classification, which identify the class for which the sample belong.
-
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR Complexity}}{} 
-On-line handwriting recognition is one of the very complex and challenging problems in the pattern recognition field.
-This is, mainly, due to the variation of shapes of the characters resulting from writing habits, styles, and the social and educational level of the writer.
-Other factors which implicate the recognition is the variability of writing styles, cursive writing, text size differences and sampling issues, such as duplicate samples resulted from hesitate writers as well as non-adjacent consecutive samples caused by fast writers \cite{verma2004feature}.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Classification techniques in HW recognition}}{}
-Different approaches were considered to solve the text recognition problem.
-Each has it's advantages and drawbacks, and each is suitable for a certain system requirements and implementation.
-The classification algorithm used in the recognition process is the most central stage and all the preprocessing stages prepare the data for the classification stage. 
-In the following, we will mention the few most common approaches commonly used for letters classification and discuss their advantages and drawbacks.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HMM - An introduction}}{}
-Unlike in the off-line case, on-line handwriting can be viewed as temporal series, therefore many pattern recognition techniques from the temporal information field were adopted for handwriting recognition. 
-One example is the  \emph{hidden Markov models} (HMM), an extension of the discrete-state Markov process.
-There is a vast amount of studies done in the field of HWR that use HMM \cite{pechwitz2003hmm, khorsheed2003recognising, al2007combination, benouareth2008arabic, mahmoud2008recognition, shu1996line}. 
-Letters, words and sentences can be modelled using HMM and classified using the solution to the learning problem.
-For the interested reader unfamiliar with HMMs, we recommend the following two references \cite{kadous2002temporal, shu1996line}, for a well-written introduction on using HMM for time series classification in general and text recognition in particular .
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{HMM - disadvantages}}{}
-While having many advantages, there are some drawbacks of using HMM Kondous has pointed out in his Ph.D Thesis \cite{kadous2002temporal}. 
-The HMM model makes some powerful assumption about the data that may not necessarily true. 
-First, is the Markovian assumption that assumes the transition probabilities depend only on the current state. 
-Second, there is no specific way to determine the number of states, thus intelligent guesses and try and error are usually employed. 
-The third drawback is that the states and transitions depend on the class being learned. 
-For example, is there any reason why the words "dog" and "butterfly" would have similar states and transitions? 
-Forth, HMM requires a very large amount of data for its training.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Artificial Neural Networks - an introduction}}{}
-Artificial neural network is also a widely used technique for letters recognition. 
-It is a generalization of linear discrimination. 
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{ANN - drawbacks}}{}
-
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{k-NN classifier in general}}{}
-The k-nearest neighbors algorithm ($k$-NN) is a well-known classification technique in supervised learning. 
-It predicts the query objects class memberships based on the k closest training examples. 
-The $k$-NN algorithm is one of the simplest of all machine learning algorithms: an object is classified by a majority vote of its neighbors, with the object being assigned to the class most common amongst its k nearest neighbors (k is a positive integer, typically small). If $k=1$, then the object is simply assigned to the class of that single nearest neighbor. In many cases the notion of similarity between sample object is obvious, however in many other interesting cases the distance between objects cannot be easily defined.
-Beside its simplicity, $k$-NN has some major advantages. First, $k$-NN is a good learning method for complex target functions. Second, it is easy to implement. Third, arbitrary objects similarity function can be applied easily.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Advantages and Downside of the $k$-NN classifier}}{}
-$k$-NN algorithm has dome drawbacks that reader needs to note. $k$-NN needs a large data set in-order to achieve high classification accuracy. Another drawback is that it is very sensitive to data errors and can be easily fooled by outliers.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Scoring-based NN classification}}{}
-Several machine learning problems, especially those having a large number of classes, the classifier, returns a set of potential candidate classes or even specific samples in the. In these cases, for each candidate class, the classifier usually gives a scoring that can be used by a later part in the classification process (e.g. in the post processing). Such approach is taken for objects classification in our system. sample set that are closely resembles a given unknown sample. This approach can be used for both supervised and unsupervised learning domain. In the supervised learning case since the classification of the returned samples is known, the hypothesis function, classifies the inputed sample based of candidate labels.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why did we use the NN as a classifier}}{}
-For the disadvantages for HMM and NN techniques mentioned above and the intuitive and simplicity of the and for my personal interest in similarity measure techniques that can be integrated classifier, we have chosen to use Nearest Neighbor classifier classification.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{NN classification}}{}
-In the $k$-NN problem a set of data points in $d$-dimensional space is given and for a query point $q$, the nearest or generally $k$ nearest points of $P$ to $q$ can be reported efficiently. 
-The distance between two points can be defined in many ways as will be detailed in Section \ref{sec:similarity_measures}. $k$-NN based classification a very basic and common approach for implementing the pattern classification. However, the retrieval of the exact k-Nearest Neighbors for a given query object $q$ and a database of sample set $S$ suffers from bad performance that is mainly caused by two factors. The first, is the total numbers of samples in the data. This issue will be discussed in Section \ref{sec:similarity_search} and the other is the dimensionality of objects in the data (known as the \emph{curse of dimensionality}). Computing exact nearest neighbors in dimensions much higher than 8 seems to be a very difficult task. However, the first issue has much smaller impact on the speed of the nearest neighbor retrieval and can be healed easily by using dimensionality reduction techniques which will be discussed in details in Section \ref{sec:dr}. However, the first issue, i.e., the size of the sample data, is crucial. The simplest solution to the NN problem is to linearly go over the entire sample set and keep track of the best k best nominates so far. The running time of this algorithm in $O(Nd)$ where $N$ is the cardinality of sample set and d is the dimensionality of the sample set. While looking in the entire database for the $k$-NN is not permissible for most applications. The only advantage of this approach is that it requires no extra space, beyond the amount of the memory needed for keeping the sample set. This issue is will be treated in Section \ref{sec:similarity_search}. 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage{}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{The Classifier Overview}
-
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning process}}{}
 Letters samples obtained by the ADAB databases were split into four group according to their position: Ini, Med, Fin and Iso. 
 The set of samples in each position undergone a learning process that contains five main stages.
@@ -159,22 +57,21 @@ First, the samples are preprocessed as described in Section \ref{sec:preprocessi
 Second, feature vectors were extracted.
 The features used in this work are given in \ref{sec:feature_extraction}.
 Third, the samples were embedded to $L_1$ metric space by extracting the scaled coefficients of the wavelet transformation as presented in Section \ref{sec:similarity_measures}. 
-Then, in Section \ref{sec:dr}, we outline a process that consists of PCA, LDA and dimensionality estimation techniques are applied to reduce the dimensionality of the high dimensional vectors produced by the embedding and to create the transformation matrix to be used to reduce the dimensionality of query samples. 
-Clustering using $L_1$ $k$-means clustering is applied to compress the dataset to avoid redundant samples. 
-In the last stage, described in section \ref{sec:similarity_search} construction of the metric indexing data-structure is performed to enable finding the most similar object in sub-linear time complexity.
+Then, in Section \ref{sec:dr}, we outline a dimensionality reduction process that employs PCA, LDA. techniques to obtain a compact representation of the high dimensional vectors produced by the embedding.
+In addition, clustering using $L_1$ $k$-means is applied to avoid redundant samples. 
+In the last stage, described in section \ref{sec:similarity_search}, we construction of the metric indexing data-structure is performed to enable finding the most similar object in sub-linear time complexity.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The recognition process}}{}
 Given an un-labelled query sequence, its classification process corresponds to the learning process.
-The sequence undergoes preprocessing and feature vector extraction  and embedding.
+The sequence undergoes preprocessing and features extraction and embedding.
 The resulted embedded vector is then multiplied by the dimensionality reduction matrix, so that the vector will be transformed to the compact space defined in the learning process. 
 The reduced dimensionality vector is then classified using a fast $k$-NN Indexing data-structure which nominate ten sample objects. 
-Different candidates are allowed to have the same labelling at this stage. 
 Note that also the nearest neighbour classification is based on the reduced wavelet coefficient vector, each sample holds all the different representation of it, including the original sequence, the feature vector, etc. 
 Using the constrained version of DTW, the distance between feature vector of the candidates and the feature vector representation of the query object are calculated to select the best three candidates having different labelling. 
 
 \begin{figure}
 \centering
-\includegraphics[width=0.6\textwidth]{./figures/letters_classifier_learning_flow}       
+\includegraphics[width=0.7\textwidth]{./figures/letters_classifier_learning_flow}       
 \caption{High level diagram of the classifier learning flow for a letter position.}
 \label{fig:letters_classifier_learning_flow}
 \end{figure}
@@ -260,19 +157,19 @@ Figure \ref{fig:before_after_preprocessing} demonstrate the re-sampling steps.
 	\centering
         \subfloat[]{
             \label{fig:preprocessing_orig}
-            \includegraphics[width=0.4\textwidth]{./figures/preprocessing_orig}
+            \includegraphics[width=0.3\textwidth]{./figures/preprocessing_orig}
         }
         \subfloat[]{
            \label{fig:preprocessing_norm}
-           \includegraphics[width=0.4\textwidth]{./figures/preprocessing_norm}
+           \includegraphics[width=0.3\textwidth]{./figures/preprocessing_norm}
         }  \\
         \subfloat[]{
             \label{fig:preprocessing_simpl}
-            \includegraphics[width=0.4\textwidth]{./figures/preprocessing_simpl}
+            \includegraphics[width=0.3\textwidth]{./figures/preprocessing_simpl}
         }
         \subfloat[]{
            \label{fig:preprocessing_resamp}
-           \includegraphics[width=0.4\textwidth]{./figures/preprocessing_resamp}
+           \includegraphics[width=0.3\textwidth]{./figures/preprocessing_resamp}
         }       
     \caption{A sample of the letter \RL{b} before preprocessing (a); after normalization (b); after noise elimination (c) and after re-sampling (d).}
    \label{fig:before_after_preprocessing}
@@ -289,46 +186,64 @@ Figure \ref{fig:before_after_preprocessing} demonstrate the re-sampling steps.
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Features Extraction}
+\section{Shape Descriptors Extraction}
 \label{sec:feature_extraction}
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
-Feature extraction is certainly one of the important parts of any pattern classification system and plays an important role in the overall process of handwriting recognition. 
-It aims is to cull informative parameters for learning and recognition of patterns. 
-Most classification methods require that patterns be represented in a fixed dimensional feature space that is often incompatible with input data. Poor feature extraction and selection will always result in a poor system performance, regardless of the ingeniousness of the learning and classification algorithms \cite{parizeau2001character}.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Feature extraction}}{}
+Feature extraction, one of the important parts of any pattern classification system, is the process of extracting informative parameters for learning and recognition of patterns. 
+Poor feature extraction and selection will always result in a poor system performance, regardless of the sophistication of the classification algorithms \cite{parizeau2001character}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction - Cont.}}{}
-Feature extraction methods operate differently in different domains and may have slightly different goals in different pattern recognition fields. 
-For instance, in the image retrieval field, the input data (i.e., the image) is too large and suspected to be redundant. 
-In this case, feature extraction techniques are used to reduce the representation of the input data into a compact representation set of features. 
-However, In the shape recognition domain, the input data is compact and feature extraction techniques are used to transform it into feature vectors, which are usually referred to as \emph{shape descriptors}. Shape descriptors offer discriminative characterization to capture the perceptual dissimilarity between two shapes. Unlike the first case, the raw amount of data contained in feature vector usually exceeds the amount of data in the original input data.
+Feature extraction methods may have different goals in different pattern recognition domains. 
+For instance, in the image retrieval field, the input data (i.e., the image) is too large and suspected to be redundant and feature extraction techniques are used to reduce the representation of the input data into a compact representation set of features. 
+However, in shapes recognition, the input data is compact and feature extraction techniques are used to create feature vectors, which are usually referred to as \emph{shape descriptors}, that offer discriminative characterization that capture the perceptual dissimilarity between two shapes. 
+Unlike the first case, the raw amount of data contained in feature vector usually exceeds the amount of data in the original input data.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Shape Descriptors}}{}
-The goal of a shape descriptor is to be able to effectively find perceptually similar shapes from a database. Shape descriptors are usually in the form of vectors that are produced to represent a given shape feature and attempts to quantify perceptual similarities between shapes. That is to say, shapes which are found perceptually similar by human have resembling descriptor than from shapes that are different from the others. Effective shape descriptor must present some essential properties such as translation, rotation and scale invariance. It also must be as robust as possible against noise so that variously distorted shapes which are tolerated by human beings when comparing shapes should be endured also by the shape descriptor. This is known as the robustness requirement \cite{zhang2004review}.
+Effective shape descriptor must present some essential properties such as translation, rotation and scale invariance. 
+A desirable shape descriptor should have compact representation and efficient in terms of computation complexity.
+It also must be robust to noise so that distorted shapes which are tolerated by human beings when comparing shapes should be endured also by the shape descriptor \cite{zhang2004review, kim2000region}.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Shape Descriptors properties}}{}
-The following are properties of a desirable shape descriptor: 1. good retrieval accuracy; 2. compact features; 3. low computation complexity; 4. robust retrieval performance \cite{kim2000region}.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Shape Descriptors - Handwriting recognition}}{}
-Many shape descriptors have been developed in order to improve the segmentation and recognition rates. There are many different classifications and sub-classifications of shape descriptors according to their method of operation. The most common classification is the classification for local and global descriptors. Local descriptors calculate some feature at each sample point. An example for a local feature is the vector that contain the tangent slope angle for every given point in the sample point. \emph{Normalized curvature} and \emph{Ratio of tangent} \cite{hu1995invariant, hu1996hmm} are examples of more complex local shape descriptor. Descriptors such as cusps, crossings and loops are referred to as global descriptors and are calculated on the entire shape \cite{hu1997combining}. For a comprehensive review on shape descriptors see \cite{zhang2004review} and \cite{yang2008survey}.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Shape descriptors types}}{}
+The most common classification of shape descriptors is for local and global descriptors. 
+Local descriptors calculate some feature at each sample point. 
+An example for a simple local feature is the vector containing the tangent slope angle for every given point in the sample point. 
+\emph{Normalized curvature} and \emph{Ratio of tangent} \cite{hu1995invariant, hu1996hmm} are examples of more complex local shape descriptor. 
+Descriptors such as cusps, crossings and loops are referred to as global descriptors and are calculated on the entire shape \cite{hu1997combining}. 
+For a comprehensive review on shape descriptors see \cite{zhang2004review} and \cite{yang2008survey}.
 
 %\emph{TODO: review "Local vs. global Features" (p. 30) in \cite{connell2000online} }
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Using off-line shape descriptors for on-line handwriting recognition}}{}
-Many of the well known and powerful features operate on the shape's contour. This is because many descriptors were developed for off-line handwriting recognition. However, the input data in the on-line case is a sequence of points and no contour is involved. Using features in on-line handwriting recognition that we originally developed for the off-line case is common. Saabne and El-Sanna employed the \emph{Shape Context} (SC) descriptor, a global shape descriptor that was originally developed for contour based shapes, on-line handwriting recognition in \cite{saabni2009hierarchical}. Multi Scale shape context is used by Hu and Zanibbi in \cite{husegmenting} for on-line handwritten mathematical expressions segmentation. The original definition of the mentioned features is given on the contour of the shape. However to use it in the on-line writing recognition case, the features are applied upon the stroke sequence.
+\nomenclature{SC}{Shape Context}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Using off-line shape descriptors for on-line HWR}}{}
+Many of the well known and powerful features operate on the shape's contour. 
+This is because many descriptors were developed for off-line handwriting recognition. 
+However, the input data in the on-line case is a sequence of points and no contour is involved. 
+Using features in on-line handwriting recognition that we originally developed for the off-line case is common. 
+Saabne and El-Sanna employed the \emph{Shape Context} (SC) descriptor, a global shape descriptor that was originally developed for contour based shapes, for on-line handwriting recognition in \cite{saabni2009hierarchical}. 
+\emph{Multi scale shape context} is used by Hu and Zanibbi in \cite{husegmenting} for on-line handwritten mathematical expressions segmentation. 
+The original definition of the mentioned features is given on the contour of the shape. 
+However to use it in the on-line writing recognition case, the features are applied on the stroke sequence.
 
+\nomenclature{MAD}{Multi Angular Descriptor}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Selected Descriptors}}{}
-In this work we have chosen to work with two shape descriptors, the Shape context descriptor, MAD and  the tangent angle feature. The reason for this choice is that we wanted to investigate how both global and local features effectiveness in our proposed process. More information about these features are given below.
+In this work we have compared two shape descriptors, the SC descriptor and the \emph{multi angular descriptor} (MAD). 
+More information about these features are given below.
 
-\nomenclature{$SC$}{Shape Context Descriptor}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Shape Context}}{}
-Belongie and Malik have presented a point matching approach named Shape Context \cite{belongie2002shape}. The Shape context is a shape matching approach that intended to be a way of describing shapes that allows for measuring shape similarity and the recovering of point correspondences. This approach is based on the following descriptor: Pick $n$ points on the shape's contour, for each point ${p_i}$ on the shape, consider the $n - 1$ other points and calculate the coarse histogram of the relative coordinates. Equation \ref{eq:sc_bins} is defined to be the shape context of ${p_i}$.
+SC is a shape matching approach that intended to be a way of describing shapes that allows for measuring shape similarity and the recovering of point correspondences. 
+It was presented by Belongie and Malik in \cite{belongie2002shape}
+SC can be described as follows: Pick $n$ points on the shape's contour, for each point ${p_i}$ on the shape, consider the $n - 1$ other points and calculate the coarse histogram of the relative coordinates. 
+Equation \ref{eq:sc_bins} is defined to be the shape context of ${p_i}$.
 
 \begin{equation}
 {h_i}(k) = \# \{q \ne p_i:(q - p_i) \in bin(k) \}
 \label{eq:sc_bins}
 \end{equation}
 
-The bins are normally taken to be uniform log-polar space making the descriptor more sensitive to positions of nearby sample points than to those of points farther away. This distribution over relative positions is robust and compact, yet highly discriminative descriptor. The basic Idea of the Shape Context Descriptor is illustrated in Figure \ref{fig:shape_context_demo}. This can be calculated in $O(N^3)$ time using the Hungarian method.
+The bins are normally taken to be uniform log-polar space making the descriptor more sensitive to positions of nearby sample points than to those of points farther away. 
+This distribution over relative positions is robust and compact, yet highly discriminative descriptor. 
+The basic idea of the SC descriptor is illustrated in Figure \ref{fig:shape_context_demo}. This can be calculated in $O(N^3)$ time using the Hungarian method.
 
 \begin{figure}
 \centering
@@ -340,27 +255,34 @@ The bins are normally taken to be uniform log-polar space making the descriptor 
 	\label{fig:shape_context_online}
      \includegraphics[width=0.3\textwidth]{./figures/shape_context_online}
 }        
-\caption{Diagram of the log-polar bins used to compute the shape context. On-line and off-line}
+\caption{Diagram of the log-polar bins used to compute the shape context; on-line (\ref{fig:shape_context_online}) and off-line (\ref{fig:shape_context_offline}).}
 \label{fig:shape_context_demo}
 \end{figure}
 
-\nomenclature{MAD}{Multi Angular Descriptor}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{MAD}}{}
-The other shape descriptor used in this thesis is the Multi Angular Descriptor (MAD).
-MAD was proposed by Saabni in \cite{saabni2013multi}. It captures the angular view to multi resolution rings in different heights. The shape is treated as a two dimensional set of points and the different rings are upper view points from rings around the shape centroid with different sizes and heights. To enables scale and translation invariance, the sizes and heights of these rings are calculated using the diameter and centroid of the shape.
-Formally, let $S$ be a shape and Let $C$ and $D$ be the centroid and the diameter of the shape respectively. Let $P = \{p_i\}_{i = 1}^l$ a set of $l$ point taken uniformly from the extracted contour of $S$. Given a view point $V_j$ from a given ring with height $h$ over the shape, the angle, obtained by connecting the point ${p_i} \in P$ with each point   and the plain of the shape is a rich description of the shape from this view point. Let $R$ be a ring with the radius $r$ and the center $C$ positioned above the shape $S$ with the height $h$. Let $V = \{V_i\}_{i = 1}^n$ be a set of $n$ viewpoints lying uniformly on the ring $R$ and $\alpha(V_{ij})$ to be the angle between the segment $\overline {{V_i}{p_j}}$ and the plain contains the shape $S$. The vector $Ve{c_i} = \left\{ {\alpha \left( {{V_{ij}}} \right)} \right\}_{j = 1}^l$ can be seen as watching the shape $S$ from one upper view point $V_i$. Illustration can be seen in Figure \ref{fig:mad_demo}.
+The other shape descriptor used in this thesis is MAD.
+MAD was proposed by Saabne in \cite{saabni2013multi}. 
+It captures the angular view to multi resolution rings in different heights. 
+The shape is treated as a two dimensional set of points and the different rings are upper view points from rings around the shape centroid with different sizes and heights. 
+To enables scale and translation invariance, the sizes and heights of these rings are calculated using the diameter and centroid of the shape.
+Formally, let $S$ be a shape and Let $C$ and $D$ be the centroid and the diameter of the shape respectively. 
+Let $P = \{p_i\}_{i = 1}^l$ a set of $l$ point taken uniformly from the extracted contour of $S$. 
+Given a view point $V_j$ from a given ring with height $h$ over the shape, the angle, obtained by connecting the point ${p_i} \in P$ with each point on the plain of the shape is a rich description of the shape from this view point. 
+Let $R$ be a ring with the radius $r$ and the center $C$ positioned above the shape $S$ with the height $h$. 
+Let $V = \{V_i\}_{i = 1}^n$ be a set of $n$ viewpoints lying uniformly on the ring $R$ and $\alpha(V_{ij})$ to be the angle between the segment $\overline {{V_i}{p_j}}$ and the plain contains the shape $S$. 
+The vector $Ve{c_i} = \left\{ {\alpha \left( {{V_{ij}}} \right)} \right\}_{j = 1}^l$ can be seen as watching the shape $S$ from one upper view point $V_i$. 
+
+An illustration of three line segments drawn from the same viewpoint $V_i$, generating the three angles $Vec_{ij}$ with the plane of the shape, can be seen in Figure \ref{fig:mad_demo}.
+When the parameter $j$ goes over all contour points we get the vector $Vec_i$ describing the shape from the view point $V_i$ with the parameter $i$ goes over all viewpoints.
 
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{./figures/mad_demo}       
-\caption{An example of three line segments drawn from the same viewpoint $V_i$, generating the three angles $Vec_{ij}$ with the plane of the shape. When the parameter $j$ goes over all contour points we get the vector $Vec_i$ describing the shape from the view point $V_i$ with the parameter $i$ goes over all viewpoints.}
+\caption{A visual demonstration of MAD feature set.}
 \label{fig:mad_demo}
 \end{figure}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Results - Asses the quality of separation in the features space}}{}
-In order to evaluate the quality of the features we asses the quality of classification. Since as can be seen the coming chapters, our classification is based on Neasrest Neighbors classification, after considering several quality evaluation methods, we selected the following. \emph{TODO: give more information on clusters validation techniques.}
-The evaluation is done as follows: First we initialized a scoring parameter to 0, i.e., $s=0$. Then, for each sample in the sample set, the closest three candidates are extracted and ordered by their vicinity to the sample element. The distance function that is used here is the Euclidean distance. Let us denote the correct sample labeling by $a$ and the labeling of the candidates by $\alpha, \beta, \gamma$ respectively. If $\alpha=a$ then we do $s=s+3$. If $\beta=a$ then we do $s=s+2$. If $\gamma=a$ we perform $s=s+1$.
-The scoring is then calculated as follows: $S=\frac{s}{6N}$, where the $N$ is the size of the sample set.
+In Chapter \ref{chap:results} we compare the performance of the above descriptors and assess their discriminative power in the characters recognition and segmentation systems. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -459,20 +381,6 @@ Efficient Similarity search techniques will be discussed in details in Section \
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Advanced distance measure techniques}}{}
 To overcome the drawbacks of the basic Minkowski distance, many distance functions have been proposed in the literature for various application. Here we mention a few that are used mostly in handwriting recognition applications and time series patterns: \emph{Data Time Warping} (DTW), \emph{Earth Mover's Distance} (EMD), \emph{Longest Common Subsequences} (LCSS) and \emph{Edit distance}. Each method has its strengthens and weaknesses. Each application should choose the similarity function that best fit its needs.
 
-\begin{figure}
-	\centering
-        \subfloat[]{
-            \label{fig:euclidean_distance_time_series}
-            \includegraphics[width=0.5\textwidth]{./figures/euclidean_distance_time_series}
-        }
-        \subfloat[]{
-           \label{fig:dtw_distance_time_series}
-           \includegraphics[width=0.5\textwidth]{./figures/dtw_distance_time_series}
-        }        
-    \caption{The distance between two relatively similar time series. Using the Euclidean distance as demonstrated in (a), the distance is $Minkowski_{2}(R,S)=8.68$. Using Data Time Warping as seen in (b), the distance is $DTW(R,S)=2.48$ \cite{chen2005similarity}.}
-   \label{fig:time_series_distance_demo}
-\end{figure}
-
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Next Subsections}}{}
 In the following two subsections (\ref{subsec:emd} and \ref{subsec:dtw}) we will explain in details two similarity measure functions used in the thesis, the \emph{Earth mover's distance} and the \emph{Data time Warping}. 
 
@@ -555,7 +463,7 @@ DTW is used for solving the discrepancy between intuition and calculated distanc
 \begin{figure}[h!] 
 \centering
 \includegraphics[width=1\textwidth]{./figures/dtw_dequence_demo}      
-\caption{The right scheme shows sample-by-sample na\"{\i}ve alignment after re-sampling and in the left scheme the alignment was performed using DTW \cite{rath2003word}.}
+\caption{Sample-by-sample na\"{\i}ve alignment (left) versus an alignment performed using DTW (right) \cite{rath2003word}.}
 \label{fig:dtw_dequence_demo}
 \end{figure}
 
@@ -931,8 +839,6 @@ Second, the classification algorithm is more likely to overfit the training samp
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{data Intrinsic dimensionality}}{}
 Ideally, the reduced representation should have a dimensionality that corresponds to the intrinsic dimensionality of the data \cite{van2009dimensionality}.
 The intrinsic dimensionality of data is the minimum number of parameters needed to account for the observed properties of the data. 
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The underlying belief}}{}
 The belief underlying the existence of a compact representation of the external world data is based on the observation that the human brain can instantaneously and precisely recognize an observed apple, smile or a handwritten letter within a short route of neural computations. 
 However, a digital representations of these images may consist of hundreds or thousands of pixels. 
 Thus, clearly, there are much more compact representations of images, sounds, and even text than their native digital formats. 
@@ -1014,31 +920,8 @@ The basic form of PCA is defined over the $L_2$ space. However, the data that is
 In the proposed system, we wanted to exploit the strengthens of both PCA and LDA techniques using the dimensionality reduction process which is outlined as follows: The samples are projected to a subspace $S_1$ using PCA and then to subspace $S_2$ using LDA. In the PCA stage, the target dimensionality, i.e., the number of principal components taken into consideration, is the minimal to achieve data preservation rate of 99\%, i.e., $E=0.99$. As mentioned before, the dimensionality of the original vectors was 3946. The reason we adopted such a high rate is that it was enough to secure a major dimensionality reduction. As seen in table \ref{table:dr_dimensions_results}, the dimensionality was reduced by PCA in two orders of magnitude.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Implementation: Clustering and LDA}}{}
-Applying LDA directly on the resulted data would have achieved poorer results for the reason that almost all letters in the Arabic writing system have several shapes which are commonly used. See Figure \ref{table:letters_writing_styles}. Furthermore, since LDA regards the labeling of the data samples, trying to group different perceptual shapes in a single class would impinge the dimensionality reduction process. 
-In order to overcome this obstacle, we have done the following preprocessing steps: each class, namely the tuple $(letter, position)$, was clustered into four clusters using $L_1$-k-medoids algorithm. Each cluster received a different class label. This new artificially labeled data was given as input to LDA.
-
-\begin{table}
-\centering
-\begin{tabular}{ | c | c | c | c |}
-\hline
-English  & Form 1 & Form 2 & Form 3\\
-\hline                 
-  A(Iso) &  &  &  \\ 
-  \hline
-  H(Fin) &  & & \\ 
-  \hline
-  H(Mid) &  & &  \\ 
-  \hline
-  NY(Fin) &  &  & \\ 
-  \hline
-  LM & &  &  \\ 
-  \hline
-  7(Mid) & & & \\ 
-  \hline
-\end{tabular}
-\caption{Arabic Letters writing styles.}
-\label{table:letters_writing_styles} 
-\end{table}
+Applying LDA directly on the resulted data would have achieved poorer results for the reason that almost all letters in the Arabic writing system have several shapes which are commonly used. Furthermore, since LDA regards the labeling of the data samples, trying to group different perceptual shapes in a single class would impinge the dimensionality reduction process. 
+In order to overcome this obstacle, we have done the following preprocessing steps: each class, namely the tuple $(letter, position)$, was clustered into four clusters using $L_1$-k-medoids algorithm. Each cluster received a different class label. This new artificially labelled data was given as input to LDA.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{LDA target dimensionality}}{}
 As aforementioned, the target number of dimensions of the PCA step were determined according to the data preservation rate parameter which was preset to $E=0.99$. This, as shown before, can be calculated easily using the eigenvalues of the covariance matrix. However, in the LDA step we have adopted a different approach to determine the target number of dimensions. \emph{Intrinsic dimensionality estimation} methods are traditional techniques for estimating the intrinsic dimensionality of a data. While there are many techniques, many use the same basic concept. They are based on the observation that for a given data point $x_i$, the number of sample points covered by a hypersphere around the data point with radius $r$ grows proportional to $r^d$, where $d$ is the intrinsic dimensionality of the data manifold around that data sample.  
@@ -1060,7 +943,7 @@ Letter position & Number of samples & PCA & PCA+LDA\\
   Fin & 1629 & 27 & 7 \\ 
   \hline
 \end{tabular}
-\caption{The dimensionality of the data samples is shown for every database. The original data set dimensionality is 3946. The PCA column shows dimensionality of the data after applying PCA. The PCA+LDA column shows the dimensionality of the data after applying LDA subsequently after LDA as described.}
+\caption{The dimensionality of the four datasets after applying PCA and PCA+LDA.}
 \label{table:dr_dimensions_results} 
 \end{table}
 
