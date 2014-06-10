@@ -36,13 +36,13 @@
 %\begin{document}
 
 %%%%%%%%%%% nomenclature %%%%%%%%%%
-\nomenclature{HWR}{Handwriting recognition}
-\nomenclature{OCR}{Optical character recognition}
-\nomenclature{WP}{Word part}
-\nomenclature{ANN}{Artificial neural networks}
-\nomenclature{SVM}{Support vector machine}
-\nomenclature{$k$-NN}{$k$-nearest neighbours}
-\nomenclature{SP}{segmentation point}
+\nomenclature{HWR}{Handwriting Recognition}
+\nomenclature{OCR}{Optical Character Recognition}
+\nomenclature{WP}{Word Part}
+\nomenclature{ANN}{Artificial Neural Network}
+\nomenclature{SVM}{Support Vector Machine}
+\nomenclature{$k$-NN}{$k$ Nearest Neighbours}
+\nomenclature{SP}{Segmentation Point}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Introduction}
@@ -281,12 +281,14 @@ Ignoring the delayed strokes, the number of different WP had reduced to 40,000.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\subsection{Arabic Letters classification}
+\subsection{Arabic Characters classification}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning problem.}}{}
 Classification is the problem of identifying to which of a set of classes an unlabelled observation belongs. 
-In the case of \emph{supervised learning}, the classification is performed based on a training set of data containing labelled samples, as defined in \ref{def:supervised_learning}.
+In the case of \emph{supervised learning}, the classification is done based on a dataset of data containing labelled samples, referred to as the training set, as given in Definition \ref{def:supervised_learning}.
 \begin{definition}
-Given a domain space $X$, a target space $Y$ and a training set $S=\{(x_i,y_i)\}_{i=1}^{m}$ where $x_1,x_2,..,x_n\in X$ and $y_1,y_2,...,y_n \in Y$. Let us assume that there is an unknown target function $f$ for which $f : X\rightarrow Y$. A Learning algorithm $A$ produces hypothesis function $h$ based on $S$ such that $h \approx f$, i.e., the function $h$ is an approximation for the target function $f$ and $h \in H$, the hypotheses set. 
+Given a domain space $X$, a target space $Y$ and a training set $S=\{(x_i,y_i)\}_{i=1}^{m}$ where $x_1,x_2,..,x_n\in X$ and $y_1,y_2,...,y_n \in Y$. 
+Let us assume that there is an unknown target function $f$ for which $f : X\rightarrow Y$. 
+A Learning algorithm $A$ produces hypothesis function $h$  based on $S$ such that $h \approx f$. 
 \label{def:supervised_learning}
 \end{definition}
 
@@ -298,18 +300,16 @@ Given a domain space $X$, a target space $Y$ and a training set $S=\{(x_i,y_i)\}
 \end{figure}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The classification problem}}{}
-Given a classification problem, there is an intuitive belief that there exist a space to which the samples can be transformed and in which can be portioned into regions that represent categories. 
-Accordingly, the problem of classification is basically the problem of portioning the sample space into regions. 
-Having done that, classifying a new unlabelled observation is done by determining the partition it belongs to. 
-Ideally, one would like to arrange this partitioning so that none of the decisions is ever wrong. 
-When this cannot be done, one would like to minimize the probability of error \cite{duda1973pattern}.
+Given a classification problem, it is reasonable to try looking for a space to which the samples can be transformed and which can be portioned into regions that represent the different categories. 
+Accordingly, the problem of classification basically becomes the problem of portioning the space into regions. 
+Ideally, the partitioning should be performed such that none of the decisions are ever wrong. 
+When such partition cannot be found, one would like to minimize the probability of error.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Types of approaches in the supervised Learning.}}{}
 Many supervised learning approaches and algorithms were proposed to solve the classification problem. 
 \emph{Decision trees}, \emph{artificial neural networks} (ANN), \emph{support vector machines} (SVMs), \emph{Bayesian networks} and \emph{$k$-nearest neighbours} ($k$-NN) are few well-known learning techniques. 
-A review on the supervised classification algorithms is given by Mohamed Aly in \cite{aly2005survey}. 
+A review of the supervised classification algorithms is given by Mohamed Aly in \cite{aly2005survey}. 
 The role of the machine learning specialist is to identify the type of the learning problem and meet the needs of the problem by stitching the best solution for it.
-
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR Complexity}}{} 
 HWR is one of the very complex and challenging problems in the pattern recognition field.
@@ -317,38 +317,30 @@ This is, mainly, due to the variation of shapes of the characters resulting from
 Other factors which implicate the recognition is the variability of writing styles, cursive writing, text size differences and sampling issues, such as duplicate samples resulted from hesitate writers as well as non-adjacent consecutive samples caused by fast writers \cite{verma2004feature}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Letter classification using HMM}}{}
-Unlike in the off-line case, on-line handwriting can be viewed as temporal series, therefore many pattern recognition techniques from the temporal information field were adopted for handwriting recognition. 
-One example is the \emph{hidden Markov models} (HMM), an extension of the discrete-state Markov process.
-There is a vast amount of studies done in the field of HWR that use HMM \cite{pechwitz2003hmm, khorsheed2003recognising, al2007combination, benouareth2008arabic, mahmoud2008recognition, shu1996line, biadsy2006online}. 
-Letters, words and sentences can be modelled using HMM and classified using the solution to the learning problem.
-For the interested reader unfamiliar with HMMs, we recommend the following two references \cite{kadous2002temporal, shu1996line}, for a well-written introduction.
-While having many advantages, there are some drawbacks of using HMM Kondous has pointed out in his Ph.D thesis \cite{kadous2002temporal}. 
-The HMM model makes some powerful assumption about the data that may not necessarily true. 
-First, is the Markovian assumption that assumes the transition probabilities depend only on the current state. 
-Second, there is no specific way to determine the number of states, thus intelligent guesses and try and error are usually employed. 
+Many types of techniques were investigated for classifying Arabic characters, including artificial neural networks \cite{alijla2012oiahcr}, decision trees \cite{ismail2012online}, Hidden Markov Models \cite{biadsy2006online} and $k$-NN \cite{elglaly2011isolated}. 
+Particularly, HMMs has gained a vast amount of studies done in the field of HWR \cite{pechwitz2003hmm, khorsheed2003recognising, al2007combination, benouareth2008arabic, mahmoud2008recognition, shu1996line, biadsy2006online}. 
+Characters, words and sentences are modelled using HMM and classified using the solution to its learning problem.
+The interested reader unfamiliar with HMM, can refer the following two references \cite{kadous2002temporal, shu1996line}, for a well-written introduction.
+While having many advantages, there are some drawbacks of using HMM, Kondous has pointed out in his Ph.D thesis \cite{kadous2002temporal}. 
+First, the HMM model makes some powerful assumption about the data that may not necessarily be true, such that the Markovian assumption that presumes that the transition probabilities depend only on the current state. 
+Second, there is no specific way to determine the number of states requiring try and error.
 The third drawback is that the states and transitions depend on the class being learned. 
 For example, is there any reason why the words "dog" and "butterfly" would have similar states and transitions? 
 Forth, HMM requires a very large amount of data for its training.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The analytic approach}}{}
-Many types of techniques were investigated for classifying Arabic characters, including artificial neural networks \cite{alijla2012oiahcr}, decision trees \cite{ismail2012online}, Hidden Markov Models \cite{biadsy2006online} and $k$-NN \cite{elglaly2011isolated}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The k-NN classifier}}{}
 The $k$-nearest neighbours algorithm ($k$-NN) is a well-known classification technique in supervised learning. 
 It predicts the query objects class memberships based on the $k$ closest training examples. 
 The $k$-NN algorithm is one of the simplest of all machine learning algorithms: an object is classified by a majority vote of its neighbours, with the object being assigned to the class most common amongst its k nearest neighbours ($k$ is a positive integer, typically small). 
 If $k=1$, then the object is simply assigned to the class of that single nearest neighbour. 
-In many cases the notion of similarity between sample object is obvious, however in many other interesting cases the distance between objects cannot be easily defined.
-Beside its simplicity, $k$-NN has some major advantages. 
-First, $k$-NN is a good learning method for complex target functions. Second, it is easy to implement. 
-Third, arbitrary objects similarity function can be applied easily.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Advantages and Downside of the $k$-NN classifier}}{}
-$k$-NN algorithm has dome drawbacks that reader needs to note. $k$-NN needs a large data set in-order to achieve high classification accuracy. Another drawback is that it is very sensitive to data errors and can be easily fooled by outliers.
-
+In many cases, the notion of distance between objects is obvious, however in many other interesting cases it cannot be easily defined.
+On the one hand, beside its simplicity, $k$-NN has some major advantages. 
+$k$-NN is especially a good learning method for complex target functions.  
+On the other hand, the $k$-NN algorithm has some drawbacks. 
+First, $k$-NN needs a large dataset in-order to achieve high classification accuracy. 
+Second, it is very sensitive to data errors and can be easily fooled by outliers.
 
 \subsection{Arabic Script Segmentation}
-
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
 An integral part of the handwriting recognition process, when the analytic approach is considered, is segmentation. 
 Therefore, it has long been a critical area of the OCR process. 
@@ -414,18 +406,17 @@ The letters candidates and their scoring were used to determine the best set of 
 \section{Thesis Scope and Outline}
 
 In this thesis, we propose and implement a novel real-time approach for segmenting and recognizing on-line handwritten Arabic script.
-In Chapter \ref{chap:characters_classification}, we present a fast approach for Arabic characters classification.
+In Chapter \ref{chap:characters_classification}, we present a fast technique for Arabic characters classification.
 The characters classifier employs state-of-the-art similarity measure and search techniques for fast and accurate classification of characters.
 A real-time, stroke level, recognition-based, segmentation technique is detailed in Chapter \ref{chap:strokes_segmentation}.
 We present a procedure for nominating segmentation points whilst the stroke is being scribed and proposed algorithms for selecting the final segmentation set of segmentation points.
 The results obtained by the classification system and the segmentation process are presented in Chapter \ref{chap:results}.
 A summary and planned future work are given in Chapter \ref{chap:summary}. 
 
-The ADAB database is the only and a de-facto standard database for on-line Arabic Handwritten script which provides a large sample set of handwritten words. 
-Obtaining a large set of Arabic letters samples required the development of a manual segmentation system of samples taken from the ADAB database.
-The system and the segmentation process are described in Appendix \ref{app:data_collection}.
-The characters database created in this work can be used to facilitate future research in Arabic HWR.
-A brief explanation on wavelets and the wavelet transform is given in Appendix \ref{app:wavelets}. 
+The ADAB is a de-facto a standard database providing a large dataset of on-line Arabic handwritten samples.
+Extracting letter samples from the ADAB database required us to develop a system that enables a human expert to manually segment word samples and produce an Arabic character sample set that can be used in future research. 
+An overview on the manual segmentation system and a description of the resulted characters database is given in Appendix \ref{app:data_collection}.
+A brief explanation on wavelets and the wavelet transform is provided in Appendix \ref{app:wavelets}. 
 
 The system has several assumptions and limitations.
 First, it does not regard additional strokes although they can be used to improve the classification results.

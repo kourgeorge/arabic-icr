@@ -47,27 +47,30 @@
 %
 %\tableofcontents{}
 
+%%%%%%%%%%% nomenclature %%%%%%%%%%
+\nomenclature{SC}{Shape Context}
+\nomenclature{MAD}{Multi Angular Descriptor}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \chapter{Fast Handwritten Arabic Characters Classification}
 \label{chap:characters_classification}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning process}}{}
-Letters samples obtained by the ADAB databases were split into four group according to their position: Ini, Med, Fin and Iso. 
+Letter samples obtained by the ADAB databases were split into four groups according to their position: Ini, Med, Fin and Iso. 
 The set of samples in each position undergone a learning process that contains five main stages.
-First, the samples are preprocessed as described in Section \ref{sec:preprocessing}.
-Second, feature vectors were extracted.
-The features used in this work are given in \ref{sec:feature_extraction}.
-Third, the samples were embedded to $L_1$ metric space by extracting the scaled coefficients of the wavelet transformation as presented in Section \ref{sec:similarity_measures}. 
-Then, in Section \ref{sec:dr}, we outline a dimensionality reduction process that employs PCA, LDA. techniques to obtain a compact representation of the high dimensional vectors produced by the embedding.
-In addition, clustering using $L_1$ $k$-means is applied to avoid redundant samples. 
-In the last stage, described in section \ref{sec:similarity_search}, we construction of the metric indexing data-structure is performed to enable finding the most similar object in sub-linear time complexity.
+First, the samples were preprocessed as described in Section \ref{sec:preprocessing}.
+Second, feature vectors were extracted as given in \ref{sec:feature_extraction}.
+Third, the samples were embedded to the $L_1$ metric space by extracting the scaled coefficients of the wavelet transformation as presented in Section \ref{sec:similarity_measures}. 
+Then, in Section \ref{sec:dr}, we outline a dimensionality reduction process that employs both PCA and LDA to obtain a compact representation of the high dimensional vectors produced by the embedding procedure.
+In the last stage, described in section \ref{sec:similarity_search}, we build a metric index that enables finding the most similar object in sub-linear time.
+An overview of the process is given in Figure \ref{fig:letters_classifier_learning_flow}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The recognition process}}{}
 Given an un-labelled query sequence, its classification process corresponds to the learning process.
-The sequence undergoes preprocessing and features extraction and embedding.
-The resulted embedded vector is then multiplied by the dimensionality reduction matrix, so that the vector will be transformed to the compact space defined in the learning process. 
-The reduced dimensionality vector is then classified using a fast $k$-NN Indexing data-structure which nominate ten sample objects. 
-Note that also the nearest neighbour classification is based on the reduced wavelet coefficient vector, each sample holds all the different representation of it, including the original sequence, the feature vector, etc. 
-Using the constrained version of DTW, the distance between feature vector of the candidates and the feature vector representation of the query object are calculated to select the best three candidates having different labelling. 
+The sequence undergoes preprocessing, features extraction, embedding and dimensionality.
+The reduced vector is then used to to find the closest ten sample among the large list of sample containing more than a thousand instances.  
+As described in Section \ref{sec:candidates_scoring}, we then allow the usage of an accurate and expensive similarity measure technique to rank the short list of candidates. 
 
 \begin{figure}
 \centering
@@ -189,61 +192,48 @@ Figure \ref{fig:before_after_preprocessing} demonstrate the re-sampling steps.
 \section{Shape Descriptors Extraction}
 \label{sec:feature_extraction}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Feature extraction}}{}
-Feature extraction, one of the important parts of any pattern classification system, is the process of extracting informative parameters for learning and recognition of patterns. 
-Poor feature extraction and selection will always result in a poor system performance, regardless of the sophistication of the classification algorithms \cite{parizeau2001character}.
+Feature extraction is the process of extracting informative parameters for learning and recognition of patterns. 
+Poor feature extraction and selection will, in most cases, result in a poor system performance, regardless of the sophistication of the classification algorithm \cite{parizeau2001character}.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction - Cont.}}{}
-Feature extraction methods may have different goals in different pattern recognition domains. 
-For instance, in the image retrieval field, the input data (i.e., the image) is too large and suspected to be redundant and feature extraction techniques are used to reduce the representation of the input data into a compact representation set of features. 
-However, in shapes recognition, the input data is compact and feature extraction techniques are used to create feature vectors, which are usually referred to as \emph{shape descriptors}, that offer discriminative characterization that capture the perceptual dissimilarity between two shapes. 
-Unlike the first case, the raw amount of data contained in feature vector usually exceeds the amount of data in the original input data.
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction - Cont.}}{}
+In the field of image retrieval, the input data is too large and suspected to be redundant, thus, feature extraction techniques are used to reduce the representation of the input data into a compact representation set of features. 
+However, in the case of recognising on-line shapes, the input data are compact and feature extraction techniques create feature vector referred to as the \emph{shape descriptor}, which offer discriminative characterization that capture the perceptual dissimilarity between two shapes. 
+Unlike the first case in which the features extraction process is a form of dimensionality reduction, the raw amount of data contained in the shape descriptors usually exceeds the amount of data in the original input data.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Shape Descriptors}}{}
 Effective shape descriptor must present some essential properties such as translation, rotation and scale invariance. 
-A desirable shape descriptor should have compact representation and efficient in terms of computation complexity.
+A desirable shape descriptor should have compact representation and efficient in terms of computation complexity \cite{zhang2004review}.
 It also must be robust to noise so that distorted shapes which are tolerated by human beings when comparing shapes should be endured also by the shape descriptor \cite{zhang2004review, kim2000region}.
 
-
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Shape descriptors types}}{}
-The most common classification of shape descriptors is for local and global descriptors. 
-Local descriptors calculate some feature at each sample point. 
+A common classification of shape descriptors is: local and global descriptors. 
+Local descriptors calculate a given feature independently at each sample point. 
 An example for a simple local feature is the vector containing the tangent slope angle for every given point in the sample point. 
-\emph{Normalized curvature} and \emph{Ratio of tangent} \cite{hu1995invariant, hu1996hmm} are examples of more complex local shape descriptor. 
 Descriptors such as cusps, crossings and loops are referred to as global descriptors and are calculated on the entire shape \cite{hu1997combining}. 
 For a comprehensive review on shape descriptors see \cite{zhang2004review} and \cite{yang2008survey}.
 
 %\emph{TODO: review "Local vs. global Features" (p. 30) in \cite{connell2000online} }
 
-\nomenclature{SC}{Shape Context}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Using off-line shape descriptors for on-line HWR}}{}
-Many of the well known and powerful features operate on the shape's contour. 
-This is because many descriptors were developed for off-line handwriting recognition. 
-However, the input data in the on-line case is a sequence of points and no contour is involved. 
-Using features in on-line handwriting recognition that we originally developed for the off-line case is common. 
+Many of the well known and powerful feature sets operate on the shape's contour.  
+However, the input data in the on-line case is a sequence of points representing the pattern trajectory and no contour is involved. 
+Using feature sets that were originally developed for contours for recognizing contour-less shapes is common. 
 Saabne and El-Sanna employed the \emph{Shape Context} (SC) descriptor, a global shape descriptor that was originally developed for contour based shapes, for on-line handwriting recognition in \cite{saabni2009hierarchical}. 
-\emph{Multi scale shape context} is used by Hu and Zanibbi in \cite{husegmenting} for on-line handwritten mathematical expressions segmentation. 
-The original definition of the mentioned features is given on the contour of the shape. 
-However to use it in the on-line writing recognition case, the features are applied on the stroke sequence.
+Another example is the usage of the \emph{Multi scale shape context} for on-line handwritten mathematical expressions segmentation in \cite{husegmenting}. 
 
-\nomenclature{MAD}{Multi Angular Descriptor}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Selected Descriptors}}{}
 In this work we have compared two shape descriptors, the SC descriptor and the \emph{multi angular descriptor} (MAD). 
-More information about these features are given below.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Shape Context}}{}
-SC is a shape matching approach that intended to be a way of describing shapes that allows for measuring shape similarity and the recovering of point correspondences. 
-It was presented by Belongie and Malik in \cite{belongie2002shape}
-SC can be described as follows: Pick $n$ points on the shape's contour, for each point ${p_i}$ on the shape, consider the $n - 1$ other points and calculate the coarse histogram of the relative coordinates. 
-Equation \ref{eq:sc_bins} is defined to be the shape context of ${p_i}$.
-
+The SC descriptor was presented by Belongie and Malik in \cite{belongie2002shape}.
+Given a sequence of points $S=\{p_i\}_{i=1}^n$, the descriptor of the point ${p_i}$, is the coarse histogram of the relative coordinates as defined in Equation \ref{eq:sc_bins}.
 \begin{equation}
 {h_i}(k) = \# \{q \ne p_i:(q - p_i) \in bin(k) \}
 \label{eq:sc_bins}
 \end{equation}
-
-The bins are normally taken to be uniform log-polar space making the descriptor more sensitive to positions of nearby sample points than to those of points farther away. 
-This distribution over relative positions is robust and compact, yet highly discriminative descriptor. 
-The basic idea of the SC descriptor is illustrated in Figure \ref{fig:shape_context_demo}. This can be calculated in $O(N^3)$ time using the Hungarian method.
+The SC vector of the shape is defined as the concatenation of all points descriptors.
+The bins are normally taken to be uniform log-polar space, making the descriptor more sensitive to positions of nearby sample points than to those of points farther away. 
+The basic idea of the SC descriptor is illustrated in Figure \ref{fig:shape_context_demo}. 
 
 \begin{figure}
 \centering
@@ -260,30 +250,26 @@ The basic idea of the SC descriptor is illustrated in Figure \ref{fig:shape_cont
 \end{figure}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{MAD}}{}
-The other shape descriptor used in this thesis is MAD.
-MAD was proposed by Saabne in \cite{saabni2013multi}. 
-It captures the angular view to multi resolution rings in different heights. 
+The other shape descriptor used in this thesis is the MAD feature, which was proposed by Saabne in \cite{saabni2013multi}. 
+It captures the angular view from multi resolution rings in different heights. 
 The shape is treated as a two dimensional set of points and the different rings are upper view points from rings around the shape centroid with different sizes and heights. 
 To enables scale and translation invariance, the sizes and heights of these rings are calculated using the diameter and centroid of the shape.
 Formally, let $S$ be a shape and Let $C$ and $D$ be the centroid and the diameter of the shape respectively. 
-Let $P = \{p_i\}_{i = 1}^l$ a set of $l$ point taken uniformly from the extracted contour of $S$. 
-Given a view point $V_j$ from a given ring with height $h$ over the shape, the angle, obtained by connecting the point ${p_i} \in P$ with each point on the plain of the shape is a rich description of the shape from this view point. 
+Let $S = \{p_j\}_{j = 1}^n$ a set of $n$ point taken uniformly on the shape. 
 Let $R$ be a ring with the radius $r$ and the center $C$ positioned above the shape $S$ with the height $h$. 
-Let $V = \{V_i\}_{i = 1}^n$ be a set of $n$ viewpoints lying uniformly on the ring $R$ and $\alpha(V_{ij})$ to be the angle between the segment $\overline {{V_i}{p_j}}$ and the plain contains the shape $S$. 
-The vector $Ve{c_i} = \left\{ {\alpha \left( {{V_{ij}}} \right)} \right\}_{j = 1}^l$ can be seen as watching the shape $S$ from one upper view point $V_i$. 
+Let $V = \{V_i\}_{i = 1}^l$ be a set of $l$ viewpoints lying uniformly on the ring $R$ and $\alpha(V_{ij})$ to be the angle between the segment $\overline {{V_i}{p_j}}$ and the plain contains the shape $S$. 
+When the parameter $j$ goes over all points in the sequence, we get the vector $Vec_i$ describing the shape from the view point $V_i$.
+The descriptor is the concatenation the vectors $V_i$ when the parameter $i$ goes over all viewpoints. 
+See illustration in Figure \ref{fig:mad_demo}.
 
-An illustration of three line segments drawn from the same viewpoint $V_i$, generating the three angles $Vec_{ij}$ with the plane of the shape, can be seen in Figure \ref{fig:mad_demo}.
-When the parameter $j$ goes over all contour points we get the vector $Vec_i$ describing the shape from the view point $V_i$ with the parameter $i$ goes over all viewpoints.
+In Chapter \ref{chap:results} we compare the performance of the above descriptors and assess their discriminative power in the characters recognition and segmentation systems. 
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.5\textwidth]{./figures/mad_demo}       
 \caption{A visual demonstration of MAD feature set.}
 \label{fig:mad_demo}
 \end{figure}
-
-In Chapter \ref{chap:results} we compare the performance of the above descriptors and assess their discriminative power in the characters recognition and segmentation systems. 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -958,11 +944,17 @@ Letter position & Number of samples & PCA & PCA+LDA\\
 \section{Candidates Scoring}
 \label{sec:candidates_scoring}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The recognition process - justification}}{}
-The reason for using the constrained version of DTW that the exact calculation of EMD on the nearest neighbours is that it has proved to be result in better recognition results.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The input for this stage}}{}
+Given an unlabelled sub-stroke sequence $q$, the $k$-NN classifier returns a set of $k$ potential letter candidates from the sample set, $\{c\}_{i=1}^{k}$.
+The metric space is based on the $L_1$ distance in the normalized coefficient domain, which approximate the EMD distance, as detailed in Section \ref{sec:similarity_search}.  
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{From the paper}}{}
-Given an unlabelled sequence $q$, the $k$-NN classifier returns a set of $k$ potential letter candidates from the sample set, $\{c\}_{i=1}^{k}$.
+At this stage, we can afford employing expensive similarity techniques to precisely asses the perceptual similarity between the given unlabelled sample and the candidates and rank the candidates.
+
+We have evaluated several scoring technique combining EMD, approximate EMD, DTW and contained DTW and we have achieved the following classification and segmentation results.
+
+
+As can be seen in Table, the best scoring technique was achieved by the following formula:
+
 The scoring of the candidates is done by averaging the $L_1$ distance between the query object and the candidate in the EMD space, and the DTW distance of their feature vectors, as seen in Equation \ref{eq:candidate_scoring}.
 The constrained version of DTW using the Sakoe-Chuba Band \cite{sakoe1978dynamic} was used since it has achieved better results the basic version of DTW.
 \begin{equation}
