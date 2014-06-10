@@ -82,6 +82,10 @@ DataPreservationRate = 0.98;
 
 [FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, ~ , SequencesArray] = ExpandLettersStructForSVM( Struct );
 [ReducedFeaturesMatrix, COEFF, ~] = DimensionalityReduction2( WaveletSpaceVectors, LettersGroups, DataPreservationRate);
+
+%flattenedFeaturesSpaceVectors = FlattenFeatureVectors( FeaturesSpaceVectors );
+%[ReducedFeaturesMatrix, COEFF, ~] = DimensionalityReduction2( flattenedFeaturesSpaceVectors, LettersGroups, DataPreservationRate);
+
 LetterPositionDB.COEFF = COEFF;
 LetterPositionDB.KdTree = createns(ReducedFeaturesMatrix,'NSMethod','kdtree','Distance',DistanceType);
 LetterPositionDB.LettersMap = LettersGroups;
