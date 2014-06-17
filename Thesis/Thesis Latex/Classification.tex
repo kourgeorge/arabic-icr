@@ -60,16 +60,16 @@
 Letter samples obtained by the ADAB databases were split into four groups according to their position: Ini, Med, Fin and Iso. 
 The set of samples in each position undergone a learning process that contains five main stages.
 First, the samples were preprocessed as described in Section \ref{sec:preprocessing}.
-Second, feature vectors were extracted as given in \ref{sec:feature_extraction}.
-Third, the samples were embedded to the $L_1$ metric space by extracting the scaled coefficients of the wavelet transformation as presented in Section \ref{sec:similarity_measures}. 
-Then, in Section \ref{sec:dr}, we outline a dimensionality reduction process that employs both PCA and LDA to obtain a compact representation of the high dimensional vectors produced by the embedding procedure.
+Second, feature vectors were extracted as detailed in \ref{sec:feature_extraction}.
+Third, the samples were embedded into the $L_1$ metric space by extracting the scaled coefficients of the wavelet transformation as presented in Section \ref{sec:similarity_measures}. 
+In Section \ref{sec:dr}, we outline a dimensionality reduction process that employs both PCA and LDA to obtain a compact representation of the high dimensional vectors produced by the embedding procedure.
 In the last stage, described in section \ref{sec:similarity_search}, we build a metric index that enables finding the most similar object in sub-linear time.
 An overview of the process is given in Figure \ref{fig:letters_classifier_learning_flow}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The recognition process}}{}
 Given an un-labelled query sequence, its classification process corresponds to the learning process.
 The sequence undergoes preprocessing, features extraction, embedding and dimensionality.
-The reduced vector is then used to to find the closest ten sample among the large list of sample containing more than a thousand instances.  
+The low dimensional vector is then used to to find the closest ten sample among the large list of sample containing more than a thousand instances.  
 As described in Section \ref{sec:candidates_scoring}, we then allow the usage of an accurate and expensive similarity measure technique to rank the short list of candidates. 
 
 \begin{figure}
@@ -196,13 +196,13 @@ Feature extraction is the process of extracting informative parameters for learn
 Poor feature extraction and selection will, in most cases, result in a poor system performance, regardless of the sophistication of the classification algorithm \cite{parizeau2001character}.
 
 %\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction - Cont.}}{}
-In the field of image retrieval, the input data is too large and suspected to be redundant, thus, feature extraction techniques are used to reduce the representation of the input data into a compact representation set of features. 
-However, in the case of recognising on-line shapes, the input data are compact and feature extraction techniques create feature vector referred to as the \emph{shape descriptor}, which offer discriminative characterization that capture the perceptual dissimilarity between two shapes. 
+In the field of image retrieval, the input data is too large and tends to be redundant, thus, feature extraction techniques are used to reduce the representation of the input data. 
+However, in the case of recognising on-line handwritten shapes, the input data are compact and feature extraction techniques create feature vector referred to as the \emph{shape descriptor}, which offer discriminative characterization that capture the perceptual dissimilarity between two shapes. 
 Unlike the first case in which the features extraction process is a form of dimensionality reduction, the raw amount of data contained in the shape descriptors usually exceeds the amount of data in the original input data.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Shape Descriptors}}{}
-Effective shape descriptor must present some essential properties such as translation, rotation and scale invariance. 
-A desirable shape descriptor should have compact representation and efficient in terms of computation complexity \cite{zhang2004review}.
+Effective shape descriptor must have some essential properties such as invariance under translation, rotation and scale. 
+A desirable shape descriptor should have a compact representation and also it must be easy to compute \cite{zhang2004review}.
 It also must be robust to noise so that distorted shapes which are tolerated by human beings when comparing shapes should be endured also by the shape descriptor \cite{zhang2004review, kim2000region}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Shape descriptors types}}{}
@@ -538,7 +538,7 @@ In this work, DTW is used for candidates scoring (described in chapter \ref{sec:
 \label{sec:similarity_search}
  
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
-In Section \ref{sec:similarity_measures}, we have discussed one aspect of information retrieval - the effectiveness of measuring the perceptual notion of similarity between two objects. However, even the most qualitative similarity measure technique is almost useless if for a given query object, the task of searching for similar objects in the database cannot be done efficiently. Efficient similarity search usually requires the development of search methods that minimize the overall search costs.
+In Section \ref{sec:similarity_measures} we discussed one aspect of information retrieval - the effectiveness of measuring the perceptual notion of similarity between two objects. However, even the most qualitative similarity measure technique is almost useless if for a given query object, the task of searching for similar objects in the database cannot be done efficiently. Efficient similarity search usually requires the development of search methods that minimize the overall search costs.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Similarity search query types}}{}
 Similarity based search introduce two fundamental query types: \emph{range queries} and \emph{k-nearest neighbor queries} \cite{hetland2009basic}. Formal definitions of both query types are provided in Definitions \ref{def:range_query} and \ref{def:knn_query} and visualized in Figure \ref{fig:similarity_query_types}.
@@ -949,6 +949,8 @@ Given an unlabelled sub-stroke sequence $q$, the $k$-NN classifier returns a set
 The metric space is based on the $L_1$ distance in the normalized coefficient domain, which approximate the EMD distance, as detailed in Section \ref{sec:similarity_search}.  
 
 At this stage, we can afford employing expensive similarity techniques to precisely asses the perceptual similarity between the given unlabelled sample and the candidates and rank the candidates.
+
+In this section we asses the effectiveness and efficiency of performing additional scoring stage on the overall segmentation and recognition rates.
 
 We have evaluated several scoring technique combining EMD, approximate EMD, DTW and constrained DTW and we have achieved the following classification and segmentation results.
 
