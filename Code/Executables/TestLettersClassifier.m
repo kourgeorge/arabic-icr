@@ -16,12 +16,24 @@ MidFrac = numSamplesMid/totalSamplesNum;
 FinFrac = numSamplesFin/totalSamplesNum;
 IsoFrac = numSamplesIso/totalSamplesNum;
 
+cpIni
+cpMid
+cpFin
+cpIso
+
 CaculateTotalTime = (totalTimeIni+totalTimeMid+totalTimeFin+totalTimeIso)/totalSamplesNum
 CorrectRate = cpIni.CorrectRate*IniFrac+cpMid.CorrectRate*MidFrac+cpFin.CorrectRate*FinFrac+cpIso.CorrectRate*IsoFrac
+
+Recall = cpIni.Sensitivity*IniFrac+cpMid.Sensitivity*MidFrac+cpFin.Sensitivity*FinFrac+cpIso.Sensitivity*IsoFrac
+Precision = cpIni.PositivePredictiveValue*IniFrac+cpMid.PositivePredictiveValue*MidFrac+cpFin.PositivePredictiveValue*FinFrac+cpIso.PositivePredictiveValue*IsoFrac
 
 end
 
 function [totalTime, cp, numSamples] = LetterPositionCrossValidation(LetterPositionDS)
+
+kForNN = 1;
+topK=1;
+DTW=0;
 
 [FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, ~] = ExpandLettersStructForSVM( LetterPositionDS.Struct);
 
@@ -35,8 +47,6 @@ cp = classperf(labelingCells);
 
 totalTime = 0;
 numSamples = size(LettersGroups,1);
-kForNN = 10;
-topK=5;
 
 indices = crossvalind('Kfold', LettersGroups, 10);
 for i = 1:10
@@ -50,13 +60,14 @@ for i = 1:10
     
     %trainFeatures = trainWaveletVectors;
     
-    %get the test set
-    t1 = cputime;
-    testFeatures = features(test,:);
-    pcacoef = COEFF.PCACOEFF;
-    PcaReduced = testFeatures * pcacoef;
-    testFeatures = out_of_sample(PcaReduced,COEFF);
-    e1 = cputime-t1;
+    %e1 = 0;
+    
+     t1 = cputime;
+     testFeatures = features(test,:);
+     pcacoef = COEFF.PCACOEFF;
+     PcaReduced = testFeatures * pcacoef;
+     testFeatures = out_of_sample(PcaReduced,COEFF);
+     e1 = cputime-t1;
     
     %class = knnclassify(testFeatures,trainFeatures,cellstr(trainLabels),3,'cityblock','random');
     
@@ -67,15 +78,16 @@ for i = 1:10
     e = e1+e2;
     testSetlabelingResults = trainLabels(IDX);
     
-    trainSequences = sequenceVectors(train);
-    testSequences = sequenceVectors(test);
-    candidateSequences = trainSequences(IDX);
-    [testSetlabelingResults,e3] = scoreCandidates (IDX,trainLabels,testSequences,candidateSequences);
-    testSetlabelingResults = cell2mat(testSetlabelingResults(:,1:topK));
-    e= e+e3;
+    if (DTW==1)
+      trainSequences = sequenceVectors(train);
+      testSequences = sequenceVectors(test);
+      candidateSequences = trainSequences(IDX);
+      [testSetlabelingResults,e3] = scoreCandidates (IDX,trainLabels,testSequences,candidateSequences);
+      testSetlabelingResults = cell2mat(testSetlabelingResults(:,1:topK));
+      e= e+e3;
+    end
     
     class = knnBestClass(testSetlabelingResults,labelingCells(test,:),topK);
-    
     
     totalTime=totalTime+e;
     
