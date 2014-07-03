@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{arabtex}
 \usepackage[cmex10]{amsmath}
+%\usepackage{flushend}
 
 \begin{document}
 
@@ -27,7 +28,7 @@ Email: saabni@cs.bgu.ac.il}
 
 \begin{abstract}
 Delaying the analysis launch until the completion of the handwritten word scribing, restricts on-line recognition systems to meet the highly responsiveness demands expected from such applications, and prevents implementing advanced features of input typing such as automatic word completion and real-time automatic spelling.
-This paper proposes an efficient handwritten characters recognizer that can be employed to enable real-time handwritten script analysis tasks such as segmentation.
+This paper proposes an efficient Arabic handwritten characters recognizer aimed at facilitating real-time handwritten script analysis tasks such as segmentation.
 The Shape Context and the Multi Angular descriptors are used to extract features from each significant point on the stroke. 
 PCA and LDA based dimensionality reduction process followed by an embedding to a normed wavelet coefficients domain are performed to approximate the Earth Movers Distance metric.
 The sub-linear time process of character classification is achieved using k-d trees.
@@ -40,7 +41,7 @@ Arabic character recognition; handwriting recognition; on-line script recognitio
 \end{IEEEkeywords}
 
 \section{Introduction}
-The growing use of keyboard-less electronic devices, such as smart-phones and tablets, added to the fact that handwriting remains the most commonly used mean for information recording and communication, gave rise to a significant increase in interest in on-line handwriting recognition.
+The growing use of keyboard-less electronic devices and the fact that handwriting remains a commonly used mean for information recording gave rise to a significant increase in interest in on-line handwriting recognition.
 
 The Arabic script is written from right to left in a semi-cursive manner in both printed and handwritten forms. 
 Most letters are written in four different letter shapes depending on their position in the word.
@@ -49,8 +50,8 @@ The presence of dis-connective letters interrupts the continuity of the graphic 
 
 The cursiveness of the Arabic script, prima facie, requires delaying the launch of the recognition process until the completion of the word scribing.
 However, a recognition-based segmentation approach, proposed in \cite{kour2014real}, demonstrated the feasibility of segmenting strokes while being written.
-The resulted segmentation and letters classification information can be used to significantly reduce the potential dictionary size and accelerate a later holistic recognition process.
 The real-time nature of the segmentation technique, strictly requires the characters classifier to be extremely fast.
+The resulted segmentation and letters classification information can be used to significantly reduce the potential dictionary size and accelerate a later holistic recognition process.
 
 Considerable amount of work has been done in the area of Arabic character recognition but with limited success, this is due to the unconstrained nature of Arabic characters and the large variety of writing styles \cite{al2010recognition}.
 The nature of the Arabic handwriting requires the letters classification system to be trained over a large set of samples that cover the large variation of letters forms.
@@ -79,7 +80,7 @@ While having many advantages, the holistic approach requires the classifier to b
 The second approach is the analytic approach, which involves segmenting words into individual characters and then classifying each character \cite{abdulla2008off, sari2002off, Dinges2011}. 
 Methods that follows this approach require a reliable character classifier to correctly segment and recognize the handwritten script.
 
-One of the earliest studies on On-line Arabic isolated character recognition was carried out by El-Wakil and Shoukry in 1989 \cite{el1989line}.
+One of the earliest studies in the field of on-line Arabic character recognition was carried out by El-Wakil and Shoukry in 1989 \cite{el1989line}.
 Many types of classification techniques were investigated since then, including Artificial Neural Networks \cite{alijla2012oiahcr,ismail2012online}, Decision Trees \cite{ismail2012online, al2010recognition, omer2010online}, Hidden Markov Models \cite{biadsy2006online} and $k$-NN \cite{elglaly2011isolated}.
 An on-line Arabic handwritten character recognition method, which uses structural features and decision trees, was presented by Al-Taani and Al-Haj \cite{al2010recognition}. 
 The system was tested on a set of 1400 different characters and achieved about 75\% recognition rate. 
@@ -101,10 +102,10 @@ A previous embedding technique described by \cite{indyk2003fast} was used by Gra
 
 \section{Our Approach}
 \label{sec:approach}
-In the presented work, we propose a fast and accurate classification technique for Arabic characters.
+In the presented work, we propose a fast and accurate classification technique for hamdwritten Arabic characters.
 In Figure \ref{fig:letters_classifier_learning_flow} we give a high level flow visualization of the classification system.
 The classifier receives a sequence of points $S=\{p_{i}\}_{i=1}^{n}$ representing the letter trajectory and a letter position $\phi \in \{Ini, Mid, Fin, Iso\}$.
-The query sequence goes through several stages: preprocessing, feature extraction, embedding, dimensionality reduction and eventually a classification process that outputs a short list of candidates and their scoring, which indicates the perceptual similarity between the sequence and the candidates. 
+The query sequence goes through several stages that include preprocessing, feature extraction, embedding, dimensionality reduction and eventually a classification process that outputs a short list of candidates and their scoring, which indicates the perceptual similarity between the sequence and the candidates. 
 Each stage will be discussed in details in the following subsections.
 
 \begin{figure}
@@ -197,7 +198,7 @@ Packages from nearby places are merged at the end of the short distance route pi
 Then another merge is done of packages from the entire country to be shipped together to the destination country. 
 The sum of the distances travelled is an approximation to the actual distance.
 The embedding proposed by Shirdhonkar and Jacobs can be computed in $O\left( N \right)$ time complexity. 
-The Coif-let of order 1, of order 2 and the Symlets of order 5 wavelets were evaluated and the Coif-let of order 2 obtained the best results.
+The Coif-let of order 1, the Coif-let of order 2 and the Symlets of order 5 wavelets were evaluated and the Coif-let of order 1 obtained the best results.
 
 The embedding of the sample set into a normed space facilitates the usage of approximate k-NN techniques such as k-d trees \cite{bentley1975multidimensional}, and Locality Sensitive Hashing (LSH) \cite{gionis1999similarity} which have been successfully applied to a variety of fast similarity retrieval problems.
 Such techniques, solve the problem of searching $k$-NN in a large set and avoid linear scan of the entire dataset.
@@ -222,17 +223,18 @@ This sub-labelling was then used by the LDA, where the target number of dimensio
 
 \begin{table}
 \centering
+\renewcommand{\arraystretch}{1.2}
 \begin{tabular}{ | c | c | c | c |}
 \hline
 \textbf{Letter position} & \textbf{Number of samples} & \textbf{PCA} & \textbf{PCA+LDA}\\
 \hline                 
-  Iso & 1372 & 29 & 7 \\ 
-  \hline
   Ini & 1405 & 39 & 9 \\ 
   \hline
   Mid & 1196 & 36 & 8 \\ 
   \hline
   Fin & 1629 & 27 & 7 \\ 
+  \hline
+  Iso & 1372 & 29 & 7 \\ 
   \hline
 \end{tabular}
 \caption{The dimensionality of the four datasets after applying PCA and PCA+LDA.}
@@ -257,17 +259,23 @@ Using a public and not a self collected samples gives our results a further firm
 The letters distribution with respect to the letters position is given in Table \ref{table:dr_dimensions_results}.
 The extracted set was used for both training the system and testing the performance of the classifier as detailed in the subsequent section.
 
+In the Arabic handwriting, there are cases in which two letters are vertically connected, i.e., are not connected using a horizontal ligature.  
+Such composite characters are usually difficult to be separated by the segmentation system and are usually treated as a single letter.
+In this work we considered the following combinations: \RL{l.h-} , \RL{lm-} and \RL{lA}.
+
+
 \section{Experimental Results}
 \label{sec:experimental_results}
 
 The system was implemented and tested using the Matlab environment.
 The accuracy and the performance of the classifier was measured using 10-fold cross-validation method.
-In Table \ref{table:results_position}, the \emph{correct classification rate} (CCR), recall and precision rates of the character positions is provided.
-The results given in table \ref{table:results_position}, the candidates were ranked solely according to the distance in the EMD space.
+In Table \ref{table:results_position}, the \emph{correct classification rate} (CCR), recall and precision rates are given for each position.
+The candidates were not re-scored using DTW, i.e., they were ranked solely according to the distance in the EMD space.
 The last row in Table \ref{table:results_position} shows the accumulative average of the results weighted according to the amount of samples in each dataset.
 
 \begin{table}
 \centering
+\renewcommand{\arraystretch}{1.2}
 \begin{tabular}{ | c | c | c | c | c |}
 \hline
 	\textbf{Character Position} & \textbf{CCR} & \textbf{Recall} &  \textbf{Precision} \\
@@ -291,16 +299,17 @@ We have implemented a series of experiments aiming at quantifying the importance
 In each experiment, the classifier performance was measured in terms of accuracy and the average running time for classifying a single sample.
 In the first experiment, named \emph{Baseline}, we evaluate the classifier as presented in this work.
 In the second experiment, named (No Embedding), the embedding is skipped and the dimensionality reduction was performed directly on the feature vectors. 
-In the third experiment, named \emph{No DR}, the dimensionality reduction stage was omitted and the  high dimensional embedded vectors were indexed by the k-d tree.
-The results obtained by this experiment shows that not only it has improved the time performance of the classifier significantly, it has also raised the classification rate.
-The major slowdown of the classifier in the third experiment is due to the sensitivity of the k-d tree to high dimensional data.
-The high classification rates and time performance of the first experiment compared to the results achieved in the other experiments shows that the proposed approach has the right balance between between accuracy and performance.
-In the last experiment (\emph{DTW Re-scoring}), DTW re-scoring was applied as described in Section \ref{subsec:candidates_rescoring}. 
+In the third experiment, named \emph{No DR}, the dimensionality reduction stage was omitted from the process.
+The results of this experiment shows that the dimensionality reduction process not only has improved the time performance of the classifier significantly, it has also raised the classification rate.
+The major slowdown of the classifier is due to the sensitivity of the k-d tree to high dimensional data.
+The high classification rates and time performance of the first experiment compared to the results achieved in the other experiments shows that the proposed approach has the right balance between accuracy and performance.
+In the last experiment (labelled \emph{DTW Re-scoring}), DTW re-scoring was applied as described in Section \ref{subsec:candidates_rescoring}. 
 Although the candidates scoring using DTW has a limited effect on the classification accuracy rate, it has raised the WPs correct segmentation rate considerably, from 78\% to 81\%.
 This discrepancy can be explained by the ability of the DTW to attach low scoring to sequences that do not represent a valid character and improve the accuracy of recognition-based segmentation approaches.
 
 \begin{table}
 \centering
+\renewcommand{\arraystretch}{1.2}
 \begin{tabular}{ | c | c | c | c |}
   \hline
   \textbf{Experiment}  & \textbf{CCR [Top 1]}  & \textbf{CCR [Top 3]} & \textbf{Time [ms]}\\
@@ -314,13 +323,14 @@ This discrepancy can be explained by the ability of the DTW to attach low scorin
   DTW Re-scoring& 91\% & 96\% & 31.4 \\ 
   \hline
 \end{tabular}
-\caption{CCR and time performance of the different experiments aiming at assessing the contribution of each major stage.}
+\caption{Classification and time performance of the experiments for assessing the contribution of each major stage.}
 \label{table:stages_contribution} 
 \end{table}
 
 In Table \ref{table:features_comparison} the effectiveness of the different shape descriptors is compared. 
 \begin{table}
 \centering
+\renewcommand{\arraystretch}{1.2}
 \begin{tabular}{ | c | c | c |}
 \hline
 	\textbf{Shape Descriptor}  & \textbf{CCR [Top 1]}  & \textbf{CCR [Top 3]} \\
@@ -329,14 +339,14 @@ In Table \ref{table:features_comparison} the effectiveness of the different shap
   	\hline
   	MAD     & 88\% & 94\% \\
   	\hline
-  	None    & 88\% &  93\% \\
+  	None    & 88\% & 93\% \\
   	\hline
 \end{tabular}
 \caption{Comparing the correct classification rate of the different feature extraction techniques.}
 \label{table:features_comparison} 
 \end{table}
 
-\section{WPs Recognition}
+\section{Using The Classification Information for WPs recognition}
 \label{sec:wps_recognition}
 The segmentation and classification information obtained by a real-time segmentation system, similar to the one described in \cite{kour2014real}, can be used to significantly reduce the potential dictionary size and accelerate a later holistic recognition process.
 In a dictionary-free environment, the classification information can be employed to dynamically build a class of different shapes for all possible WPs, as described below.
@@ -371,7 +381,7 @@ We would like to thank Professor Dana Ron, from the Tel-Aviv University, for her
 This work has been supported in part by the German Research Foundation under grant no. FI 1494/3-2.
 
 %\linespread{0.80}
-
+\IEEEtriggeratref{27}
 \bibliographystyle{IEEEtran}
 \bibliography{IEEEabrv,bibliography}
 
