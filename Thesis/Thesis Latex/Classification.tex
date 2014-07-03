@@ -936,49 +936,7 @@ Letter position & Number of samples & PCA & PCA+LDA\\
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The DR package}}{}
 \emph{Matlab Toolbox for Dimensionality Reduction} described in \cite{van2007introduction} was used as Matlab wrapper for the dimensionality reduction techniques used in this work.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage{}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-\section{Candidates Scoring}
-\label{sec:candidates_scoring}
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The input for this stage}}{}
-Given an unlabelled sub-stroke sequence $q$, the $k$-NN classifier returns a set of $k$ potential letter candidates from the sample set, $\{c\}_{i=1}^{k}$.
-The metric space is based on the $L_1$ distance in the normalized coefficient domain, which approximate the EMD distance, as detailed in Section \ref{sec:similarity_search}.  
-
-At this stage, we can afford employing expensive similarity techniques to precisely asses the perceptual similarity between the given unlabelled sample and the candidates and rank the candidates.
-
-In this section we asses the effectiveness and efficiency of performing additional scoring stage on the overall segmentation and recognition rates.
-
-We have evaluated several scoring technique combining EMD, approximate EMD, DTW and constrained DTW and we have achieved the following classification and segmentation results.
-
-\begin{table}
-\centering
-\begin{tabular}{ | c | c | c | c | c |}
-\hline
-Scoring Formula & Parameter & Top 1 & Top 3 & Top 5\\
-\hline
-  $\|E(c_i)-E(q)\|_1$ & Recognition Rate & 0.86 & 0.9373 & 0.9564 \\ 
-  \hline
-  $\|E(c_i)-E(q)\|_1$ & Time & 0.1253 & 0.1560 & 0.1392 \\
-  \hline                 
-  $DTW(c_i,q)$ & Recognition Rate & 0.9038 & 0.9545 & 0.9632\\ 
-  \hline
-  $DTW(c_i,q)$ & Time & 24 & 24 &  24 \\
-  \hline
-  \end{tabular}
-\caption{Scoring result}
-\label{table:scoring_results} 
-\end{table}
-where $E(\cdot)$ denotes the vector produced from the the process described earlier, i.e., preprocessing followed feature extraction, embedding into the coefficient wavelet domain, and finally, dimensionality reduction.
-
-It can be seen that applying DTW on the ten candidates decrecated the performance more than 20 times, and the accuracy of the system did not achieve than 5\%.
-
   
-
-
 %\bibliographystyle{plainnat}
 %\bibliography{references}
 %\end{document}

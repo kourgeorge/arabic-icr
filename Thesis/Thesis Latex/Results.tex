@@ -31,6 +31,7 @@
 %}{
 %\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,headheight=1cm,headsep=1cm,footskip=1cm}
 %}
+%\usepackage{multirow}
 %
 %\begin{document}
 
@@ -44,12 +45,14 @@ In order to give a high level resolution of the overall system's performance, th
 
 \section{Letters Classification Results}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}
-Using a series of experiments, we aim at quantifying the contribution and importance of each stage to the classification process and to give  a detailed evaluation of the classifier performance in terms of accuracy and running time.
+Using a series of experiments, we aim at quantifying the contribution and importance of each stage to the classification process.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The sample set}}{}
 The sample set of individual characters used for both the learning and testing of the classifier is distributed as shown in Table \ref{table:sample_set}.
 As previously mentioned, the classifier contains four internal databases. 
 It receives a sequence of points $S=\{p_{i}\}_{i=1}^{n}$ representing the letter trajectory and a letter position $\phi \in \{Ini, Mid, Fin, Iso\}$, and returns the classification of the sample in that corresponding database.
+Below, we give a detailed evaluation of the classifier performance in terms of accuracy and running time.
+
 
 \begin{table}[b]
 \centering
@@ -94,18 +97,37 @@ The performance of the system with respect to the running time in the following 
 \centering
 \begin{tabular}{ | c | c | c | c |}
   \hline
-  Experiment  & CCR [Top 1]  & CCR [Top 3] & Time [ms]\\
+  Experiment & CCR [Top 1]  & CCR [Top 3] & CCR [Top 5]  & Time [ms]\\
   \hline                 
-  Baseline & 86\% & 95\% & 0.22 \\
+  Baseline & 90.4\% & 95.77\% & 96.72\% & 28, 23, 24 \\
   \hline
-  No DR & 86\% & 95\% & 6.2 \\ 
+  No DR & 90.97\% & 95.93\% & 97\% & 40, 38,39\\ 
   \hline
-  No embedding & 90\% &  90\% & 0.41 \\
+  No embedding & 90.66\% &  94.23\% & 95\% & 30,27,28\\
   \hline
 \end{tabular}
-\caption{CCR and time performance of the different configurations.}
+\caption{CCR and time performance of the different configurations. (with scoring)}
 \label{table:dr_embedding_comparison} 
 \end{table}
+
+
+\begin{table}
+\centering
+\begin{tabular}{ | c | c | c | c |}
+  \hline
+  Experiment  & CCR [Top 1]  & CCR [Top 3] & CCR [Top 5]  & Time [ms]\\
+  \hline                 
+  Baseline  & 86\% & 93\% & 95.54\% & 0.1,0.18,0.18  \\
+  \hline
+  No DR & \% & \% & \% & \\ 
+  \hline
+  No embedding & 89.61\% &  93.59 \% & 94.81\% & 0.68,0.69,0.72 \\
+  \hline
+\end{tabular}
+\caption{CCR and time performance of the different configurations. (No Scoring)}
+\label{table:dr_embedding_comparison} 
+\end{table}
+
 
 In the first configuration, named Baseline, we evaluate the classifier as presented in this work.
 In the second (No DR) and the third (No Embedding) configurations, dimensionality reduction and embedding were skipped, respectively.
@@ -116,6 +138,8 @@ In addition, it can be noted that in the third configuration, the accuracy is hi
 However, when the top three candidates are considered, the embedding performs better.
 Thus, we can conclude that the candidates list obtained in the Baseline is more qualitative compared to the list obtained when the nearest neighbours is applied in the shape context space directly.
 
+
+\subsection{Comparing Feature Sets}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Features comparison}}{}
 The goal of following experiment is to evaluate the two feature extraction techniques that were used in this work and compare it to the results obtained if none is used, namely, the stroke using the original stroke sequence as the feature space.
 
@@ -137,9 +161,6 @@ The results shown in Table \ref{table:features_comparison}
 \label{table:features_comparison} 
 \end{table}
 
-
-
-
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Segmentation rate}}{}
 In Table \ref{table:features_comparison}, it can be seen that the Sequence, i.e. using no feature extraction, have achieved almost the same accuracy results as when using SC.
 It can be seen that although the shape performance considerebly better than when no feature extraction step is employed, when looking at the top 3 candidates returned by the classifier.
@@ -147,6 +168,51 @@ In addition we noted that the usage of the shape context raised the segmentation
 
 Comparing the results obtained by the proposed classifier to other classification techniques that can be found in the literature, we found that results obtained by our classifier are promising given the constrained that our classifier is required to perform 
 
+
+\subsection{Candidates Scoring}
+\label{subsec:candidates_scoring}
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The input for this stage}}{}
+Given an unlabelled sub-stroke sequence $q$, the $k$-NN classifier returns a set of $k$ potential letter candidates from the sample set, $\{c\}_{i=1}^{k}$.
+The metric space is based on the $L_1$ distance in the normalized coefficient domain, which approximate the EMD distance, as detailed in Section \ref{sec:similarity_search}.  
+
+In this section we asses the effectiveness and efficiency of applying additional scoring stage that consists of expensive similarity measure techniques to precisely asses the perceptual similarity between the given unlabelled sample and the candidates and rank the candidates.
+
+The results of the letters classification accuracy and performance can be seen in Table \ref{table:scoring_Classification}.
+
+\begin{table}
+\centering
+\begin{tabular}{ | c | c | c | c | c |}
+\hline
+Scoring Formula & Parameter & Top 1 & Top 3 & Top 5\\
+\hline
+  \multirow{2}{*}{$\|E(c_i)-E(q)\|_1$} & Recognition Rate & 86\% & 93\% & 95.6\% \\\cline{2-5} 
+                                       & Overall Time [ms] & 0.13 & 0.16 & 0.14 \\
+  \hline                 
+  \multirow{2}{*}{$DTW(c_i,q)$} & Recognition Rate & 91\% & 96\% & 97\% \\\cline{2-5}
+                                & Overall Time [ms] & 24 & 24 &  24 \\
+  \hline
+  \end{tabular}
+\caption{Scoring result}
+\label{table:scoring_Classification} 
+\end{table}
+where $E(\cdot)$ denotes the vector produced from the the process described earlier, i.e., preprocessing followed feature extraction, embedding into the coefficient wavelet domain, and finally, dimensionality reduction.
+It can be seen that applying DTW on the ten candidates decreased the performance of the classification in more than 20 times, and the accuracy of the system did not improve in more than 5\%.
+
+\begin{table}
+\centering
+\begin{tabular}{ | c | c | c | c |}
+\hline
+Scoring Formula & SR & RR & Time [ms]\\
+\hline
+  $\|E(c_i)-E(q)\|_1$ & 76\% & 70\% & 0.6 \\ 
+  \hline
+  $DTW(c_i,q)$ & 82.7\% & 70\% & 0.6  \\
+  \hline
+  \end{tabular}
+\caption{Scoring result}
+\label{table:scoring_results} 
+\end{table}
 
 \section{Segmentation Results}
 

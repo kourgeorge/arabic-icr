@@ -52,13 +52,13 @@
 In this chapter we describe a recognition-based segmentation approach for on-line Arabic script.
 The segmentation is done in the stroke level in real-time, i.e., the segmentation is performed while the stroke is being written using the fast Arabic characters classification technique, described in Chapter \ref{chap:characters_classification}.
 
-The content is based on an accepted conference paper published in the "14'th International Conference on Frontiers in Handwriting Recognition".
+The content is based on a conference paper published in the "14'th International Conference on Frontiers in Handwriting Recognition".
 
 The proposed approach goes through three stages.
 In the first stage, \emph{points of interest} (POIs), are continuously nominated while the stroke is being scribed.
 The sub-strokes imposed by these POIs are scored by the Arabic characters classifier. 
 In the second stage, once the entire stroke is available, a rules-based process is used to refine the set of POIs and re-score the sub-strokes. 
-Eventually, the system heuristically determines the final set of SPs based on the sub-strokes scoring. See Figure \ref{fig:system_flow}. 
+Eventually, the system heuristically determines the final set of SPs based on the sub-strokes scoring. See Figure \ref{fig:system_flow}. \emph{TODO:give more information about the diagram}
 
 \begin{figure}[h]
 \centering
