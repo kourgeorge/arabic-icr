@@ -84,14 +84,14 @@ One of the earliest studies in the field of on-line Arabic character recognition
 Many types of classification techniques were investigated since then, including Artificial Neural Networks \cite{alijla2012oiahcr,ismail2012online}, Decision Trees \cite{ismail2012online, al2010recognition, omer2010online}, Hidden Markov Models \cite{biadsy2006online} and $k$-NN \cite{elglaly2011isolated}.
 An on-line Arabic handwritten character recognition method, which uses structural features and decision trees, was presented by Al-Taani and Al-Haj \cite{al2010recognition}. 
 The system was tested on a set of 1400 different characters and achieved about 75\% recognition rate. 
-The dataset was obtained by capturing the handwriting of ten users that wrote the 28 Arabic characters, in their isolated form, five times in order.
+The dataset was obtained by capturing the handwriting of 10 users that wrote the 28 Arabic characters, in their isolated form, five times in order.
 A rules based approach for on-line Arabic characters classification was proposed in \cite{ismail1859online}. 
 The performance of the system was compared to the classification results obtained using artificial neural networks and and decision trees. 
 A set of 504 characters were used for training and the test set contained 336 characters. 
 The system obtained a recognition rate of about 97\%. 
 Addakiri and Bahaj \cite{addakiri2012line} presented an on-line Arabic handwritten character
 recognition system based on Neural Networks. 
-Their approach was tested on 1400 different characters written by ten users and achieved accuracy of 83\%.
+Their approach was tested on 1400 different characters written by 10 users and achieved accuracy of 83\%.
 
 EMD is a natural and intuitive metric to measure similarity between histograms. 
 It has been successfully used in many fields of image matching and retrieval \cite{grauman2004fast, rubner2000earth}.
@@ -302,18 +302,22 @@ The last row in Table \ref{table:results_position} shows the accumulative averag
 
 In Table \ref{table:configurations} we propose several activation configurations of the presented approach that target different balance points between accuracy and time performance.
 In each experiment, the classifier performance was measured in terms of accuracy and the average response time for classifying a single sample.
-The first configuration, titled \emph{High Accuracy}, we evaluate the classifier as presented in this work, including the re-scoring stage described in Section \ref{subsec:candidates_rescoring}.
-Applying the re-scoring, although being invoked on a short list of candidates, ten candidates in our implementation, has a considerable impact on the classifier time performance. 
+
+In the first configuration, titled \emph{High Accuracy}, we evaluate the classifier as presented in this work, including the re-scoring stage described in Section \ref{subsec:candidates_rescoring}.
 This configuration should be used in implementations which require high classification rate and can tolerate a certain degree of latency.
+
 In the second configuration, named \emph{Low Latency}, the re-scoring stage is skipped.
+As can be seen in Table \ref{table:configurations}, the response time in this configuration is significantly lower compared to the first configuration.
+Applying the re-scoring, although being invoked on a short list of candidates, 10 candidates in our implementation, has a considerable impact on the classifier time performance. 
 This configuration should be considered in cases where the time performance is a critical factor, such as in real-time classification and recognition-based script segmentation systems.
-When the top three candidates is considered, the difference in accuracy is small between the first and second configurations, and the latency resulted from the re-scoring done in the first configuration, in most cases, will not pay. 
+When the top three candidates are considered, the difference in accuracy is small between the first and second configurations, and the latency resulted from the re-scoring process done in the first configuration, in most cases, will not pay. 
+
 The dimensionality reduction and the indexing processes are both computationally expensive and time consuming. 
-Although both stages are usually performed off-line in the learning stage, in systems where the learning is performed on-line, the latency they impose on the learning process is undesired.
+Although both stages are usually performed off-line in the learning stage, in systems in which the learning is performed on-line, the latency they impose on the learning process is undesired.
 Thus, in the third configuration, named \emph{Fast Learning}, both the dimensionality reduction and the indexing stages were omitted from the learning process.
 In addition, no re-scoring is performed in the classification flow.
-Comparing the results of the this configuration with the second experiment shows that the dimensionality reduction process done in the second configuration has improved the time performance of the classifier significantly, without affecting much the classification rate.
-We have noted that the vast majority of the delay was caused by the dimensionality reduction stage.
+Comparing the results of the this configuration with the second configuration shows that the dimensionality reduction process done in the second configuration has improved the time performance of the classifier significantly, without affecting much the classification rate.
+We have noted that the vast majority of the delay was caused by the dimensionality reduction stage rather than from the indexing process.
 However, due to the sensitivity of the k-d tree to high dimensional data, when omitting the dimensionality reduction process, one should not perform indexing using k-d tree because it would negatively affect the classification repose time.
 Skipping the dimensionality reduction and the indexing stages has decreased the training time of the system in about 7 seconds.
 
@@ -336,7 +340,7 @@ Skipping the dimensionality reduction and the indexing stages has decreased the 
 \end{table}
 
 Tables \ref{table:results_position} and \ref{table:configurations} show the results of experiments performed using the SC as the shape descriptor.
-The goal of the following experiment is to compare the different shape descriptors. See Table \ref{table:features_comparison}.
+Table \ref{table:features_comparison} compares the performance of the shape descriptors by running the classifier in the \emph{High Accuracy} configuration using the different descriptors.
 
 \begin{table}
 \centering
@@ -373,12 +377,12 @@ Using a voting process within the top five results gave a $94.7\%$ recognition r
 Analysing the failures of the misclassified samples shows that most recognition errors occur as a result of misclassifying a single character. 
 In most cases the misclassified character is confused with a character having a very similar shape, which can be corrected using information retrieved by the associated additional stroke, such as the case of the letter \RL{-l} and the letter \RL{-n} in their handwritten form.
 
-\vspace{-10pt}
+\vspace{-30pt}
 
 \section{Summary and Future Work}
 \label{sec:summary_future_work}
 
-\vspace{-15pt}
+\vspace{-20pt}
 
 In this paper, we propose a high-performance approach for Arabic handwritten characters classification.
 The system was trained and evaluated on characters in all positions using letter samples that were extracted from the ADAB database.
@@ -393,16 +397,13 @@ Then, we used the characters classification information obtained by a real-time 
 In a future work we will expand the classifier to consider additional strokes to improve the discrimination power of the classifier. 
 We believe that this will significantly improve the segmentation and classification results.
 
-\vspace{-15pt}
-
+\vspace{-20pt}
 \section*{Acknowledgment}
-
-\vspace{-15pt}
-
+\vspace{-20pt}
 We would like to thank Professor Dana Ron, from the Tel-Aviv University, for her valuable help in this research. 
 This work has been supported in part by the German Research Foundation under grant no. FI 1494/3-2.
 
-\IEEEtriggeratref{26}
+\IEEEtriggeratref{25}
 \bibliographystyle{IEEEtran}
 \bibliography{IEEEabrv,bibliography}
 
