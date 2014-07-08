@@ -319,6 +319,18 @@ On the other hand, the $k$-NN algorithm has some drawbacks.
 First, $k$-NN needs a large dataset in-order to achieve high classification accuracy. 
 Second, it is very sensitive to data errors and can be easily fooled by outliers.
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Literature review}}{}
+An on-line Arabic handwritten character recognition method, which uses structural features and decision trees, was presented by Al-Taani and Al-Haj \cite{al2010recognition}. 
+The system was tested on a set of 1400 different characters and achieved about 75\% recognition rate. 
+The dataset was obtained by capturing the handwriting of 10 users that wrote the 28 Arabic characters, in their isolated form, five times in order.
+A rules based approach for on-line Arabic characters classification was proposed in \cite{ismail1859online}. 
+The performance of the system was compared to the classification results obtained using artificial neural networks and and decision trees. 
+A set of 504 characters were used for training and the test set contained 336 characters. 
+The system obtained a recognition rate of about 97\%. 
+Addakiri and Bahaj \cite{addakiri2012line} presented an on-line Arabic handwritten character
+recognition system based on Neural Networks. 
+Their approach was tested on 1400 different characters written by 10 users and achieved accuracy of 83\%.
+
 \subsection{Arabic Script Segmentation}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
 An integral part of the handwriting recognition process, when the analytic approach is considered, is segmentation. 
@@ -387,6 +399,7 @@ The letters candidates and their scoring were used to determine the best set of 
 In this thesis, we propose and implement a novel real-time approach for segmenting and recognizing on-line handwritten Arabic script.
 In Chapter \ref{chap:characters_classification}, we present a fast technique for Arabic characters classification.
 The characters classifier employs state-of-the-art similarity measure and search techniques for fast and accurate classification of characters.
+
 A real-time, stroke level, recognition-based, segmentation technique is detailed in Chapter \ref{chap:strokes_segmentation}.
 We present a procedure for nominating segmentation points whilst the stroke is being scribed and proposed algorithms for selecting the final segmentation set of segmentation points.
 The results obtained by the classification system and the segmentation process are presented in Chapter \ref{chap:results}.
@@ -402,6 +415,24 @@ First, it does not regard additional strokes although they can be used to improv
 Second, the analysis is performed independently on each stroke thus the system does not handle letters spanned over multiple strokes. 
 While this is a reasonable assumption, it is not always true. 
 Our future work will focus on waiving these limitations. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Conference Publications}
+
+The following two publication conclude the results of this thesis.  
+
+\begin{itemize}
+
+\item A paper titled \emph{"Fast Classification of Handwritten On-line Arabic Characters"} was accepted for publication in the proceedings of the \emph{6th International Conference of Soft Computing and Pattern Recognition} (SoCPaR 2014) in June 20, 2014.
+
+\item A conference paper titled \emph{"Real-time Segmentation of On-line Handwritten Arabic Script"} was accepted for publication in the proceedings of the \emph{14th International Conference on Frontiers in Handwriting Recognition} (ICFHR-2014) in April 21, 2014.
+
+\end{itemize}
+
+
 
 %\bibliographystyle{plainnat}
 %\bibliography{references}

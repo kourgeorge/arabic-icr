@@ -278,10 +278,14 @@ In Chapter \ref{chap:results} we compare the performance of the above descriptor
 \label{sec:similarity_measures}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
-Given two visual data elements, the task of mathematically capturing the human perceptual similarity is predominantly challenging. Similarity measure algorithms aim to quantitatively approximate the perceptual resemblance between data elements. In this chapter, we overview and discuss the different aspects of similarity measure evaluation techniques and present two approaches used in this work.
+Given two visual data elements, the task of mathematically capturing the human perceptual similarity is extremely challenging. Similarity measure algorithms aim to quantitatively approximate the perceptual resemblance between data elements. In this chapter, we overview and discuss the different aspects of similarity measure evaluation techniques and present two approaches used in this work.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Intuition}}{}
-The classification technique we use is based on nearest neighbors retrieval, namely, the labeling of a query object is determined by considering the labels of its closest neighbors. Thus, the ability to correctly and efficiently determine the perceptual distance between two given handwritten strokes is  substantial. Evaluating the dissimilarity between two strokes based on the raw data representation is difficult and computationally expensive. To overcome this hardship, feature extraction methods are used, as described in Section \ref{sec:feature_extraction}, to map the original data into the feature space. The transformation is done by extracting descriptive and expressive information from the raw data representation. In the feature space the samples are represented compactly and two given feature vectors can be compared using an effective distance function. A desired feature extraction technique should facilitate assessing the similarity degree between two objects by maintaining that the distance between them in the feature space reveals their similarity in the real world, and to do so inexpensively. 
+$k$ nearest neighbours based classification techniques, usually requires the ability to correctly and efficiently determine the perceptual distance between two given objects.
+In our case, evaluating the dissimilarity between two handwritten strokes based on the raw data representation is difficult and computationally expensive. 
+To overcome this hardship, feature extraction methods are used, as described in Section \ref{sec:feature_extraction}, to map the original data into the feature space. 
+The transformation is done by extracting descriptive and expressive information from the raw data representation. 
+In the feature space the samples are represented compactly and two given feature vectors can be compared using an effective distance function. A desired feature extraction technique should facilitate assessing the similarity degree between two objects by maintaining that the distance between them in the feature space reveals their similarity in the real world, and to do so inexpensively. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Distance function formal definition}}{}
 The similarity measure is formalized as a \emph{distance function}. 
@@ -310,9 +314,7 @@ A good similarity measure should be able to cope with various types of discrepan
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Euclidean and Manhattan}}{}
 The Euclidean distance is a basic, common and easy to compute distance function. Yet, it is not necessarily appropriate for capturing distances for any given space. For instance, a taxi driver in Manhattan should not measure the distance in terms of the length of the straight line to his destination, but in terms of the Manhattan distance, which takes into account that streets are either orthogonal or parallel to each other.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Minkowski distance}}{}
-The Euclidean and the Manhattan distances, are special cases of the Minkowski distance. The Minkowski distance function, usually denoted as $Minkowski_p$ where $p$ is the distance order parameter, is a generalization of the well-known Manhattan, Euclidean and Chebyshev distance functions for which $p=1$, $p=2$ and $p=\infty$ respectively.
+The Euclidean and the Manhattan distances, are special cases of the Minkowski distance.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Different Representations}}{}
 Generally, similarity measures techniques can be applied on the raw data or on other representations of the data, such as on the feature vectors \cite{chen2005similarity}. Usually, different similarity measure methods are used for different types and representations of the data. In the course of this work, we encountered mainly three types of mathematical constructs which their distance functions had to be defined.
@@ -713,8 +715,9 @@ However, in our application, where the histogram descriptors are to be stored ra
 Computing the EMD distance, in the next step, is done by calculating the Manhattan distance between the scaled coefficients of the corresponding histograms.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{shirdhonkar - theoretical and empirical bounds}}{}
-They provided both theoretical and experimental bounds. The theoretical approximation is based on Theorem 2 in \cite{shirdhonkar2008approximate}. Using a large dataset, they were able to experimentally establish that the proposed approximation follows the true EMD closely empirically and can be alternatively used without any significant difference in performance. The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity. The authors tested few wavelets and showed that the Coif-lets of order 3 and the Symmetric Daubechies wavelets of order 5 have lowest error rates. We followed their results and have chosen to work with the order 3 Coif-lets.
-
+They provided both theoretical and experimental bounds. The theoretical approximation is based on Theorem 2 in \cite{shirdhonkar2008approximate}. Using a large dataset, they were able to experimentally establish that the proposed approximation follows the true EMD closely empirically and can be alternatively used without any significant difference in performance. The wavelet EMD metric can be computed in $O\left( N \right)$ time complexity. The authors tested few wavelets and showed that the Coif-lets of order 3 and the Symmetric Daubechies wavelets of order 5 have lowest error rates. 
+We evaluated several wavelets, including the Haar wavelet, the Coif-let of order 1, the Coif-let of order 2 and the Symlets of order 5 wavelets.
+The Haar wavelet achieved the best classification results.
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Performance - Indyk vs. shirdhonkar}}{}
 Empirically, the normalized RMS error obtained by using the wavelet embedding was between in 13\% and 20\% compared to the embedding proposed by Indyk and Thaper which achieved 43\% in the same experiment. In addition, the wavelet embedding surpassed the Indyk and Thaper embedding in time performance. Note that the embedding process requires histograms, thus the vectors in the feature space need to be normalized before using this method.
 
@@ -920,13 +923,13 @@ The estimated intrinsic dimensionality $\hat{d}$ of the dataset is then calculat
 \hline
 Letter position & Number of samples & PCA & PCA+LDA\\
 \hline                 
-  Iso & 1372 & 29 & 7 \\ 
+  Ini & 1405 & 48 & 9 \\ 
   \hline
-  Ini & 1405 & 39 & 9 \\ 
+  Mid & 1196 & 52 & 10 \\ 
   \hline
-  Mid & 1196 & 36 & 8 \\ 
+  Fin & 1629 & 44 & 9 \\ 
   \hline
-  Fin & 1629 & 27 & 7 \\ 
+  Iso & 1372 & 39 & 8 \\ 
   \hline
 \end{tabular}
 \caption{The dimensionality of the four datasets after applying PCA and PCA+LDA.}
@@ -936,7 +939,21 @@ Letter position & Number of samples & PCA & PCA+LDA\\
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The DR package}}{}
 \emph{Matlab Toolbox for Dimensionality Reduction} described in \cite{van2007introduction} was used as Matlab wrapper for the dimensionality reduction techniques used in this work.
 
-  
+\section{Candidates Scoring}
+\label{sec:candidates_scoring}
+
+Given an unlabelled sequence $q$, the $k$-NN classifier returns a set of $k$ potential letter candidates from the sample set, scored using their distance from $q$ in the coefficient wavelet domain.
+In our implementation we set $k=10$.
+The scoring of the candidates can be conducted by calculating the distance of a candidate to the query object in the reduced embedded space, using the Manhattan distance.
+This will give the approximate EMD distance between them. 
+However, in implementations that require exact scoring of the candidates, the approximated EMD distance may not be sufficient and an additional scoring stage should be employed to obtain a more accurate similarity measure between the query object and the candidates.
+Nevertheless, in most cases such similarity measure technique are computationally expensive can be applied only on a short list of candidates rather than on the entire sample set.
+In this work, re-scoring of the candidates is done by calculating the DTW distance between the preprocessed sequence of the query letter and each one of the candidates.
+The constrained version of DTW using the Sakoe-Chuba Band \cite{sakoe1978dynamic} demonstrated better results the unconstrained version of DTW.
+
+A comparison between the case of including and when avoiding the scoring stage will be given in Chapter \ref{chap:results}.
+
+
 %\bibliographystyle{plainnat}
 %\bibliography{references}
 %\end{document}

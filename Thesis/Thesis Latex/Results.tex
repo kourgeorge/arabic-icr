@@ -37,22 +37,10 @@
 
 \chapter{Experimental Results}
 \label{chap:results}
-Two systems were described in this work, the Arabic characters classifier and the real-time segmentation system. 
-The recognition-based approach taken in this work depend heavily on the character fast character classification system which is required to provide a high quality list of candidates and their corresponding scoring, for the classifier to work accurately.
 
-In order to give a high level resolution of the overall system's performance, the two sections below provide detailed evaluation of the classification results achieved by the letters classifier and the segmentation results of the real-time segmentation system.
-
-
-\section{Letters Classification Results}
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}
-Using a series of experiments, we aim at quantifying the contribution and importance of each stage to the classification process.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The sample set}}{}
-The sample set of individual characters used for both the learning and testing of the classifier is distributed as shown in Table \ref{table:sample_set}.
-As previously mentioned, the classifier contains four internal databases. 
-It receives a sequence of points $S=\{p_{i}\}_{i=1}^{n}$ representing the letter trajectory and a letter position $\phi \in \{Ini, Mid, Fin, Iso\}$, and returns the classification of the sample in that corresponding database.
-Below, we give a detailed evaluation of the classifier performance in terms of accuracy and running time.
-
+In order to give a high level resolution of the overall performance of the system, the two sections below provide detailed evaluation of the classification results achieved by the letters classifier and the segmentation results of the real-time segmentation system.
+Using a public and not a self collected samples gives our results a further firmness.
+The system was implemented and tested using the Matlab environment.
 
 \begin{table}[b]
 \centering
@@ -67,156 +55,101 @@ Below, we give a detailed evaluation of the classifier performance in terms of a
 \label{table:sample_set} 
 \end{table}
 
+\section{Letters Classification Results}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The sample set}}{}
+The sample set of individual characters used for both the learning and testing of the classifier is distributed as shown in Table \ref{table:sample_set}.
+As previously mentioned, the classifier contains four internal databases. 
+It receives a sequence of points $S=\{p_{i}\}_{i=1}^{n}$ representing the letter trajectory and a letter position $\phi \in \{Ini, Mid, Fin, Iso\}$, and returns the classification of the sample in that corresponding database.
+Below, we give a detailed evaluation of the classifier performance in terms of accuracy and running time.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Cross validation}}{}
-Measuring the system performance was performed by running 10-fold cross-validation.
-The values calculated for the accuracy measures in the following experiments are done by weighted average according to the letters distribution in the test set.
-In general, cross-validation is a technique for assessing how the results of a statistical analysis model will generalize and perform in practice.  
-A round of cross-validation involves partitioning a sample set into two disjoint subsets, one used as the training set and the other as the testing set.
-Performing multiple rounds of cross-validation using different partitions helps in obtaining a better firmness of the results. 
-In the k-fold cross-validation, the original sample is randomly partitioned into k equal size sub-samples. 
-$k$ rounds of cross validation are performed. In each round, a single sub-sample is used to test the model and all the other $k-1$ sub-samples are used as the training set.
-The $k$ results are then averaged to produce a single estimation.
-The advantage of this method over repeated random sub-sampling is that all observations are used for both training and validation, and each observation is used for validation exactly once.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Experiments}}{}
-The three main stages in the classifier are: 1. the feature extraction stage; 2. the EMD embedding; and 3. the dimensionality reduction stage.
-In the first configuration, named Baseline, we evaluate the classifier as presented in this work.
-In the second (No DR) and the third (No Embedding) configurations, dimensionality reduction and embedding were skipped, respectively.
-For each configuration, the classifier performance was measured in terms of accuracy, by calculating the \emph{Correct Classification Rate} (CCR), and running time.
-Table \ref{table:dr_embedding_comparison} shows the results of three configurations, all using shape context as the shape descriptor.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The scoring contribution}}{}
-We have noted that although the candidates scoring according to the formula given in Equation \ref{eq:candidate_scoring} has raised the correct segmentation rate significantly, it had a limited effect on the classification accuracy. 
-Thus, in the experiments above, the candidates scoring was not taken into consideration, i.e., the candidates were ranked solely according to the distance in the EMD space.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{No k-d tree}}{}
-The performance of the system with respect to the running time in the following experiments was measured without building an indexing technique, since the construction of a k-d tree  
+The accuracy and the time performance of the classifier was measured using 10-fold cross-validation.
+In Table \ref{table:results_position}, the Correct Classification Rate (CCR), recall and precision rates are given for each characters position.
+The last row in Table \ref{table:results_position} shows the accumulative average of the results weighted according to the amount of samples in each dataset.
 
 \begin{table}
 \centering
-\begin{tabular}{ | c | c | c | c |}
-  \hline
-  Experiment & CCR [Top 1]  & CCR [Top 3] & CCR [Top 5]  & Time [ms]\\
-  \hline                 
-  Baseline & 90.4\% & 95.77\% & 96.72\% & 28, 23, 24 \\
-  \hline
-  No DR & 90.97\% & 95.93\% & 97\% & 40, 38,39\\ 
-  \hline
-  No embedding & 90.66\% &  94.23\% & 95\% & 30,27,28\\
-  \hline
-\end{tabular}
-\caption{CCR and time performance of the different configurations. (with scoring)}
-\label{table:dr_embedding_comparison} 
-\end{table}
-
-
-\begin{table}
-\centering
-\begin{tabular}{ | c | c | c | c |}
-  \hline
-  Experiment  & CCR [Top 1]  & CCR [Top 3] & CCR [Top 5]  & Time [ms]\\
-  \hline                 
-  Baseline  & 86\% & 93\% & 95.54\% & 0.1,0.18,0.18  \\
-  \hline
-  No DR & \% & \% & \% & \\ 
-  \hline
-  No embedding & 89.61\% &  93.59 \% & 94.81\% & 0.68,0.69,0.72 \\
-  \hline
-\end{tabular}
-\caption{CCR and time performance of the different configurations. (No Scoring)}
-\label{table:dr_embedding_comparison} 
-\end{table}
-
-
-In the first configuration, named Baseline, we evaluate the classifier as presented in this work.
-In the second (No DR) and the third (No Embedding) configurations, dimensionality reduction and embedding were skipped, respectively.
-For each configuration, the classifier performance was measured in terms of accuracy, by calculating the \emph{Correct Classification Rate} (CCR), and running time.
-It can be noted that the dimensionality reduction stage did not affect the system performance in terms of accuracy but improved the time performance significantly.
-Using k-d tree, due to its known sensitivity to high dimensional data, would result in lager performance degradation, if the dimensionality reduction stage is skipped.
-In addition, it can be noted that in the third configuration, the accuracy is higher than in the Baseline configuration, when considering the top candidate. 
-However, when the top three candidates are considered, the embedding performs better.
-Thus, we can conclude that the candidates list obtained in the Baseline is more qualitative compared to the list obtained when the nearest neighbours is applied in the shape context space directly.
-
-
-\subsection{Comparing Feature Sets}
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Features comparison}}{}
-The goal of following experiment is to evaluate the two feature extraction techniques that were used in this work and compare it to the results obtained if none is used, namely, the stroke using the original stroke sequence as the feature space.
-
-The results shown in Table \ref{table:features_comparison}
-\begin{table}
-\centering
-\begin{tabular}{ | c | c | c | c |}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{ | c | c | c | c | c |}
 \hline
-	Shape Descriptor  & CCR [Top 1]  & CCR [Top 3] & CCR [Top 5] \\
+	\textbf{Character Position} & \textbf{CCR} & \textbf{Recall} &  \textbf{Precision} \\
 	\hline 
-	Shape Context & 86\% & 95\% & \\                
+	Ini & 92\% & 97\% & 97\% \\                
   	\hline
-  	MAD & 88.5\% & 78\% &  \\
+  	Mid & 89\% & 85\% & 90\% \\
   	\hline
-  	None & 86\% &  87\% & \\
+  	Fin & 91\% &  95\% & 100\% \\
+  	\hline
+  	Iso & 92\% &  91\% & 95\% \\
+  	\hline
+  	\textbf{Overall} & \textbf{91\%} &  \textbf{93\%} & \textbf{96\%} \\
+  	\hline
+\end{tabular}
+\caption{Classification results by character position.}
+\label{table:results_position} 
+\end{table}
+
+In Table \ref{table:configurations} we propose several activation configurations of the presented classifier that target different balance points between accuracy and time performance.
+In each experiment, the classifier performance was measured in terms of accuracy and the average response time for classifying a single sample.
+
+In the first configuration, titled \emph{High Accuracy}, we evaluate the classifier as presented in this work, including the re-scoring stage described in Section \ref{subsec:candidates_rescoring}.
+This configuration should be used in implementations which require high classification rate and can tolerate a certain degree of latency.
+
+In the second configuration, named \emph{Low Latency}, the re-scoring stage is skipped.
+As can be seen in Table \ref{table:configurations}, the response time in this configuration is significantly lower compared to the first configuration.
+Applying the re-scoring, although being invoked on a short list of candidates, 10 candidates in our implementation, has a considerable impact on the classifier time performance. 
+This configuration should be considered in cases where the time performance is a critical factor, such as in real-time classification and recognition-based script segmentation systems.
+When the top three candidates are considered, the difference in accuracy is small between the first and second configurations, and the latency resulted from the re-scoring process done in the first configuration, in most cases, will not pay. 
+
+The dimensionality reduction and the indexing processes are both computationally expensive and time consuming. 
+Although both stages are usually performed off-line in the learning stage, in systems in which the learning is performed on-line, the latency they impose on the learning process is undesired.
+Thus, in the third configuration, named \emph{Fast Learning}, both the dimensionality reduction and the indexing stages were omitted from the learning process.
+In addition, no re-scoring is performed in the classification flow.
+Comparing the results of the this configuration with the second configuration shows that the dimensionality reduction process done in the second configuration has improved the time performance of the classifier significantly, without affecting much the classification rate.
+We have noted that the vast majority of the delay was caused by the dimensionality reduction stage rather than from the indexing process.
+However, due to the sensitivity of the k-d tree to high dimensional data, when omitting the dimensionality reduction process, one should not perform indexing using k-d tree because it would negatively affect the classification repose time.
+Skipping the dimensionality reduction and the indexing stages has decreased the training time of the system in about 7 seconds.
+
+\begin{table}
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{ | c | c | c | c |}
+  \hline
+  \textbf{Configuration}  & \textbf{CCR [Top 1]}  & \textbf{CCR [Top 3]} & \textbf{Time [ms]}\\
+  \hline
+  High Accuracy & 91\% & 96\% & 29.9 \\ 
+  \hline
+  Low Latency   & 87\% & 94\% & 0.12 \\
+  \hline
+  Fast Learning & 90\% & 96\% & 4.4 \\ 
+  \hline
+\end{tabular}
+\caption{Classification and time performance of three configurations.}
+\label{table:configurations} 
+\end{table}
+
+Tables \ref{table:results_position} and \ref{table:configurations} show the results of experiments performed using the SC as the shape descriptor.
+Table \ref{table:features_comparison} compares the performance of the shape descriptors by running the classifier in the \emph{High Accuracy} configuration using the different descriptors.
+
+\begin{table}
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{ | c | c | c |}
+\hline
+	\textbf{Shape Descriptor}  & \textbf{CCR [Top 1]}  & \textbf{CCR [Top 3]} \\
+	\hline 
+	SC      & 91\% & 96\%  \\                
+  	\hline
+  	MAD     & 88\% & 94\% \\
+  	\hline
+  	None    & 87\% & 93\% \\
   	\hline
 \end{tabular}
 \caption{Comparing the correct classification rate of the different feature extraction techniques.}
 \label{table:features_comparison} 
 \end{table}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Segmentation rate}}{}
-In Table \ref{table:features_comparison}, it can be seen that the Sequence, i.e. using no feature extraction, have achieved almost the same accuracy results as when using SC.
-It can be seen that although the shape performance considerebly better than when no feature extraction step is employed, when looking at the top 3 candidates returned by the classifier.
-In addition we noted that the usage of the shape context raised the segmentation accuracy from 72\% to 76\%.
-
-Comparing the results obtained by the proposed classifier to other classification techniques that can be found in the literature, we found that results obtained by our classifier are promising given the constrained that our classifier is required to perform 
-
-
-\subsection{Candidates Scoring}
-\label{subsec:candidates_scoring}
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The input for this stage}}{}
-Given an unlabelled sub-stroke sequence $q$, the $k$-NN classifier returns a set of $k$ potential letter candidates from the sample set, $\{c\}_{i=1}^{k}$.
-The metric space is based on the $L_1$ distance in the normalized coefficient domain, which approximate the EMD distance, as detailed in Section \ref{sec:similarity_search}.  
-
-In this section we asses the effectiveness and efficiency of applying additional scoring stage that consists of expensive similarity measure techniques to precisely asses the perceptual similarity between the given unlabelled sample and the candidates and rank the candidates.
-
-The results of the letters classification accuracy and performance can be seen in Table \ref{table:scoring_Classification}.
-
-\begin{table}
-\centering
-\begin{tabular}{ | c | c | c | c | c |}
-\hline
-Scoring Formula & Parameter & Top 1 & Top 3 & Top 5\\
-\hline
-  \multirow{2}{*}{$\|E(c_i)-E(q)\|_1$} & Recognition Rate & 86\% & 93\% & 95.6\% \\\cline{2-5} 
-                                       & Overall Time [ms] & 0.13 & 0.16 & 0.14 \\
-  \hline                 
-  \multirow{2}{*}{$DTW(c_i,q)$} & Recognition Rate & 91\% & 96\% & 97\% \\\cline{2-5}
-                                & Overall Time [ms] & 24 & 24 &  24 \\
-  \hline
-  \end{tabular}
-\caption{Scoring result}
-\label{table:scoring_Classification} 
-\end{table}
-where $E(\cdot)$ denotes the vector produced from the the process described earlier, i.e., preprocessing followed feature extraction, embedding into the coefficient wavelet domain, and finally, dimensionality reduction.
-It can be seen that applying DTW on the ten candidates decreased the performance of the classification in more than 20 times, and the accuracy of the system did not improve in more than 5\%.
-
-\begin{table}
-\centering
-\begin{tabular}{ | c | c | c | c |}
-\hline
-Scoring Formula & SR & RR & Time [ms]\\
-\hline
-  $\|E(c_i)-E(q)\|_1$ & 76\% & 70\% & 0.6 \\ 
-  \hline
-  $DTW(c_i,q)$ & 82.7\% & 70\% & 0.6  \\
-  \hline
-  \end{tabular}
-\caption{Scoring result}
-\label{table:scoring_results} 
-\end{table}
-
 \section{Segmentation Results}
-
-Comparing the performance of the proposed approach to results obtained by related researches could be difficult due to the different experimental settings, databases and methodology; not to mention the different measures used to present the results. 
+Comparing the performance of the real-time segmentation approach described in this work to results obtained by related researches is difficult due to the different experimental settings, databases and methodology; not to mention the different measures used to present the results. 
 The usage of the ADAB database, instead of a self-collected database, standardize and reinforces our results. 
 In Table \ref{table:general_stats}, we provide basic statistics of our sample set. 
 Table \ref{table:results} summarizes the system's performance.
@@ -341,6 +274,23 @@ In addition, it is evident that the recognition rate (RR) is more sensitive to s
 \caption{The impact of increasing the maximal number of samples per class on the segmentation and recognition rates.}
 \label{fig:num_letter_impact}
 \end{figure}
+
+\section{WPs Recognition Using Characters Classification Information}
+\label{sec:wps_recognition}
+The segmentation and classification information obtained by a real-time segmentation system, can be used to significantly reduce the potential dictionary size and accelerate a later holistic recognition process.
+In a dictionary-free environment, the classification information can be employed to dynamically build a class of different shapes for all possible WPs, as described below.
+Following the real-time segmentation process, the $10$ top scored candidates of each character are recorded. 
+These shapes are used to generate a complete list of all possible shape concatenation of the retrieved candidates. 
+The obtained candidates represent different shapes of the same letter producing multiple shapes of the same WP. 
+The cardinality of the generated list is $10^p$ where p is the predicted number of characters in the WP using the segmentation process. 
+The large size of the generated list, which may exceed $100,000$ shapes, requires a similar process of embedding and dimensionality reduction, as described above, to generate a short list of candidates. 
+The short list of candidates in the next step is matched against the queried WP using the original expensive and more accurate matching process. 
+Using the proposed approach, the $10$ top WPs results yield a $98.1\%$ recognition rate. 
+The recognition rate of the first top candidate dropped down to $90.8\%$. 
+Using a voting process within the top five results gave a $94.7\%$ recognition rate. 
+
+Analysing the failures of the misclassified samples shows that most recognition errors occur as a result of misclassifying a single character. 
+In most cases the misclassified character is confused with a character having a very similar shape, which can be corrected using information retrieved by the associated additional stroke, such as the case of the letter \RL{-l} and the letter \RL{-n} in their handwritten form.
 
 %\end{document}
 
