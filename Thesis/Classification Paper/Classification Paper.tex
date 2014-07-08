@@ -85,8 +85,8 @@ Many types of classification techniques were investigated since then, including 
 An on-line Arabic handwritten character recognition method, which uses structural features and decision trees, was presented by Al-Taani and Al-Haj \cite{al2010recognition}. 
 The system was tested on a set of 1400 different characters and achieved about 75\% recognition rate. 
 The dataset was obtained by capturing the handwriting of 10 users that wrote the 28 Arabic characters, in their isolated form, five times in order.
-A rules based approach for on-line Arabic characters classification was proposed in \cite{ismail1859online}. 
-The performance of the system was compared to the classification results obtained using artificial neural networks and and decision trees. 
+A rules-based approach for on-line Arabic characters classification was proposed in \cite{ismail1859online}. 
+The performance of the system was compared to the classification results obtained using artificial neural networks and decision trees. 
 A set of 504 characters were used for training and the test set contained 336 characters. 
 The system obtained a recognition rate of about 97\%. 
 Addakiri and Bahaj \cite{addakiri2012line} presented an on-line Arabic handwritten character
@@ -105,7 +105,7 @@ The efficient embedding of the EMD metric proposed by \cite{shirdhonkar2008appro
 In the presented work, we propose a fast and accurate classification technique for handwritten Arabic characters.
 In Figure \ref{fig:letters_classifier_learning_flow} we give a high level flow visualization of the classification system.
 The classifier receives a sequence of points $S=\{p_{i}\}_{i=1}^{n}$ representing the letter trajectory and a letter position $\phi \in \{Ini, Mid, Fin, Iso\}$.
-The query sequence goes through several stages that include preprocessing, feature extraction, embedding, dimensionality reduction and eventually a classification process that outputs a short list of candidates and their scoring, which indicates the perceptual similarity between the sequence and the candidates. 
+The query sequence goes through several stages that include preprocessing, feature extraction, embedding, dimensionality reduction and eventually a classification process that outputs a short list of candidates and their scoring, which indicate the perceptual similarity between the sequence and the candidates. 
 Each stage will be discussed in details in the following subsections.
 
 \begin{figure}
@@ -275,7 +275,7 @@ In this work we considered the following combinations as composite characters: \
 The system was implemented and tested using the Matlab environment.
 The accuracy and the time performance of the classifier was measured using 10-fold cross-validation.
 Using a public and not a self collected samples gives our results a further firmness.
-In Table \ref{table:results_position}, the Correct Classification Rate (CCR), recall and precision rates are given for each characters position.
+In Table \ref{table:results_position}, the Correct Classification Rate (CCR), recall and precision rates are given for each dataset.
 The last row in Table \ref{table:results_position} shows the accumulative average of the results weighted according to the amount of samples in each dataset.
 
 \begin{table}
@@ -285,15 +285,15 @@ The last row in Table \ref{table:results_position} shows the accumulative averag
 \hline
 	\textbf{Character Position} & \textbf{CCR} & \textbf{Recall} &  \textbf{Precision} \\
 	\hline 
-	Ini & 92\% & 97\% & 97\% \\                
+	Ini & 93\% & 85\% & 88\% \\                
   	\hline
-  	Mid & 89\% & 85\% & 90\% \\
+  	Mid & 89\% & 87\% & 90\% \\
   	\hline
-  	Fin & 91\% &  95\% & 100\% \\
+  	Fin & 91\% &  86\% & 92\% \\
   	\hline
-  	Iso & 92\% &  91\% & 95\% \\
+  	Iso & 91\% &  81\% & 90\% \\
   	\hline
-  	\textbf{Overall} & \textbf{91\%} &  \textbf{93\%} & \textbf{96\%} \\
+  	\textbf{Overall} & \textbf{91\%} &  \textbf{85\%} & \textbf{90\%} \\
   	\hline
 \end{tabular}
 \caption{Classification results by character position.}
@@ -377,7 +377,7 @@ Using a voting process within the top five results gave a $94.7\%$ recognition r
 Analysing the failures of the misclassified samples shows that most recognition errors occur as a result of misclassifying a single character. 
 In most cases the misclassified character is confused with a character having a very similar shape, which can be corrected using information retrieved by the associated additional stroke, such as the case of the letter \RL{-l} and the letter \RL{-n} in their handwritten form.
 
-\vspace{-30pt}
+\vspace{-25pt}
 
 \section{Summary and Future Work}
 \label{sec:summary_future_work}
