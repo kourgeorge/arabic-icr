@@ -17,9 +17,13 @@ ResampledLetterSequence = ResampleContour(SimplifiedLetterSequence,ResampleSize)
 FeatureVector = CreateFeatureVectorFromContour(ResampledLetterSequence, FeatureType);
 
 if (strcmp(RecParams.Alg(1),'EMD')==true)
-    WaveletVector = CreateWaveletFromFV(FeatureVector);
     pcacoef = LetterPositionDS.COEFF.PCACOEFF;
+    WaveletVector = CreateWaveletFromFV(FeatureVector);    
     PCAWaveletVector = WaveletVector' * pcacoef;
+    
+    %WaveletVector = FlattenFeatureVectors({FeatureVector});
+    %PCAWaveletVector = WaveletVector * pcacoef;
+    
     ReducedWaveletVector = out_of_sample(PCAWaveletVector,LetterPositionDS.COEFF);
     Candidates = GetCandidateskdTree(LetterPositionDS.KdTree,ReducedWaveletVector',LetterPositionDS.LettersMap, RecParams.NumCandidates,LetterPositionDS.FeaturesSpaceVectors,LetterPositionDS.SequencesArray);
 
@@ -27,7 +31,7 @@ if (strcmp(RecParams.Alg(1),'EMD')==true)
     for i=1: size(Candidates,1)    
         LetterCandidateFeatureVector = Candidates{i,4}';
         Diff = Cons_DTW(InputSequence,LetterCandidateFeatureVector{1},5);
-        Candidates{i,2} = (Candidates{i,2}+Diff)/2;
+        Candidates{i,2} = Diff+0.0000001;        
     end
 
     Candidates = Candidates(:,1:3);
@@ -47,7 +51,7 @@ end
 
 function Candidates = GetCandidateskdTree(KdTreee,vector,LettersMap, NumCandidates,FeaturesSpaceVectors,SequencesArray)
 global pos;
-[IDX,D] = knnsearch(KdTreee,vector','k',90);
+[IDX,D] = knnsearch(KdTreee,vector','k',10);
 Candidates= [];
 for i=1:length(IDX)
     if (size (Candidates,1)==NumCandidates)

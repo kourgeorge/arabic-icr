@@ -4,10 +4,10 @@ function [ output_args ] = TestLettersClassifier(  )
 
 LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
 
-[totalTimeIni, cpIni, numSamplesIni] = LetterPositionCrossValidation(LettersDataStructure.LettersDS.Ini);
-[totalTimeMid, cpMid, numSamplesMid] = LetterPositionCrossValidation(LettersDataStructure.LettersDS.Mid);
-[totalTimeFin, cpFin, numSamplesFin] = LetterPositionCrossValidation(LettersDataStructure.LettersDS.Fin);
-[totalTimeIso, cpIso, numSamplesIso] = LetterPositionCrossValidation(LettersDataStructure.LettersDS.Iso);
+[totalClassificationTimeIni, totalLearningTimeIni ,cpIni, numSamplesIni] = LetterPositionCrossValidation(LettersDataStructure.LettersDS.Ini);
+[totalClassificationTimeMid, totalLearningTimeMid ,cpMid, numSamplesMid] = LetterPositionCrossValidation(LettersDataStructure.LettersDS.Mid);
+[totalClassificationTimeFin, totalLearningTimeFin ,cpFin, numSamplesFin] = LetterPositionCrossValidation(LettersDataStructure.LettersDS.Fin);
+[totalClassificationTimeIso, totalLearningTimeIso ,cpIso, numSamplesIso] = LetterPositionCrossValidation(LettersDataStructure.LettersDS.Iso);
 
 totalSamplesNum = numSamplesIni+numSamplesMid+numSamplesFin+numSamplesIso;
 
@@ -21,7 +21,9 @@ cpMid
 cpFin
 cpIso
 
-CaculateTotalTime = (totalTimeIni+totalTimeMid+totalTimeFin+totalTimeIso)/totalSamplesNum
+CaculateClassificationTotalTime = (totalClassificationTimeIni+totalClassificationTimeMid+totalClassificationTimeFin+totalClassificationTimeIso)/totalSamplesNum
+CaculateLearningTime = (totalLearningTimeIni+totalLearningTimeMid+totalLearningTimeFin+totalLearningTimeIso)
+
 CorrectRate = cpIni.CorrectRate*IniFrac+cpMid.CorrectRate*MidFrac+cpFin.CorrectRate*FinFrac+cpIso.CorrectRate*IsoFrac
 
 Recall = cpIni.Sensitivity*IniFrac+cpMid.Sensitivity*MidFrac+cpFin.Sensitivity*FinFrac+cpIso.Sensitivity*IsoFrac
@@ -29,11 +31,11 @@ Precision = cpIni.PositivePredictiveValue*IniFrac+cpMid.PositivePredictiveValue*
 
 end
 
-function [totalTime, cp, numSamples] = LetterPositionCrossValidation(LetterPositionDS)
+function [totalClassificationTime, totalLearningTime ,cp, numSamples] = LetterPositionCrossValidation(LetterPositionDS)
 
-kForNN = 1;
+kForNN = 10;
 topK=1;
-DTW=0;
+DTW=1;
 
 [FeaturesSpaceVectors,WaveletSpaceVectors,LettersGroups, ~] = ExpandLettersStructForSVM( LetterPositionDS.Struct);
 
@@ -45,7 +47,7 @@ labeling = LettersGroups;
 labelingCells = cellstr(LettersGroups);
 cp = classperf(labelingCells);
 
-totalTime = 0;
+totalClassificationTime = 0;
 numSamples = size(LettersGroups,1);
 
 indices = crossvalind('Kfold', LettersGroups, 10);
@@ -56,11 +58,13 @@ for i = 1:10
     %%get the training set
     trainLabels = labeling(train);
     trainWaveletVectors = features(train,:);
+    tDRLrearning = cputime;
     [trainFeatures, COEFF, ~] = DimensionalityReduction2( trainWaveletVectors, trainLabels, 0.98);
+    eDRLrearning = cputime-tDRLrearning;
     
     %trainFeatures = trainWaveletVectors;
     
-    %e1 = 0;
+%    e1 = 0;
     
      t1 = cputime;
      testFeatures = features(test,:);
@@ -68,10 +72,13 @@ for i = 1:10
      PcaReduced = testFeatures * pcacoef;
      testFeatures = out_of_sample(PcaReduced,COEFF);
      e1 = cputime-t1;
-    
+     
     %class = knnclassify(testFeatures,trainFeatures,cellstr(trainLabels),3,'cityblock','random');
-    
+    tIndexingLearning = cputime;
     KdTree = createns(trainFeatures,'NSMethod','kdtree','Distance','cityblock');
+    eIndexingLearning = cputime-tIndexingLearning;
+    
+    %KdTree = createns(trainFeatures,'NSMethod','exhaustive','Distance','cityblock');
     t2 = cputime;
     [IDX,L1D] = knnsearch(KdTree,testFeatures,'k',kForNN);
     e2 = cputime-t2;
@@ -89,7 +96,8 @@ for i = 1:10
     
     class = knnBestClass(testSetlabelingResults,labelingCells(test,:),topK);
     
-    totalTime=totalTime+e;
+    totalClassificationTime=totalClassificationTime+e;
+    totalLearningTime = eDRLrearning+eIndexingLearning;
     
     classperf(cp,class,test);
 end
