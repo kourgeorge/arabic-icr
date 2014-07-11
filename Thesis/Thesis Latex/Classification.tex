@@ -257,7 +257,7 @@ To enables scale and translation invariance, the sizes and heights of these ring
 Formally, let $S$ be a shape and Let $C$ and $D$ be the centroid and the diameter of the shape respectively. 
 Let $S = \{p_j\}_{j = 1}^n$ a set of $n$ point taken uniformly on the shape. 
 Let $R$ be a ring with the radius $r$ and the center $C$ positioned above the shape $S$ with the height $h$. 
-Let $V = \{V_i\}_{i = 1}^l$ be a set of $l$ viewpoints lying uniformly on the ring $R$ and $\alpha(V_{ij})$ to be the angle between the segment $\overline {{V_i}{p_j}}$ and the plain contains the shape $S$. 
+Let $V = \{V_i\}_{i = 1}^\ell$ be a set of $\ell$ viewpoints lying uniformly on the ring $R$ and $\alpha(V_{ij})$ to be the angle between the segment $\overline {{V_i}{p_j}}$ and the plain contains the shape $S$. 
 When the parameter $j$ goes over all points in the sequence, we get the vector $Vec_i$ describing the shape from the view point $V_i$.
 The descriptor is the concatenation the vectors $V_i$ when the parameter $i$ goes over all viewpoints. 
 See illustration in Figure \ref{fig:mad_demo}.
@@ -633,7 +633,7 @@ and the \textbf{distortion} of $f$ is the product of the distortion and the expa
 \end{definition}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{$L_p$ advantage and drawbacks}}{}
-Using normed spaces (see Definitions \ref{def:norm}) such as the $L_p$ norm (see Definitions \ref{lp}) to solve the dissimilarity measure problem enables using data structures that facilitate sub-linear $k$-NN retrieval, such as k-d trees.
+Using normed spaces (see Definitions \ref{def:norm}) such as the $L_p$ norm (see Definitions \ref{lp}) to solve the dissimilarity measure problem enables using data structures that facilitate sub-linear $k$-NN retrieval, such as $k$-d trees.
 
 \begin{definition}
 Given a data space $D$, for any two data elements  $x,y \in D$, a \textbf{norm} $\|\cdot\|$ is defined as:
@@ -743,36 +743,36 @@ Indexing techniques are split into two types: exact and approximate. Exact techn
 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Examples of Exact and Approximate Indexing}}{}
-ANN methods such as k-d trees (will be described later) and Locality Sensitive Hashing (LSH) \cite{gionis1999similarity} have been successfully applied on a variety of fast similarity retrieval problems. The key assumption in these procedures is that the objects in the dataset lie in a metric space, i.e., the space satisfies the triangle equality. As mentioned in chapter \ref{sec:similarity_measures}, this assumption is not valid for many similarity measure techniques. In the case of k-d tree, it requires a more specific $L_p$ metric space for its operation. While the worst case scenario complexity is $O(N)$, the expected complexity of a single $k$-NN query using k-d tree is $O(\log N)$.
+ANN methods such as $k$-d trees (will be described later) and Locality Sensitive Hashing (LSH) \cite{gionis1999similarity} have been successfully applied on a variety of fast similarity retrieval problems. The key assumption in these procedures is that the objects in the dataset lie in a metric space, i.e., the space satisfies the triangle equality. As mentioned in chapter \ref{sec:similarity_measures}, this assumption is not valid for many similarity measure techniques. In the case of $k$-d tree, it requires a more specific $L_p$ metric space for its operation. While the worst case scenario complexity is $O(N)$, the expected complexity of a single $k$-NN query using $k$-d tree is $O(\log N)$.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{This work}}{}
-In our framework, sub-strokes classification is done by finding sample letters in the training set that are similar to the shape of the sub-stroke. Our feature vectors were embedded into the $L_1$ space by using the wavelet embedding technique described earlier and thus metric indexing methods can be applied. While the advantage of LSH is that it performs better than k-d tree in high dimensional spaces, k-d tree can be used both as an exact and approximate $k$-NN technique. In this work, we have chosen to work with k-d tree since we could obtain, after applying dimensionality reduction techniques, a low dimensional data space.
+In our framework, sub-strokes classification is done by finding sample letters in the training set that are similar to the shape of the sub-stroke. Our feature vectors were embedded into the $L_1$ space by using the wavelet embedding technique described earlier and thus metric indexing methods can be applied. While the advantage of LSH is that it performs better than $k$-d tree in high dimensional spaces, $k$-d tree can be used both as an exact and approximate $k$-NN technique. In this work, we have chosen to work with $k$-d tree since we could obtain, after applying dimensionality reduction techniques, a low dimensional data space.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{k-d tree}
+\subsubsection{$k$-d tree}
 \label{subsubsec:kd_tree}
 
-\iftoggle{edit-mode}{\hspace{0pt}\hspace{0pt}\marginpar{A short introduction to k-d tree}}{} 
-k-d tree, a special case of binary space partitioning trees, is a data structure for storing a finite set of points from a $k$-dimensional space. It was proposed by Bentley in \cite{bentley1975multidimensional}. It aims at solving the problem of searching $k$-NN in a large set of multi-dimensional points by first building a data structure based on the set of reference points. Then, given a query object, it extracts the $k$-NN using this structure.
+\iftoggle{edit-mode}{\hspace{0pt}\hspace{0pt}\marginpar{A short introduction to $k$-d tree}}{} 
+$k$-d tree, a special case of binary space partitioning trees, is a data structure for storing a finite set of points from a $k$-dimensional space. It was proposed by Bentley in \cite{bentley1975multidimensional}. It aims at solving the problem of searching $k$-NN in a large set of multi-dimensional points by first building a data structure based on the set of reference points. Then, given a query object, it extracts the $k$-NN using this structure.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{How it works, how the data is saved and extracted}}{} 
-The k-d tree is formed as follows: Every point is either a branch node or is contained in a leaf node. Every branch node in the tree is associated with one of the k-dimensions and can be though of an hyperplane that divides the space into two half spaces in that dimension. Points to the left of this hyperplane are represented by the left subtree of that node and points to the right of the hyperplane are represented by the right subtree, see Figure \ref{fig:kd_tree}. A desired property of the partition is to be as equal as possible. The selection of the pivot point (i.e,  the point that function as a branch node) in every level has a great impact on the balance of the tree. The most common way is to find the medial point of a number of points in the subtree. The number of points in a leaf node is also customizable and is mostly affected by the cardinality of the points in the database and $k$, which is a predefined in many applications.
+The $k$-d tree is formed as follows: Every point is either a branch node or is contained in a leaf node. Every branch node in the tree is associated with one of the $k$-dimensions and can be though of an hyperplane that divides the space into two half spaces in that dimension. Points to the left of this hyperplane are represented by the left subtree of that node and points to the right of the hyperplane are represented by the right subtree, see Figure \ref{fig:kd_tree}. A desired property of the partition is to be as equal as possible. The selection of the pivot point (i.e,  the point that function as a branch node) in every level has a great impact on the balance of the tree. The most common way is to find the medial point of a number of points in the subtree. The number of points in a leaf node is also customizable and is mostly affected by the cardinality of the points in the database and $k$, which is a predefined in many applications.
 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{./figures/kd_tree}       
-\caption{Example of a k-d tree. (a) The k-d tree decomposition  a region containing seven data points. (b) The k-d tree for the region of (a).}
+\caption{Example of a $k$-d tree. (a) The $k$-d tree decomposition  a region containing seven data points. (b) The $k$-d tree for the region of (a).}
 \label{fig:kd_tree}
 \end{figure}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{How the NN are found?}}{}
-The approximation of the $k$-NN using k-d tree is done by initially finding the leaf node that represents the class that the query point belongs to. Although it is probable that the $k$ nearest neighbors are all contained in a single leaf node, it is not necessarily the case. Adjacent leafs may be examined by recursively explore the other child nodes and look for near neighbors. Precise details of the algorithm can be found in \cite{bentley1975multidimensional}.
+The approximation of the $k$-NN using $k$-d tree is done by initially finding the leaf node that represents the class that the query point belongs to. Although it is probable that the $k$ nearest neighbors are all contained in a single leaf node, it is not necessarily the case. Adjacent leafs may be examined by recursively explore the other child nodes and look for near neighbors. Precise details of the algorithm can be found in \cite{bentley1975multidimensional}.
  
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Expected time complexity}}{}
-The construction time of the k-d tree is O($k N \log N$), where $k$ is the dimensionality of the data space and $N$ is the cardinality of the dataset. We can afford this high complexity of the construction since the this process is done off-line, and theoretically will be executed mostly several times. However, this tax pays off when it comes to the enhancement we achieve in the k-$NN$ query evaluation. While the worst case scenario the running time of $k$-NN is $O(N^{d^2})$, the amortized running time is $O(\log N)$.
+The construction time of the $k$-d tree is O($k N \log N$), where $k$ is the dimensionality of the data space and $N$ is the cardinality of the dataset. We can afford this high complexity of the construction since the this process is done off-line, and theoretically will be executed mostly several times. However, this tax pays off when it comes to the enhancement we achieve in the k-$NN$ query evaluation. While the worst case scenario the running time of $k$-NN is $O(N^{d^2})$, the amortized running time is $O(\log N)$.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Matlab library}}{} 
-Our system uses a built-in Matlab implementation for k-d tree which is available in the statistical toolbox and introduced in Matlab R2013B. The library allows configuring the distance function (Euclidean, Manhattan, Mankowski, etc...) and the size of the leaf node. The library provides implementation for the exact version of k-d tree.
+Our system uses a built-in Matlab implementation for $k$-d tree which is available in the statistical toolbox and introduced in Matlab R2013B. The library allows configuring the distance function (Euclidean, Manhattan, Mankowski, etc...) and the size of the leaf node. The library provides implementation for the exact version of $k$-d tree.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -822,7 +822,7 @@ Our system uses a built-in Matlab implementation for k-d tree which is available
 It is a very important process in machine learning since it facilitates classification, efficient storing and visualization of high-dimensional data. 
 The undesired properties of high-dimensional data present many mathematical challenges and practical complications \cite{van2009dimensionality}. 
 First, Analysis of high-dimensional data generally requires a large amount of memory and computation power, which may be impractical for on-line classification systems and obstructive in other applications. 
-In particular, many NN methods such as k-d tree are ineffective when the dimensionality of the data is high.
+In particular, many NN methods such as $k$-d tree are ineffective when the dimensionality of the data is high.
 Second, the classification algorithm is more likely to overfit the training sample and generalizes poorly to new samples \cite{aida2009word}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{data Intrinsic dimensionality}}{}
@@ -838,7 +838,7 @@ The high dimensional data phenomenon is widespread in data analysis and was give
 In many pattern recognition applications, the problem of high dimensional data can arise in different stages of the learning and classification process; 1. the dimensionality of the data may be high in the first place; 2. features calculated on the data may be impractically large; 3. other manipulations performed on the data, such as the embedding used in this work, may produce highly dimensional vectors.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Mathematical Definition}}{}
-Mathematically, given $p$-dimensional variable $x \in \mathbb{R}^p$, the dimensionality reduction process finds a lower dimensional representation $s \in \mathbb{R}^k$ with $k \leq p$ which preserves the content of the original data under a given criterion. 
+Mathematically, given $p$-dimensional variable $x \in \mathds{R}^p$, the dimensionality reduction process finds a lower dimensional representation $s \in \mathds{R}^k$ with $k \leq p$ which preserves the content of the original data under a given criterion. 
 The reduced dimensionality $p$ is chosen to be as small as possible, but yet sufficiently large to guarantee that the output vector $s$ provide a faithful representation of the input vector $x$. 
 Dimensionality reduction techniques can be classified into linear and non-linear. Linear dimensionality reduction is based on a linear projection of the data assuming the data resides close to a lower dimensional linear subspace. 
 Namely, each of the components in the vector $s$ is a linear combination of the components in the vector $x$, formally:
@@ -854,7 +854,7 @@ where $W_{k \times p}$ is the linear transformation.
 In some cases, linear dimensionality reduction techniques perform poorly and a more powerful approach is required to provide the mapping from the high dimensional space to the low dimensional space. In such cases, non-linear techniques is are used. Yet, the drawback of such technique is concealed in its generality which may cause over-fitting the sample set and not really capture the true underlying coordinate system. Commonly used non-linear technique include \emph{Kernel PCA}, \emph{Isometric Feature Mapping} (ISOMAP) and \emph{Locally-linear embedding} (LLE).
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Why do we need DR?}}{}
-The need for employing dimensionality reduction in this work emerged from the sparse vectors produces by the EMD embedding of the feature vectors into the wavelet domain procedure which was described in Section \ref{subsec:approximating_emd_using_embedding}. This process produced vectors in $R^{3946}$. The wish to employ k-d trees, which is very sensitive to high dimensional data, was the main reason for using dimensionality reduction. An alternative was to use a $k$-NN data-structure that performs well with high dimensional data such as LSH \cite{gionis1999similarity}. However, it would be less accurate since LSH is an approximate NN search method, unlike k-d tree which finds the exact $k$-NN samples.
+The need for employing dimensionality reduction in this work emerged from the sparse vectors produces by the EMD embedding of the feature vectors into the wavelet domain procedure which was described in Section \ref{subsec:approximating_emd_using_embedding}. This process produced vectors in $R^{3946}$. The wish to employ $k$-d trees, which is very sensitive to high dimensional data, was the main reason for using dimensionality reduction. An alternative was to use a $k$-NN data-structure that performs well with high dimensional data such as LSH \cite{gionis1999similarity}. However, it would be less accurate since LSH is an approximate NN search method, unlike $k$-d tree which finds the exact $k$-NN samples.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{What DR we use?}}{}
 In this thesis we have chosen to work only with linear dimensionality reduction techniques. PCA and LDA were applied sequentially in order to obtain linearly discriminative information in an efficient manner.
@@ -942,17 +942,18 @@ Letter position & Number of samples & PCA & PCA+LDA\\
 \section{Candidates Scoring}
 \label{sec:candidates_scoring}
 
-Given an unlabelled sequence $q$, the $k$-NN classifier returns a set of $k$ potential letter candidates from the sample set, scored using their distance from $q$ in the coefficient wavelet domain.
-In our implementation we set $k=10$.
-The scoring of the candidates can be conducted by calculating the distance of a candidate to the query object in the reduced embedded space, using the Manhattan distance.
-This will give the approximate EMD distance between them. 
+Given an unlabelled sequence $q$, the $k$-NN classifier, using the Manhattan distance, returns a set of $k$ potential letter candidates from the sample set and their scoring, i.e., the perceptual distance between the candidate and $q$.
+As mentioned in Section \ref{def:embedding}, the Manhattan distance in the wavelets coefficients domain approximate the EMD distance between objects. 
 However, in implementations that require exact scoring of the candidates, the approximated EMD distance may not be sufficient and an additional scoring stage should be employed to obtain a more accurate similarity measure between the query object and the candidates.
-Nevertheless, in most cases such similarity measure technique are computationally expensive can be applied only on a short list of candidates rather than on the entire sample set.
-In this work, re-scoring of the candidates is done by calculating the DTW distance between the preprocessed sequence of the query letter and each one of the candidates.
+Nevertheless, as explained in Section \ref{sec:similarity_measures}, in most cases such similarity measure techniques are computationally expensive and can be applied only on a short list of candidates rather than on the entire sample set.   
+In this work, re-scoring of the candidates is done by calculating the DTW distance between the preprocessed sequence of the query sequence and the candidates.
 The constrained version of DTW using the Sakoe-Chuba Band \cite{sakoe1978dynamic} demonstrated better results the unconstrained version of DTW.
 
-A comparison between the case of including and when avoiding the scoring stage will be given in Chapter \ref{chap:results}.
+$k$, the number of candidates returned by the $k$-d tree, in our implementation equals to 10.
+This number was tuned empirically.
+As we will see in the results chapter, the number of candidates on which DTW operated significantly affects the classification time of the characters classifier.
 
+The re-scoring stage is not necessary in every implementation, thus in Chapter \ref{shap:results} we compare between classifier results when including and when avoiding the scoring.
 
 %\bibliographystyle{plainnat}
 %\bibliography{references}
