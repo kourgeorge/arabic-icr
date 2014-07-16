@@ -50,6 +50,8 @@
 %%%%%%%%%%% nomenclature %%%%%%%%%%
 \nomenclature{SC}{Shape Context}
 \nomenclature{MAD}{Multi Angular Descriptor}
+\nomenclature{PCA}{Principal Component Analysis}
+\nomenclature{LDA}{Linear Discriminant Analysis}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -57,20 +59,20 @@
 \label{chap:characters_classification}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning process}}{}
-Letter samples obtained by the ADAB databases were split into four groups according to their position: Ini, Med, Fin and Iso. 
+Letter samples obtained by the ADAB databases were split into four groups according to their position: \textbf{Ini}, \textbf{Med}, \textbf{Fin} and \textbf{Iso}. 
 The set of samples in each position undergone a learning process that contains five main stages.
 First, the samples were preprocessed as described in Section \ref{sec:preprocessing}.
-Second, feature vectors were extracted as detailed in \ref{sec:feature_extraction}.
-Third, the samples were embedded into the $L_1$ metric space by extracting the scaled coefficients of the wavelet transformation as presented in Section \ref{sec:similarity_measures}. 
+Second, feature vectors were extracted as detailed in Section\ref{sec:feature_extraction}.
+Third, the feature vectors were embedded into the $L_1$ metric space by extracting the scaled coefficients of the wavelet transformation as presented in Section \ref{sec:similarity_measures}. 
 In Section \ref{sec:dr}, we outline a dimensionality reduction process that employs both PCA and LDA to obtain a compact representation of the high dimensional vectors produced by the embedding procedure.
 In the last stage, described in section \ref{sec:similarity_search}, we build a metric index that enables finding the most similar object in sub-linear time.
-An overview of the process is given in Figure \ref{fig:letters_classifier_learning_flow}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The recognition process}}{}
 Given an un-labelled query sequence, its classification process corresponds to the learning process.
 The sequence undergoes preprocessing, features extraction, embedding and dimensionality.
-The low dimensional vector is then used to to find the closest ten sample among the large list of sample containing more than a thousand instances.  
+The low dimensional vector is then used to to find the closest ten sample among the large list of sample containing more than a thousand instances.
 As described in Section \ref{sec:candidates_scoring}, we then allow the usage of an accurate and expensive similarity measure technique to rank the short list of candidates. 
+An overview of the classification process is given in Figure \ref{fig:letters_classifier_learning_flow}.
 
 \begin{figure}
 \centering
@@ -128,16 +130,18 @@ The \emph{Douglas-Peucker Polyline Simplification algorithm} described in \cite{
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Douglas-Peucker algorithm}}{}
 The algorithm reduces the number of vertices in a piecewise linear curve, given a preset tolerance parameter $\varepsilon$, which defines the maximum 'dissimalirity' between the original and the reduced curve.
 It outputs a simplified curve, that consists of a subset of the points that defined the original curve.
-Initially, the algorithm marks the first and the last points to be kept, then it finds the furthest point, $p$, from the line segmented with the first and last points as end points.
-If the distance is smaller that $\varepsilon$, the algorithm returns. Otherwise, $p$ is kept, and the algorithm recursively operates on the the first point and $p$ and then with $p$ and the last point.
+The algorithm operates as follows. 
+Initially, it marks the first and the last points to be kept, then it finds the furthest point, $p$, from the line segmented with the first and last points as end points.
+If the distance is smaller that $\varepsilon$, the algorithm returns. 
+Otherwise, $p$ is kept, and the algorithm recursively operates on the the first point and $p$ and then with $p$ and the last point.
 When the recursion is completed, the kept points define an angular skeletonization of the original curve.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Different tolerance parameters}}{}
 In the normal preprocessing flow, in which normalization is done prior to the simplification process, we empirically set $\varepsilon  = {1 \over 75}$.
 However, in cases where normalization is not applicable, such as in the segmentation system, the tolerance parameter has to be dependent on the the pattern's un-normalized bounding box area. 
-In such cases, the tolerance parameter was set as follows: $\varepsilon  = {1 \over {200}}\sqrt {{d_x}^2 + {d_y}^2}$, where $d_x$ and $d_y$ are the width and hight of the pattern, respectively. 
-The devision factors of the both the absolute and relative cases were found empirically. 
-The discrepancy in the devision factor between the two cases can be explained by the difference in the sensitivity required in the different flows. 
+In such cases, the tolerance parameter was set as follows: $\varepsilon  = {1 \over {200}}\sqrt {{d_x}^2 + {d_y}^2}$, where $d_x$ and $d_y$ are the width and height of the pattern, respectively. 
+The division factors of both the absolute and relative cases were found empirically. 
+The discrepancy in the division factors can be explained by the difference in the sensitivity required in the different flows. 
 
 \subsection{Re-sampling}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Goal}}{}
@@ -147,14 +151,14 @@ This stage, using splines interpolation method, aims to produce an equidistant s
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Approach}}{}
 Given a stroke $S=\{(x_i,y_i)\}_{i=1}^{n}$, let $f_{x}(d)$ and $f_{y}(d)$ be the quadratic piecewise interpolations function of $\{x_i\}_{i=1}^{n}$ and $\{y_i\}_{i=1}^{n}$, respectively. 
-$f_{x}(d)$ and $f_{y}(d)$ are functions of the coordinate value with respect to the arc-length distance from the pattern's starting point. 
+$f_{x}(d)$ and $f_{y}(d)$ are functions of the coordinate values with respect to the arc-length distance from the pattern's starting point. 
 Let $t_i=i\frac{L}{R}$ for $i=0,...,R$ where L is the arc-length of the pattern.
 The re-sampled sequence is given as follows:
 \begin{equation}
 \widehat{S}=\{(f_x(t_i),f_y(t_i))\}_{i=1}^{R}
 \end{equation}
 
-Figure \ref{fig:before_after_preprocessing} demonstrate the re-sampling steps.
+Figure \ref{fig:before_after_preprocessing} demonstrate the re-sampling steps applied on a letter sample.
 
 \begin{figure}
 	\centering
@@ -174,16 +178,10 @@ Figure \ref{fig:before_after_preprocessing} demonstrate the re-sampling steps.
            \label{fig:preprocessing_resamp}
            \includegraphics[width=0.3\textwidth]{./figures/preprocessing_resamp}
         }       
-    \caption{A sample of the letter \RL{b} before preprocessing (a); after normalization (b); after noise elimination (c) and after re-sampling (d).}
+    \caption{A sample of the character \RL{b} before preprocessing (a); after normalization (b); after noise elimination (c) and after re-sampling (d).}
    \label{fig:before_after_preprocessing}
 \end{figure}
 
-
-%Answer the following:
-%\begin{itemize}
-%\item talk about the other smoothing techniques as described in \cite{jaeger2001online}
-%\item how does these steps applied in different researches, refer related works.
-%\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -195,15 +193,15 @@ Figure \ref{fig:before_after_preprocessing} demonstrate the re-sampling steps.
 Feature extraction is the process of extracting informative parameters for learning and recognition of patterns. 
 Poor feature extraction and selection will, in most cases, result in a poor system performance, regardless of the sophistication of the classification algorithm \cite{parizeau2001character}.
 
-%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction - Cont.}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction - Cont.}}{}
 In the field of image retrieval, the input data is too large and tends to be redundant, thus, feature extraction techniques are used to reduce the representation of the input data. 
 However, in the case of recognising on-line handwritten shapes, the input data are compact and feature extraction techniques create feature vector referred to as the \emph{shape descriptor}, which offer discriminative characterization that capture the perceptual dissimilarity between two shapes. 
 Unlike the first case in which the features extraction process is a form of dimensionality reduction, the raw amount of data contained in the shape descriptors usually exceeds the amount of data in the original input data.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Shape Descriptors}}{}
 Effective shape descriptor must have some essential properties such as invariance under translation, rotation and scale. 
-A desirable shape descriptor should have a compact representation and also it must be easy to compute \cite{zhang2004review}.
-It also must be robust to noise so that distorted shapes which are tolerated by human beings when comparing shapes should be endured also by the shape descriptor \cite{zhang2004review, kim2000region}.
+A desirable shape descriptor should have a compact representation and must be easy to compute \cite{zhang2004review}.
+It also have to be robust to noise so that distorted shapes which are tolerated by human beings when comparing shapes should be endured also by the shape descriptor \cite{zhang2004review, kim2000region}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Shape descriptors types}}{}
 A common classification of shape descriptors is: local and global descriptors. 
@@ -211,8 +209,6 @@ Local descriptors calculate a given feature independently at each sample point.
 An example for a simple local feature is the vector containing the tangent slope angle for every given point in the sample point. 
 Descriptors such as cusps, crossings and loops are referred to as global descriptors and are calculated on the entire shape \cite{hu1997combining}. 
 For a comprehensive review on shape descriptors see \cite{zhang2004review} and \cite{yang2008survey}.
-
-%\emph{TODO: review "Local vs. global Features" (p. 30) in \cite{connell2000online} }
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Using off-line shape descriptors for on-line HWR}}{}
 Many of the well known and powerful feature sets operate on the shape's contour.  
@@ -262,14 +258,15 @@ When the parameter $j$ goes over all points in the sequence, we get the vector $
 The descriptor is the concatenation the vectors $V_i$ when the parameter $i$ goes over all viewpoints. 
 See illustration in Figure \ref{fig:mad_demo}.
 
-In Chapter \ref{chap:results} we compare the performance of the above descriptors and assess their discriminative power in the characters recognition and segmentation systems. 
+In Section \ref{sec:classification_results} we compare the performance of the above descriptors and assess their discriminative power in the characters recognition and segmentation systems. 
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{./figures/mad_demo}       
-\caption{A visual demonstration of MAD feature set.}
+\caption{A visual demonstration of MAD feature set \cite{saabni2013multi}.}
 \label{fig:mad_demo}
 \end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -939,6 +936,10 @@ Letter position & Number of samples & PCA & PCA+LDA\\
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The DR package}}{}
 \emph{Matlab Toolbox for Dimensionality Reduction} described in \cite{van2007introduction} was used as Matlab wrapper for the dimensionality reduction techniques used in this work.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Candidates Scoring}
 \label{sec:candidates_scoring}
 
@@ -954,6 +955,185 @@ This number was tuned empirically.
 As we will see in the results chapter, the number of candidates on which DTW operated significantly affects the classification time of the characters classifier.
 
 The re-scoring stage is not necessary in every implementation, thus in Chapter \ref{shap:results} we compare between classifier results when including and when avoiding the scoring.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Experimental Results}
+\label{sec:classification_results}
+
+In order to give a high level resolution of the overall performance of the system, the two sections below provide detailed evaluation of the classification results achieved by the letters classifier and the segmentation results of the real-time segmentation system.
+Using a public and not a self collected samples gives our results a further firmness.
+The system was implemented and tested using the Matlab environment.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Precision and recall}}{}
+There are three commonly used accuracy measurements used to asses the performance of a classification algorithm: \emph{Accuracy}, \emph{Precision}, \emph{Recall}
+In the following paragraph we give a short description of each of the mentioned measures.
+More information can be found in \cite{labatut2012accuracy}.
+
+In binary classification, each sample is belongs to one of two classes, the positive class or the negative class.
+A \emph{true positive} (tp) instance is an actual positive sample classified correctly as positive by the classification system.
+Similarly, a \emph{true negative} (tn) instance is the case of a negative sample classified correctly.  
+The cases where a positive sample mistakenly classified as negative or a negative sample classified as as belonging to the positive class, are called \emph{false positive} (fp) and \emph{false negative} (fn), respectively.
+\emph{Precision} (also called \emph{true positive rate}) is the fraction of true positive among all the instances classified as positive. 
+See Equation \ref{eq:percision}.
+\begin{equation}
+\text{Precision}=\frac{tp}{tp+fp}
+\label{eq:percision}
+\end{equation}
+The measure \emph{Recall} (also known as sensitivity or true negative rate) is the fraction of instances correctly classified as positive among all the positive samples, as described in Equation \ref{eq:recall}.
+\begin{equation}
+\text{Recall}=\frac{tp}{tp+fn}  
+\label{eq:recall}
+\end{equation}
+Precision can be seen as a measure of exactness or quality, whereas recall is a measure of completeness or quantity.
+
+The classification quality measures in multi-class classification problem are the expansion of the binary class measures \cite{sokolova2009systematic} \cite{labatut2012accuracy}.
+Given a $k$-class classification problem and a sample set containing $n$ instances.
+The true classes are noted as $C_i$ whereas the estimated classes, returned by the classifier are noted as $\hat{C}_i$ for $i\leq i \leq k$ for each sample.
+The \emph{confusion matrix} built from the classifier results on the training set allows visualization of the classifier's performance.
+Each column of the matrix represents the instances in a predicted class, while each row represents the instances in an actual class.
+In other words, in Table \ref{table:confusion_matrix}, $n_ij$ corresponds to the number of instances belongs to class $j$ and classified as belongs to class $i$.
+
+\begin{table}
+\centering
+\begin{tabular}{| c | c | c | c |}
+\hline                 
+              & $C_1$    & $\cdots$ & $C_k$ \\ 
+  \hline
+  $\hat{C}_i$ & $n_{11}$ & $\cdots$ & $n_{1k}$ \\
+  \hline
+  $\vdots$    & $\vdots$ & $\ddots$ & $\vdots$ \\
+  \hline
+  $\hat{C}_k$ & $n_{k1}$ & $\cdots$ & $n_{kk}$ \\
+  \hline
+\end{tabular}
+\caption{Confusion Matrix}
+\label{table:confusion_matrix} 
+\end{table}
+
+The corresponding overall accuracy, precision and recall measures in the multi-class case are calculated as follows:
+\begin{equation}
+\text{Accuracy}=\frac{\sum\limits_{i=1}^{k} n_{ii}}{n}
+\label{eq:accuracy}
+\end{equation}
+
+\begin{equation}
+\text{Precision}=\frac{\sum\limits_{i=1}^{k} \frac{n_{ii}}{\sum_{j=1}^{k} n_{ji}}}{k}
+\label{eq:percision}
+\end{equation}
+
+\begin{equation}
+\text{Recall}=   \frac{\sum\limits_{i=1}^{k} \frac{n_{ii}}{\sum_{j=1}^{k} n_{ij}}}{k}
+\label{eq:percision}
+\end{equation}
+
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The sample set}}{}
+The sample set of individual characters used for both the learning and testing of the classifier is distributed as shown in Table \ref{table:sample_set}.
+As previously mentioned, the classifier contains four internal databases. 
+It receives a sequence of points $S=\{p_{i}\}_{i=1}^{n}$ representing the letter trajectory and a letter position $\phi \in \{Ini, Mid, Fin, Iso\}$, and returns the classification of the sample in that corresponding database.
+Below, we give a detailed evaluation of the classifier performance in terms of accuracy and running time.
+
+\begin{table}[b]
+\centering
+\begin{tabular}{ | c | c | c | c |}
+\hline                 
+  Ini & Mid & Fin & Iso \\ 
+  \hline
+  1404 & 1195 & 1628 & 1371 \\
+  \hline
+\end{tabular}
+\caption{Sample size and distribution}
+\label{table:sample_set} 
+\end{table}
+
+The accuracy and the time performance of the classifier was measured using 10-fold cross-validation.
+In Table \ref{table:results_position}, the Correct Classification Rate (CCR), recall and precision rates are given for each characters position.
+The last row in Table \ref{table:results_position} shows the accumulative average of the results weighted according to the amount of samples in each dataset.
+
+\begin{table}
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{ | c | c | c | c | c |}
+\hline
+	\textbf{Character Position} & \textbf{CCR} & \textbf{Recall} &  \textbf{Precision} \\
+	\hline 
+	Ini & 93\% & 85\% & 88\% \\                
+  	\hline
+  	Mid & 89\% & 87\% & 90\% \\
+  	\hline
+  	Fin & 91\% &  86\% & 92\% \\
+  	\hline
+  	Iso & 91\% &  81\% & 90\% \\
+  	\hline
+  	\textbf{Overall} & \textbf{91\%} &  \textbf{85\%} & \textbf{90\%} \\
+  	\hline
+\end{tabular}
+\caption{Classification results by character position.}
+\label{table:results_position} 
+\end{table}
+
+In Table \ref{table:configurations} we propose several activation configurations of the presented classifier that target different balance points between accuracy and time performance.
+In each experiment, the classifier performance was measured in terms of accuracy and the average response time for classifying a single sample.
+
+In the first configuration, titled \emph{High Accuracy}, we evaluate the classifier as presented in this work, including the re-scoring stage described in Section \ref{subsec:candidates_rescoring}.
+This configuration should be used in implementations which require high classification rate and can tolerate a certain degree of latency.
+
+In the second configuration, named \emph{Low Latency}, the re-scoring stage is skipped.
+As can be seen in Table \ref{table:configurations}, the response time in this configuration is significantly lower compared to the first configuration.
+Applying the re-scoring, although being invoked on a short list of candidates, 10 candidates in our implementation, has a considerable impact on the classifier time performance. 
+This configuration should be considered in cases where the time performance is a critical factor, such as in real-time classification and recognition-based script segmentation systems.
+When the top three candidates are considered, the difference in accuracy is small between the first and second configurations, and the latency resulted from the re-scoring process done in the first configuration, in most cases, will not pay. 
+
+The dimensionality reduction and the indexing processes are both computationally expensive and time consuming. 
+Although both stages are usually performed off-line in the learning stage, in systems in which the learning is performed on-line, the latency they impose on the learning process is undesired.
+Thus, in the third configuration, named \emph{Fast Learning}, both the dimensionality reduction and the indexing stages were omitted from the learning process.
+In addition, no re-scoring is performed in the classification flow.
+Comparing the results of the this configuration with the second configuration shows that the dimensionality reduction process done in the second configuration has improved the time performance of the classifier significantly, without affecting much the classification rate.
+We have noted that the vast majority of the delay was caused by the dimensionality reduction stage rather than from the indexing process.
+However, due to the sensitivity of the $k$-d tree to high dimensional data, when omitting the dimensionality reduction process, one should not perform indexing using $k$-d tree because it would negatively affect the classification repose time.
+Skipping the dimensionality reduction and the indexing stages has decreased the training time of the system in about 7 seconds.
+
+\begin{table}
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{ | c | c | c | c |}
+  \hline
+  \textbf{Configuration}  & \textbf{CCR [Top 1]}  & \textbf{CCR [Top 3]} & \textbf{Time [ms]}\\
+  \hline
+  High Accuracy & 91\% & 96\% & 29.9 \\ 
+  \hline
+  Low Latency   & 87\% & 94\% & 0.12 \\
+  \hline
+  Fast Learning & 90\% & 96\% & 4.4 \\ 
+  \hline
+\end{tabular}
+\caption{Classification and time performance of three configurations.}
+\label{table:configurations} 
+\end{table}
+
+Tables \ref{table:results_position} and \ref{table:configurations} show the results of experiments performed using the SC as the shape descriptor.
+Table \ref{table:features_comparison} compares the performance of the shape descriptors by running the classifier in the \emph{High Accuracy} configuration using the different descriptors.
+
+\begin{table}
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{ | c | c | c |}
+\hline
+	\textbf{Shape Descriptor}  & \textbf{CCR [Top 1]}  & \textbf{CCR [Top 3]} \\
+	\hline 
+	SC      & 91\% & 96\%  \\                
+  	\hline
+  	MAD     & 88\% & 94\% \\
+  	\hline
+  	None    & 87\% & 93\% \\
+  	\hline
+\end{tabular}
+\caption{Comparing the correct classification rate of the different feature extraction techniques.}
+\label{table:features_comparison} 
+\end{table}
 
 %\bibliographystyle{plainnat}
 %\bibliography{references}
