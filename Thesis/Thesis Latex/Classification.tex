@@ -192,11 +192,13 @@ Figure \ref{fig:before_after_preprocessing} demonstrate the re-sampling steps ap
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Feature extraction}}{}
 Feature extraction is the process of extracting informative parameters for learning and recognition of patterns. 
 Poor feature extraction and selection will, in most cases, result in a poor system performance, regardless of the sophistication of the classification algorithm \cite{parizeau2001character}.
+The transformation to the feature space is done by extracting descriptive and expressive information from the raw data representation. 
+A desired feature extraction technique should facilitate assessing the similarity degree between two objects by maintaining that the distance between them in the feature space reveals their similarity in the real world, and to do so inexpensively.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction - Cont.}}{}
-In the field of image retrieval, the input data is too large and tends to be redundant, thus, feature extraction techniques are used to reduce the representation of the input data. 
-However, in the case of recognising on-line handwritten shapes, the input data are compact and feature extraction techniques create feature vector referred to as the \emph{shape descriptor}, which offer discriminative characterization that capture the perceptual dissimilarity between two shapes. 
-Unlike the first case in which the features extraction process is a form of dimensionality reduction, the raw amount of data contained in the shape descriptors usually exceeds the amount of data in the original input data.
+%\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction - Cont.}}{}
+%In the field of image retrieval, the input data is too large and tends to be redundant, thus, feature extraction techniques are used to reduce the representation of the input data. 
+%However, in the case of recognising on-line handwritten shapes, the input data are compact and feature extraction techniques create feature vector referred to as the \emph{shape descriptor}, which offer discriminative characterization that capture the perceptual dissimilarity between two shapes. 
+%Unlike the first case in which the features extraction process is a form of dimensionality reduction, the raw amount of data contained in the shape descriptors usually exceeds the amount of data in the original input data.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Shape Descriptors}}{}
 Effective shape descriptor must have some essential properties such as invariance under translation, rotation and scale. 
@@ -204,7 +206,7 @@ A desirable shape descriptor should have a compact representation and must be ea
 It also have to be robust to noise so that distorted shapes which are tolerated by human beings when comparing shapes should be endured also by the shape descriptor \cite{zhang2004review, kim2000region}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Shape descriptors types}}{}
-A common classification of shape descriptors is: local and global descriptors. 
+A common classification of shape descriptors is to local and global descriptors. 
 Local descriptors calculate a given feature independently at each sample point. 
 An example for a simple local feature is the vector containing the tangent slope angle for every given point in the sample point. 
 Descriptors such as cusps, crossings and loops are referred to as global descriptors and are calculated on the entire shape \cite{hu1997combining}. 
@@ -278,11 +280,9 @@ In Section \ref{sec:classification_results} we compare the performance of the ab
 Given two visual data elements, the task of mathematically capturing the human perceptual similarity is extremely challenging. Similarity measure algorithms aim to quantitatively approximate the perceptual resemblance between data elements. In this chapter, we overview and discuss the different aspects of similarity measure evaluation techniques and present two approaches used in this work.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Intuition}}{}
-$k$ nearest neighbours based classification techniques, usually requires the ability to correctly and efficiently determine the perceptual distance between two given objects.
-In our case, evaluating the dissimilarity between two handwritten strokes based on the raw data representation is difficult and computationally expensive. 
-To overcome this hardship, feature extraction methods are used, as described in Section \ref{sec:feature_extraction}, to map the original data into the feature space. 
-The transformation is done by extracting descriptive and expressive information from the raw data representation. 
-In the feature space the samples are represented compactly and two given feature vectors can be compared using an effective distance function. A desired feature extraction technique should facilitate assessing the similarity degree between two objects by maintaining that the distance between them in the feature space reveals their similarity in the real world, and to do so inexpensively. 
+$k$-NN based classification techniques, usually requires the ability to correctly and efficiently determine the perceptual distance between two given objects.
+Evaluating the dissimilarity between two handwritten strokes based on the raw data representation is difficult and computationally expensive. 
+To overcome this hardship, feature extraction methods are used, as described in Section \ref{sec:feature_extraction}, to map the original data into the feature space.  
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Distance function formal definition}}{}
 The similarity measure is formalized as a \emph{distance function}. 
@@ -300,22 +300,27 @@ The pair $(D,dist)$ is called a \textbf{distance space}.
 \label{def:distance_function}
 \end{definition}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Distance function selection}}{}
-The distance function should be selected to best suit the application and the data representation it handles. It needs to be carefully designed to fit the problem domain.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Previous research}}{}
-Significant amount of research has been carried out on similarity measure methods, both in terms of defining the appropriate distance function and their efficient evaluation. Much of the previous research was done on similarity measure of time series and distributions. In this research, despite the fact we do not consider the temporal information of the written stroke we use a distance function that was originally designed for time series.
-
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Properties of a good dissimilarity measure.}}{}
+The distance function should be carefully designed to best suit the application and the data representation it handles.
 A good similarity measure should be able to cope with various types of discrepancy which can be easily handled by a human such as shifting, noise and scaling. Time shifting may be caused by different sampling rate and noise may be introduced by sensor failures or variations \cite{chen2005similarity}.
 
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Previous research}}{}
+Significant amount of research has been carried out on similarity measure methods, in terms of defining the appropriate distance function and their efficient evaluation. 
+Much research was done on similarity measure of time series and distributions. 
+In this work, despite the fact we do not consider the temporal information of the written stroke we use a distance function that was originally designed for time series.
+
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Euclidean and Manhattan}}{}
-The Euclidean distance is a basic, common and easy to compute distance function. Yet, it is not necessarily appropriate for capturing distances for any given space. For instance, a taxi driver in Manhattan should not measure the distance in terms of the length of the straight line to his destination, but in terms of the Manhattan distance, which takes into account that streets are either orthogonal or parallel to each other.
+The Euclidean distance is a basic, common and easy to compute distance function. 
+Yet, it is not necessarily appropriate for capturing distances in any given space. 
+For instance, a taxi driver in Manhattan should not measure the distance in terms of the straight line length to his destination, but needs to take into account that streets are either orthogonal or parallel to each other.
 The Euclidean and the Manhattan distances, are special cases of the Minkowski distance.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Different Representations}}{}
-Generally, similarity measures techniques can be applied on the raw data or on other representations of the data, such as on the feature vectors \cite{chen2005similarity}. Usually, different similarity measure methods are used for different types and representations of the data. In the course of this work, we encountered mainly three types of mathematical constructs which their distance functions had to be defined.
-The distance between two objects with a relatively complex mathematical construct are usually defined based on the distance function of its basic elements. For example, the distance between two vectors, will be defined using the distance function of two numbers. Henceforth, $d$ is used to denote the distance function between the basic elements and $dist$ will be used to denote the distance function of the complex construct.
+Generally, similarity measures techniques can be applied on the raw data or on other representations of the data, such as on the feature vectors \cite{chen2005similarity}. 
+Usually, different similarity measure methods are used for different types and representations of the data. 
+The distance between two objects with a relatively complex mathematical construct are usually defined based on the distance function of its basic elements. 
+For example, the distance between two vectors, will be defined using the distance function of two numbers. 
+Henceforth, $d$ is used to denote the distance function between the basic elements and $dist$ will be used to denote the distance function of the complex construct.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Vectors}}{}
 The first and most basic construct is the \textbf{vector}. Given two vectors $u,v \in \mathbb{R}^{N}$, the Minkowski distance between them is given as follows:
