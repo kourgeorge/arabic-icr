@@ -49,24 +49,28 @@
 %%%%%%%%%%% nomenclature %%%%%%%%%%
 \nomenclature{KP}{Key Point}
 \nomenclature{POI}{Point of Interest}
+\nomenclature{HF}{Horizontal Fragment}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Real-time On-line Strokes Segmentation}
 \label{chap:strokes_segmentation}
 
 In this chapter we describe a recognition-based segmentation approach for on-line Arabic script.
-The segmentation is done in the stroke level in real-time, i.e., the segmentation is performed while the stroke is being written using the fast Arabic characters classification technique, described in Chapter \ref{chap:characters_classification}.
+The segmentation is done in the stroke level while the stroke is being written, using the fast Arabic characters classification technique, described in Chapter \ref{chap:characters_classification}.
 
-The proposed approach goes through three stages.
-In the first stage, \emph{points of interest} (POIs), are continuously nominated while the stroke is being scribed.
-The sub-strokes imposed by these POIs are scored by the Arabic characters classifier. 
+The proposed approach goes through three stages as can be seen in Figure \ref{fig:system_flow}.
+The first stage is composed of two steps.
+In the first step, \emph{points of interest} (POIs), are continuously nominated while the stroke is being scribed using a \emph{horizontal points} (HF) identification process.
+In the second step, once a POI is found, the candidates matrix is update with the classification information of sub-strokes imposed by the identified POIs.
 In the second stage, once the entire stroke is available, a rules-based process is used to refine the set of POIs and re-score the sub-strokes. 
-Eventually, the system heuristically determines the final set of SPs based on the sub-strokes scoring. See Figure \ref{fig:system_flow}. \emph{TODO:give more information about the diagram}
+Eventually, the system heuristically determines the final set of SPs based on the sub-strokes scoring. 
+
+
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{./figures/system_flow}
-\caption{High level visualization of the system flow.}
+\includegraphics[width=0.8\textwidth]{./figures/system_flow}
+\caption{High level visualization of segmentation flow.}
 \label{fig:system_flow}
 \end{figure}
 
@@ -77,15 +81,16 @@ Eventually, the system heuristically determines the final set of SPs based on th
 \section{First Stage: POIs Nomination and Sub-strokes Scoring}
 
 \subsection{Horizontal fragment identification} 
-In this stage, the system attempts to identify \emph{horizontal fragments} (HFs) that join pairs of connected letters. 
+In this stage, the system attempts to identify HFs that join pairs of connected letters. 
 These handlers are horizontal, directed right to left and located near the baseline (see Figure  \ref{fig:horizontal_fragments}). 
 Using a smoothed version of the trajectory helps the process to ignore undesired small horizontal regions that are frequently caused by the digitizer's imperfection.  
-A point $p_{i}$ is defined as a "horizontal point" if the slope of the line $\overline{p_{i-1}p_{i}}$ is less than a preset value $\delta$, which was empirically tuned to $0.6$. The same exact value for this parameter was found independently in \cite{daifallah2009recognition}.
+A point $p_{i}$ is defined as a "horizontal point" if the slope of the line $\overline{p_{i-1}p_{i}}$ is less than a pre-set value $\delta$, which was empirically tuned to $0.6$. 
+The same exact value for this parameter was found independently in \cite{daifallah2009recognition}.
 
 \begin{figure}
 \centering
 \includegraphics[width=0.3\columnwidth]{./figures/horizontal_fragments}
-\caption{Horizontal Fragments [HF] of the word \RL{jbl} (JABAL).}
+\caption{Horizontal Fragments (HFs) of the word \RL{jbl} (JABAL).}
 \label{fig:horizontal_fragments}
 \end{figure}
 
@@ -94,7 +99,7 @@ The first detected horizontal point is set as an "HF starting point".
 All the subsequent horizontal points are ignored until a non-horizontal point is detected, indicating the end of an HF sequence. 
 This point is identified as an "HF ending point" and the medial point of an HF is marked as POI. 
 POIs are potential SPs, thus, this process yields an over-segmentation of the stroke. 
-While false positive SPs can be easily removed, missed real SPs cannot be easily recovered. 
+While false positive SPs can be easily removed, missed SPs cannot be easily recovered. 
 Therefore, in order to minimize the miss-rate, this process is delicate and allows false HFs to be detected.
 
 In a post processing step, fractions of the same horizontal segment, which were identified as multiple HFs, are rejoined to a single HF. 
@@ -115,10 +120,10 @@ where the parameter $\alpha_{k}$ is defined as $\alpha_{k}=\frac{\pi-\phi_{k}}{\
 \begin{figure}
      \begin{center}
         \subfloat[sequence 1]{
-            \includegraphics[width=0.2\textwidth]{./figures/angles_1}
+            \includegraphics[width=0.3\textwidth]{./figures/angles_1}
         }
         \subfloat[sequence 2]{
-           \includegraphics[width=0.2\textwidth]{./figures/angles_2}
+           \includegraphics[width=0.3\textwidth]{./figures/angles_2}
         }        
     \end{center}
     \caption{A graphical representation of the angles of a sequence. It can be seen that per our definition Sequence 1 Complexity measure is smaller than sequence 2 complexity measure.}
@@ -147,7 +152,8 @@ A sub-stroke $S_{i}^{j}$ is a sub-sequence of the stroke $S$ that starts at $KP_
 S_{i}^{j}=\{p_{k}\}_{k=KP_{i}}^{KP_{j}}; i<j
 \end{equation}
 
-We generate an upper triangular scoring matrix $D\in\mathbb{R}^{(L+1)\times (L+1)}$ where each cell $D_{i,j}$ represents the sub-stroke $S_i^j$. It contains the information returned by the scoring system for the sub-strokes $S_i^j$. 
+We generate an upper triangular scoring matrix $D\in\mathbb{R}^{(L+1)\times (L+1)}$ where each cell $D_{i,j}$ represents the sub-stroke $S_i^j$. 
+It contains the classification information and scoring, for the sub-strokes $S_i^j$, returned by the Arabic characters classification system described in Chapter \ref{chap:characters_classification}. 
 The matrix $D$ is generated dynamically; adding a row and a column for each new detected POI. 
 Imposing a locality constraint which narrows the band of the $D$ matrix above the main diagonal improved the efficiency of the process and the segmentation accuracy. 
 Given a band width $B$ we fix $D_{i,j}=\infty$ if  $j \leq i$ or $j-i>B$.
@@ -160,11 +166,8 @@ We argue that sub-strokes representing a letter will achieve, in most cases, bet
 \label{fig:candidate_points}
 \end{figure}
 
-The classifier contains four databases, one for each letter position. 
-It receives a sequence of points, which represent the sub-stroke, and a letter position (Ini, Mid, Fin and Iso), and returns a list of the nearest neighbors and their scoring. 
-This scoring indicates the similarity measure between the sequence and the candidate.
-The relative location of the sub-stroke was used to avoid accessing all the four databases. 
-As can be seen in Table \ref{table:subsequences_types}, we differentiate between four types of subsequences. 
+Using the relative location of the sub-stroke we restrict the position options the given sub-stroke can present and avoid activating the recognition process with all four letter position possibilities.
+As can be seen in Table \ref{table:subsequences_types}, we differentiate between four types of sub-sequences.
 For each type, we indicate the set of databases that need to be examined, i.e., the possible letter positions the sub-stroke may represent. 
 In Table \ref{table:subsequences_types}, $S$ denotes a stroke containing $L$ POIs where $m>0$ and $k<L+1$.
 
@@ -557,7 +560,7 @@ The recognition rate of the first top candidate dropped down to $90.8\%$.
 Using a voting process within the top five results gave a $94.7\%$ recognition rate. 
 
 Analysing the failures of the misclassified samples shows that most recognition errors occur as a result of misclassifying a single character. 
-In most cases the misclassified character is confused with a character having a very similar shape, which can be corrected using information retrieved by the associated additional stroke, such as the case of the letter \RL{-l} and the letter \RL{-n} in their handwritten form.
+In most cases the misclassified character is confused with a character having a very similar shape, which can be corrected using information retrieved by the associated additional stroke, such as the case of the letter \RL{-l} /l/ and the letter \RL{-n} /n/in their handwritten form.
 
 %
 %\bibliographystyle{plainnat}
