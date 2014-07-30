@@ -1,4 +1,4 @@
-\documentclass[12pt,english]{report}
+\documentclass[12pt,english,twoside]{report}
 \usepackage{mathptmx}
 \renewcommand{\familydefault}{\rmdefault}
 \usepackage[T1]{fontenc}
@@ -73,7 +73,7 @@
 \Author{George Kour}
 \Year{August 2014}
 \Supervisor{Prof. Dana Ron}
-\SecondSupervisor{Dr. Raid Saabne}
+\SecondSupervisor{Dr. Raid Saabni}
 
 \makeatother
 
@@ -82,32 +82,34 @@
 
 \prelimpages
 
+\pagenumbering{gobble}
+
 \titlepage
 
-\newpage
-
 \secondtitlepage
-
-%%Dedication
-%\clearpage
-%\thispagestyle{empty}
-%\par\vspace*{.35\textheight}{\centering \em \Large To my parents\par}
-%%Dedication 
 
 \dedication{To my parents}
 
 \include{Acknowledge}
 
 \cleardoublepage
+\pagenumbering{roman}
 \setcounter{page}{1} % Start preliminary pages numbering (roman numerals).
 
 \include{Abstract}
 
 \tableofcontents{}
 
-\printnomenclature{}
+\cleardoublepage
+
+\addcontentsline{toc}{chapter}{Nomenclature}
+\printnomenclature
+
+\cleardoublepage
 
 \listoffigures
+
+\cleardoublepage
 
 \listoftables
 
@@ -130,7 +132,10 @@
 
 \include{Wavelets}
 
-\newpage{}
+\cleardoublepage
+\newpage
+\thispagestyle{empty}
+\mbox{}
 
 \includepdf[pages=-]{hebrew_part}
 \end{document}

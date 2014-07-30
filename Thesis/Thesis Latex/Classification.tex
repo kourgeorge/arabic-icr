@@ -1085,10 +1085,10 @@ Nevertheless, as explained in Section \ref{sec:similarity_measures}, in most cas
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{How re-scoring is done here}}{} 
 In this work, re-scoring of the candidates is done by calculating the DTW distance between the preprocessed sequence of the query sequence and the candidates.
-The constrained version of DTW using the Sakoe-Chuba Band \cite{sakoe1978dynamic} demonstrated better results the unconstrained version of DTW.
-$k$, the number of candidates returned by the $k$-d tree, in our implementation equals to 10.
+The constrained version of DTW using the Sakoe-Chuba Band \cite{sakoe1978dynamic} demonstrated better results than the unconstrained version of DTW.
+$k$, the number of candidates returned by the $k$-d tree, is set to 10.
 This number was tuned empirically.
-As we will see in the results chapter, the number of candidates on which DTW operated significantly affects the classification time of the characters classifier.
+As we will see in the results sections, the re-scoring stage significantly affects the classification performance, in terms of accuracy and response time.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Re-scoring Effectiveness}}{} 
 In order to measure the re-scoring effectiveness, in Section \ref{sec:classification_results} we compare between the classifier results when including and when avoiding the re-scoring stage.
@@ -1105,12 +1105,12 @@ In order to measure the re-scoring effectiveness, in Section \ref{sec:classifica
 There are three commonly used classification quality measurements for assessing the performance of a classification algorithm: \emph{Accuracy}, \emph{Precision}, \emph{Recall}.
 In binary classification, each sample belongs to one of two classes, the positive class or the negative class.
 A \emph{true positive} ($tp$) instance is an actual positive sample classified correctly as positive by the classification system.
-Similarly, a \emph{true negative} ($tn$) instance is the case of a negative sample classified correctly.  
+Similarly, a \emph{true negative} ($tn$) instance is the case of a negative sample classified correctly as negative.  
 Wrong classification of samples are of two types, a positive sample mistakenly classified as negative and the case of a negative sample classified as belonging to the positive class. 
 These two situations are named \emph{false positive} ($fp$) and \emph{false negative} ($fn$), respectively.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Classification quality measurements - binary}}{}
-The \emph{Accuracy} is the fraction of sample set that was classified correctly. 
+The \emph{Accuracy} is the fraction of the points in the sample set that were classified correctly. 
 \begin{equation}
 \text{Accuracy}=\frac{tp+tn}{tp+fp+tn+fn}
 \label{eq:accuracy}
@@ -1131,8 +1131,8 @@ Precision can be seen as a measure of exactness or quality, whereas recall is a 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Classification quality measurements - multi-class}}{}
 The classification quality measures in multi-class classification problems are the generalization of the binary class quality measures.
 The \emph{confusion matrix} built from the classifier results allows visualization of the classifier's performance. 
-Given a $k$-class classification problem and a sample set containing $n$ instances, let us note the true classes as $C_i$ whereas the estimated classes, returned by the classifier, to be noted as $\hat{C}_i$ for $i\leq i \leq k$ \cite{sokolova2009systematic, labatut2012accuracy}.
-In the confusion matrix, seen in Table \ref{table:confusion_matrix}, $n_ij$ corresponds to the number of instances belongs to class $j$ and classified as belongs to class $i$.
+Given a $k$-class classification problem and a sample set containing $n$ instances, let us denote the true classes as $C_i$ whereas the estimated classes, returned by the classifier, to be denoted as $\hat{C}_i$ for $i\leq i \leq k$ \cite{sokolova2009systematic, labatut2012accuracy}.
+In the confusion matrix, seen in Table \ref{table:confusion_matrix}, $n_{ij}$ corresponds to the number of instances belongs to class $j$ and classified as belongs to class $i$.
 
 \begin{table}[b]
 \centering

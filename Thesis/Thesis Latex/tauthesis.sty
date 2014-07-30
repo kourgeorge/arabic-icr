@@ -479,8 +479,9 @@
 
 %%%%%%%%%%%%%  Second Title %%%%%%%%%%%
 
-  \def\secondtitlepage{  
-    \thispagestyle{empty}
+  \def\secondtitlepage{
+  \cleardoublepage  
+  \thispagestyle{empty}  
     \begin{center}
     \@Header\\
     \vspace{84pt}
@@ -608,9 +609,9 @@
 %   Acknowledgments
 %
 \def\textofAck#1{\gdef\@textofAck{#1}}  \textofAck{Acknowledgments}
-\long\def\acknowledgments#1{\chapter*{\@textofAck\@mkboth{}{}}
-  \addcontentsline{toc}{chapter}{\protect\@textofAck}
-   \thispagestyle{plain}
+\long\def\acknowledgments#1{ \cleardoublepage
+\chapter*{\@textofAck\@mkboth{}{}}    
+\thispagestyle{plain}
    #1\par
    \vfill
    \let\acknowledgments\relax}
@@ -688,5 +689,3 @@
 %% The 4pt vertical space is needed to give the text a bit of breathing 
 %% room. Thanks Andre Renaud for the fix.
 \fancyfoot[c]{\vspace{4pt}\thepage}
-
-
