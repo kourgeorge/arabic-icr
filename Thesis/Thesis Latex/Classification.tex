@@ -1132,21 +1132,15 @@ Precision can be seen as a measure of exactness or quality, whereas recall is a 
 The classification quality measures in multi-class classification problems are the generalization of the binary class quality measures.
 The \emph{confusion matrix} built from the classifier results allows visualization of the classifier's performance. 
 Given a $k$-class classification problem and a sample set containing $n$ instances, let us denote the true classes as $C_i$ whereas the estimated classes, returned by the classifier, to be denoted as $\hat{C}_i$ for $i\leq i \leq k$ \cite{sokolova2009systematic, labatut2012accuracy}.
-In the confusion matrix, seen in Table \ref{table:confusion_matrix}, $n_{ij}$ corresponds to the number of instances belongs to class $j$ and classified as belongs to class $i$.
+In the confusion matrix, seen in Equation \ref{eq:confusion_matrix}, $n_{ij}$ corresponds to the number of instances belongs to class $j$ and classified as belongs to class $i$.
 
-\begin{table}[b]
-\centering
-\begin{tabular}{ c | c | c | c |}      
-              & \textbf{$C_1$}    & \textbf{$\cdots$} & \textbf{$C_k$} \\ 
-  \hline
-  \textbf{$\hat{C}_i$} & $n_{11}$ & $\cdots$ & $n_{1k}$ \\
-  \textbf{$\vdots$}    & $\vdots$ & $\ddots$ & $\vdots$ \\
-  \textbf{$\hat{C}_k$} & $n_{k1}$ & $\cdots$ & $n_{kk}$ \\
-  \hline
-\end{tabular}
-\caption{Confusion Matrix}
-\label{table:confusion_matrix} 
-\end{table}
+\begin{equation}
+\bordermatrix{ & C_1& \ldots &C_k \cr 
+  \hat{C}_i & n_{11} & \cdots & n_{1k} \cr
+  \vdots    & \vdots & \ddots & \vdots \cr
+  \hat{C}_k & n_{k1} & \cdots & n_{kk}}
+\label{eq:confusion_matrix} 
+\end{equation}
 
 The corresponding overall accuracy, precision and recall measures in the multi-class case are calculated based on the confusion matrix as follows:
 \begin{equation}

@@ -10,16 +10,28 @@
 %\usepackage{babel}
 %\begin{document}
 
+\vspace{-60pt}
 \chapter*{Abstract}
- 
-Correct and efficient recognition of handwritten Arabic text is considered to be a complex problem due to the cursive and unconstrained nature of Arabic script.
-While real-time performance is necessary in applications involving on-line handwriting recognition, conventional approaches usually wait until the entire curve is traced out before starting the analysis, inevitably causing delays in the recognition process. 
-This deferment restricts on-line recognition techniques from achieving highly responsiveness demands expected from such systems, and prevents implementing advanced features of input typing, such as automatic word completion and real-time automatic spelling.
+\vspace{-20pt}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}
+Despite the long standing prediction that digital computers will challenge the future of handwriting, pens and papers remain commonly used means for communication and recording of information in the daily life.
+For that reason, in addition to the growing use of keyboard-less devices such as smart-phone and tablets, which are too small to have a convenient keyboard, handwriting recognition is receiving an increasing interest in the last decades.
 
-This work proposes a real-time approach for segmenting and recognizing handwritten on-line Arabic script.
-We demonstrate the feasibility of carrying out time consuming analysis and classification tasks during the course of writing. 
-The presented real-time recognition-based segmentation method is facilitated using a fast letter classifier. 
-The classifier employs a linear-time embedding technique of the feature space into the wavelet coefficient normed space, facilitating the usage of state-of-the-art, fast and accurate similarity measure and search techniques.
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{problem statement}}{}
+Correct and efficient recognition of handwritten Arabic text is a challenging problem due to the cursive and unconstrained nature of the Arabic script.
+While real-time performance is necessary in applications involving on-line handwriting recognition, conventional approaches usually wait until the entire curve is traced out before starting the analysis, inevitably causing delays in the recognition process. 
+This deferment restricts on-line recognition techniques from achieving high responsiveness demands expected from such systems, and prevents implementing advanced features of input typing, such as automatic word completion and real-time automatic spelling.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Approach - segmentation}}{}
+This work presents a real-time approach for segmenting and recognizing handwritten on-line Arabic script.
+We demonstrate the feasibility of segmenting Arabic handwritten text during the course of writing.
+The proposed segmentation approach is a recognition-based method that operates in the stroke level and nominates candidate segmentation points based on morphological features.
+Using a fast Arabic character classifier the system attach a scoring to the sub-strokes induced by the candidate points that captures the likelihood of the sub-stroke to represent a letter.
+A candidates filtering followed by a segmentation selection process are activated when the entire stroke is available.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Approach - classification}}{}
+A $k$-NN based character classifier that employs a linear-time embedding of the EMD metric to a norm space is presented.
+The transformation of the feature space vectors into the wavelet coefficient space facilitates accurate similarity measure and sub-linear search methods.
 We show that the resulting segmentation and letter classification information can be used to significantly reduce the potential dictionary size and accelerate a holistic recognition process.
- 
+
 %\end{document}

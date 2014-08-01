@@ -50,7 +50,7 @@
 %
 
 \textheight 640\p@ \textwidth 430\p@
-\oddsidemargin 30\p@ \evensidemargin 11\p@
+\oddsidemargin 11\p@ \evensidemargin 30\p@
 \marginparwidth 85\p@ \marginparsep 7\p@
 \topmargin 0\p@   \headheight 6\p@ \headsep 18\p@
 \footnotesep=7\p@
@@ -194,7 +194,7 @@
 %% Removed \uppercase 
 \def\@makechapterhead#1{ \vspace*{2pc} {\centering
  \ifnum \c@secnumdepth >\m@ne \Large \@chapapp{} \Thechapter \par
- \vspace{10pt} \fi \Large \expandafter{\noindent #1}\par
+ \vspace{5pt} \fi \Large \expandafter{\noindent #1}\par
  \nobreak \vspace{20pt}} \noindent }
 %
 %% Removed \uppercase
@@ -623,12 +623,13 @@
 \def\textofDed#1{\gdef\@textofDed{#1}}  \textofDed{Dedication}
 \long\def\dedication#1{%\chapter*{\@textofDed\@mkboth{}{}}
   \cleardoublepage
+   \newpage
    \thispagestyle{empty}
    \mbox{}
    \vfill
-   \begin{flushright}
+   \begin{flushleft}
      #1\par
-   \end{flushright}
+   \end{flushleft}
    \vfill
    \let\dedication\relax}
  

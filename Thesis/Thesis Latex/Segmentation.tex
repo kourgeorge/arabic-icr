@@ -50,6 +50,10 @@
 \nomenclature{KP}{Key Point}
 \nomenclature{POI}{Point of Interest}
 \nomenclature{HF}{Horizontal Fragment}
+\nomenclature{FSS}{Forwards Segmentation Selection}
+\nomenclature{BSS}{Backwards Segmentation Selection}
+\nomenclature{BFSS}{Backwards-Forwards Segmentation Selection}
+\nomenclature{GSS}{Greedy Segmentation Selection}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Real-time On-line Strokes Segmentation}
@@ -307,7 +311,7 @@ It is because the shortest path is a global property, which may prefer a highly 
 However, greedily selecting the outgoing edge with the minimal weight will mostly return a better segmentation.
 
 Several \emph{segmentation selection algorithms} (SSAs) for finding the best segmentation path are proposed in this work.
-Here we describe two algorithms that were given the names \emph{Forward Segmentation Selection} (FSS) and \emph{Backward Segmentation Selection} (BSS) which operate quite similarly. 
+Here we describe two algorithms that were given the names \emph{Forwards Segmentation Selection} (FSS) and \emph{Backwards Segmentation Selection} (BSS) which operate quite similarly. 
 A pseudo-code of FSS algorithm can be seen in Algorithm \ref{alg:fss}. 
 FSS starts with the first point, $KP_0$, advancing toward the end of the stroke. 
 In Each step, it tries to find the next best KP by selecting the adjacent subsequence $S_i^j$ with the best scoring (as can be seen in line 5). 
@@ -325,11 +329,11 @@ $sum=0$\;
 	$sum = sum + D\left( {i,j} \right)$\;
 	$i=j$\;
 }
-\caption{FSS}
+\caption{Forwards Segmentation Selection (FSS) algorithm.}
 \label{alg:fss}
 \end{algorithm}
 
-In an attempt to overcome the aforementioned drawbacks, a third SSA is proposed, and given the name \emph{Backward-Forward Segmentation Selection} (BFSS). 
+In an attempt to overcome the aforementioned drawbacks, a third SSA is proposed, and given the name \emph{Backwards-Forwards Segmentation Selection} (BFSS). 
 As can be seen in Algorithm \ref{alg:bfss}, it combines both FSS and BSS. 
 BFSS operates from the sides of the stroke toward the center. In every iteration, it selects two candidate points to include to the segmentation path.
 
@@ -347,7 +351,7 @@ $kp_{b}=L+1$\;
 	$\pi = \pi \cup \{kp_{b,next}\}$\;	
 	$kp_{b}=kp_{b,next}$\;
 }
-\caption{BFSS}
+\caption{Backwards-Forwards Segmentation Selection (BFSS) algorithm.}
 \label{alg:bfss}
 \end{algorithm}
   
@@ -365,7 +369,7 @@ $\pi = \{0,L+1\}$\;
 	$UpdateMatrix(D,s,e)$\;
 }
 
-\caption{GSS}
+\caption{Greedy Segmentation Selection (GSS) algorithm.}
 \label{alg:gss}
 \end{algorithm}
 
