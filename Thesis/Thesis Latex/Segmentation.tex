@@ -50,6 +50,8 @@
 \nomenclature{KP}{Key Point}
 \nomenclature{POI}{Point of Interest}
 \nomenclature{HF}{Horizontal Fragment}
+\nomenclature{FSP}{Final Segmentation Points}
+\nomenclature{SSA}{Segmentation Selection Algorithm}
 \nomenclature{FSS}{Forwards Segmentation Selection}
 \nomenclature{BSS}{Backwards Segmentation Selection}
 \nomenclature{BFSS}{Backwards-Forwards Segmentation Selection}
@@ -62,14 +64,13 @@
 In this chapter we describe a recognition-based segmentation approach for on-line Arabic script.
 The segmentation is done in the stroke level while the stroke is being written, using the fast Arabic characters classification technique, described in Chapter \ref{chap:characters_classification}.
 
-The proposed approach goes through three stages as can be seen in Figure \ref{fig:system_flow}.
-The first stage is composed of two steps.
-In the first step, \emph{points of interest} (POIs), are continuously nominated while the stroke is being scribed using a \emph{horizontal points} (HF) identification process.
-In the second step, once a POI is found, the candidates matrix is update with the classification information of sub-strokes imposed by the identified POIs.
+The proposed approach goes through three main stages.
+The first stage is composed of two steps which are performed while the stroke is being scribed.
+In the first step \emph{points of interest} (POIs) are nominated based on the morphological features of the stroke.
+These POIs are the middle of the horizontal fragments \emph{HFs} and induce over segmentation of the stroke.
+In the second step, once a POI is found, the classification information of sub-strokes which end with this POI is saved in a scoring matrix.
 In the second stage, once the entire stroke is available, a rules-based process is used to refine the set of POIs and re-score the sub-strokes. 
 Eventually, the system heuristically determines the final set of SPs based on the sub-strokes scoring. 
-
-
 
 \begin{figure}
 \centering
@@ -94,7 +95,7 @@ The same exact value for this parameter was found independently in \cite{daifall
 \begin{figure}
 \centering
 \includegraphics[width=0.3\columnwidth]{./figures/horizontal_fragments}
-\caption{Horizontal Fragments (HFs) of the word \RL{jbl} (JABAL).}
+\caption{Horizontal Fragments (HFs) of the word \RL{jbl} /JABAL/.}
 \label{fig:horizontal_fragments}
 \end{figure}
 
@@ -103,13 +104,13 @@ The first detected horizontal point is set as an "HF starting point".
 All the subsequent horizontal points are ignored until a non-horizontal point is detected, indicating the end of an HF sequence. 
 This point is identified as an "HF ending point" and the medial point of an HF is marked as POI. 
 POIs are potential SPs, thus, this process yields an over-segmentation of the stroke. 
-While false positive SPs can be easily removed, missed SPs cannot be easily recovered. 
+While false positive SPs can be easily removed in a latter stage, missed SPs cannot be easily recovered. 
 Therefore, in order to minimize the miss-rate, this process is delicate and allows false HFs to be detected.
 
-In a post processing step, fractions of the same horizontal segment, which were identified as multiple HFs, are rejoined to a single HF. 
+Once an HF is detected the sub-stroke that spans from the previous POI to the POI of the current HF is checked to make sure they do not reside on the same HF. 
+Inn case they do, both HFs are rejoined to a single HF. 
+This is done to avoid fractions of the same HF to identified as multiple HFs, 
 The merging is done by evaluating the complexity measurement across the two consequent HFs, see Figure \ref{fig:candidate_in_no_horizontal}.
-
-
 
 \begin{definition}
 \textbf{Complexity measure} is a value that indicates the curvature degree of a given 2-D trajectory $T=\{p_i\}_{i=1}^{n}$. 
@@ -122,28 +123,15 @@ where the parameter $\alpha_{k}$ is defined as $\alpha_{k}=\frac{\pi-\phi_{k}}{\
 \end{definition}
 
 \begin{figure}
-     \begin{center}
-        \subfloat[sequence 1]{
-            \includegraphics[width=0.3\textwidth]{./figures/angles_1}
-        }
-        \subfloat[sequence 2]{
-           \includegraphics[width=0.3\textwidth]{./figures/angles_2}
-        }        
-    \end{center}
-    \caption{A graphical representation of the angles of a sequence. It can be seen that per our definition Sequence 1 Complexity measure is smaller than sequence 2 complexity measure.}
-   \label{fig:sequence_complexity}
-\end{figure}
-
-\begin{figure}
 \centering
 \includegraphics[width=0.3\textwidth]{./figures/candidate_in_no_horizontal}
-\caption{The main body of Arabic word \RL{`yn} (AIN). POIs are colored in cyan. The green areas indicate merge between two subsequent HFs. Three types of false POIs can be seen: 1. A POI at the beginning of a stroke. 2. A POI that is caused by a bad HF. 3. A POI that resides in a letter's valley. }
+\caption{The main body of Arabic word \RL{`yn} /AIN/. POIs are colored in cyan. The green areas indicate merge between two subsequent HFs. Three types of false POIs can be seen: 1. A POI at the beginning of a stroke. 2. A POI that is caused by a bad HF. 3. A POI that resides in a letter's valley. }
 \label{fig:candidate_in_no_horizontal}
 \end{figure}
 
 \subsection{Sub-strokes scoring}
 Let $S=\{p_{i}\}_{i=1}^{n}$ be a sequence representing a handwritten stroke in which $L$ POIs were detected. 
-Let $KP=\{KP_{i}\}_{i=0}^{L+1}$ (Key points) be the ordered set of POIs, in addition to the first and the last points of the stroke positioned as the first and the last items in the set.
+Let $KP=\{KP_{i}\}_{i=0}^{L+1}$ (Key points) be the ordered set of the POIs, in addition to the first and the last points of the stroke positioned as the first and the last items in the set.
 Formally, we define: 
 \begin{equation}
 KP_{i} =\begin{cases}    1		, & \mbox{if } i=0 \\
@@ -156,8 +144,8 @@ A sub-stroke $S_{i}^{j}$ is a sub-sequence of the stroke $S$ that starts at $KP_
 S_{i}^{j}=\{p_{k}\}_{k=KP_{i}}^{KP_{j}}; i<j
 \end{equation}
 
-We generate an upper triangular scoring matrix $D\in\mathbb{R}^{(L+1)\times (L+1)}$ where each cell $D_{i,j}$ represents the sub-stroke $S_i^j$. 
-It contains the classification information and scoring, for the sub-strokes $S_i^j$, returned by the Arabic characters classification system described in Chapter \ref{chap:characters_classification}. 
+We generate an upper triangular \emph{scoring matrix} $D\in\mathbb{R}^{(L+1)\times (L+1)}$ where each cell $D_{i,j}$ represents the sub-stroke $S_i^j$. 
+It contains the classification information and scoring, for the sub-strokes $S_i^j$, returned by the characters classification system described in Chapter \ref{chap:characters_classification}. 
 The matrix $D$ is generated dynamically; adding a row and a column for each new detected POI. 
 Imposing a locality constraint which narrows the band of the $D$ matrix above the main diagonal improved the efficiency of the process and the segmentation accuracy. 
 Given a band width $B$ we fix $D_{i,j}=\infty$ if  $j \leq i$ or $j-i>B$.
@@ -166,11 +154,11 @@ We argue that sub-strokes representing a letter will achieve, in most cases, bet
 \begin{figure}
 \centering
 \includegraphics[width=0.4\textwidth]{./figures/candidate_points}
-\caption{KPs of the word \RL{lbyh} (Lbyh). POIs are colored in red. The first and last key points (KPs) are colored in green. }
+\caption{KPs of the word \RL{lbyh} /Lbyh/. POIs are coloured in red. The first and last KPs are coloured in green. }
 \label{fig:candidate_points}
 \end{figure}
 
-Using the relative location of the sub-stroke we restrict the position options the given sub-stroke can present and avoid activating the recognition process with all four letter position possibilities.
+Using the relative location of the sub-stroke in the stroke we restrict the classification process to search for similar samples feasible position databases.
 As can be seen in Table \ref{table:subsequences_types}, we differentiate between four types of sub-sequences.
 For each type, we indicate the set of databases that need to be examined, i.e., the possible letter positions the sub-stroke may represent. 
 In Table \ref{table:subsequences_types}, $S$ denotes a stroke containing $L$ POIs where $m>0$ and $k<L+1$.
@@ -178,10 +166,10 @@ In Table \ref{table:subsequences_types}, $S$ denotes a stroke containing $L$ POI
 \begin{table}
 \centering
 \renewcommand{\arraystretch}{1.3}
-\caption{A mapping between the subsequence types and the possible letter positions}
-\begin{tabular}{| c |c | c |}
+\caption{A mapping between the subsequence types and the possible letter positions.}
+\begin{tabular}{| c | c | c |}
 \hline
-  Name     & Subsequence    & Letter Position     \\
+  \textbf{Subsequence Symbol}     & \textbf{Subsequence Location}    & \textbf{Possible Letter Position}     \\
 \hline
   $\alpha$ & $S_0^{k}$      & $Ini$ or $Mid$      \\
 \hline
@@ -198,7 +186,6 @@ In Table \ref{table:subsequences_types}, $S$ denotes a stroke containing $L$ POI
 The relation between the cells in the matrix $D$ and the sub-stroke type is given in matrix $D_p$  (Equation \ref{eq:positions_matrix}). 
 The type of the sub-stroke can be determined while the stroke is being scribed.
 The last column and row are added on the "pen up" event.
-
 
 \begin{equation}
 D_{p}=
@@ -267,29 +254,39 @@ $5$
 In this stage we re-score subsequences and eliminate redundant POIs based on the following rules:\\
 
 \begin{compactitem}
-	\item Inner SPs should lie close to the baseline. 
+	\item SPs should lie close to the baseline. 
 	\item SPs do not reside in loops.
 	\item The sub-stroke length should be proportional to the length of the containing stroke.
 \end{compactitem}
 
-The system determines the baseline by calculating the vertical density histogram of the re-sampled and normalized sub-stroke. 
+The system determines the baseline by calculating the vertical projection histogram of the re-sampled and normalized version of the stroke. 
 The height of the stroke (y-axis) is partitioned into ten equi-length intervals. 
 A POI is filtered out if it does not satisfy the following condition:
 \begin{equation}
 |POI_y-I_{max}| \leq 2*max{({|I|},0.15)} 
 \end{equation}
 where $POI_y$ represents the $y$-coordinate of the POI; $|I|$ is the length of an interval; and $I_{max}$ denotes the center of the most inhabited interval. 
-In order to reliably determine the baseline, the baseline detection algorithm is activated only after the fourth POI is detected. 
+In order to reliably determine the baseline, the baseline detection algorithm is activated only after the fourth POI is detected.
 This process has proven to be very effective in eliminating challenging false POIs that reside in valleys of frequently used final Arabic letters, such as \RL{-q}, \RL{-s} and \RL{-n}. 
 An example of such a POI can be seen in the letter \RL{-n} in Figure \ref{fig:candidate_in_no_horizontal}. 
+Determining the baseline using the vertical projection histogram is a commonly used technique \cite{burrow2004arabic, bagdanov1997projection}.
+
+
 The baseline is needed only to verify that the POIs are in a reasonable distance from it, therefore, imprecise valuation of the position or the direction of the baseline is tolerable.
 
-In order to determine that a given SP resides inside a loop we have employed a Matlab package that includes an implementation for poly-line intersection algorithm \cite{legland2014geom2d}.
+\begin{figure}[b]
+\centering
+\includegraphics[width=0.8\textwidth]{./figures/baseline}
+\caption{The position of the baseline corresponds to the largest peak of the vertical projection histogram \cite{burrow2004arabic}.}
+\label{fig:candidate_in_no_horizontal}
+\end{figure}
+
+In order to identify SPs that resides inside a loop we have employed a Matlab package that includes an implementation for poly-line intersection algorithm \cite{legland2014geom2d}.
 
 The third rule is used to penalize unreasonably low scoring given to small sub-strokes, which are unlikely to represent a letter. 
 This is done by calculating the ratio of the sub-stroke length proportional to the entire stroke length.
 For instance, it is common to add a small, hook-like, extension to the suffix of the letter \RL{d}. 
-This extension may look very similar to the letter \RL{-a} during the stroke scribing; and thus under-scored by the recognition system, and eventually, result in over-segmenting the letter \RL{d}. 
+This extension may look very similar to the letter \RL{-a} during the stroke scribing; and thus under-scored, i.e. is given a very good similarity measure by the recognition system, and eventually result in over-segmenting the letter \RL{d}. 
 
 In some cases, POIs are incorrectly nominated on non-horizontal areas. This is caused due to noises in the data and the fact that the nomination is done while the word is being scribed. Our filtering algorithm should be corrected, in a future work, to handle this case.
 
