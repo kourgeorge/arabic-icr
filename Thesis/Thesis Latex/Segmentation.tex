@@ -251,7 +251,7 @@ $5$
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Second Stage: POI Filtering and Scoring Correction}
-In this stage we re-score subsequences and eliminate redundant POIs based on the following rules:\\
+In this stage we re-score subsequences and eliminate redundant POIs based on the following rules:
 
 \begin{compactitem}
 	\item SPs should lie close to the baseline. 
@@ -263,7 +263,7 @@ The system determines the baseline by calculating the vertical projection histog
 The height of the stroke (y-axis) is partitioned into ten equi-length intervals. 
 A POI is filtered out if it does not satisfy the following condition:
 \begin{equation}
-|POI_y-I_{max}| \leq 2*max{({|I|},0.15)} 
+|POI_y-I_{max}| \leq 2 max{({|I|},0.15)} 
 \end{equation}
 where $POI_y$ represents the $y$-coordinate of the POI; $|I|$ is the length of an interval; and $I_{max}$ denotes the center of the most inhabited interval. 
 In order to reliably determine the baseline, the baseline detection algorithm is activated only after the fourth POI is detected.
@@ -382,11 +382,12 @@ Performance evaluation of the mentioned SSA is provided in \ref{subsec:ssa_perfo
 Comparing the performance of the real-time segmentation approach described in this work to results obtained by related researches is difficult due to the different experimental settings, databases and methodology; not to mention the different measures used to present the results. 
 The usage of the ADAB database, instead of a self-collected database, standardize and reinforces our results. 
 In Table \ref{table:general_stats}, we provide basic statistics of our sample set. 
-Table \ref{table:results} summarizes the system's performance.
+Table \ref{table:segmentation_results} summarizes the system's performance.
 
 \begin{table}[b]
-\caption{General Statistics}
 \renewcommand{\arraystretch}{1.2}
+\centering
+\caption{Segmentation sample set general statistics.}
 \begin{tabular}{ | c | c | }
   \hline
   Number of test samples (city name) & 319 \\
@@ -396,18 +397,18 @@ Table \ref{table:results} summarizes the system's performance.
   Number of Strokes & 1237 \\
   \hline
 \end{tabular}
-\centering
 \label{table:general_stats} 
 \end{table}
 
 \begin{table}[b]
-\caption{Results}
 \renewcommand{\arraystretch}{1.2}
+\centering
+\caption{Segmentation results.}
 \begin{tabular}{ | c | c | }
   \hline
-  Strokes segmentation rate (SR) &  83\% \\ 
+  Strokes segmentation rate &  83\% \\ 
   \hline
-  Strokes recognition rate (RR) &  78\% \\ 
+  Strokes recognition rate &  78\% \\ 
  \hline
   Total number of true SPs & 1081 \\
   \hline
@@ -422,8 +423,7 @@ Table \ref{table:results} summarizes the system's performance.
   SPs Recall &  85.3\% \\ 
  \hline
 \end{tabular}
-\centering
-\label{table:results} 
+\label{table:segmentation_results} 
 \end{table}
 
 \subsection{Validation}
@@ -431,7 +431,7 @@ Table \ref{table:results} summarizes the system's performance.
 Related researches usually use a human expert to validate the accuracy of the SPs. However, in this work, we applied an automatic validation process using the ground truth information provided by the database. We discriminate between three types of final SPs. A final SP is classified as true positive if the complexity measure between the identified point and a true SP is less than a preset threshold; otherwise, it is classified as false positive. A false negative (miss), is the case when the system failed to identify a true SP. The different types of SPs can be seen in Figure \ref{fig:sp_types}.
 The validation process was tested on several sets and found to be highly reliable.
 
-\begin{figure}
+\begin{figure}[b]
 \centering
 \includegraphics[width=0.6\textwidth]{./figures/sp_types}
 \caption{SPs types.}
@@ -462,20 +462,14 @@ It happens mostly in the letter \RL{-m-}, \RL{-m} and in rare cases in the lette
    \label{fig:oversegmentation_begin}
 \end{figure}
 
-Without the additional strokes, there is no way to differentiate between the main body of the letter \RL{-s-} (S) and the main body of two consecutive \RL{-b-} (B) (or other identical main body letters as seen in figure \ref{fig:same_body_letters}). See figure \ref{fig:oversegmentation_s}.  
+Without the additional strokes, there is no way to differentiate between the main body of the letter \RL{-s-} /s/ and the main body of two consecutive \RL{-b-} /b/ (or other identical main body letters as seen in figure \ref{fig:same_body_letters}). 
+
 
 \begin{figure}
 \centering
 \includegraphics[width=5cm]{./figures/oversegmentation_s}
-\caption{Over-segmentation in the letter \RL{-s-}. These happens since this letter is very similar to the appearance to a combination of two consecutive \RL{-b-} letters and only can be identified from the context and using the additional strokes.}
+\caption{Over-segmentation in the letter \RL{-s-}. appearance to a combination of two consecutive \RL{-b-} letters and only can be identified from the context and using the additional strokes.}
 \label{fig:oversegmentation_s}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=5cm]{./figures/oversegmentation_m}
-\caption{Over-segmentation appeared frequently in the letter \RL{-m}, since it contains two horizontal segments.}
-\label{fig:oversegmentation_m}
 \end{figure}
 
 \subsubsection{Under-segmentation}
@@ -497,15 +491,15 @@ In addition, differentiating between the main body of the letter \RL{-s-} and th
 \subsection{Segmentation Selection Algorithms Performance}
 \label{subsec:ssa_performance}
 It is apparent from the data in Table \ref{table:ss_algorithms_results}, that the SSA has a crucial effect on the system's performance. 
-We tested several combinations of two SSAs in which the FSP is found by executing both SSAs independently and selecting the segmentation path with the smallest scoring. 
+We tested several combinations of two SSAs in which the FSP is found by executing both SSAs independently and selecting the segmentation path with the smallest scoring. In Table \ref{table:ss_algorithms_results}, a combination of two algorithms is denoted by $\oplus$.
 
-In Table \ref{table:ss_algorithms_results}, a combination of two algorithms is denoted by $\oplus$.
-
-\begin{table}[h]
-\caption{SSAs Performance}
+\begin{table}
+\centering
+\caption{Comparing the different SSAs performance.}
 \begin{tabular}{ | c | c | c | c | c |}
 \hline
-\textbf{SSA} & \textbf{WP SR} & \textbf{WP RR} & S\textbf{P Precision} & \textbf{SP Recall}\\
+\textbf{SSA} & \textbf{WP segmentation} & \textbf{WP recognition} & \textbf{SP precision} & \textbf{SP recall}\\
+             & \textbf{rate}            & \textbf{rate}           &                       &\\  
 \hline                 
   FSS & 76\% & 70\% & 85\% & 78\% \\ 
   \hline
@@ -520,7 +514,6 @@ In Table \ref{table:ss_algorithms_results}, a combination of two algorithms is d
   GSS$\oplus$BFSS & 81\% & 75\% & 83\% & 90\% \\
   \hline
 \end{tabular}
-\centering
 \label{table:ss_algorithms_results} 
 \end{table}
 
@@ -533,7 +526,7 @@ It is done by gradually increasing the maximal allowed number of samples per cla
  
 The graph in Figure \ref{fig:num_letter_impact} shows convergence of the system's performance when the maximal number of samples is larger than 200 per class. 
 Nevertheless, a miniature degradation is apparent, which is caused, probably, due to the increasing imbalance in the distribution of the training set.
-In addition, it is evident that the recognition rate (RR) is more sensitive to small training set than the segmentation rate (SR).
+In addition, it is evident that the recognition rate is more sensitive to small training set than the segmentation rate.
 
 \begin{figure}
 \centering
@@ -546,24 +539,29 @@ In addition, it is evident that the recognition rate (RR) is more sensitive to s
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{WPs Recognition Using Characters Classification Information}
+\section{Holistic WPs Recognition Using Characters Classification Information}
 \label{sec:wps_recognition}
-The segmentation and classification information obtained by a real-time segmentation system, can be used to significantly reduce the potential dictionary size and accelerate a later holistic recognition process.
-In a dictionary-free environment, the classification information can be employed to dynamically build a class of different shapes for all possible WPs, as described below.
+As mentioned earlier, the segmentation and classification information obtained by a real-time segmentation system, can be used to significantly reduce the potential dictionary size and accelerate a later holistic recognition process as follows:
+\begin{compactitem}
+\item In an open-vocabulary environment, the classification information can be employed to dynamically build a class of different shapes for all possible WPs.
+\item In a closed-vocabulary environment, a holistic recognition approach can be limited to consider valid combination that appear in the vocabulary. 
+\end{compactitem}
+
+In this section we evaluate the recognition accuracy that can be obtained in the an open-vocabulary environment.
 Following the real-time segmentation process, the $10$ top scored candidates of each character are recorded. 
 These shapes are used to generate a complete list of all possible shape concatenation of the retrieved candidates. 
 The obtained candidates represent different shapes of the same letter producing multiple shapes of the same WP. 
-The cardinality of the generated list is $10^p$ where p is the predicted number of characters in the WP using the segmentation process. 
-The large size of the generated list, which may exceed $100,000$ shapes, requires a similar process of embedding and dimensionality reduction, as described above, to generate a short list of candidates. 
+The cardinality of the generated list is $10^p$ where $p$ is the predicted number of characters in the WP using the segmentation process. 
+The large size of the generated list, which may exceed $10,000$ shapes, requires a similar process of embedding and dimensionality reduction, as described above, to generate a short list of candidates. 
 The short list of candidates in the next step is matched against the queried WP using the original expensive and more accurate matching process. 
 Using the proposed approach, the $10$ top WPs results yield a $98.1\%$ recognition rate. 
 The recognition rate of the first top candidate dropped down to $90.8\%$. 
 Using a voting process within the top five results gave a $94.7\%$ recognition rate. 
 
 Analysing the failures of the misclassified samples shows that most recognition errors occur as a result of misclassifying a single character. 
-In most cases the misclassified character is confused with a character having a very similar shape, which can be corrected using information retrieved by the associated additional stroke, such as the case of the letter \RL{-l} /l/ and the letter \RL{-n} /n/in their handwritten form.
+In most cases the misclassified character is confused with a character having a very similar shape, which can be corrected using information retrieved by the associated additional stroke, such as the case of the letter \RL{-l} /l/ and the letter \RL{-n} /n/ in their handwritten form.
 
-%
+
 %\bibliographystyle{plainnat}
 %\bibliography{references}
 %

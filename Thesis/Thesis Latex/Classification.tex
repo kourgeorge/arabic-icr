@@ -947,9 +947,10 @@ As seen in table \ref{table:dr_dimensions_results}, the dimensionality was reduc
 
 \begin{table}
 \centering
+\caption{The dimensionality of the four datasets after applying PCA and PCA+LDA.}
 \begin{tabular}{ | c | c | c | c |}
 \hline
-Letter position & Number of samples & PCA & PCA+LDA\\
+\textbf{Letter position} & \textbf{Number of samples} & \textbf{PCA} & \textbf{PCA+LDA} \\
 \hline                 
   Ini & 1405 & 48 & 9 \\ 
   \hline
@@ -960,7 +961,6 @@ Letter position & Number of samples & PCA & PCA+LDA\\
   Iso & 1372 & 39 & 8 \\ 
   \hline
 \end{tabular}
-\caption{The dimensionality of the four datasets after applying PCA and PCA+LDA.}
 \label{table:dr_dimensions_results} 
 \end{table}
 
@@ -1167,14 +1167,14 @@ Below, we give a detailed evaluation of the classifier performance in terms of a
 
 \begin{table}[b]
 \centering
+\caption{Characters sample size and distribution.}
 \begin{tabular}{ | c | c | c | c |}
 \hline                 
-  Ini & Mid & Fin & Iso \\ 
+  \textbf{Ini} & \textbf{Mid} & \textbf{Fin} & \textbf{Iso} \\ 
   \hline
   1404 & 1195 & 1628 & 1371 \\
   \hline
 \end{tabular}
-\caption{Sample size and distribution}
 \label{table:sample_set} 
 \end{table}
 
@@ -1184,10 +1184,11 @@ The last row in Table \ref{table:results_position} shows the accumulative averag
 
 \begin{table}
 \centering
+\caption{Characters classification results by character position.}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{ | c | c | c | c | c |}
 \hline
-	\textbf{Character Position} & \textbf{CCR} & \textbf{Recall} &  \textbf{Precision} \\
+	\textbf{Character Position} & \textbf{Accuracy} & \textbf{Recall} &  \textbf{Precision} \\
 	\hline 
 	Ini & 93\% & 85\% & 88\% \\                
   	\hline
@@ -1200,7 +1201,6 @@ The last row in Table \ref{table:results_position} shows the accumulative averag
   	\textbf{Overall} & \textbf{91\%} &  \textbf{85\%} & \textbf{90\%} \\
   	\hline
 \end{tabular}
-\caption{Classification results by character position.}
 \label{table:results_position} 
 \end{table}
 
@@ -1227,10 +1227,11 @@ Skipping the dimensionality reduction and the indexing stages has decreased the 
 
 \begin{table}
 \centering
+\caption{Classification and time performance of three activation configurations.}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{ | c | c | c | c |}
   \hline
-  \textbf{Configuration}  & \textbf{CCR [Top 1]}  & \textbf{CCR [Top 3]} & \textbf{Time [ms]}\\
+  \textbf{Configuration}  & \textbf{Accuracy [Top 1]}  & \textbf{Accuracy [Top 3]} & \textbf{Time [ms]}\\
   \hline
   High Accuracy & 91\% & 96\% & 29.9 \\ 
   \hline
@@ -1239,7 +1240,6 @@ Skipping the dimensionality reduction and the indexing stages has decreased the 
   Fast Learning & 90\% & 96\% & 4.4 \\ 
   \hline
 \end{tabular}
-\caption{Classification and time performance of three configurations.}
 \label{table:configurations} 
 \end{table}
 
@@ -1248,10 +1248,11 @@ Table \ref{table:features_comparison} compares the performance of the the MAD an
 
 \begin{table}
 \centering
+\caption{Comparing the accuracy rates of the different feature extraction techniques.}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{ | c | c | c |}
 \hline
-	\textbf{Shape Descriptor}  & \textbf{CCR [Top 1]}  & \textbf{CCR [Top 3]} \\
+	\textbf{Shape Descriptor}  & \textbf{Accuracy [Top 1]}  & \textbf{Accuracy [Top 3]} \\
 	\hline 
 	SC      & 91\% & 96\%  \\                
   	\hline
@@ -1260,7 +1261,6 @@ Table \ref{table:features_comparison} compares the performance of the the MAD an
   	None    & 87\% & 93\% \\
   	\hline
 \end{tabular}
-\caption{Comparing the correct classification rate of the different feature extraction techniques.}
 \label{table:features_comparison} 
 \end{table}
 
