@@ -251,7 +251,7 @@ $5$
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Second Stage: POI Filtering and Scoring Correction}
-In this stage we re-score subsequences and eliminate redundant POIs based on the following rules:
+In this stage we re-score sub-sequences and eliminate redundant POIs based on the following rules:
 
 \begin{compactitem}
 	\item SPs should lie close to the baseline. 
@@ -259,6 +259,10 @@ In this stage we re-score subsequences and eliminate redundant POIs based on the
 	\item The sub-stroke length should be proportional to the length of the containing stroke.
 \end{compactitem}
 
+Arabic text is written along an imaginary line called \emph{baseline}, with the majority of foreground pixels in this area.
+It corresponds to the line upon which one would write on ruled paper. 
+Many script recognition techniques use the baseline of the word in part of the recognition
+process, for Arabic as well as for other languages.
 The system determines the baseline by calculating the vertical projection histogram of the re-sampled and normalized version of the stroke. 
 The height of the stroke (y-axis) is partitioned into ten equi-length intervals. 
 A POI is filtered out if it does not satisfy the following condition:
@@ -371,7 +375,6 @@ $\pi = \{0,L+1\}$\;
 \end{algorithm}
 
 Performance evaluation of the mentioned SSA is provided in \ref{subsec:ssa_performance}.
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}

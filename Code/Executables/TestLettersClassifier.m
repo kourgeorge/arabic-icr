@@ -16,18 +16,18 @@ MidFrac = numSamplesMid/totalSamplesNum;
 FinFrac = numSamplesFin/totalSamplesNum;
 IsoFrac = numSamplesIso/totalSamplesNum;
 
-cpIni
-cpMid
-cpFin
-cpIso
-
 CaculateClassificationTotalTime = (totalClassificationTimeIni+totalClassificationTimeMid+totalClassificationTimeFin+totalClassificationTimeIso)/totalSamplesNum
 CaculateLearningTime = (totalLearningTimeIni+totalLearningTimeMid+totalLearningTimeFin+totalLearningTimeIso)
 
 CorrectRate = cpIni.CorrectRate*IniFrac+cpMid.CorrectRate*MidFrac+cpFin.CorrectRate*FinFrac+cpIso.CorrectRate*IsoFrac
 
-Recall = cpIni.Sensitivity*IniFrac+cpMid.Sensitivity*MidFrac+cpFin.Sensitivity*FinFrac+cpIso.Sensitivity*IsoFrac
-Precision = cpIni.PositivePredictiveValue*IniFrac+cpMid.PositivePredictiveValue*MidFrac+cpFin.PositivePredictiveValue*FinFrac+cpIso.PositivePredictiveValue*IsoFrac
+[precisionIni, recallIni] = CalcPrecisionAndRecall (cpIni);
+[precisionMid, recallMid] = CalcPrecisionAndRecall (cpMid);
+[precisionFin, recallFin] = CalcPrecisionAndRecall (cpFin);
+[precisionIso, recallIso] = CalcPrecisionAndRecall (cpIso);
+
+Recall = recallIni*IniFrac+recallMid*MidFrac+recallFin*FinFrac+recallIso*IsoFrac
+Precision = precisionIni*IniFrac+precisionMid*MidFrac+precisionFin*FinFrac+precisionIso*IsoFrac
 
 end
 
@@ -172,4 +172,17 @@ Diff = sortCandidatesMatrix(Diff);
 Diffcell = struct2cell(Diff);
 Diffcell = Diffcell(1,:,:);
 testSetlabelingResults = reshape(Diffcell, [], numCandidates);
+end
+
+function [precision, recall] = CalcPrecisionAndRecall (cp)
+
+confusionMatrix = cp.CountingMatrix;
+ClassNum = size(confusionMatrix,2);
+TPVector = diag(confusionMatrix)';
+ColumsSum = sum(confusionMatrix,1);
+RowsSum = sum(confusionMatrix,2);
+RowsSum = RowsSum(1:end-1)';
+recall = (sum(TPVector./ColumsSum))/ClassNum;
+precision = (sum(TPVector./RowsSum))/ClassNum;
+
 end

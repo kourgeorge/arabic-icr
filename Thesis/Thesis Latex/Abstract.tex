@@ -10,9 +10,8 @@
 %\usepackage{babel}
 %\begin{document}
 
-\vspace{-60pt}
 \chapter*{Abstract}
-\vspace{-20pt}
+\vspace{-40pt}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Motivation}}{}
 Despite the long standing prediction that digital computers will challenge the future of handwriting, pens and papers remain commonly used means for communication and recording of information in the daily life.
 For that reason, in addition to the growing use of keyboard-less devices such as smart-phone and tablets, which are too small to have a convenient keyboard, handwriting recognition is receiving an increasing interest in the last decades.
@@ -30,7 +29,7 @@ Using a fast Arabic character classifier the system attach a scoring to the sub-
 A candidates filtering followed by a segmentation selection process are activated when the entire stroke is available.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Approach - classification}}{}
-A $k$-NN based character classifier that employs a linear-time embedding of the EMD metric to a norm space is presented.
+A nearest neighbours based character classifier that employs a linear-time embedding of the Earth Mover's Distance metric to a norm space is presented.
 The transformation of the feature space vectors into the wavelet coefficient space facilitates accurate similarity measure and sub-linear search methods.
 We show that the resulting segmentation and letter classification information can be used to significantly reduce the potential dictionary size and accelerate a holistic recognition process.
 

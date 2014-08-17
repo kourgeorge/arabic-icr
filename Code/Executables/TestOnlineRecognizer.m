@@ -4,11 +4,11 @@ function TestOnlineRecognizer()
 
 
 global LettersDataStructure;
-TestSetFolder = 'C:\OCRData\WPsLabeled';
+TestSetFolder = 'C:\OCRData\WPsLabeled2';
 %TestSetFolder = 'C:\OCRData\GeneratedWords';
 
 LettersDataStructure = load('C:\OCRData\LettersFeatures\LettersDS');
-OutputImages = true;
+OutputImages = false;
 if (OutputImages==true)
     fig = figure();
     cl = clock;
@@ -25,11 +25,10 @@ diary on;
 correctRec = 0;
 correctSeg = 0;
 count = 0;
-overSeg = 0;
-underSeg = 0;
 
 start_total = cputime;
 TestSetWordsFolderList = dir(TestSetFolder);
+WPResults = [];
 for i = 3:length(TestSetWordsFolderList)
     current_object = TestSetWordsFolderList(i);
     IsFile=~[current_object.isdir];
@@ -41,11 +40,14 @@ for i = 3:length(TestSetWordsFolderList)
         sequence = dlmread([TestSetFolder,'\',FileName]);
         disp(['Word  ',num2str(count),': ',FileName,])
         t = cputime;
+        %sequence = NormalizeCont(sequence);
         RecState = OnlineRecognizer( sequence ,false, false);
+        WPResults = [WPResults;{CreateDatabaseToRaid(FileName,RecState)}];
         RecState = RecState(1);
         e = cputime-t;
         disp(['Time Elapsed: ',num2str(e)])
-        [LetterNumDiff, CorrectRecognition] = IsWordRecognizedCorrectly(RecState,strtok(FileName, ' .('));
+        %[CorrectRecognition] = IsWordRecognizedCorrectly(RecState,strtok(FileName, ' .('));
+        CorrectRecognition = false;
         numSegmentationPoints = length(RecState.SegmentationPoints);
         %Collect Statistics
         count=count+1;
@@ -56,24 +58,12 @@ for i = 3:length(TestSetWordsFolderList)
             error_str = GetCandidatesFromRecState( RecState );
             disp (error_str)
         end
-        if (LetterNumDiff==0)
-            correctSeg = correctSeg+1;
-        else
-            disp ('===>error Segmentation')
-            if (LetterNumDiff>0)
-                overSeg = overSeg+1;
-            else
-                underSeg = underSeg+1;
-            end
-        end
+        
         
         %Output letters images to folder
         if (CorrectRecognition == false && OutputImages==true)
-            if (LetterNumDiff~=0)
-                WordFolder =[OutputFolder,'\Segmentation\',FileName];
-            else
-                WordFolder =[OutputFolder,'\',FileName];
-            end
+            
+            WordFolder =[OutputFolder,'\',FileName];
             
             mkdir(WordFolder);
             hold off;
@@ -82,7 +72,7 @@ for i = 3:length(TestSetWordsFolderList)
             
             for k=2:length(RecState.CandidatePointsArray)
                 point = RecState.CandidatePointsArray(k);
-
+                
                 plot(ax,RecState.Sequence(point-1:point,1),RecState.Sequence(point-1:point,2),'c.-','LineWidth',5);
             end
             
@@ -116,12 +106,22 @@ Comments
 TestSetFolder
 RecognitionRate = (correctRec/count)*100
 SegmentationRate = (correctSeg/count)*100
-OverSegmentationRate = (overSeg/(count-correctSeg))*100
-UnderSegmentationRate = (underSeg/(count-correctSeg))*100
+%OverSegmentationRate = (overSeg/(count-correctSeg))*100
+%UnderSegmentationRate = (underSeg/(count-correctSeg))*100
 AvgTime=(cputime-start_total)/count
 count
 
 diary off;
 movefile (OutputFolder,[OutputFolder,' [R=',int2str(round(RecognitionRate)), ' S=', int2str(round(SegmentationRate)),']'], 'f');
 
+end
+
+function WPResult = CreateDatabaseToRaid(word, RecState)
+    WPResult.Word = strtok(word, ' .(');
+    WPResult.Sequence = RecState.Sequence;
+    for i=1:size(RecState.SegmentationPoints,1)
+       WPResult.Letters(i).Sequence= RecState.SegmentationPoints{i}.Sequence;
+       WPResult.Letters(i).Candidates = RecState.SegmentationPoints{i}.Candidates;
+    end
+    
 end

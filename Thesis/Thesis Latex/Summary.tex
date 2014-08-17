@@ -46,7 +46,7 @@ The proposed recognition-based segmentation method is performed in the stroke le
 The first stage, which requires the most calculation effort, is performed whilst the stroke is being written and involves over-segmentation of the stroke.
 Morphological features are employed to nominate potential SPs.
 The sub-strokes induced by the SPs are classified using a fast character classifier, and the classification information is saved in a scoring matrix.
-The second stage contains filtering of the topologically invalid SPs. 
+The second stage contains filtering of the topologically invalid SPs and re-scoring of non-proportional length sub-strokes. 
 The last stage involves several segmentation points selections algorithm which determines the best subset of segmentation points.
 
 The real-time nature of the segmentation system requires implementing a fast Arabic handwritten characters classifier.
