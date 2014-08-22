@@ -55,36 +55,36 @@
 Writing has made much of the culture and civilization possible.
 It was developed as a mean to expand human memory and to facilitate communication. 
 Converting handwritten script into its digital analogous is highly motivated by the ease and convenience of the digital representation.
-Not only this is useful for making digital copies of handwritten documents, but also in many automated processing tasks such as searching, indexing, automatic mail sorting, editing, sharing and more \cite{noaparast2009persian,connell2000online}. 
+Not only this is useful for making digital copies of handwritten documents, but also in many automated processing tasks such as searching, indexing, automatic mail sorting, editing, sharing, and more \cite{noaparast2009persian,connell2000online}. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR as OCR}}{} 
-HWR was defined as "the task of transforming a language represented in its spatial form of graphical marks into its symbolic representation" by Plamondon and Srihari \cite{plamondon2000online}.
-HWR is a special case of \emph{optical character recognition} (OCR), an important field in pattern recognition that is defined as the science of electronically converting a scanned, photographed, or sensed of both typewritten or printed texts, into machine-encoded text. OCR has been steadily evolving during its history and has always been a favorite testing ground for new ideas in pattern recognition, giving rise to an exciting set of research topics and producing many powerful practical applications.
-However, since many experiments of new ideas in pattern recognition were conducted on isolated characters, the results are not always immediately reflected in OCR applications \cite{burrow2004arabic}.
-Although considered a well developed technological field, OCR remains an area of active scientific research and creative engineering \cite{borovikov2004survey}.
+\emph{Handwriting recognition} (HWR) was defined by Plamondon and Srihari \cite{plamondon2000online} as "the task of transforming a language represented in its spatial form of graphical marks into its symbolic representation".
+In contrast to HWR, \emph{Optical character recognition} (OCR) targets recognising typewritten text.
+OCR and HWR are important areas in the pattern recognition field. 
+Both areas have been steadily evolving during their history and have always been a favourite testing ground for new ideas in pattern recognition, giving rise to an exciting set of research topics and producing many powerful practical applications.
+However, since many experiments of new ideas in pattern recognition were conducted on isolated characters, the results are not always immediately reflected in HWR applications \cite{burrow2004arabic}.
+Although considered a well developed technological field, HWR remains an areas of active scientific research and creative engineering \cite{borovikov2004survey}.
 Besides recognition, handwriting is associated with other types of analysis, such as signature verification, writer identification, etc.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Levels of difficulties in HWR}}{}
-There are different types of problems with varying complexity within HWR.
-In one extreme there is the case of isolated characters written inside graphical boxes in which the segmentation problem is already solved. The opposite extreme is the case of cursive unrestricted handwriting in which words, or portion of a word, is written with a single stroke, i.e, ligatures connect adjacent letters. HWR systems have a strong history in making use of this graduation in difficulty \cite{bahlmann2005advanced}. 
+There are different types of problems with varying complexity within the HWR field.
+In one extreme there is the case of isolated characters written inside graphical boxes in which the segmentation problem is already solved. The opposite extreme is the case of cursive unrestricted handwriting in which words or portions of a word are written with a single stroke using ligatures that connect adjacent letters. 
+HWR systems have a strong history in making use of this graduation in difficulty \cite{bahlmann2005advanced}. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Arabic HWR challenge}}{}
 A script is a set of icons that have certain basic shapes. 
 These are known as characters or letters.
 Each script has its own rules regarding how letters are combined to form shapes that represent higher level linguistic units \cite{plamondon2000online}.
-Unlike the Latin script, in which non-cursive handwriting, i.e., using isolated characters, is possible and common, Arabic is cursively written in both handwritten and printed text.
+Unlike the Latin script, in which non-cursive handwriting is possible and common, Arabic is cursively written in both handwritten and printed text.
 Its unconstrained nature, which produces a huge variety in the handwriting of different people, makes the recognition of Arabic script extremely difficult.
 Figure \ref{fig:ha_different} shows several handwritten samples the letter \RL{.h} /.h/, in its isolated form, written by several writers.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{The research on HWR in other languages}}{}
-\emph{The research on HWR in other languages}
 
 Text segmentation, that is, the process of dividing a cursive writing into sub-units (typically characters) turns out to be a challenging task.
 
 \begin{figure}
 \centering
 \includegraphics{./figures/ha_different}       
-\caption{Different writing styles of the isolated form of the letter \RL{.h}.}
+\caption{Different writing styles of the isolated form of the letter \RL{.h} /.h/.}
 \label{fig:ha_different}
 \end{figure}
 
@@ -93,10 +93,10 @@ Text segmentation, that is, the process of dividing a cursive writing into sub-u
 \subsection{Off-line versus On-line Handwriting Recognition}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
-The field of HWR can be classified in several ways. However, the most common categorization is the one that distinguishes between \emph{off-line} (also called static) and \emph{on-line} (also called dynamic).
-Off-line HWR focuses on documents that have been written on paper at some previous point of time. A digital image of the document is fed to the computer, and the system attempts to convert the spatial representation of the letters into digital symbols \cite{al2011online}. 
-In contrast, on-line HWR is performed on a digital representation of the text written on a special digitizer, tablet or smart-phone device, where sensors pick up the pen-tip movements and the two-dimensional coordinates of successive points of the writing as a function of time are stored.
-Figure \ref{fig:offline_vs_online} shows typical input signals that can be analyzed in both cases.
+The field of HWR can be classified in several ways, however, the most common categorization is the one that distinguishes between \emph{off-line} (also called static) and \emph{on-line} (also called dynamic).
+Off-line HWR focuses on documents that have been written on paper at some previous point of time. 
+A digital image of the document, represented as a raw 2-dimensional pixel data, is fed to the computer and the system attempts to convert the spatial representation of the letters into digital symbols \cite{al2011online}. 
+In contrast, on-line HWR is performed on a digital representation of the text written on a special digitizer, tablet or smart-phone device, where sensors pick up the pen-tip movements and the two-dimensional coordinates of successive points of the writing as a function of time are stored. 
 
 \begin{figure}
 	\centering
@@ -124,12 +124,12 @@ In general, off-line HWR systems are less accurate than on-line systems, but, th
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{A general flow for HWR}}{}
 Despite the large variation among the different methods for HWR, there are several fundamental stages that are common between most of the systems.
 The data acquisition step is the first stage in HWR. 
-In the on-line case, the stylus motion is sampled at equal time intervals.
-The samples go through a preprocessing stage that includes filtering of noises, re-sampling the stroke information to obtain equidistant samples, and normalized to a standard size. 
+In the on-line case, the stylus motion is usually sampled at equal time intervals.
+The samples go through a preprocessing stage that includes filtering, re-sampling, and normalization. 
 Additional preprocessing may include slant and slope corrections. 
 Then, depending on the nature of the system, the script may undergo segmentation into basic units that could be words, parts of words, single characters or graphemes.
 Typically, a feature extraction technique is then applied to extract significant and distinguishing attributes of the input data.
-Finally, using a classification algorithm the basic units are labeled. 
+Finally, using a classification algorithm the basic units are labelled. 
 In many implementations, a post-processing stage is applied in which the language model is used to search for the most likely string in the lexicon.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{off-line HWR additional steps}}{}
@@ -146,24 +146,14 @@ One of the earliest studies on on-line Arabic script recognition was carried out
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{The Holistic versus the Analytic Approach}
+\subsection{Holistic versus the Analytic Approaches}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Importance of the dictionary size}}{}
-The vocabulary, from which the words in the test set are taken, has a major impact on how difficult the HWR task is.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Closed and open vocabulary definitions}}{}
+The vocabulary from which the word samples are taken, has a major impact on how difficult the HWR task is.
 Closed-vocabulary HWR systems are capable of recognizing words from a predetermined limited size dictionary which usually called a lexicon.
 There are no well-established criteria for the categorization of lexicon size. 
-However, the following terms are usually used:
-\begin{compactitem}
-\item small lexicon - tens of words.
-\item medium lexicon - hundreds of words.
-\item large lexicon - thousands of words.
-\item very large lexicon - tens of thousands of words.
-\end{compactitem}
-Open-vocabulary tasks refer to the recognition of any word without the constraint of being in a dictionary.
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Recognition difficulty}}{}
+However, a lexicon that contains tens of words is considered a small lexicon and a lexicon t hat contains tend of thousands of words is considered a very large lexicon.
+Open-vocabulary systems refer to such that recognize any word without the constraint of being in a dictionary.
 The lexicon is a key-point post-processing stage in many systems, because the linguistic knowledge helps to filter out many possible options that are not included in the lexicon, and consequently raises the recognition rate.
 The adhesion to a limited dictionary, may also limit the computational complexity. 
 Although most research efforts have been devoted to closed vocabulary systems, open vocabulary systems have also been proposed.
@@ -186,33 +176,32 @@ A survey done in \cite{al2011online} on Arabic HWR found that the analytic appro
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Arabic Handwriting Recognition}
+\subsection{The Arabic Language}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Arabic spread}}{}
-The Arabic script is a descendant of the Aramaic script. 
-The earliest known document written using the Arabic script dates from 512 AD.  
-The Arabic language is spoken, as their first language, by nearly 350 million people around the world , and written by more than 100 million people, in over 20 different countries \cite{zeki2011segmentation}.
-It is one of the five most common languages in the world and one of the six United Nations official languages since 1974 \cite{burrow2004arabic}. 
+The Arabic script is a descendant of its Aramaic ancestor. 
+The earliest known document written using the Arabic script dates from 512 AD.
+Arabic is spoken, as their first language, by nearly 350 million people around the world, and written by more than 100 million people, in over 20 different countries \cite{zeki2011segmentation}.
+It is one of the five most common languages in the world and one of the six official languages of the united nations since 1974 \cite{burrow2004arabic}. 
 Although Arabic is used mainly in the Arab countries, which consists of about 5.5\% of the world population, almost all Muslims, around 25\% of the world population can read Arabic script as it is the language of the Holy Qur'an \cite{zeki2011segmentation}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Arabic Alphabet usage in other languages}}{}
-The use of Arabic language extended in the $7^{th}$ and $8^{th}$ centuries from India to the Atlantic ocean due to the Islamic conquests \cite{saabni2009efficient}. 
+The use of the Arabic language extended in the $7^{th}$ and $8^{th}$ centuries from India to the Atlantic ocean due to the Islamic conquests \cite{saabni2009efficient}. 
 Consequently, more than twenty different languages adopted the Arabic alphabet with some changes. 
-Examples of such languages are Farsi, Urdu, Malay, Housa and Ottoman Turkish.
+Examples are Farsi, Urdu, Malay, Housa and Ottoman Turkish.
 Nevertheless, some of those languages has later adopted the Latin characters, but in general, people can still read the Arabic script \cite{zeki2011segmentation}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Literary vs. daily language}}{}
 Although spoken Arabic is different from country to country, written Arabic is a standard system used all over the Arab world.
-The literary language is called \emph{modern standard Arabic} or \emph{literary Arabic}, which it is currently the only official form of Arabic, used in most written documents as well as in formal spoken occasions, such as lectures and news broadcasts. 
+The literary language is called \emph{modern standard Arabic} or \emph{literary Arabic}.
+It is the only official form of Arabic used in most written documents as well as in formal spoken occasions, such as lectures and news broadcasts. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The growing interest in the Arabic HWR}}{}
-Arabic handwriting recognition research came to the attention of researchers very recently compared to Latin and Chinese.
+Arabic HWR research came to the attention of researchers very recently compared to Latin and Chinese.
 The first work on Arabic character recognition is by Nazif \cite{nazif1975system} published in 1975, while the earlier research efforts in Latin may be traced back to the middle of the 1940s.
 However, considerable increase in the number of research papers related to Arabic character recognition is evident in recent years.
-The challenging nature of HWR has attracted the attention of researchers from industry and academic circles \cite{al2010development, zeki2011segmentation}.
-A recent survey done by Tagougui et al. \cite{tagougui2013online} reviews the status of research in the on-line Arabic handwriting recognition field. 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+The challenging nature of the Arabic HWR has attracted the attention of researchers from industry and academic circles \cite{al2010development, zeki2011segmentation}.
+A recent survey done by Tagougui et al. \cite{tagougui2013online} reviews the status of research in the on-line Arabic HWR field. 
 
 \subsubsection{Characteristic of the Arabic Writing System}
 \label{subsubsec:arabic_writing_characteristic}
@@ -221,19 +210,17 @@ A recent survey done by Tagougui et al. \cite{tagougui2013online} reviews the st
 The Arabic script consists of 28 basic letters.
 It is written from right to left in a semi-cursive manner in both printed and handwritten forms.
 Most letters are written in four different letter shapes depending on their position in the word, e.g., the letter \RL{`} /ain/ appears as \RL{`}  in its isolated form, \RL{`-} in its initial form, \RL{-`-} in its medial form and \RL{-`} in it final form. 
-Among the basic letters, six are Dis-connective - \RL{A} /a/, \RL{d} /d/, \RL{_d} /th/, \RL{r} /r/  \RL{z} /z/ and \RL{w} /w/. 
+Among the basic letters, six are dis-connective - \RL{A} /a/, \RL{d} /d/, \RL{_d} /th/, \RL{r} /r/  \RL{z} /z/ and \RL{w} /w/. 
 Dis-connective letters do not connect to the following letter and have only two shapes, isolated and final. 
 The presence of these letters interrupts the graphic continuity of a word. 
 The graphically connected parts of the word are called \emph{word parts} (WPs) \cite{biadsy2011segmentation}. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Delayed strokes}}{}
-Obligatory dots and strokes used in the Arabic script are called \emph{delayed strokes} and are usually drawn last in the when scribing a WP or a word. 
+Dots and strokes used in the Arabic script are called \emph{delayed strokes} or \emph{additional strokes} and are usually drawn last when scribing a WP or a word. 
 There are mainly two types of delayed strokes, \emph{i'jam} (\RL{A`jAm}) and \emph{harakat} (\RL{.hrkAt}). 
-The old Arabic was written without dots or diacritics. 
-These additional strokes were added around the 7th century, to prevent the Qur'an from being misread by Muslims \cite{burrow2004arabic}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{I'jam}}{}
-The i'jam are the pointing diacritics added to the main body of the letter, called \emph{rasm} (\RL{rsm}), and their role is to distinguish between various constants , such as the medial form letters \RL{-b-} /b/, \RL{-t-} /t/, \RL{-_t-} /s/, \RL{-n-} /n/, \RL{-y-} /y/.
+The i'jam are the pointing diacritics added to the main body of the letter, called \emph{rasm} (\RL{rsm}), and their role is to distinguish between various constants, such as the medial form letters \RL{-b-} /b/, \RL{-t-} /t/, \RL{-_t-} /s/, \RL{-n-} /n/, \RL{-y-} /y/.
 Typically, i'jam are not considered diacritics but part of the letter and consists of one or more dots and lines added above, under or inside the letter.
 Eliminating, adding or moving a i'jam produces a completely different letter and as a result a completely different word, thus, they are not omitted in the written documents.
 In addition to the frequently used dots, the \RL{'} (hamza) is another type of i'jam that distinguish between the letters \RL{k} /k/ and \RL{l} /l/ in their isolated and final forms.
@@ -242,6 +229,8 @@ In addition to the frequently used dots, the \RL{'} (hamza) is another type of i
 The harakat are small markings added above or below the letters, are used to specify the exact pronunciation of the word.
 These diacritics are used in the holy book Qur'an and are frequently used in teaching material and poetry but are seldom used in day-to-day communication and handwriting neither are much in use in the scientific and business communication.
 
+The old Arabic was written without dots or diacritics. 
+These additional strokes were added around the 7th century, to prevent the Qur'an from being misread by Muslims \cite{burrow2004arabic}.
 An example of a fully vocalised Arabic from the Qur'an (Al-Fatiha 1:1):
 \begin{center}
 \fullvocalize
@@ -249,16 +238,29 @@ An example of a fully vocalised Arabic from the Qur'an (Al-Fatiha 1:1):
 \begin{RLtext}
 bismi al-ll_ahi al-rra.hm_ani al-rra.hImi
 \end{RLtext}
-In the Name of All'ah, the Most Gracious, the Most Merciful.
+In the name of All'ah, the most gracious, the most merciful.
 \end{center}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{additional stroke}}{}  
-In our work we recognize and classify the main body of the letter and ignore the additional stroke entirely. 
-As a result, the number of different letters drops from 29 to 18.
+In our work we recognize and classify the main body of the letter and ignore the additional stroke entirely (both i'jam and harakat). 
+As a result, the number of different letters drops from $28$ to $18$.
 It is important to note that taking the delayed strokes into consideration may be exploited to boost the classification rate.
-See table of identical rasm Arabic letters in Figure \ref{fig:same_body_letters}.
+See Table \ref{table:same_body_letters} for identical rasm Arabic letters.
 
-\begin{figure}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{WP count}}{}    
+Saabni and El-sana \cite{saabni2009efficient} have explored a large collection of Arabic texts and extracted $300,000$ different word combinations of $82,000$ different WPs.
+Ignoring the delayed strokes, the number of different WP had reduced to $40,000$.
+
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Challenges of the Arabic language}}{}  
+There are several complexities that arise when attempting to recognize Arabic Script.
+First, while the main body of most Arabic letters are written within a single stroke, there are some letters that usually written using two strokes, such as the letter \RL{-k-} /k/ which is the middle form of the letter \RL{k}. 
+The writer usually writes \RL{-l-} and adds the final upper slanted line when the main body is completed, as if he writes an additional stroke.
+Second, different writers may write the main body of the same word part in a different number of strokes.
+For example, rasm of the word \RL{byt} (/bayt/) can be written in a single, two or three strokes.
+Third, consecutive appearances of the letter \RL{-b-} /b/ look very similar to the \RL{-s-} /s/, the only to distinguish between the two options is by looking at the additional strokes.
+Thus, when recognizing Arabic script, many researches have preferred the holistic approach. 
+
+\begin{table}
 \centering
 \renewcommand{\arraystretch}{2}
 %{\footnotesize
@@ -270,42 +272,21 @@ See table of identical rasm Arabic letters in Figure \ref{fig:same_body_letters}
 \hline
 \end{tabular}
 \caption{Arabic characters with similar rasm.}
-\label{fig:same_body_letters}
-\end{figure}
-
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{WP count}}{}    
-Saabni and El-sana \cite{saabni2009efficient} have explored a large collection of Arabic texts and extracted 300,000 different word combinations of 82,000 different WPs.
-Ignoring the delayed strokes, the number of different WP had reduced to 40,000. 
-
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Challenges of the Arabic language}}{}  
-The main body of most Arabic letters are written by a single stroke. 
-A single stroke can contain a single or multiple letters.
-However, there are some letters that usually written using two strokes, such as the letter \RL{-k-} which is the middle form of the letter \RL{k} /k/. 
-The writer usually writes \RL{-l-} and adds the final upper slanted line when the main body is completed, as if he writes an additional stroke.
-Another problem arises when trying to recognize Arabic transcript, is that, different writers may write the main body of the same word part in a different number of strokes. 
-Consecutive appearances of the letter \RL{-b-} look very similar to the \RL{-s-} /s/, the only to distinguish between the two options is by looking at the additional strokes.
-For these mentioned complexities, when recognizing Arabic scripts, many researches have preferred the holistic approach. 
+\label{table:same_body_letters}
+\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\subsection{Arabic Characters classification}
+\subsection{Characters Classification}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning problem.}}{}
 Classification is the problem of identifying to which class an unlabelled observation belongs. 
 In the case of \emph{supervised learning}, the classification is done based on a dataset containing labelled samples, referred to as the training set.
-Given a domain space $X$, a target space $Y$ and a training set $S=\{(x_i,y_i)\}_{i=1}^{m}$ where $x_1,x_2,..,x_n\in X$ and $y_1,y_2,...,y_n \in Y$, we would like to find a function $h$, such that given an unlabelled point $x \in X$, $h$ will classify it correctly.
-
-%\begin{figure}
-%\centering
-%\includegraphics[width=0.5\textwidth]{./figures/machine_learning_diagram}       
-%\caption{A learning algorithm scheme}
-%\label{fig:machine_learning_diagram}
-%\end{figure}
+Namely, given a domain space $X$, a target space $Y$ and a training set $S=\{(x_i,y_i)\}_{i=1}^{m}$ where $x_1,x_2,..,x_n\in X$ and $y_1,y_2,...,y_n \in Y$, we would like to find a function $h$, such that given an unlabelled point $x \in X$, $h$ will classify it correctly.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{HWR Complexity}}{} 
-Characters classification is a complex and challenging problems in the field of pattern recognition.
-This is due to the variation in characters shapes resulted from differences in writing habits, styles, social and educational levels of the writer.
+Characters classification is considered a challenging problems in the field of pattern recognition.
+This is due to the variation in the character shapes resulted from differences in writing habits, styles, social and educational levels of the writer.
 Other factors which implicate the recognition is the variability of writing styles, cursive writing, text size differences and sampling issues, such as duplicate samples resulted from hesitate writers as well as non-adjacent consecutive samples caused by fast writers \cite{verma2004feature}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Letter classification using HMM}}{}
@@ -315,45 +296,26 @@ While having many advantages, the HMMs make some powerful assumption about the d
 In addition, HMMs require a large amount of data for its training.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The k-NN classifier}}{}
-The $k$-NN algorithm is a well-known classification technique in supervised learning. 
+$k$-NN is a well-known classification technique in supervised learning. 
 If $k=1$, then the object is simply assigned to the class of that single nearest neighbour.
-When $k>1$, the object being assigned to the class most common amongst its $k$ nearest neighbours
+When $k>1$, the object being assigned to the most common class amongst its $k$ nearest neighbours.
 In many cases, the notion of distance between objects is obvious, however in many other interesting cases it cannot be easily defined.
-On the one hand, beside its simplicity, $k$-NN has some major advantages. 
-$k$-NN is especially a good learning method for complex target functions.  
-On the other hand, the $k$-NN algorithm has some drawbacks. 
-First, the $k$-NN algorithm needs a large dataset in-order to achieve high classification accuracy. 
-Second, it is very sensitive to data errors and can be easily fooled by outliers.
+On the one hand, $k$-NN is a simple and good at learning complex target functions.
+On the other hand, it needs a large dataset in order to achieve high classification accuracy and is very sensitive to data errors and outliers.
 
 
-\subsubsection{Literature Review}
-An on-line Arabic handwritten character recognition method, which uses structural features and decision trees, was presented by Al-Taani and Al-Haj \cite{al2010recognition}. 
-The system was tested on a set of 1400 different characters and achieved about 75\% recognition rate. 
-The dataset was obtained by capturing the handwriting of 10 users that wrote the 28 Arabic characters, in their isolated form, five times in order.
-
-A rules based approach for on-line Arabic characters classification was proposed in \cite{ismail1859online}. 
-The performance of the system was compared to the classification results obtained using artificial neural networks and and decision trees. 
-A set of 504 characters were used for training and the test set contained 336 characters. 
-The system obtained a recognition rate of about 97\%. 
-
-Addakiri and Bahaj \cite{addakiri2012line} presented an on-line Arabic handwritten character
-recognition system based on Neural Networks. 
-Their approach was tested on 1400 different characters written by 10 users and achieved accuracy of 83\%.
-
-\subsection{Arabic Script Segmentation}
+\subsection{Script Segmentation}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Introduction}}{}
 A reliable recognition system requires more than a good matching to a set of letters symbol classes.
 Segmentation is an integral part of the handwriting recognition process, especially in the analytic approach.
 As for many pattern recognition problems, the task of segmentation, while can be done easily by a human, has long been a challenging problem in HWR.
- 
 Several segmentation approaches have been proposed in the literature for Arabic OCR, yet, correct and efficient segmentation of the Arabic text is not easily achievable and considered to be a challenging problem even for printed text.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The context dependent of segmentation}}{}
-The segmentation decision is not a local decision because it may affect subsequent segmentation decisions. 
-Thus, a poor match of the current segment to some class in the letter library can cast doubt on the correctness of the future segmentation decisions.
-However, even a series of satisfactory pattern matches can be judged incorrect if contextual requirements of the system output are not satisfied \cite{casey1996survey}.
-For instance, in handwritten English, the letter combination "cl" is graphically similar to the letter "d", but in some cases contextually not valid.
-In Arabic, two or three consequent appearances of the rasm \RL{-b-} /b/, that is common for the letters \RL{-y-} /y, \RL{-t-} /t/ and more, are very similar to the \RL{-s-} /s/ letter. 
+Considering the analytic approach, a poor match of the current segment to some class in the characters library can cast doubt on the correctness of the future segmentation decisions, thus, segmentation is not a local decision but may affect subsequent segmentation decisions\cite{casey1996survey}.
+However, even a series of satisfactory letters matches can be judged incorrect if contextual requirements of the system output are not satisfied \cite{casey1996survey}.
+For instance, in handwritten English, the letter combination "cl" is graphically similar to the letter "d", but in some cases contextually not valid \cite{casey1996survey}.
+In Arabic, two or three consequent appearances of the rasm \RL{-b-} /b/, that is common for the letters \RL{-y-} /y/, \RL{-t-} /t/ and more, are very similar to the \RL{-s-} /s/ letter. 
 The only way to distinguish between the two options is by considering the delayed strokes and the contextual validity.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Approaches for segmentation}}{}
@@ -363,7 +325,7 @@ In a comprehensive survey done in \cite{casey1996survey}, the authors pinpointed
 The classical approach named \emph{dissection}.
 Dissection techniques attempt to find appropriate candidate points by learning the characteristic of the segmentation point or by using a static rules. 
 Segments, that result from the segmentation process, do not necessarily correspond to exactly one character. 
-The word could be segmented into components called graphemes, which are a combination of two or three letters, or a part of a letter. 
+The word could be segmented into components called \emph{graphemes}, which are a combination of two or three letters, or a part of a letter. 
 The relationship between graphemes and letters is applied in a later phase. 
 Many morphological properties were exploited for this task, such as, height, width, separation from neighbouring components, low slope of the candidate point local environment, etc.
 Additional strategies, such as projection profile, bounding box or contour tracing, exhibit promising results. 
@@ -377,18 +339,35 @@ Recognition-based segmentation is another approach in which the system searches 
 Character segmentation and character classification are not totally separate steps with a varying degree of dependency.
 The initial selection of points can be made in a variety of methods. 
 For example, using a moving window with a predefined width which breaks the word into many overlapping pieces without regard to its content.
-Then, an iterative or parallel recognition method is used to search for "satisfactory" classification scoring for joint sub-components usually by generating a lattice of all or many possible combinations of the initial candidates set. 
+Then, an iterative or parallel recognition method is used to search for "satisfactory" classification scoring for joint sub-components, usually by generating a lattice of all or many possible combinations of the initial candidates set. 
 The final decision is determined by the best path through the lattice. 
-While avoiding using complex dissection methods, such techniques rely heavily on the classifier accuracy which heavily affects the overall segmentation accuracy \cite{casey1996survey}.
+While avoiding using complex dissection methods, such techniques rely heavily on the classifier accuracy which heavily affects the overall segmentation accuracy.
 
-\subsubsection{Literature Review}
+\subsection{Recent Work}
+
+\subsubsection{Arabic Characters Classification}
+
+An on-line Arabic handwritten character recognition method, which uses structural features and decision trees, was presented by Al-Taani and Al-Haj \cite{al2010recognition}. 
+The system was tested on a set of 1400 different characters and achieved about 75\% recognition rate. 
+The dataset was obtained by capturing the handwriting of 10 users that wrote the 28 Arabic characters, in their isolated form, five times in order.
+
+A rules based approach for on-line Arabic characters classification was proposed in \cite{ismail2012online}. 
+The performance of the system was compared to the classification results obtained using artificial neural networks and and decision trees. 
+A set of $504$ characters were used for training and the test set contained 336 characters. 
+The system obtained a recognition rate of about 97\%. 
+
+Addakiri and Bahaj \cite{addakiri2012line} presented an on-line Arabic handwritten character
+recognition system based on Neural Networks. 
+Their approach was tested on 1400 different characters written by 10 users and achieved accuracy of 83\%.
+
+\subsubsection{Arabic Script Segmentation}
 Randa et al. \cite{elanwar2012unconstrained} proposed a two stage on-line Arabic handwritten text segmentation system based on Hidden Markov Model (HMM). 
 In the first stage, SPs were nominated, and then, in a second stage, the nominated points were validated using a rules-based engine. 
 The system was tested using a self-collected database named OHASD.
 
 Segmentation-based recognition approach based on dividing the word into smaller pieces was proposed in \cite{dinge2011offine}. 
 The words were afterwards segmented into candidate letters, and then classified into letter classes, using statistical and structural features. 
-A $k$ nearest neighbor ($k$-NN) classifier was used to obtain the final recognition.
+A $k$-NN classifier was used to obtain the final recognition.
 
 A segmentation-based recognition method that operates on the stroke level for on-line Arabic handwritten words recognition was proposed by Daifallah et al. \cite{daifallah2009recognition}. 
 SPs were nominated and then selected by locating semi-horizontal lines moving from right to left. 
@@ -408,20 +387,19 @@ In this thesis, we propose a novel real-time approach for segmenting and recogni
 In Chapter \ref{chap:characters_classification}, we present a fast technique for Arabic characters classification.
 The characters classifier employs state-of-the-art similarity measure and search techniques for fast and accurate classification of characters.
 
-A real-time, recognition-based, segmentation technique is detailed in Chapter \ref{chap:strokes_segmentation}.
+A real-time, recognition-based, segmentation approach is detailed in Chapter \ref{chap:strokes_segmentation}.
 We present a procedure for nominating segmentation points whilst the stroke is being scribed and propose algorithms for selecting the final set of segmentation points.
 
 The ADAB is a de-facto a standard database providing a large dataset of on-line Arabic handwritten samples.
 Extracting letter samples from the ADAB database required us to develop a system that enables a human expert to manually segment word samples and produce an Arabic character sample set that can be used in future research. 
 An overview on the manual segmentation system and a description of the resulted characters database is given in Appendix \ref{app:data_collection}.
 A brief explanation on wavelets and the wavelet transform is provided in Appendix \ref{app:wavelets}. 
+A summary and future work are given in Chapter \ref{chap:summary}. 
 
 The system is based on some assumptions and has several limitations.
 First, it does not regard additional strokes although they can be used to improve the classification results.
 Second, the analysis is performed independently on each stroke thus the system does not handle letters spanned over multiple strokes. 
-While this is a reasonable assumption, it is not always true. 
-A summary and future work are given in Chapter . 
-As given in Chapter \ref{chap:summary}, in future work we will focus on overcoming these limitations. 
+In future work we will focus on overcoming these limitations. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -429,12 +407,14 @@ As given in Chapter \ref{chap:summary}, in future work we will focus on overcomi
 
 \section{Conference Publications}
 
-The results of this research have been concluded and published in two conference papers co-authored with Dr. Raid Saabni.  
+The results of this research have been concluded and published in two conference papers co-authored with \textbf{Dr. Raid Saabni}.
 
-A conference paper titled \emph{"Real-time Segmentation of On-line Handwritten Arabic Script"} will be presented in the \emph{14th International Conference on Frontiers in Handwriting Recognition} (ICFHR-2014). 
+A conference paper titled \textbf{\emph{"Real-time Segmentation of On-line Handwritten Arabic Script"}} will be presented in the \emph{14th International Conference on Frontiers in Handwriting Recognition} (ICFHR 2014). 
 It was accepted in April 21, 2014 and will be published in the conference proceedings.
+The paper discusses the character classification system presented in Chapter \ref{chap:characters_classification}.
 
-Additional conference paper titled \emph{"Fast Classification of Handwritten On-line Arabic Characters"} was accepted for publication in the \emph{6th International Conference of Soft Computing and Pattern Recognition} (SoCPaR 2014) in June 20, 2014.
+Additional conference paper titled \textbf{\emph{"Fast Classification of Handwritten On-line Arabic Characters"}} was accepted for publication in the \emph{6th International Conference of Soft Computing and Pattern Recognition} (SoCPaR 2014) in June 20, 2014.
+This paper presents the real-time segmentation technique discussed in Chapter \ref{chap:strokes_segmentation}.
 
 
 %\bibliographystyle{plainnat}
