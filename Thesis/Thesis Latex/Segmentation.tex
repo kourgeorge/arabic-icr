@@ -85,7 +85,7 @@ Eventually, the system heuristically determines the final set of SPs based on th
 
 \section{First Stage: POIs Nomination and Sub-strokes Scoring}
 
-\subsection{Horizontal fragment identification} 
+\subsection{Horizontal Fragments Identification} 
 In this stage, the system attempts to identify HFs that join pairs of connected letters. 
 These handlers are horizontal, directed right to left and located near the baseline (see Figure  \ref{fig:horizontal_fragments}). 
 Using a smoothed version of the trajectory helps the process to ignore undesired small horizontal regions that are frequently caused by the digitizer's imperfection.  
@@ -129,7 +129,7 @@ where the parameter $\alpha_{k}$ is defined as $\alpha_{k}=\frac{\pi-\phi_{k}}{\
 \label{fig:candidate_in_no_horizontal}
 \end{figure}
 
-\subsection{Sub-strokes scoring}
+\subsection{Sub-strokes Scoring}
 Let $S=\{p_{i}\}_{i=1}^{n}$ be a sequence representing a handwritten stroke in which $L$ POIs were detected. 
 Let $KP=\{KP_{i}\}_{i=0}^{L+1}$ (Key points) be the ordered set of the POIs, in addition to the first and the last points of the stroke positioned as the first and the last items in the set.
 Formally, we define: 
@@ -144,7 +144,7 @@ A sub-stroke $S_{i}^{j}$ is a sub-sequence of the stroke $S$ that starts at $KP_
 S_{i}^{j}=\{p_{k}\}_{k=KP_{i}}^{KP_{j}}; i<j
 \end{equation}
 
-We generate an upper triangular \emph{scoring matrix} $D\in\mathbb{R}^{(L+1)\times (L+1)}$ where each cell $D_{i,j}$ represents the sub-stroke $S_i^j$. 
+We generate an upper triangular \emph{scoring matrix} $D\in\mathds{R}^{(L+1)\times (L+1)}$ where each cell $D_{i,j}$ represents the sub-stroke $S_i^j$. 
 It contains the classification information and scoring, for the sub-strokes $S_i^j$, returned by the characters classification system described in Chapter \ref{chap:characters_classification}. 
 The matrix $D$ is generated dynamically; adding a row and a column for each new detected POI. 
 Imposing a locality constraint which narrows the band of the $D$ matrix above the main diagonal improved the efficiency of the process and the segmentation accuracy. 
@@ -520,7 +520,7 @@ We tested several combinations of two SSAs in which the FSP is found by executin
 \label{table:ss_algorithms_results} 
 \end{table}
 
-\subsection{Sample set size and distribution}
+\subsection{Sample-set Size and Distribution}
 The letters is our training set are extracted from a database with a limited words diversity, thus, the distribution of the samples between the different classes is imbalanced. 
 On one hand, it can be regarded as an advantage; since, the training set distribution reflects the a-priory probability of a letter appearance in the test set. 
 On the other hand, a highly imbalanced training set is known to negatively affect many classification algorithms.
