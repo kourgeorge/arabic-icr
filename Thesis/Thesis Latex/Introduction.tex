@@ -77,14 +77,14 @@ These are known as characters or letters.
 Each script has its own rules regarding how letters are combined to form shapes that represent higher level linguistic units \cite{plamondon2000online}.
 Unlike the Latin script, in which non-cursive handwriting is possible and common, Arabic is cursively written in both handwritten and printed text.
 Its unconstrained nature, which produces a huge variety in the handwriting of different people, makes the recognition of Arabic script extremely difficult.
-Figure \ref{fig:ha_different} shows several handwritten samples the letter \RL{.h} /.h/, in its isolated form, written by several writers.
+Figure \ref{fig:ha_different} shows several handwritten samples the letter \RL{.h}, in its isolated form, written by several writers.
 
 Text segmentation, that is, the process of dividing a cursive writing into sub-units (typically characters) turns out to be a challenging task.
 
 \begin{figure}
 \centering
 \includegraphics{./figures/ha_different}       
-\caption{Different writing styles of the isolated form of the letter \RL{.h} /.h/.}
+\caption{Different writing styles of the isolated form of the letter \RL{.h}.}
 \label{fig:ha_different}
 \end{figure}
 
@@ -209,8 +209,8 @@ A recent survey done by Tagougui et al. \cite{tagougui2013online} reviews the st
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Basic properties}}{}
 The Arabic script consists of 28 basic letters.
 It is written from right to left in a semi-cursive manner in both printed and handwritten forms.
-Most letters are written in four different letter shapes depending on their position in the word, e.g., the letter \RL{`} /ain/ appears as \RL{`}  in its isolated form, \RL{`-} in its initial form, \RL{-`-} in its medial form and \RL{-`} in it final form. 
-Among the basic letters, six are dis-connective - \RL{A} /a/, \RL{d} /d/, \RL{_d} /th/, \RL{r} /r/  \RL{z} /z/ and \RL{w} /w/. 
+Most letters are written in four different letter shapes depending on their position in the word, e.g., the letter \RL{`} appears as \RL{`}  in its isolated form, \RL{`-} in its initial form, \RL{-`-} in its medial form and \RL{-`} in it final form. 
+Among the basic letters, six are dis-connective - \RL{A}, \RL{d}, \RL{_d}, \RL{r}  \RL{z} and \RL{w}. 
 Dis-connective letters do not connect to the following letter and have only two shapes, isolated and final. 
 The presence of these letters interrupts the graphic continuity of a word. 
 The graphically connected parts of the word are called \emph{word parts} (WPs) \cite{biadsy2011segmentation}. 
@@ -220,10 +220,10 @@ Dots and strokes used in the Arabic script are called \emph{delayed strokes} or 
 There are mainly two types of delayed strokes, \emph{i'jam} (\RL{A`jAm}) and \emph{harakat} (\RL{.hrkAt}). 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{I'jam}}{}
-The i'jam are the pointing diacritics added to the main body of the letter, called \emph{rasm} (\RL{rsm}), and their role is to distinguish between various constants, such as the medial form letters \RL{-b-} /b/, \RL{-t-} /t/, \RL{-_t-} /s/, \RL{-n-} /n/, \RL{-y-} /y/.
+The i'jam are the pointing diacritics added to the main body of the letter, called \emph{rasm} (\RL{rsm}), and their role is to distinguish between various constants, such as the medial form letters \RL{-b-}, \RL{-t-}, \RL{-_t-}, \RL{-n-}, \RL{-y-}.
 Typically, i'jam are not considered diacritics but part of the letter and consists of one or more dots and lines added above, under or inside the letter.
 Eliminating, adding or moving a i'jam produces a completely different letter and as a result a completely different word, thus, they are not omitted in the written documents.
-In addition to the frequently used dots, the \RL{'} (hamza) is another type of i'jam that distinguish between the letters \RL{k} /k/ and \RL{l} /l/ in their isolated and final forms.
+In addition to the frequently used dots, the \RL{'} (hamza) is another type of i'jam that distinguish between the letters \RL{k} and \RL{l} in their isolated and final forms.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Harakat}}{}
 The harakat are small markings added above or below the letters, are used to specify the exact pronunciation of the word.
@@ -256,8 +256,8 @@ There are several complexities that arise when attempting to recognize Arabic Sc
 First, while the main body of most Arabic letters are written within a single stroke, there are some letters that usually written using two strokes, such as the letter \RL{-k-} /k/ which is the middle form of the letter \RL{k}. 
 The writer usually writes \RL{-l-} and adds the final upper slanted line when the main body is completed, as if he writes an additional stroke.
 Second, different writers may write the main body of the same word part in a different number of strokes.
-For example, rasm of the word \RL{byt} (/bayt/) can be written in a single, two or three strokes.
-Third, consecutive appearances of the letter \RL{-b-} /b/ look very similar to the \RL{-s-} /s/, the only to distinguish between the two options is by looking at the additional strokes.
+For example, rasm of the word \RL{byt} can be written in a single, two or three strokes.
+Third, consecutive appearances of the letter \RL{-b-} look very similar to the \RL{-s-}, the only to distinguish between the two options is by looking at the additional strokes.
 Thus, when recognizing Arabic script, many researches have preferred the holistic approach. 
 
 \begin{table}
@@ -271,7 +271,7 @@ Thus, when recognizing Arabic script, many researches have preferred the holisti
 \RL{.t} \RL{.z} & \RL{s} \RL{^s} & \RL{.s} \RL{.d} & \RL{b} \RL{t} \RL{_t} & \RL{l} \RL{k} \\
 \hline
 \end{tabular}
-\caption{Arabic characters with similar rasm.}
+\caption{List of Arabic characters with identical rasm.}
 \label{table:same_body_letters}
 \end{table}
 
@@ -315,7 +315,7 @@ Several segmentation approaches have been proposed in the literature for Arabic 
 Considering the analytic approach, a poor match of the current segment to some class in the characters library can cast doubt on the correctness of the future segmentation decisions, thus, segmentation is not a local decision but may affect subsequent segmentation decisions\cite{casey1996survey}.
 However, even a series of satisfactory letters matches can be judged incorrect if contextual requirements of the system output are not satisfied \cite{casey1996survey}.
 For instance, in handwritten English, the letter combination "cl" is graphically similar to the letter "d", but in some cases contextually not valid \cite{casey1996survey}.
-In Arabic, two or three consequent appearances of the rasm \RL{-b-} /b/, that is common for the letters \RL{-y-} /y/, \RL{-t-} /t/ and more, are very similar to the \RL{-s-} /s/ letter. 
+In Arabic, two or three consequent appearances of the rasm \RL{-b-}, that is common for the letters \RL{-y-}, \RL{-t-} and more, are very similar to the \RL{-s-} letter. 
 The only way to distinguish between the two options is by considering the delayed strokes and the contextual validity.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Approaches for segmentation}}{}
@@ -409,11 +409,11 @@ In future work we will focus on overcoming these limitations.
 
 The results of this research have been concluded and published in two conference papers co-authored with \textbf{Dr. Raid Saabni}.
 
-A conference paper titled \textbf{\emph{"Real-time Segmentation of On-line Handwritten Arabic Script"}} will be presented in the \emph{14th International Conference on Frontiers in Handwriting Recognition} (ICFHR 2014). 
-It was accepted in April 21, 2014 and will be published in the conference proceedings.
+A conference paper titled \textbf{\emph{"Fast Classification of Handwritten On-line Arabic Characters"}} was accepted for publication in the \emph{6th International Conference of Soft Computing and Pattern Recognition} (SoCPaR 2014).
 The paper discusses the character classification system presented in Chapter \ref{chap:characters_classification}.
 
-Additional conference paper titled \textbf{\emph{"Fast Classification of Handwritten On-line Arabic Characters"}} was accepted for publication in the \emph{6th International Conference of Soft Computing and Pattern Recognition} (SoCPaR 2014) in June 20, 2014.
+
+Additional conference paper titled \textbf{\emph{"Real-time Segmentation of On-line Handwritten Arabic Script"}} was presented in the \emph{14th International Conference on Frontiers in Handwriting Recognition} (ICFHR 2014). 
 This paper presents the real-time segmentation technique discussed in Chapter \ref{chap:strokes_segmentation}.
 
 

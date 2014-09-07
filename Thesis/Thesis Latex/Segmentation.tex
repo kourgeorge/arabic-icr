@@ -67,10 +67,10 @@ The segmentation is done in the stroke level while the stroke is being written, 
 The proposed approach goes through three main stages.
 The first stage is composed of two steps which are performed while the stroke is being scribed.
 In the first step \emph{points of interest} (POIs) are nominated based on the morphological features of the stroke.
-These POIs are the middle of the horizontal fragments \emph{HFs} and induce over segmentation of the stroke.
+These POIs are the middle of the \emph{horizontal fragments} (HFs) and induce over segmentation of the stroke.
 In the second step, once a POI is found, the classification information of sub-strokes which end with this POI is saved in a scoring matrix.
 In the second stage, once the entire stroke is available, a rules-based process is used to refine the set of POIs and re-score the sub-strokes. 
-Eventually, the system heuristically determines the final set of SPs based on the sub-strokes scoring. 
+Eventually, the system heuristically determines the final set of \emph{segmentation points} (SPs) based on the sub-strokes scoring. 
 
 \begin{figure}
 \centering
@@ -95,7 +95,7 @@ The same exact value for this parameter was found independently in \cite{daifall
 \begin{figure}
 \centering
 \includegraphics[width=0.3\columnwidth]{./figures/horizontal_fragments}
-\caption{Horizontal Fragments (HFs) of the word \RL{jbl} /JABAL/.}
+\caption{Horizontal fragments of the word \RL{jbl}.}
 \label{fig:horizontal_fragments}
 \end{figure}
 
@@ -108,8 +108,8 @@ While false positive SPs can be easily removed in a latter stage, missed SPs can
 Therefore, in order to minimize the miss-rate, this process is delicate and allows false HFs to be detected.
 
 Once an HF is detected the sub-stroke that spans from the previous POI to the POI of the current HF is checked to make sure they do not reside on the same HF. 
-Inn case they do, both HFs are rejoined to a single HF. 
-This is done to avoid fractions of the same HF to identified as multiple HFs, 
+In case they do, both HFs are rejoined to a single HF. 
+This is done to avoid fractions of the same HF to identified as multiple HFs. 
 The merging is done by evaluating the complexity measurement across the two consequent HFs, see Figure \ref{fig:candidate_in_no_horizontal}.
 
 \begin{definition}
@@ -119,13 +119,15 @@ The complexity measure is calculated by summing the parameters $\alpha_{k}$ comp
 \begin{equation}
 CM(T)=\sum_{k=2}^{n-1}{\alpha_k}.
 \end{equation}
-where the parameter $\alpha_{k}$ is defined as $\alpha_{k}=\frac{\pi-\phi_{k}}{\frac{\pi}{6}}$ and $\phi_k=\angle(\overline{p_{k-1}p_{k}},\overline{p_{k}p_{k+1}})$.
+where the parameter $\alpha_{k}$ is defined as $\alpha_{k}=\frac{\pi-\phi_{k}}{\frac{\pi}{6}}$ and $\phi_k=\angle(\overline{p_{k-1}p_{k}},\overline{p_{k}p_{k+1}})$. 
+
 \end{definition}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.3\textwidth]{./figures/candidate_in_no_horizontal}
-\caption{The main body of Arabic word \RL{`yn} /AIN/. POIs are colored in cyan. The green areas indicate merge between two subsequent HFs. Three types of false POIs can be seen: 1. A POI at the beginning of a stroke. 2. A POI that is caused by a bad HF. 3. A POI that resides in a letter's valley. }
+\caption{The main body of the word \RL{`yn}. POIs are coloured in cyan. The green areas indicate merge between two subsequent HFs. 
+Three types of false POIs can be seen: 1. A POI at the beginning of a stroke. 2. A POI that is caused by a bad HF. 3. A POI that resides in a letter's valley. }
 \label{fig:candidate_in_no_horizontal}
 \end{figure}
 
@@ -146,46 +148,40 @@ S_{i}^{j}=\{p_{k}\}_{k=KP_{i}}^{KP_{j}}; i<j
 
 We generate an upper triangular \emph{scoring matrix} $D\in\mathds{R}^{(L+1)\times (L+1)}$ where each cell $D_{i,j}$ represents the sub-stroke $S_i^j$. 
 It contains the classification information and scoring, for the sub-strokes $S_i^j$, returned by the characters classification system described in Chapter \ref{chap:characters_classification}. 
-The matrix $D$ is generated dynamically; adding a row and a column for each new detected POI. 
+The matrix $D$ is generated dynamically while the stroke is being written; adding a row and a column for each new detected POI. 
 Imposing a locality constraint which narrows the band of the $D$ matrix above the main diagonal improved the efficiency of the process and the segmentation accuracy. 
-Given a band width $B$ we fix $D_{i,j}=\infty$ if  $j \leq i$ or $j-i>B$.
+Given a band width $B$ we fixed $D_{i,j}=\infty$ if  $j \leq i$ or $j-i>B$.
 We argue that sub-strokes representing a letter will achieve, in most cases, better scoring, i.e., lower $D_{i,j}$ value than other sub-strokes.
 
 \begin{figure}
 \centering
 \includegraphics[width=0.4\textwidth]{./figures/candidate_points}
-\caption{KPs of the word \RL{lbyh} /Lbyh/. POIs are coloured in red. The first and last KPs are coloured in green. }
+\caption{KPs of the word \RL{lbyh}. POIs are coloured in red. The first and last KPs are coloured in green. }
 \label{fig:candidate_points}
 \end{figure}
 
-Using the relative location of the sub-stroke in the stroke we restrict the classification process to search for similar samples feasible position databases.
+Using the relative location of the sub-stroke in the stroke, we restricted the classification process to search for similar samples feasible position databases.
 As can be seen in Table \ref{table:subsequences_types}, we differentiate between four types of sub-sequences.
 For each type, we indicate the set of databases that need to be examined, i.e., the possible letter positions the sub-stroke may represent. 
-In Table \ref{table:subsequences_types}, $S$ denotes a stroke containing $L$ POIs where $m>0$ and $k<L+1$.
-
-\begin{table}
-\centering
-\renewcommand{\arraystretch}{1.3}
-\caption{A mapping between the subsequence types and the possible letter positions.}
-\begin{tabular}{| c | c | c |}
-\hline
-  \textbf{Subsequence Symbol}     & \textbf{Subsequence Location}    & \textbf{Possible Letter Position}     \\
-\hline
-  $\alpha$ & $S_0^{k}$      & $Ini$ or $Mid$      \\
-\hline
-  $\beta$  & $S_{m}^{k}$    & $Mid$               \\
-\hline
-  $\chi$   & $S_{m}^{L+1}$ & $Mid$ or $Fin$       \\
-\hline
-  $\delta$ & $S_0^{L+1}$    & All                 \\
-\hline
-\end{tabular}
-\label{table:subsequences_types}
-\end{table}
-
 The relation between the cells in the matrix $D$ and the sub-stroke type is given in matrix $D_p$  (Equation \ref{eq:positions_matrix}). 
 The type of the sub-stroke can be determined while the stroke is being scribed.
 The last column and row are added on the "pen up" event.
+\begin{table}
+\centering
+\renewcommand{\arraystretch}{1.3}
+\caption{A mapping between the subsequence types and the possible letter positions. $S$ denotes a stroke containing $L$ POIs where $m>0$ and $k<L+1$.}
+\begin{tabular}{c c c}
+\toprule
+  \textbf{Subsequence Symbol}     & \textbf{Subsequence Location}    & \textbf{Possible Letter Position}     \\
+\midrule
+  $\alpha$ & $S_0^{k}$      & $Ini$ or $Mid$      \\
+  $\beta$  & $S_{m}^{k}$    & $Mid$               \\
+  $\chi$   & $S_{m}^{L+1}$ & $Mid$ or $Fin$       \\
+  $\delta$ & $S_0^{L+1}$    & All                 \\
+\bottomrule
+\end{tabular}
+\label{table:subsequences_types}
+\end{table}
 
 \begin{equation}
 D_{p}=
@@ -201,50 +197,48 @@ D_{p}=
 \label{eq:positions_matrix}
 \end{equation}\\
 
-For a given input (sequence and position), the recognition system returns the $K$ nearest neighbors with different labeling, where the labeling is defined as the tuple (letter, position). In our implementation, we set $K=3$.
+For a given input (sequence and position), the recognition system returns the $k$ nearest neighbours with different labelling, where the labelling is defined as the tuple (letter, position). In our implementation, we set $K=3$.
 
+{\smaller
 \begin{figure}
 \centering
-\begin{tabular}{| c |c | c | c| c | c | c |}
-\hline
-     & $0$ & $1$ & $2$ & $3$ & $4$ & $5$\\
-\hline
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{ c | c  c  c  c  c }
+\toprule
+     & $1$ & $2$ & $3$ & $4$ & $5$ \\
+\midrule
 $0$
-   & N/A
-   & \subfloat{\includegraphics[width=1.8cm]{./figures/substrokes/L}}
-   & \subfloat{\includegraphics[width=1.8cm]{./figures/substrokes/LB1}}
-   & \subfloat{\includegraphics[width=1.8cm]{./figures/substrokes/LB1B2}}
-   & N/A & N/A \\
-\hline
+   & \includegraphics[width=0.16\linewidth]{./figures/substrokes/L}
+   & \includegraphics[width=0.16\linewidth]{./figures/substrokes/LB1}
+   & \includegraphics[width=0.16\linewidth]{./figures/substrokes/LB1B2}
+   & $\varnothing$ & $\varnothing$ \\
 $1$
-   & N/A & N/A
-   & \subfloat{\includegraphics[width=1.8cm]{./figures/substrokes/B1}}
-   & \subfloat{\includegraphics[width=1.8cm]{./figures/substrokes/B1B2}}
-   & \subfloat{\includegraphics[width=1.8cm]{./figures/substrokes/B1B2H1}}
-   & N/A \\
-\hline
+   & $\varnothing$
+   & \includegraphics[width=0.16\linewidth]{./figures/substrokes/B1}
+   & \includegraphics[width=0.16\linewidth]{./figures/substrokes/B1B2}
+   & \includegraphics[width=0.16\linewidth]{./figures/substrokes/B1B2H1}
+   & $\varnothing$ \\
 $2$
-   & N/A  & N/A & N/A
-   & \subfloat{\includegraphics[width=1.8cm]{./figures/substrokes/B2}}
-   & \subfloat{\includegraphics[width=1.8cm]{./figures/substrokes/B2H1}}
-   & \subfloat{\includegraphics[width=1.8cm]{./figures/substrokes/B2H}} \\
-\hline
+   & $\varnothing$  & $\varnothing$
+   & \includegraphics[width=0.16\linewidth]{./figures/substrokes/B2}
+   & \includegraphics[width=0.16\linewidth]{./figures/substrokes/B2H1}
+   & \includegraphics[width=0.16\linewidth]{./figures/substrokes/B2H} \\
 $3$
-   & N/A & N/A & N/A & N/A
-   & \subfloat{\includegraphics[width=1.8cm]{./figures/substrokes/H1}}
-   & \subfloat{\includegraphics[width=1.8cm]{./figures/substrokes/H}} \\
-\hline
+   & $\varnothing$ & $\varnothing$ & $\varnothing$ 
+   & \includegraphics[width=0.16\linewidth]{./figures/substrokes/H1}
+   & \includegraphics[width=0.16\linewidth]{./figures/substrokes/H} \\
 $4$
-   & N/A & N/A & N/A & N/A & N/A
-   & \subfloat{\includegraphics[width=1.8cm]{./figures/substrokes/H2}}\\
-\hline
-$5$
-   & N/A & N/A & N/A & N/A & N/A & N/A \\
-\hline
+   & $\varnothing$ & $\varnothing$ & $\varnothing$ & $\varnothing$ 
+   & \includegraphics[width=0.16\linewidth]{./figures/substrokes/H2}\\
+\bottomrule
 \end{tabular}
-\caption{A tabular representation of the $D$ matrix that corresponds the KPs showed in Figure \ref{fig:candidate_points}. Each cell visually demonstrates the matching sub-stroke colored in red.}
+\caption{
+A tabular representation of the $D$ matrix that corresponds the KPs showed in Figure \ref{fig:candidate_points}. 
+Each cell visually demonstrates the matching sub-stroke coloured in red.}
 \label{table:substrokes_demo} 
 \end{figure}
+%}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -263,17 +257,18 @@ Arabic text is written along an imaginary line called \emph{baseline}, with the 
 It corresponds to the line upon which one would write on ruled paper. 
 Many script recognition techniques use the baseline of the word in part of the recognition
 process, for Arabic as well as for other languages.
-The system determines the baseline by calculating the vertical projection histogram of the re-sampled and normalized version of the stroke. 
+
+Determining the baseline using the vertical projection histogram is a commonly used technique \cite{burrow2004arabic, bagdanov1997projection}.
+Similarly, in this work, the system determines the baseline by calculating the vertical projection histogram of the re-sampled and normalized version of the stroke. 
 The height of the stroke (y-axis) is partitioned into ten equi-length intervals. 
 A POI is filtered out if it does not satisfy the following condition:
 \begin{equation}
-|POI_y-I_{max}| \leq 2 max{({|I|},0.15)} 
+|POI_y-I_{max}| \leq 2 \cdot max{({|I|},0.15)} 
 \end{equation}
 where $POI_y$ represents the $y$-coordinate of the POI; $|I|$ is the length of an interval; and $I_{max}$ denotes the center of the most inhabited interval. 
-In order to reliably determine the baseline, the baseline detection algorithm is activated only after the fourth POI is detected.
+In order to reliably determine the baseline, the detection algorithm is activated only after the fourth POI is found.
 This process has proven to be very effective in eliminating challenging false POIs that reside in valleys of frequently used final Arabic letters, such as \RL{-q}, \RL{-s} and \RL{-n}. 
 An example of such a POI can be seen in the letter \RL{-n} in Figure \ref{fig:candidate_in_no_horizontal}. 
-Determining the baseline using the vertical projection histogram is a commonly used technique \cite{burrow2004arabic, bagdanov1997projection}.
 
 
 The baseline is needed only to verify that the POIs are in a reasonable distance from it, therefore, imprecise valuation of the position or the direction of the baseline is tolerable.
@@ -290,9 +285,12 @@ In order to identify SPs that resides inside a loop we have employed a Matlab pa
 The third rule is used to penalize unreasonably low scoring given to small sub-strokes, which are unlikely to represent a letter. 
 This is done by calculating the ratio of the sub-stroke length proportional to the entire stroke length.
 For instance, it is common to add a small, hook-like, extension to the suffix of the letter \RL{d}. 
-This extension may look very similar to the letter \RL{-a} during the stroke scribing; and thus under-scored, i.e. is given a very good similarity measure by the recognition system, and eventually result in over-segmenting the letter \RL{d}. 
+This extension may look very similar to the letter \RL{-a} during the stroke scribing; and thus under-scored, i.e., achieves a very good similarity measure by the recognition system, and eventually result in over-segmenting the letter \RL{d}. 
 
-In some cases, POIs are incorrectly nominated on non-horizontal areas. This is caused due to noises in the data and the fact that the nomination is done while the word is being scribed. Our filtering algorithm should be corrected, in a future work, to handle this case.
+In some cases, POIs are incorrectly nominated on non-horizontal areas. 
+This is caused due to noises in the data and the fact that the nomination is done while the word is being scribed. 
+In a future work we will improve the filtering algorithm to handle such case.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -319,7 +317,11 @@ In Each step, it tries to find the next best KP by selecting the adjacent subseq
 BSS operates similarly but starts from the last point and advances toward the beginning of the stroke. 
 The main drawback of these two algorithms is that FSS tends to under-segment the suffix of the stroke and BSS tends to under-segment the stroke's prefix.
 
-\begin{algorithm}
+In an attempt to overcome the aforementioned drawbacks, a third SSA is proposed, and given the name \emph{Backwards-Forwards Segmentation Selection} (BFSS). 
+As can be seen in Algorithm \ref{alg:bfss}, it combines both FSS and BSS. 
+BFSS operates from the sides of the stroke toward the center. In every iteration, it selects two candidate points to include to the segmentation path.
+
+\begin{algorithm}[h]
 $\pi = \{0\} $\;
 $i=0$\;
 $sum=0$\;
@@ -334,11 +336,7 @@ $sum=0$\;
 \label{alg:fss}
 \end{algorithm}
 
-In an attempt to overcome the aforementioned drawbacks, a third SSA is proposed, and given the name \emph{Backwards-Forwards Segmentation Selection} (BFSS). 
-As can be seen in Algorithm \ref{alg:bfss}, it combines both FSS and BSS. 
-BFSS operates from the sides of the stroke toward the center. In every iteration, it selects two candidate points to include to the segmentation path.
-
-\begin{algorithm}
+\begin{algorithm}[h]
 $\pi = \{0,L+1\}$\;
 $kp_{a}=0$\;
 $kp_{b}=L+1$\;
@@ -355,12 +353,8 @@ $kp_{b}=L+1$\;
 \caption{Backwards-Forwards Segmentation Selection (BFSS) algorithm.}
 \label{alg:bfss}
 \end{algorithm}
-  
-The last algorithm was given the name \emph{Greedy Segmentation Selection} (GSS) and is described in Algorithm \ref{alg:gss}.
-GSS operates differently. In every iteration, the cell with the lowest (best) scoring is selected. 
-Once a cell $D_{i,j}$ is selected, since it represents the sub-stroke $S_{i}^{j}$, both $KP_{i}$ and $KP_{j}$ are added to the FSP, and every cell corresponding to a subpart of the sub-stroke $S_{i}^{j}$ is removed by setting its corresponding scoring value in the matrix $D$ to $\infty$; in order to avoid those sub-strokes to be selected in a later iteration. In Algorithm \ref{alg:gss}, the notation $[\infty]^{(L+1)\times (L+1)}$ indicates a matrix that all it's cells are set to $\infty$.
- 
-\begin{algorithm}
+
+\begin{algorithm}[h]
 $\pi = \{0,L+1\}$\;
 \While{$D \neq [\infty]^{(L+1)\times (L+1)}$}
 {
@@ -373,8 +367,11 @@ $\pi = \{0,L+1\}$\;
 \caption{Greedy Segmentation Selection (GSS) algorithm.}
 \label{alg:gss}
 \end{algorithm}
-
-Performance evaluation of the mentioned SSA is provided in \ref{subsec:ssa_performance}.
+  
+The last algorithm was given the name \emph{Greedy Segmentation Selection} (GSS) and is described in Algorithm \ref{alg:gss}.
+GSS operates differently. In every iteration, the cell with the lowest (best) scoring is selected. 
+Once a cell $D_{i,j}$ is selected, since it represents the sub-stroke $S_{i}^{j}$, both $KP_{i}$ and $KP_{j}$ are added to the FSP, and every cell corresponding to a subpart of the sub-stroke $S_{i}^{j}$ is removed by setting its corresponding scoring value in the matrix $D$ to $\infty$; in order to avoid those sub-strokes to be selected in a later iteration. In Algorithm \ref{alg:gss}, the notation $[\infty]^{(L+1)\times (L+1)}$ indicates a matrix that all it's cells are set to $\infty$.
+Performance evaluation of the mentioned SSA is provided in Section \ref{subsec:ssa_performance}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage{}
@@ -390,54 +387,43 @@ Table \ref{table:segmentation_results} summarizes the system's performance.
 \begin{table}[b]
 \renewcommand{\arraystretch}{1.2}
 \centering
-\caption{Segmentation sample set general statistics.}
-\begin{tabular}{ | c | c | }
-  \hline
-  Number of test samples (city name) & 319 \\
-  \hline
+\caption{Segmentation system testing set.}
+\begin{tabular}{ c c }
+\toprule
+  Number of test samples (city names) & 319 \\
   Number of WPs & 1148 \\
-  \hline
   Number of Strokes & 1237 \\
-  \hline
+\bottomrule
 \end{tabular}
 \label{table:general_stats} 
 \end{table}
 
+
 \begin{table}[b]
 \renewcommand{\arraystretch}{1.2}
 \centering
-\caption{Segmentation results.}
-\begin{tabular}{ | c | c | }
-  \hline
-  Strokes segmentation rate &  83\% \\ 
-  \hline
-  Strokes recognition rate &  78\% \\ 
- \hline
-  Total number of true SPs & 1081 \\
-  \hline
-  Valid SPs (True Positive) & 85.3\% \\
-    \hline
-  Missing SPs (False Negative) & 14.7\% \\
-  \hline
-  Invalid SPs (False Positive) & 119 (11\%) \\
-  \hline                                    
-  SPs Precision & 88.6\% \\ 
- \hline
-  SPs Recall &  85.3\% \\ 
- \hline
+\caption{System Segmentation Accuracy.}
+\begin{tabular}{cc||cc}
+\toprule
+  Strokes SR &  83\% & Missing SPs  & 14.7\%\\
+  Strokes RR &  78\% & Invalid SPs  & 11\%\\
+  \# true SPs & 1081 & SPs precision & 88.6\%\\ 
+  Valid SPs  & 85.3\% & SPs recall  &  85.3\%\\
+  \bottomrule
 \end{tabular}
-\label{table:segmentation_results} 
+\label{table:segmentation_results}
 \end{table}
+
 
 \subsection{Validation}
 \label{subsec:validation}
-Related researches usually use a human expert to validate the accuracy of the SPs. However, in this work, we applied an automatic validation process using the ground truth information provided by the database. We discriminate between three types of final SPs. A final SP is classified as true positive if the complexity measure between the identified point and a true SP is less than a preset threshold; otherwise, it is classified as false positive. A false negative (miss), is the case when the system failed to identify a true SP. The different types of SPs can be seen in Figure \ref{fig:sp_types}.
+Related researches usually use a human expert to validate the accuracy of the SPs. However, in this work, we applied an automatic validation process using the ground truth information provided by the database. We discriminate between three types of final SPs. A final SP is classified as true positive if the complexity measure between the identified point and a true SP is less than a pre-set threshold; otherwise, it is classified as false positive. A false negative (miss), is the case when the system failed to identify a true SP. The different types of SPs can be seen in Figure \ref{fig:sp_types}.
 The validation process was tested on several sets and found to be highly reliable.
 
-\begin{figure}[b]
+\begin{figure}
 \centering
 \includegraphics[width=0.6\textwidth]{./figures/sp_types}
-\caption{SPs types.}
+\caption{POIs classification.}
 \label{fig:sp_types}
 \end{figure}
 
@@ -461,30 +447,28 @@ It happens mostly in the letter \RL{-m-}, \RL{-m} and in rare cases in the lette
            \label{fig:letters_same_body_2}
            \includegraphics[width=0.15\textwidth]{./figures/oversegmentation_begin_2}
         }        
-    \caption{Samples of redundant Candidate point at the beginning of the stroke.}
+    \caption{Samples of false POI at the beginning of the stroke.}
    \label{fig:oversegmentation_begin}
 \end{figure}
-
-Without the additional strokes, there is no way to differentiate between the main body of the letter \RL{-s-} /s/ and the main body of two consecutive \RL{-b-} /b/ (or other identical main body letters as seen in figure \ref{fig:same_body_letters}). 
 
 
 \begin{figure}
 \centering
 \includegraphics[width=5cm]{./figures/oversegmentation_s}
-\caption{Over-segmentation in the letter \RL{-s-}. appearance to a combination of two consecutive \RL{-b-} letters and only can be identified from the context and using the additional strokes.}
+\caption{Over-segmentation in the letter \RL{-s-} .}
 \label{fig:oversegmentation_s}
 \end{figure}
 
 \subsubsection{Under-segmentation}
 \begin{itemize}
 \item Letter pairs that are not separated by HFs cause the system to miss POIs. This was partially solved by extending the notion of a letter to include such pairs. For example the pair \RL{lm} and \RL{l.h}.
-\item In some cases, HFs were identified correctly but the corresponding POI were not selected in the third stage. This may result from nomination of a candidate point on correct horizontal segment but in a late fraction of the segmentation fragment which result in a low scoring and thus not being selected by the SSA. This issue usually occurs in the letter \RL{w} in its final position (Figure \ref{fig:undersegmentation_w}).
+\item In some cases, HFs were identified correctly but the corresponding POI were not selected in the third stage. This may result from nomination of a candidate point on correct horizontal segment but in a late fraction of the segmentation fragment which result in a low scoring and thus not being selected by the SSA. This issue usually occurs in the letter \RL{w} in its final position, see Figure \ref{fig:undersegmentation_w}.
 \end{itemize}
 
 \begin{figure}
 \centering
 \includegraphics[width=5cm]{./figures/undersegmentation_w}
-\caption{An example of a late candidate point in the letter \RL{w}.}
+\caption{An example of a late POI in the letter \RL{w}.}
 \label{fig:undersegmentation_w}
 \end{figure}
 
@@ -494,28 +478,24 @@ In addition, differentiating between the main body of the letter \RL{-s-} and th
 \subsection{Segmentation Selection Algorithms Performance}
 \label{subsec:ssa_performance}
 It is apparent from the data in Table \ref{table:ss_algorithms_results}, that the SSA has a crucial effect on the system's performance. 
-We tested several combinations of two SSAs in which the FSP is found by executing both SSAs independently and selecting the segmentation path with the smallest scoring. In Table \ref{table:ss_algorithms_results}, a combination of two algorithms is denoted by $\oplus$.
+We tested several combinations of two SSAs in which the FSP is found by executing both SSAs independently and selecting the segmentation path with the smallest scoring.
 
 \begin{table}
 \centering
-\caption{Comparing the different SSAs performance.}
-\begin{tabular}{ | c | c | c | c | c |}
-\hline
+\caption{Comparing the different SSAs performance. A combination of two algorithms is denoted by $\oplus$.}
+
+\begin{tabular}{c c c c c}
+\toprule
 \textbf{SSA} & \textbf{WP segmentation} & \textbf{WP recognition} & \textbf{SP precision} & \textbf{SP recall}\\
-             & \textbf{rate}            & \textbf{rate}           &                       &\\  
-\hline                 
+             & \textbf{rate}            & \textbf{rate}           &                       &\\            
+  \midrule
   FSS & 76\% & 70\% & 85\% & 78\% \\ 
-  \hline
   BSS & 79\% &  73\% & 84\%& 81\% \\
-  \hline
   BFSS & 78\% & 72\% & 84\% & 80\%\\ 
-  \hline
-  GSS & 80\% & 74\% & 81\% & \bf{94}\% \\  
-  \hline
+  GSS & 80\% & 74\% & 81\% & \bf{94}\% \\ 
   FSS$\oplus$BSS & \bf{82}\% & \bf{76}\% & \bf{89}\% & 82\%\\  
-  \hline
   GSS$\oplus$BFSS & 81\% & 75\% & 83\% & 90\% \\
-  \hline
+  \bottomrule
 \end{tabular}
 \label{table:ss_algorithms_results} 
 \end{table}
@@ -562,7 +542,7 @@ The recognition rate of the first top candidate dropped down to $90.8\%$.
 Using a voting process within the top five results gave a $94.7\%$ recognition rate. 
 
 Analysing the failures of the misclassified samples shows that most recognition errors occur as a result of misclassifying a single character. 
-In most cases the misclassified character is confused with a character having a very similar shape, which can be corrected using information retrieved by the associated additional stroke, such as the case of the letter \RL{-l} /l/ and the letter \RL{-n} /n/ in their handwritten form.
+In most cases the misclassified character is confused with a character having a very similar shape, which can be corrected using information retrieved by the associated additional stroke, such as the case of the letter \RL{-l} and the letter \RL{-n} in their handwritten form.
 
 
 %\bibliographystyle{plainnat}

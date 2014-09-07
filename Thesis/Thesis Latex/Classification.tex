@@ -80,8 +80,8 @@ An overview of the classification process is given in Figure \ref{fig:letters_cl
 
 \begin{figure}
 \centering
-\includegraphics[width=0.9\textwidth]{./figures/letters_classifier_learning_flow}       
-\caption{High level diagram of a classification flow.}
+\includegraphics[width=1\textwidth]{./figures/letters_classifier_learning_flow2}       
+\caption{High level diagram of both the training and classification flows. The thick arrows indicate parts that are unique to the training process.}
 \label{fig:letters_classifier_learning_flow}
 \end{figure}
 
@@ -184,7 +184,7 @@ Figure \ref{fig:before_after_preprocessing} demonstrates the pre-processing step
            \label{fig:preprocessing_resamp}
            \includegraphics[width=0.4\textwidth]{./figures/preprocessing_resamp}
         }       
-    \caption{A sample of the character \RL{b} /b/ before preprocessing (\ref{fig:preprocessing_orig}); after normalization (\ref{fig:preprocessing_norm}); after noise elimination (\ref{fig:preprocessing_simpl}) and after re-sampling (\ref{fig:preprocessing_resamp}).}
+    \caption{A sample of the character \RL{b} before preprocessing (\ref{fig:preprocessing_orig}); after normalization (\ref{fig:preprocessing_norm}); after noise elimination (\ref{fig:preprocessing_simpl}) and after re-sampling (\ref{fig:preprocessing_resamp}).}
    \label{fig:before_after_preprocessing}
 \end{figure}
 
@@ -226,7 +226,7 @@ Saabne and El-Sana employed the \emph{Shape Context} (SC) descriptor, a global s
 Another example is the usage of the \emph{Multi scale shape context} for on-line handwritten mathematical expressions segmentation in \cite{husegmenting}. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Selected Descriptors}}{}
-In this work we have compared two shape descriptors, the SC descriptor and the \emph{multi angular descriptor} (MAD). 
+In this work we have compared two shape descriptors, the SC descriptor and the \emph{Multi Angular Descriptor} (MAD). 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Shape Context}}{}
 The SC descriptor was presented by Belongie and Malik in \cite{belongie2002shape}.
@@ -242,7 +242,7 @@ The basic idea of the SC descriptor is illustrated in Figure \ref{fig:shape_cont
 \begin{figure}
 \centering
 \includegraphics[width=0.3\textwidth]{./figures/shape_context_online}   
-\caption{Diagram of the log-polar bins used to compute the shape context.}
+\caption{Diagram of the log-polar bins used to compute the Shape Context.}
 \label{fig:shape_context_demo}
 \end{figure}
 
@@ -264,7 +264,7 @@ In Section \ref{sec:classification_results} we compare the performance of the ab
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{./figures/mad_demo}       
-\caption{A visual demonstration of MAD feature set \cite{saabni2013multi}.}
+\caption{A visual demonstration of Multi Angular Descriptor feature set \cite{saabni2013multi}.}
 \label{fig:mad_demo}
 \end{figure}
 
@@ -322,7 +322,7 @@ For example, the distance between two vectors, will be defined using the distanc
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Drawbacks of the Minkowski distance}}{}
 The Minkowski distance is brittle and has several disadvantages when applied on stroke trajectories.
 First, it requires the two sequences to be of the same length. 
-One could add padding zeros to the shorter sequence to overcome this problem, however, it would harm the similarity measure. 
+One could add padding zeros to the shorter sequence to overcome this problem, but it would harm the similarity measure nonetheless. 
 Second, it does not support local shifting, which occurs when one point of one sequence is shifted to match an element of the other sequence (even when the two matched elements appear in different positions in the sequences). 
 It is important to consider these local shifts especially when the compared sequences have similar shape but are out of phase. 
 It is called "local", because not all of the points of one sequence need to be shifted in the same factor and direction to match the other sequence. 
@@ -728,7 +728,7 @@ Nevertheless, experimental validation performed on a dataset of $20,000$ objects
 Grauman and Darrel \cite{grauman2004fast} have used this embedding for contour matching and experimentally validated the quality of retrieval. 
 They have found that the accuracy reduction is less than $10\%$ compared to the exact EMD.
 
-\subsubsection{EMD Embedding using the wavelet Coefficients Domain}
+\subsubsection{EMD Embedding using the Wavelet Coefficients Domain}
 %compare this embeddign technique to the previous one.
 %How it is done?
 %Is it faster to calculate?
@@ -938,18 +938,15 @@ As seen in table \ref{table:dr_dimensions_results}, the dimensionality was reduc
 \begin{table}
 \centering
 \caption{The dimensionality of the four datasets after applying PCA and PCA+LDA.}
-\begin{tabular}{ | c | c | c | c |}
-\hline
+\begin{tabular}{ c c c c }
+\toprule
 \textbf{Letter position} & \textbf{Number of samples} & \textbf{PCA} & \textbf{PCA+LDA} \\
-\hline                 
+\midrule                 
   Ini & 1405 & 48 & 9 \\ 
-  \hline
   Mid & 1196 & 52 & 10 \\ 
-  \hline
   Fin & 1629 & 44 & 9 \\ 
-  \hline
   Iso & 1372 & 39 & 8 \\ 
-  \hline
+  \bottomrule
 \end{tabular}
 \label{table:dr_dimensions_results} 
 \end{table}
@@ -1157,12 +1154,12 @@ Below, we give a detailed evaluation of the classifier performance in terms of a
 \begin{table}
 \centering
 \caption{Characters sample size and distribution.}
-\begin{tabular}{ | c | c | c | c |}
-\hline                 
+\begin{tabular}{ c c c c }
+  \toprule         
   \textbf{Ini} & \textbf{Mid} & \textbf{Fin} & \textbf{Iso} \\ 
-  \hline
+  \midrule  
   1404 & 1195 & 1628 & 1371 \\
-  \hline
+  \bottomrule
 \end{tabular}
 \label{table:sample_set} 
 \end{table}
@@ -1173,22 +1170,19 @@ The last row in Table \ref{table:results_position} shows the accumulative averag
 
 \begin{table}
 \centering
-\caption{Characters classification results by character position.}
+\caption{Characters classification results.}
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{ | c | c | c | c | c |}
-\hline
+\begin{tabular}{c c c c c}
+\toprule
 	\textbf{Character Position} & \textbf{Accuracy} & \textbf{Recall} &  \textbf{Precision} \\
-	\hline 
+	\midrule
 	Ini & 93\% & 85\% & 88\% \\                
-  	\hline
   	Mid & 89\% & 87\% & 90\% \\
-  	\hline
   	Fin & 91\% &  86\% & 92\% \\
-  	\hline
   	Iso & 91\% &  81\% & 90\% \\
-  	\hline
+  	\midrule
   	\textbf{Overall} & \textbf{91\%} &  \textbf{85\%} & \textbf{90\%} \\
-  	\hline
+  	\bottomrule
 \end{tabular}
 \label{table:results_position} 
 \end{table}
@@ -1210,46 +1204,41 @@ Although both stages are usually performed off-line in the learning stage, in sy
 Thus, in the third configuration, named \emph{Fast Learning}, both the dimensionality reduction and the indexing stages were omitted from the learning process.
 In addition, no re-scoring is performed in the classification flow.
 Comparing the results of the this configuration with the second configuration shows that the dimensionality reduction process done in the second configuration has improved the time performance of the classifier significantly, without affecting much the classification rate.
-We have noted that the vast majority of the delay was caused by the dimensionality reduction stage rather than from the indexing process.
+We have noted that the vast majority of the delay in the learning process was caused by the dimensionality reduction stage rather than from the indexing process.
 However, due to the sensitivity of the $k$-d tree to high dimensional data, when omitting the dimensionality reduction process, one should not perform indexing using $k$-d tree because it would negatively affect the classification repose time.
-Skipping the dimensionality reduction and the indexing stages has decreased the training time of the system in about 7 seconds.
 
 \begin{table}
 \centering
 \caption{Classification and time performance of three activation configurations.}
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{ | c | c | c | c |}
-  \hline
+\begin{tabular}{ c c c c }
+  \toprule
   \textbf{Configuration}  & \textbf{Accuracy [Top 1]}  & \textbf{Accuracy [Top 3]} & \textbf{Time [ms]}\\
-  \hline
+  \midrule
   High Accuracy & 91\% & 96\% & 29.9 \\ 
-  \hline
   Low Latency   & 87\% & 94\% & 0.12 \\
-  \hline
   Fast Learning & 90\% & 96\% & 4.4 \\ 
-  \hline
+  \bottomrule
 \end{tabular}
 \label{table:configurations} 
 \end{table}
 
 Tables \ref{table:results_position} and \ref{table:configurations} show the results of experiments performed using the SC as the shape descriptor.
 Table \ref{table:features_comparison} compares the performance of the the MAD and the SC descriptors by running the classifier in the \emph{High Accuracy} configuration using each descriptor.
-One possible reason the SC achieved higher classification rate is that vectors in the SC, unlike MAD, has the same overall mass and thus the EMD is a metric.
+One possible reason the SC achieved higher classification rate that the MAD is that vectors produced by the SC, in our implementation, has the same overall mass and thus the EMD is a metric, unlike the feature vectors produced by the MAD.
 
 \begin{table}
 \centering
 \caption{Comparing the accuracy rates of the different feature extraction techniques.}
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{ | c | c | c |}
-\hline
+\begin{tabular}{ c c c }
+\toprule
 	\textbf{Shape Descriptor}  & \textbf{Accuracy [Top 1]}  & \textbf{Accuracy [Top 3]} \\
-	\hline 
+	\midrule 
 	SC      & 91\% & 96\%  \\                
-  	\hline
   	MAD     & 88\% & 94\% \\
-  	\hline
   	None    & 87\% & 93\% \\
-  	\hline
+  	\bottomrule
 \end{tabular}
 \label{table:features_comparison} 
 \end{table}
