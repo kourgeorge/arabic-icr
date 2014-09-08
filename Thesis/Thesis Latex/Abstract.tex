@@ -19,18 +19,18 @@ In addition to the growing use of keyboard-less devices such as smart-phones and
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{problem statement}}{}
 Correct and efficient recognition of handwritten Arabic text is a challenging problem due to the cursive and unconstrained nature of the Arabic script.
 While real-time performance is necessary in applications involving on-line handwriting recognition, conventional approaches usually wait until the entire curve is traced out before starting the analysis, inevitably causing delays in the recognition process. 
-This deferment restricts on-line recognition techniques from achieving high responsiveness demands expected from such systems, and prevents implementing advanced features of input typing, such as automatic word completion and real-time automatic spelling.
+This deferment restricts on-line recognition techniques from achieving high responsiveness demands expected from such systems, and prevents implementing advanced features of input typing, such as automatic word completion and real-time automatic spelling correction.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Approach - segmentation}}{}
 This work presents a real-time approach for segmenting and recognizing handwritten on-line Arabic script.
 We demonstrate the feasibility of segmenting Arabic handwritten text during the course of writing.
 The proposed segmentation approach is a recognition-based method that operates in the stroke level and nominates candidate segmentation points based on morphological features.
-Using a fast Arabic character classifier the system attaches a score to the sub-strokes induced by the candidate points, which captures the likelihood of the sub-stroke to represent a letter.
+Using a fast Arabic character classifier, the system attaches a score to the sub-strokes induced by the candidate points, which captures the likelihood of the sub-stroke to represent a letter.
 A candidate filtering followed by a segmentation selection process are activated when the entire stroke is available.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Approach - classification}}{}
 A nearest neighbours based character classifier that employs a linear-time embedding of the Earth Mover's Distance metric to a norm space is presented.
-The transformation of the feature space vectors into the wavelet coefficient space facilitates accurate similarity measure and sub-linear search methods.
-We show that the resulting segmentation and letter classification information can be used to significantly reduce the potential dictionary size and accelerate a holistic recognition process.
+The transformation of the feature space vectors into the wavelet coefficient space, facilitates accurate similarity measure and sub-linear search methods.
+We show that the resulting character segmentation and classification information can be used to significantly reduce the potential dictionary size and accelerate a holistic recognition process.
 
 %\end{document}
