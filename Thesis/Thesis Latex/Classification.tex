@@ -58,7 +58,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\chapter{Fast Handwritten Arabic Characters Classification}
+\chapter{Fast Classification of On-line Handwritten Arabic Characters}
 \label{chap:characters_classification}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The learning process}}{}
@@ -135,7 +135,7 @@ This noise consists mainly of redundant successive points duplication and inadeq
 The \emph{Douglas-Peucker Polyline Simplification algorithm} described in \cite{douglas1973algorithms}, also known as the \emph{Iterative Endpoint Fit} algorithm, was used for eliminating such deficiencies in the data. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The Douglas-Peucker algorithm}}{}
-The algorithm reduces the number of vertices in a piecewise linear curve, given a preset tolerance parameter $\varepsilon$, which defines the maximum 'dissimalirity' between the original and the reduced curve.
+The algorithm reduces the number of vertices in a piecewise linear curve, given a preset tolerance parameter $\varepsilon$, which defines the maximum 'dissimilarity' between the original and the reduced curve.
 It outputs a simplified curve, that consists of a subset of the points that defined the original curve.
 The algorithm operates as follows. 
 Initially, it marks the first and the last points to be kept, then it finds the furthest point, $p$, from the line segmented with the first and last points as end points.
@@ -346,7 +346,7 @@ Efficient Similarity search techniques based on the triangle inequality will be 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Advanced distance measure techniques}}{}
 To overcome the drawbacks of the basic Minkowski distance, many distance functions have been proposed in the literature. 
-\emph{Data Time Warping} (DTW), \emph{Earth Mover's Distance} (EMD), \emph{Longest Common Subsequences} (LCSS) and \emph{Edit Distance} are examples of similarity measure techniques commonly used in HWR applications and time series patterns recognition. 
+\emph{Data Time Warping} (DTW), \emph{Earth Mover's Distance} (EMD), \emph{Longest Common Sub-sequences} (LCSS) and \emph{Edit Distance} are examples of similarity measure techniques commonly used in HWR applications and time series patterns recognition. 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Next Subsections}}{}
 In the following two subsections (\ref{subsec:emd} and \ref{subsec:dtw}) we will explain in details two similarity measure functions used in the thesis, the EMD and the DTW. 
@@ -358,7 +358,7 @@ In the following two subsections (\ref{subsec:emd} and \ref{subsec:dtw}) we will
 The \emph{Earth Mover's Distance} (EMD), introduced by Rubner et al. in \cite{rubner2000earth}, is a measure of the dissimilarity between histograms. 
 It captures well the perceptual notion of a difference between images and has been successfully used in many fields of image matching and retrieval \cite{grauman2004fast, rubner2000earth}.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Binwise based measures}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Bin-wise based measures}}{}
 Histogram based descriptors such as SC are in many cases compared using a bin-wise dissimilarity techniques such as the Minkowski distance or the $\chi^2$ statistic as defined below.
  
 \begin{definition}
@@ -369,7 +369,7 @@ dist_{\chi^2}(H,K)=\sum_{i}^{\ell} \frac{(h_i - m_i)^2}{m_i}
 where $m_i=\frac{h_i+k_i}{2}$.
 \end{definition}
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Drawback of binwise based measures}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{Drawback of bin-wise based measures}}{}
 Bin-wise similarity measure can be computed very fast since it involve calculating the dissimilarities between corresponding bins of the two histograms and discard information across bins. 
 However, it usually fail to consider local and global variations. 
 These variations, which would be perceived as minor by a human, may result in a large dissimilarity values between two histograms.
@@ -411,7 +411,7 @@ Descriptively, if the histograms are interpreted as two different ways of piling
 Namely, the minimal total ground distance travelled, weighted by the amount of sand moved (called flow). 
 When used to compare histograms with the same overall mass, namely distributions, EMD is a metric.
 
-\iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD modeling as flow in graph}}{}
+\iftoggle{edit-mode}{\hspace{0pt}\marginpar{EMD modelling as flow in graph}}{}
 EMD can be modelled as a network flow problem in the graphs theory. 
 The two compared histograms are represented by a bipartite graph in which each bin is represented as a vertex and its content as the vertex value. 
 An edge connects each bin in the left graph to every bin in the right graph. 
@@ -1146,23 +1146,10 @@ The corresponding overall accuracy, precision and recall measures in the multi-c
 
 \subsection{The Characters Classifier Performance}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The sample set}}{}
-The distribution of the characters sample set is shown in Table \ref{table:sample_set}.
+The characters sample set contained 1404 Initial letters, 1195 \textbf{Medial} letters, 1628 \textbf{Final} samples and 1371 \textbf{isolated} letter samples.
 As previously mentioned, the classifier contains four databases, one for each position. 
 It receives a sequence of points $S=\{p_{i}\}_{i=1}^{n}$ representing the letter trajectory and a letter position $\phi \in \{Ini, Mid, Fin, Iso\}$, and returns the classification of the sample in that corresponding database.
 Below, we give a detailed evaluation of the classifier performance in terms of accuracy and running time.
-
-\begin{table}
-\centering
-\caption{Characters sample size and distribution.}
-\begin{tabular}{ c c c c }
-  \toprule         
-  \textbf{Ini} & \textbf{Mid} & \textbf{Fin} & \textbf{Iso} \\ 
-  \midrule  
-  1404 & 1195 & 1628 & 1371 \\
-  \bottomrule
-\end{tabular}
-\label{table:sample_set} 
-\end{table}
 
 The accuracy and the time performance of the classifier was measured using 10-fold cross-validation.
 In Table \ref{table:results_position}, the accuracy, recall and precision rates are given for each character position dataset.
@@ -1190,10 +1177,10 @@ The last row in Table \ref{table:results_position} shows the accumulative averag
 In Table \ref{table:configurations} we propose several activation configurations of the presented classifier that target different balance points between accuracy and time performance.
 In each experiment, the classifier performance was measured in terms of accuracy and the average response time for classifying a single sample.
 
-In the first configuration, titled \emph{High Accuracy}, we evaluate the classifier as presented in this work, including the re-scoring stage described in Section \ref{sec:candidates_scoring}.
+In the first configuration, titled \textbf{\emph{High Accuracy}}, we evaluate the classifier as presented in this work, including the re-scoring stage described in Section \ref{sec:candidates_scoring}.
 This configuration should be used in implementations which require high classification rate and can tolerate a certain degree of latency.
 
-In the second configuration, named \emph{Low Latency}, the re-scoring stage is skipped.
+In the second configuration, named \textbf{\emph{Low Latency}}, the re-scoring stage is skipped.
 As can be seen in Table \ref{table:configurations}, the response time in this configuration is significantly lower compared to the first configuration.
 Applying the re-scoring, although being invoked on a short list of candidates, has a considerable impact on the classifier time performance. 
 This configuration should be considered in cases where the time performance is a critical factor, such as in real-time classification and recognition-based script segmentation systems.
@@ -1201,7 +1188,7 @@ When the top three candidates are considered, the difference in accuracy is smal
 
 The dimensionality reduction and the indexing processes are both computationally expensive and time consuming. 
 Although both stages are usually performed off-line in the learning stage, in systems in which the learning is performed on-line, the latency they impose on the learning process is undesired.
-Thus, in the third configuration, named \emph{Fast Learning}, both the dimensionality reduction and the indexing stages were omitted from the learning process.
+Thus, in the third configuration, named \textbf{\emph{Fast Learning}}, both the dimensionality reduction and the indexing stages were omitted from the learning process.
 In addition, no re-scoring is performed in the classification flow.
 Comparing the results of the this configuration with the second configuration shows that the dimensionality reduction process done in the second configuration has improved the time performance of the classifier significantly, without affecting much the classification rate.
 We have noted that the vast majority of the delay in the learning process was caused by the dimensionality reduction stage rather than from the indexing process.
@@ -1224,7 +1211,7 @@ However, due to the sensitivity of the $k$-d tree to high dimensional data, when
 \end{table}
 
 Tables \ref{table:results_position} and \ref{table:configurations} show the results of experiments performed using the SC as the shape descriptor.
-Table \ref{table:features_comparison} compares the performance of the the MAD and the SC descriptors by running the classifier in the \emph{High Accuracy} configuration using each descriptor.
+Table \ref{table:features_comparison} compares the performance of the the MAD and the SC descriptors by running the classifier in the \textbf{\emph{High Accuracy}} configuration using each descriptor.
 One possible reason the SC achieved higher classification rate that the MAD is that vectors produced by the SC, in our implementation, has the same overall mass and thus the EMD is a metric, unlike the feature vectors produced by the MAD.
 
 \begin{table}
