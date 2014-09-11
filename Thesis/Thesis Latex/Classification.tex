@@ -193,7 +193,7 @@ Figure \ref{fig:before_after_preprocessing} demonstrates the pre-processing step
 \newpage{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Shape Descriptors Extraction}
+\section{Shape Descriptors}
 \label{sec:feature_extraction}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Feature extraction}}{}
 Feature extraction is the process of extracting informative parameters for learning and recognition of patterns. 
@@ -287,7 +287,7 @@ The similarity measure is formalized as a \emph{distance function}.
 \begin{definition}
 Given a data space $\mathfrak{D}$, for any two data elements $x,y \in \mathfrak{D}$, a \textbf{distance function} $dist$, on $\mathfrak{D}$ is defined as:
 \begin{equation}
-dist: \mathfrak{D} \times \mathfrak{D} \longrightarrow \mathbb R_{\geq 0} 
+dist: \mathfrak{D} \times \mathfrak{D} \longrightarrow \mathds{R}_{\geq 0} 
 \end{equation}
 where $dist$ has the following properties:
 \begin{compactitem}
@@ -787,10 +787,10 @@ Empirically, the normalized RMS error obtained by using the wavelet embedding wa
 In addition, the wavelet embedding surpassed the Indyk and Thaper embedding in time performance.
 Note that the embedding process requires histograms, thus the vectors in the feature space need to be normalized before using this method.
 
-Shirdhonkar and Jacobs tested few wavelets and showed that the Coif-lets of order 3 and the Symmetric Daubechies wavelets of order 5 have lowest error rates. 
-We evaluated several wavelets, including the Haar wavelet, the Coif-let of order 1, the Coif-let of order 2 and the Symlets of order 5 wavelets.
-The Haar wavelet achieved the best classification results.
-Embedding the SC feature vectors has produces sparse vectors in $\mathds{R}^2422$.
+Shirdhonkar and Jacobs tested few wavelets and showed that the \textbf{Coif-lets} of order 3 and the \textbf{Symmetric Daubechies} wavelets of order 5 have lowest error rates. 
+We evaluated several wavelets, including the \textbf{Haar} wavelet, the \textbf{Coif-let} of order 1, the \textbf{Coif-let} of order 2 and the \textbf{Symlets} of order 5 wavelets.
+The \textbf{Haar} wavelet achieved the best classification results.
+Embedding the SC feature vectors has produces sparse vectors in $\mathds{R}^{2422}$.
 
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1146,7 +1146,7 @@ The corresponding overall accuracy, precision and recall measures in the multi-c
 
 \subsection{The Characters Classifier Performance}
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The sample set}}{}
-The characters sample set contained 1404 Initial letters, 1195 \textbf{Medial} letters, 1628 \textbf{Final} samples and 1371 \textbf{isolated} letter samples.
+The characters sample set contains 1404 samples of \textbf{Initial} letters, 1195 \textbf{Medial} letters, 1628 \textbf{Final} samples and 1371 \textbf{isolated} letter samples.
 As previously mentioned, the classifier contains four databases, one for each position. 
 It receives a sequence of points $S=\{p_{i}\}_{i=1}^{n}$ representing the letter trajectory and a letter position $\phi \in \{Ini, Mid, Fin, Iso\}$, and returns the classification of the sample in that corresponding database.
 Below, we give a detailed evaluation of the classifier performance in terms of accuracy and running time.
@@ -1219,7 +1219,7 @@ One possible reason the SC achieved higher classification rate that the MAD is t
 \caption{Comparing the accuracy rates of the different feature extraction techniques.}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{ c c c }
-\toprule
+    \toprule
 	\textbf{Shape Descriptor}  & \textbf{Accuracy [Top 1]}  & \textbf{Accuracy [Top 3]} \\
 	\midrule 
 	SC      & 91\% & 96\%  \\                
