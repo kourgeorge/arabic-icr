@@ -37,9 +37,9 @@ axis(h_axes,[0 1 0 1]);
 %axis(h_axes,'off');
 hold(h_axes,'on');
 
-line([0 1],[0.3 0.3],'Color','black','LineWidth',2);
-line([0 1],[0.5 0.5],'Color','black','LineWidth',2);
-line([0 1],[0.7 0.7],'Color','black','LineWidth',2);
+%line([0 1],[0.3 0.3],'Color','black','LineWidth',2);
+%line([0 1],[0.5 0.5],'Color','black','LineWidth',2);
+%line([0 1],[0.7 0.7],'Color','black','LineWidth',2);
 
 % ######  MENU  ######################################
 h_opt = uimenu('Label','&Options');
@@ -49,7 +49,7 @@ uimenu(h_opt,'Label','Exit','Callback','closereq;','separator','on');
 
 
 % create the text
-h_text = uicontrol('Style','edit','Units','normalized','Position',[0 0.9 1 0.10],'FontSize',10,'HorizontalAlignment','left','Enable','inactive','Tag','TEXT');
+h_text = uicontrol('Style','edit','Units','normalized','Position',[0 0 0.3 0.3],'FontSize',10,'HorizontalAlignment','left','Enable','inactive','Tag','TEXT', 'Min', 0, 'Max', 3);
 
 set(himage,'WindowButtonDownFcn',@movement_down);
 set(himage,'WindowButtonUpFcn',@movement_up);
@@ -75,6 +75,7 @@ y_pen = [];
 
 % if necessary
 himage = findobj('tag','PEN');
+set(findobj('Tag','TEXT'),'String','');
 
 %Initialize parameters for the progressive recognition algorithm
 RecState = InitializeRecState();
@@ -110,8 +111,6 @@ y = p(1,2);
 % cumulative data
 x_pen = [x_pen x];
 y_pen = [y_pen y];
-
-set(findobj('Tag','TEXT'),'String','Current State: 1 ');
 
 % draw
 plot(h_axes,x,y,'b.','Tag','SHAPE','LineWidth',3);
@@ -188,7 +187,8 @@ RecState = ProcessNewPoint(RecParams,RecState,Sequence,IsMouseUp,true);
 
 %Output all the candidates.
 if (IsMouseUp==true)
-    GetCandidatesFromRecState( RecState )
+    res = GetCandidatesFromRecState( RecState )
+    set(findobj('Tag','TEXT'),'String',res);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
