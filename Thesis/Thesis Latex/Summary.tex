@@ -40,12 +40,12 @@
 \label{sec:summary}
 
 The cursiveness of the Arabic script supposedly requires delaying the launch of the recognition process until the completion of the word scribing. 
-However, in this study, we question the necessity of this requirement by demonstrating the feasibility of determining the position of the segmentation points while the stroke is being written; and by doing so, accelerating the recognition process.
+However, in this study, we question the necessity of this requirement by demonstrating the feasibility of determining the position of the SPs while the stroke is being written; and by doing so, accelerating the recognition process.
 
 The proposed recognition-based segmentation method is performed in the stroke level enabling analysis task related to segmentation and recognition of the stroke to be performed in real-time. 
 The first stage, which requires the most calculation effort, is performed whilst the stroke is being written and involves over-segmentation of the stroke.
-Morphological features are employed to nominate potential SPs.
-The sub-strokes induced by the SPs are classified using a fast character classifier, and the classification information is saved in a scoring matrix.
+Morphological features are employed to nominate POIs.
+The sub-strokes induced by the POIs are classified using a fast character classifier, and the classification information is saved in a scoring matrix.
 The second stage contains filtering of the topologically invalid SPs and re-scoring of non-proportional length sub-strokes. 
 The last stage involves several segmentation points selections algorithm which determines the best subset of segmentation points.
 
@@ -59,7 +59,7 @@ We proposed several activation configurations of the classification approach aim
 
 The system has been designed and tested using the ADAB Database, a publicly available corpus of on-line Arabic handwriting.
 We have built large database of handwritten Arabic letters and WPs based on the strokes information given in the database, overcoming absence of mapping between the strokes and letters in the ADAB database.
-We have used the skills of a human expert to manually segmenting the strokes trajectories and mark the WPs boundaries.
+We have used the skills of a human expert to manually segmenting the stroke trajectories and mark the WPs boundaries.
 
 With the purpose of giving a high level resolution of the overall system performance, extensive experiments and detailed analysis was given on both the classification and the segmentation systems.
 Using a public and not a self collected sample set strengthens the reliability of the obtained results.
@@ -75,14 +75,15 @@ The results of this research has been published in two conference papers co-auth
 \section{Future Directions}
 \label{sec:future_directions}
 
-In future work, we will expand the process by adding a later holistic word part recognizer that exploits the proposed segmentation and the scoring information to inspect a limited number of potential word parts.
+In future work, we will expand the process by adding a later holistic word part recognizer that exploits the proposed segmentation and the scoring information to inspect a limited number of potential WPs.
 Also, we are planning to allow the letter writing to be expand over multiple strokes.
 In addition we will develop a word completion algorithm based on our real-time recognition technique.
 
-In a future work, the additional strokes will be employed to discriminate between letters having the same main body (i'jam).
+In a future work, the additional strokes will be employed to discriminate between letters having the same main body.
 We believe that this will significantly improve the segmentation and classification results, as the additional strokes can help decrease the potential letter set.
 
-We are planning to enhance the segmentation points nomination by employing morphological learning algorithm for determining if the given point is a potential segmentation point based on the surrounding environment of the candidate point. 
+We are planning to enhance the POIs nomination by employing morphological learning algorithm based on the surrounding environment.
+In addition, we intend to handle characters that spans over several strokes.  
 
 In addition are planning to standardize and publish the characters database extracted from the ADAB database and make available for other researches in the field.
 

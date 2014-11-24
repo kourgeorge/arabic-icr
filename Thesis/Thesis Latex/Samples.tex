@@ -54,7 +54,7 @@
 \label{sec:adab_database}
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The data importance}}{}
-The data, its quality and quantity, are a fundamental part of any supervised machine learning technique.
+The data, its quality and quantity, are a fundamental part of any machine learning technique.
 It is used in the learning, validation and testing stages of the pattern recognition process, and has a critical effect on the system accuracy and performance.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Data representation}}{}
@@ -65,19 +65,19 @@ Although the sampling of the pen position is done in a constant time intervals, 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Lack of databases}}{}
 Many databases were developed for both on-line and off-line HWR of English script. 
-Among these we can mention the following popular database: UNIPEN \cite{guyon1994unipen}, CEDAR \cite{hull1994database}, IRONOFF \cite{viard1999ireste} and NIST.
+Several popular examples are: UNIPEN \cite{guyon1994unipen}, CEDAR \cite{hull1994database}, IRONOFF \cite{viard1999ireste} and NIST.
 However, very few databases were developed for the Arabic script and are publicly available such as IFN/ENIT \cite{pechwitz2002ifn} and CEDAR \cite{srihari2005search}.
 Thus, most researchers had developed their own private limited datasets \cite{saabni2009efficient}. 
 Even fewer datasets were created for the on-line Arabic script. 
-This shortage may be attributed to the fact that the major work done on Arabic handwriting recognition focused on recognizing off-line script \cite{plamondon2000online}.
+This shortage may be attributed to the fact that the major work done on Arabic HWR focused on recognizing off-line script \cite{plamondon2000online}.
 Another reason may be the fact that most research in the on-line script recognition field is done for isolated characters such as letters, digits and symbols \cite{al2011online}.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The ADAB database}}{}
 In this work, we have used the only publicly available corpus of on-line Arabic handwriting, called the \emph{ADAB} (Arabic DAtaBase) database, which is de-facto a standard in this field \cite{el2009icdar}.
 It was developed to advance the research and development of Arabic on-line handwritten text recognition systems and consists of more than 20k Arabic handwritten words scribed by more than 170 different writers.
-The samples are words that were taken from the 937 Tunisian town/village names.
+The samples are taken from the 937 Tunisian town/village names.
 Each stroke, represented as a node in the XML, contains the sequence of $(x,y)$ coordinates of the pen position expanded from the pen-down to the corresponding pen-up event, as can be seen in Figure \ref{fig:adab_inkml}.
-In addition to the strokes positional information of the stroke, the database contains several properties related to the equipment used to obtain the data and the writer's information, as well as the plot image of the word trajectory as shown in Figure \ref{fig:sample_parts}.
+In addition to the positional information of the stroke, the database contains several properties related to the equipment used to obtain the data and the writer's information, as well as the plot image of the word trajectory as shown in Figure \ref{fig:sample_parts}.
 
 \begin{figure}
 \centering
@@ -105,7 +105,7 @@ The goal of this stage was to create a sufficiently large database of handwritte
 The absence of mapping between the strokes and letters in the ADAB database, required manual segmentation of the strokes trajectories.
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{Letters extraction method}}{}
-To facilitate the database construction, we have created a user friendly system that reads the samples from the ADAB database, displays the different strokes of a sample in different color, and enables a human expert to easily mark the segmentation points on the strokes.
+To facilitate the database construction, we have created a user friendly system that reads the samples from the ADAB database, displays the different strokes of a sample in different colors, and enables a human expert to easily mark the SPs on the strokes.
 Once the segmentation process is done, the match between the sub-strokes and the letters is performed in a semi-automatic manner, which required the expert intervention only in cases of ambiguity.  
 The system was designed also to handle samples that included more than a single letter. 
 In this case, the expert also had to relate the strokes to the different words.
@@ -126,7 +126,7 @@ Thus, the human expert had to filter out additional strokes manually that could 
 
 \iftoggle{edit-mode}{\hspace{0pt}\marginpar{The output structure}}{}
 The output of the system was saved in a parsed XML file for each sample. 
-As can be seen in Figure \ref{fig:adab_segmented_xml}, the hierarchy of the out XML represents the structure of the sample as defined in Figure \ref{fig:sample_parts}. 
+As can be seen in Figure \ref{fig:adab_segmented_xml}, the hierarchy of the XML represents the structure of the sample as defined in Figure \ref{fig:sample_parts}. 
 In order to build up the letters database, an automatic procedure was implemented to extract the letters trajectories from the output XML. 
 The letters database consists of directories that represent the different letters.
 Each letter directory contains four folders, named Iso, Mid, Fin and Iso which contains the corresponding letter samples, recorded in a Matlab data files.

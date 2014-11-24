@@ -48,7 +48,6 @@
 
 %%%%%%%%%%% nomenclature %%%%%%%%%%
 \nomenclature{KP}{Key Point}
-\nomenclature{POI}{Point of Interest}
 \nomenclature{HF}{Horizontal Fragment}
 \nomenclature{FSP}{Final Segmentation Points}
 \nomenclature{SSA}{Segmentation Selection Algorithm}
@@ -62,21 +61,21 @@
 \label{chap:strokes_segmentation}
 
 In this chapter we describe a recognition-based segmentation approach for on-line Arabic script.
-The segmentation is done in the stroke level while the stroke is being written, using the fast Arabic characters classification technique, described in Chapter \ref{chap:characters_classification}.
+The segmentation is done in the stroke level, using the fast Arabic characters classification technique, described in Chapter \ref{chap:characters_classification}.
 
-The proposed approach goes through three main stages.
+The proposed approach goes through three main stages. See Figure \ref{fig:segmentation_system_flow}.
 The first stage is composed of two steps which are performed while the stroke is being scribed.
 In the first step \emph{points of interest} (POIs) are nominated based on the morphological features of the stroke.
 These POIs are the middle of the \emph{horizontal fragments} (HFs) and induce over segmentation of the stroke.
 In the second step, once a POI is found, the classification information of sub-strokes which end with this POI is saved in a scoring matrix.
-In the second stage, once the entire stroke is available, a rules-based process is used to refine the set of POIs and re-score the sub-strokes. 
-Eventually, the system heuristically determines the final set of \emph{segmentation points} (SPs) based on the sub-strokes scoring. 
+In the second stage, once the entire stroke is available, a rules-based process is used to refine the set of POIs. 
+In the third stage, the system heuristically determines the final set of \emph{segmentation points} (SPs) based on the sub-strokes scoring.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.8\textwidth]{./figures/system_flow}
+\includegraphics[width=0.8\textwidth]{./figures/segmentation_system_flow}
 \caption{High level visualization of segmentation flow.}
-\label{fig:system_flow}
+\label{fig:segmentation_system_flow}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -113,14 +112,13 @@ This is done to avoid fractions of the same HF to identified as multiple HFs.
 The merging is done by evaluating the complexity measurement across the two consequent HFs, see Figure \ref{fig:candidate_in_no_horizontal}.
 
 \begin{definition}
-\textbf{Complexity measure} is a value that indicates the curvature degree of a given 2-D trajectory $T=\{p_i\}_{i=1}^{n}$. 
+\textbf{Complexity measure} is a value that indicates the curvature degree of a given 2-dimensional trajectory $T=\{p_i\}_{i=1}^{n}$. 
 Preprocessing steps, which include simplification and re-sampling, are required to ensure invariance under scaling and data imperfections. 
 The complexity measure is calculated by summing the parameters $\alpha_{k}$ computed for each inner point $p_k$ in $T$ for $2 \leq k \leq n-1$, i.e., 
 \begin{equation}
 CM(T)=\sum_{k=2}^{n-1}{\alpha_k}.
 \end{equation}
 where the parameter $\alpha_{k}$ is defined as $\alpha_{k}=\frac{\pi-\phi_{k}}{\frac{\pi}{6}}$ and $\phi_k=\angle(\overline{p_{k-1}p_{k}},\overline{p_{k}p_{k+1}})$. 
-
 \end{definition}
 
 \begin{figure}
@@ -151,7 +149,7 @@ It contains the classification information and scoring, for the sub-strokes $S_i
 The matrix $D$ is generated dynamically while the stroke is being written; adding a row and a column for each new detected POI. 
 Imposing a locality constraint which narrows the band of the $D$ matrix above the main diagonal improved the efficiency of the process and the segmentation accuracy. 
 Given a band width $B$ we fixed $D_{i,j}=\infty$ if  $j \leq i$ or $j-i>B$.
-We argue that sub-strokes representing a letter will achieve, in most cases, better scoring, i.e., lower $D_{i,j}$ value than other sub-strokes.
+The underlying assumption is that sub-strokes representing a letter will achieve, in most cases, better scoring, i.e., lower $D_{i,j}$ value than other sub-strokes.
 
 \begin{figure}
 \centering
@@ -197,7 +195,8 @@ D_{p}=
 \label{eq:positions_matrix}
 \end{equation}\\
 
-For a given input (sequence and position), the recognition system returns the $k$ nearest neighbours with different labelling, where the labelling is defined as the tuple (letter, position). In our implementation, we set $K=3$.
+For a given input (sequence and position), the recognition system returns the $k$ nearest neighbours with different labelling. 
+In our implementation, we set $k=3$.
 
 \begin{figure}
 \centering
@@ -258,7 +257,7 @@ Many script recognition techniques use the baseline of the word in part of the r
 process, for Arabic as well as for other languages.
 
 Determining the baseline using the vertical projection histogram is a commonly used technique \cite{burrow2004arabic, bagdanov1997projection}.
-Similarly, in this work, the system determines the baseline by calculating the vertical projection histogram of the re-sampled and normalized version of the stroke. 
+At this stage, the system determines the baseline by calculating the vertical projection histogram of the re-sampled and normalized version of the stroke. 
 The height of the stroke (y-axis) is partitioned into ten equi-length intervals. 
 A POI is filtered out if it does not satisfy the following condition:
 \begin{equation}
@@ -266,11 +265,13 @@ A POI is filtered out if it does not satisfy the following condition:
 \end{equation}
 where $POI_y$ represents the $y$-coordinate of the POI; $|I|$ is the length of an interval; and $I_{max}$ denotes the center of the most inhabited interval. 
 In order to reliably determine the baseline, the detection algorithm is activated only after the fourth POI is found.
-This process has proven to be very effective in eliminating challenging false POIs that reside in valleys of frequently used final Arabic letters, such as \RL{-q}, \RL{-s} and \RL{-n}. 
+This process has proven to be very effective in eliminating challenging false POIs that reside in valleys of several final shape Arabic letters, such as \RL{-q}, \RL{-s} and \RL{-n}. 
 An example of such a POI can be seen in the letter \RL{-n} in Figure \ref{fig:candidate_in_no_horizontal}. 
 
 
-The baseline is needed only to verify that the POIs are in a reasonable distance from it, therefore, imprecise valuation of the position or the direction of the baseline is tolerable.
+The baseline is needed for verifying that the POIs are in a reasonable distance from it, therefore, imprecise valuation of the position or the direction of the baseline is tolerable.
+In order to identify SPs that resides inside a loop we have employed a Matlab package that includes an implementation for poly-line intersection algorithm \cite{legland2014geom2d}.
+
 
 \begin{figure}[b]
 \centering
@@ -278,8 +279,6 @@ The baseline is needed only to verify that the POIs are in a reasonable distance
 \caption{The position of the baseline corresponds to the largest peak of the vertical projection histogram \cite{burrow2004arabic}.}
 \label{fig:candidate_in_no_horizontal}
 \end{figure}
-
-In order to identify SPs that resides inside a loop we have employed a Matlab package that includes an implementation for poly-line intersection algorithm \cite{legland2014geom2d}.
 
 The third rule is used to penalize unreasonably low scoring given to small sub-strokes, which are unlikely to represent a letter. 
 This is done by calculating the ratio of the sub-stroke length proportional to the entire stroke length.
@@ -299,12 +298,12 @@ In a future work we will improve the filtering algorithm to handle such case.
 The goal of this phase is to select the set of SPs among the POIs. 
 This set will be referred to as the \emph{final segmentation points} (FSP). 
 It is performed by finding the \emph{segmentation path} in $D$ with the best scoring possible. 
-A segmentation path $\pi$ is an ordered subset of the KPs and must contain $KP_{0}$ and $KP_{L+1}$ as the first and the last points in the path.
+A segmentation path $\pi$ is an ordered subset of the KPs that must contain $KP_{0}$ and $KP_{L+1}$ as the first and the last points in the path.
 $\Pi$ denotes the scoring of the segmentation path $\pi$. 
-It is defined as the summation of the sub-sequences scoring in the segmentation path divided by the path length; this is done in order to prevent giving superiority to under-segmentations.
+It is defined as the summation of the sub-sequences scoring in the segmentation path divided by the path length; this is done in order to prevent giving superiority to under-segmentations paths.
 
 One can model the scoring matrix $D$ as a directed, edge-weighted graph $G=(V,E)$, for which a path from vertex $KP_0$ to vertex $KP_{L+1}$ defines a possible segmentation. 
-It can be experimentally validated that finding the shortest path in $G$ (from $KP_0$ to $KP_{L+1}$) does not necessarily obtain the optimal segmentation, and in some cases, produces under-segmentation of the stroke. 
+It can be experimentally validated that finding the shortest path in $G$ (from $KP_0$ to $KP_{L+1}$) does not necessarily obtain the optimal segmentation, which usually produces under-segmentation of the stroke. 
 It is because the shortest path is a global property, which may prefer a highly weighted shortcut path over a path that consists of several low weighted fragments; in cases where the accumulative weight of the fragmented path is larger than the shortcut path.
 However, greedily selecting the outgoing edge with the minimal weight will mostly return a better segmentation.
 
@@ -433,7 +432,7 @@ In this section we discuss common cases of incorrect segmentation.\\
 \item Several Arabic letters contain a horizontal region in their initial form which does not accommodate a SP, see Figure \ref{fig:candidate_in_no_horizontal}. 
 We overcame this problem by adding the following rule: a POI is nominated only if the sub-stroke that spans from the beginning of the stroke to the POI has a high complexity measure.
 \item Over-segmentation can also be caused by typing a letter in unusual form where it is spanned over several strokes. 
-It happens mostly in the letter \RL{-m-}, \RL{-m} and in rare cases in the letter \RL{-.h-}. This issue will be addressed in a future work.
+It happens mostly in the characters \RL{-m-} and \RL{-m} and in rare cases in the letter \RL{-.h-}. This issue will be addressed in a future work.
 \end{itemize}
 
 \begin{figure}
@@ -460,8 +459,12 @@ It happens mostly in the letter \RL{-m-}, \RL{-m} and in rare cases in the lette
 
 \subsubsection{Under-segmentation}
 \begin{itemize}
-\item Letter pairs that are not separated by HFs cause the system to miss POIs. This was partially solved by extending the notion of a letter to include such pairs. For example the pair \RL{lm} and \RL{l.h}.
-\item In some cases, HFs were identified correctly but the corresponding POI were not selected in the third stage. This may result from nomination of a candidate point on correct horizontal segment but in a late fraction of the segmentation fragment which result in a low scoring and thus not being selected by the SSA. This issue usually occurs in the letter \RL{w} in its final position, see Figure \ref{fig:undersegmentation_w}.
+\item Letter pairs that are not separated by HFs cause the system to miss POIs. 
+This was partially solved by extending the notion of a letter to include such pairs. 
+For example the pair \RL{lm} and \RL{l.h} .
+\item In some cases, HFs were identified correctly but the corresponding POI were not selected in the third stage. 
+This may result from nomination of a POI on correct horizontal segment but in a late fraction of the segmentation fragment which result in a low scoring and thus not being selected by the SSA. 
+This issue usually occurs in the letter \RL{w} in its final position, see Figure \ref{fig:undersegmentation_w}.
 \end{itemize}
 
 \begin{figure}
@@ -472,12 +475,12 @@ It happens mostly in the letter \RL{-m-}, \RL{-m} and in rare cases in the lette
 \end{figure}
 
 We have noticed that the absolute majority of the false negative (missed) SPs were actually identified as POIs in the first stage, but were not selected by the SSA.
-In addition, differentiating between the main body of the letter \RL{-s-} and the main body of two consecutive \RL{-b-} letters is possible only when considering the additional strokes, thus both cases were considered to be correct.
+In addition, as mentioned earlier, differentiating between the main body of the letter \RL{-s-} and the main body of two consecutive \RL{-b-} letters is possible only when considering the additional strokes, thus both cases were considered to be correct.
 
 \subsection{Segmentation Selection Algorithms Performance}
 \label{subsec:ssa_performance}
 It is apparent from the data in Table \ref{table:ss_algorithms_results}, that the SSA has a crucial effect on the system's performance. 
-We tested several combinations of two SSAs in which the FSP is found by executing both SSAs independently and selecting the segmentation path with the smallest scoring.
+We tested several combinations of two SSAs in which the FSP is found by executing both SSAs independently and selecting the segmentation path with the best (lowest) scoring.
 
 \begin{table}
 \centering
@@ -507,7 +510,7 @@ In the following experiment, we measure the effect of a large and imbalanced tra
 It is done by gradually increasing the maximal allowed number of samples per class (letter and position).
  
 The graph in Figure \ref{fig:num_letter_impact} shows convergence of the system's performance when the maximal number of samples is larger than 200 per class. 
-Nevertheless, a miniature degradation is apparent, which is caused, probably, due to the increasing imbalance in the distribution of the training set.
+Nevertheless, a small performance degradation is apparent, which is caused, probably, due to the increasing imbalance in the distribution of the training set.
 In addition, it is evident that the recognition rate is more sensitive to small training set than the segmentation rate.
 
 \begin{figure}
@@ -523,7 +526,7 @@ In addition, it is evident that the recognition rate is more sensitive to small 
 
 \section{Holistic WPs Recognition using Characters Classification Information}
 \label{sec:wps_recognition}
-As mentioned earlier, the segmentation and classification information obtained by a real-time segmentation system, can be used to significantly reduce the potential dictionary size and accelerate a later holistic recognition process as follows:
+As mentioned earlier, the segmentation and classification information obtained by the real-time segmentation system can be used to significantly reduce the potential dictionary size and accelerate a later holistic recognition process as follows:
 \begin{compactitem}
 \item In an open-vocabulary environment, the classification information can be employed to dynamically build a class of different shapes for all possible WPs.
 \item In a closed-vocabulary environment, a holistic recognition approach can be limited to consider valid combination that appear in the vocabulary. 
@@ -534,7 +537,7 @@ Following the real-time segmentation process, the $10$ top scored candidates of 
 These shapes are used to generate a complete list of all possible shape concatenation of the retrieved candidates. 
 The obtained candidates represent different shapes of the same letter producing multiple shapes of the same WP. 
 The cardinality of the generated list is $10^p$ where $p$ is the predicted number of characters in the WP using the segmentation process. 
-The large size of the generated list, which may exceed $10,000$ shapes, requires a similar process of embedding and dimensionality reduction, as described above, to generate a short list of candidates. 
+The large size of the generated list, which may exceed $10,000$ shapes, requires a similar process of embedding and dimensionality reduction, to generate a short list of candidates. 
 The short list of candidates in the next step is matched against the queried WP using the original expensive and more accurate matching process. 
 Using the proposed approach, the $10$ top WPs results yield a $98.1\%$ recognition rate. 
 The recognition rate of the first top candidate dropped down to $90.8\%$. 
