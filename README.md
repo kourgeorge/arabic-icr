@@ -1,9 +1,13 @@
 # arabic-icr
 
+## Content
+This is my second degree project carried out under the supervision of Dr. Rais Saabne and Prof. Dana Ron.
+
+## Abstract
+
 Despite the long-standing belief that digital computers will challenge the future of handwriting, pen and paper remain commonly used means for communication and recording of information in daily life.
 In addition to the growing use of keyboard-less devices such as smart-phones and tablets, which are too small to have a convenient keyboard, handwriting recognition is receiving increasing attention in the last decades.
 
-## Abstract
 Correct and efficient recognition of handwritten Arabic text is a challenging problem due to the cursive and unconstrained nature of the Arabic script.
 While real-time performance is necessary in applications involving on-line handwriting recognition, conventional approaches usually wait until the entire curve is traced out before starting the analysis, inevitably causing delays in the recognition process. 
 This deferment prevents on-line recognition techniques from achieving high responsiveness demands expected from such systems, and from implementing advanced features of input typing, such as automatic word completion.
@@ -20,4 +24,4 @@ The transformation of the feature space vectors into the wavelet coefficient spa
 We show that the resulting character segmentation and classification information can be used to significantly reduce the potential dictionary size and accelerate a holistic recognition process.
 
 
-This work was done under the supervision of Dr. Rais Saabne and Prof. Dana Ron.
+This work was 
