@@ -22,6 +22,3 @@ A candidate filtering followed by a segmentation selection process are activated
 A nearest neighbours based character classifier that employs a linear-time embedding of the Earth Mover's Distance metric to a norm space is presented.
 The transformation of the feature space vectors into the wavelet coefficient space facilitates accurate similarity measurement and sub-linear search methods.
 We show that the resulting character segmentation and classification information can be used to significantly reduce the potential dictionary size and accelerate a holistic recognition process.
-
-
-This work was 
