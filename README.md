@@ -1,7 +1,20 @@
 # arabic-icr
 
 ## Content
-This is my second degree project carried out under the supervision of Dr. Rais Saabne and Prof. Dana Ron.
+This project contains all the artifacts from my M.Sc. research on online Arabic handwriting recognition carried out under the supervision of Dr. Rais Saabne and Prof. Dana Ron at the Tel-Aviv University.
+
+## How to cite this work:
+
+The bibtex entry for citing this work:
+
+```
+@phdthesis{kour2014real,
+  title={Real-time Segmentation and Recognition of On-line Handwritten Arabic Script},
+  author={Kour, George},
+  year={2014},
+  school={TEL AVIV UNIVERSITY}
+}
+```
 
 ## Abstract
 
@@ -18,7 +31,7 @@ The proposed segmentation approach is a recognition-based method that operates o
 Using a fast Arabic character classifier, the system attaches a score to the sub-strokes induced by the candidate points, which captures the likelihood of the sub-stroke to represent a letter.
 A candidate filtering followed by a segmentation selection process are activated when the entire stroke is available.
 
-
 A nearest neighbours based character classifier that employs a linear-time embedding of the Earth Mover's Distance metric to a norm space is presented.
 The transformation of the feature space vectors into the wavelet coefficient space facilitates accurate similarity measurement and sub-linear search methods.
 We show that the resulting character segmentation and classification information can be used to significantly reduce the potential dictionary size and accelerate a holistic recognition process.
+
