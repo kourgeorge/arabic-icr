@@ -1,4 +1,4 @@
-# arabic-icr
+# Arabic Online Handwriting Recognition
 
 ## Content
 This project contains all the artifacts from my M.Sc. research on online Arabic handwriting recognition carried out under the supervision of Dr. Rais Saabne and Prof. Dana Ron at the Tel-Aviv University.
